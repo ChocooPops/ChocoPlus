@@ -1,0 +1,16 @@
+<div class="VlcButton" (click)="onClick()">
+    @if(!typeButton) {
+    <div class="containerVlcButton" [ngClass]="{'backgroundWhite' : true, 'animationToGrey' : true}">
+        <p>VLC</p>
+        <img [src]="srcImage">
+    </div>
+    }@else {
+    <div class="largestContainerButton" [ngClass]="{'animationToGrey' : true}">
+        <div class="containerVlcButton">
+            <p>VLC</p>
+            <img [src]="srcImage">
+        </div>
+        <p>Ouvrir dans VLC</p>
+    </div>
+    }
+</div>

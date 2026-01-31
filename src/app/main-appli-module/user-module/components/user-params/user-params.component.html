@@ -1,0 +1,25 @@
+<div class="container-user-params">
+    @if(currentUser) {
+    <div class="container-info-user">
+        <div class="container-pp">
+            <img [src]="currentUser.profilPhoto" (error)="errorPpUser()">
+            <div class="container-tmp"></div>
+        </div>
+        <div class="info-user">
+            <p class="pseudo"> {{ currentUser.pseudo }} </p>
+            <p class="text"> {{ currentUser.role}} </p>
+            <p class="text"> Depuis le {{ currentUser.createdAt | date:'mediumDate' }} </p>
+        </div>
+
+    </div>
+    <div class="container-params">
+        @for (param of userParams; track param.id) {
+        <div class="container-param"
+            [ngClass]="{'current-param' : param.isClicked, 'not-current-param' : !param.isClicked}"
+            (click)="onNavigateUserTab(param.id)">
+            <p> {{ param.name }} </p>
+        </div>
+        }
+    </div>
+    }
+</div>

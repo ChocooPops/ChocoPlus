@@ -1,0 +1,29 @@
+.container-format-poster {
+    height: 18px;
+    width: 18px;
+}
+
+.format-poster {
+    height: 18px;
+    width: 10px;
+    background-color: transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: 0.3s transform;
+}
+
+.vertical {
+    transform: rotate(0deg);
+}
+
+.horizontal {
+    transform: rotate(-90deg);
+}
+
+.white {
+    border: solid white 3px;
+}
+
+.grey {
+    border: solid #232323 3px;
+}

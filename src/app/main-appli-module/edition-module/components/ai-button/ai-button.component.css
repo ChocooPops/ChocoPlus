@@ -1,0 +1,42 @@
+@keyframes gradientAnimation {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -1000% 0;
+    }
+}
+
+.container-ai-button {
+    height: 40px;
+    width: 40px;
+    border-radius: 5px;
+    border: solid 1px #DD9A22E8;
+    cursor: pointer;
+    position: relative;
+
+    img {
+        height: 50%;
+        width: 50%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.container-ai-button-loading {
+    background: linear-gradient(90deg, #FAB14380, #DD9A22E8);
+    animation: gradientAnimation 10s linear infinite;
+    background-size: 200% 100%;
+}
+
+.container-ai-button-not-loading {
+    background-color: #30303095;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #FAB14380;
+    }
+}

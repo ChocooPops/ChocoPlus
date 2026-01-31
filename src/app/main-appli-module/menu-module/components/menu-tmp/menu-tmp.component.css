@@ -1,0 +1,8 @@
+.menuTmp {
+    padding: 5px;
+    height: 60px;
+    width: 100%;
+    background: linear-gradient(black, rgb(20, 20, 20));
+    z-index: 1000;
+    position: relative;
+}

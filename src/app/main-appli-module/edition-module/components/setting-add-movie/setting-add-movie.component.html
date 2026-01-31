@@ -1,0 +1,127 @@
+<app-popup (emitActionData)="emitAddMovie()"></app-popup>
+
+<div class="containerSettingSelected">
+
+    <div class="containerFieldToFill">
+        <p>Title <span class="yellow">*</span></p>
+        <div class="container-flex">
+            <div class="container-input">
+                <app-input-text-edition [text]="editMovie.title" [placeHolder]="placeHolderTitle"
+                    (onInputChange)="onInputTitle($event)"
+                    (keydown.enter)="onClickButtonTmdb()"></app-input-text-edition>
+                <div #buttonOtherLanguage class="container-img-language" (click)="toggleOtherTitleDisplayed()"
+                    [ngClass]="{'container-img-language-border' : displayOtherTitles}">
+                    <img [src]="srcLanguage">
+                </div>
+                @if(displayOtherTitles) {
+                <div #otherTitles class="container-input-multi-language">
+                    <app-input-language-title [titles]="editMovie.otherTitles"
+                        (changeTitles)="onInputOtherTitles($event)"></app-input-language-title>
+                </div>
+                }
+            </div>
+            <app-ai-button (clickEmit)="onClickButtonTmdb()" #buttonSearchTmdb></app-ai-button>
+        </div>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Jellyfin Id <span class="yellow">*</span></p>
+        <div class="container-flex">
+            <app-input-text-edition [text]="editMovie.jellyfinId" [placeHolder]="placeHolderJellyfinId"
+                (onInputChange)="onInputJellyfinId($event)"
+                (keydown.enter)="onClickButtonJellyfin()"></app-input-text-edition>
+            <app-ai-button (clickEmit)="onClickButtonJellyfin()" #buttonSearchJellyfin></app-ai-button>
+        </div>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Director <span class="yellow">**</span></p>
+        <app-input-keywords-edition [keyWords]="editMovie.directors" (onInputChange)="onInputDirector($event)"
+            [placeHolder]="placeHolderDirector"></app-input-keywords-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Acteurs <span class="yellow">**</span></p>
+        <app-input-keywords-edition [keyWords]="editMovie.actors" (onInputChange)="onInputActors($event)"
+            [placeHolder]="placeHolderActor"></app-input-keywords-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Date de sortie du film <span class="yellow">**</span></p>
+        <app-input-date [date]="editMovie.date" (onInputChange)="onInputDate($event)"></app-input-date>
+    </div>
+
+    <div class="containerFieldToFill" [ngClass]="{'NgClass' : true}">
+        <p>Intervalle de présentation du film <span class="yellow">**</span></p>
+        <div class="containerAllInputTimer">
+            <div class="containerInputTimer">
+                <p>Début :</p>
+                <app-input-time-edition [time]="editMovie.startShow"
+                    (onInputChange)="onInputTimerStart($event)"></app-input-time-edition>
+            </div>
+            <div class="containerInputTimer">
+                <p>Fin :</p>
+                <app-input-time-edition [time]="editMovie.endShow"
+                    (onInputChange)="onInputTimerEnd($event)"></app-input-time-edition>
+            </div>
+        </div>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Category <span class="yellow">**</span></p>
+        <app-input-categories-edition (onChangeCategory)="onInputCategory($event)"
+            [categoriesSelected]="editMovie.categories"></app-input-categories-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Key Words <span class="yellow">**</span></p>
+        <app-input-keywords-edition [keyWords]="editMovie.keyWords"
+            (onInputChange)="onInputKeyWords($event)"></app-input-keywords-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Description</p>
+        <app-input-text-area-edition [text]="editMovie.description" (onInputChange)="onInputDescription($event)"
+            [maxLength]="maxLenght"></app-input-text-area-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Logo du film <span class="yellow">**</span></p>
+        <app-input-image-edition [srcImageAdded]="editMovie.logo" (inputChange)="onInputLogo($event)"
+            [exText]="exTextLogo" [typeInputImage]="2"></app-input-image-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Poster <span class="yellow">*</span></p>
+        <app-input-poster-edition (fillPoster)="fillPoster($event)" (removeSelection)="removeSelection($event)"
+            (addNewSelection)="addNewSelection($event)" (removePoster)="deletePoster($event)"
+            (addNewPoster)="addNewPoster()" [posters]="editMovie.posters"
+            [mediaType]="mediaType"></app-input-poster-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Image second-plan du film <span class="yellow">**</span></p>
+        <app-input-image-edition [srcImageAdded]="editMovie.backgroundImage"
+            (inputChange)="onInputBackgroundImage($event)" [exText]="exTestBackgroundImage"
+            [typeInputImage]="3"></app-input-image-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Poster Horizontal <span class="yellow">*</span></p>
+        <div class="container-radio-button-and-poster">
+            <p> Poster Horizontal identique au background ?</p>
+            <app-input-radio-button [radioButton]="buttonHorizontalSameAsBack" [group]="groupPosterHorizontalBack"
+                (changeEmit)="modifyStateHorizontalPoster($event)"></app-input-radio-button>
+        </div>
+        <app-input-poster-horizontal-edition [posters]="editMovie.horizontalPoster"
+            (addNewPoster)="addPosterHorizontal()" (removePoster)="removePosterHorizontal($event)"
+            (fillPoster)="fillPosterHorizontal($event)"></app-input-poster-horizontal-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <div class="containerLastButton">
+            <app-button-remove (clickEmit)="onClickReset()"></app-button-remove>
+            <app-button-save (clickEmit)="onClickAddMovie()"></app-button-save>
+        </div>
+    </div>
+</div>

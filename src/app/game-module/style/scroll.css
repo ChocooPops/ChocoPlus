@@ -1,0 +1,27 @@
+.container-element {
+    left: 0;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+}
+
+.container-element img {
+    flex-shrink: 0;
+    image-rendering: crisp-edges;
+}
+
+.scroll-content {
+    display: flex;
+    width: max-content;
+    position: absolute;
+}
+
+.container-sprite {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+
+    img {
+        image-rendering: crisp-edges;
+    }
+}

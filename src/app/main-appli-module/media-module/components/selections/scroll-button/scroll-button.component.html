@@ -1,0 +1,6 @@
+<div class="scrollButton" [style.height.vw]="height" [style.width.vw]="width"
+    [ngClass]="{'scrollButtonLeft' : direction, 'scrollButtonRight' : !direction }">
+    @if(displayScrollButton) {
+    <img [src]="srcImageArrow" (click)="onClick()">
+    }
+</div>

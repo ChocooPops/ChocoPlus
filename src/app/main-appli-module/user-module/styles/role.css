@@ -1,0 +1,53 @@
+.point {
+    height: 7px;
+    width: 7px;
+    border-radius: 50%;
+}
+
+.back-dark {
+    background-color: #3B3B3B;
+}
+
+.back-clear {
+    background-color: #505050;
+}
+
+.back-yellow {
+    background-color: rgba(250, 177, 67, 0.5);
+}
+
+.point-yellow {
+    background-color: rgba(221, 156, 34, 0.9);
+}
+
+.back-green {
+    background-color: rgba(45, 153, 101, 0.5);
+}
+
+.point-green {
+    background-color: rgba(44, 167, 105, 0.9);
+}
+
+.back-blue {
+    background-color: rgba(51, 126, 169, 0.5);
+}
+
+.point-blue {
+    background-color: rgba(51, 126, 169, 0.9);
+}
+
+.back-red {
+    background-color: rgba(222, 85, 83, 0.45);
+}
+
+.point-red {
+    background-color: rgba(222, 85, 80, 0.9);
+}
+
+.back-grey {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.point-grey {
+    background-color: rgba(155, 155, 155, 0.9);
+}

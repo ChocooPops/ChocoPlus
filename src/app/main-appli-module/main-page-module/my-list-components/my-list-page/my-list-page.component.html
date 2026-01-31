@@ -1,0 +1,8 @@
+<div class="container-page">
+    @if(mediaSelected != undefined) {
+    <app-media-page></app-media-page>
+    }
+    <app-menu-tmp></app-menu-tmp>
+    <div class="space"></div>
+    <app-grid-list [mediaList]="medias" [title]="title" [format]="format"></app-grid-list>
+</div>

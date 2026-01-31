@@ -1,0 +1,25 @@
+<div class="containerInputCategories">
+    @for(category of categoriesSelected; track category) {
+    <app-container-word (removeWordEmit)="removeCategory(category.id)" [word]="category.name"></app-container-word>
+    }
+
+    <div class="containerSelectCategory">
+        <div class="container-input" #refInput>
+            <div class="container-arrow" (click)="setFocus()">
+                <img [src]="srcArow">
+            </div>
+            <app-input-text-edition (keydown.enter)="onEnterKey()" [placeHolder]="placeHolder"
+                (onFocus)="onChangeFocus($event)" (onInputChange)="onInputChange($event)"
+                [type]="2"></app-input-text-edition>
+            @if(displayResearch) {
+            <div class="container-categories-searched ">
+                @for (category of categoriesSearched; track category.id) {
+                <div class="container-category-searched" (click)="onClick(category)">
+                    <p> {{ category.name }} </p>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>

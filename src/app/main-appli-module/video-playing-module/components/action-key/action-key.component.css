@@ -1,0 +1,54 @@
+.container-action-key {
+    height: 40px;
+    position: absolute;
+    visibility: hidden;
+    padding-inline: 55px;
+
+    img {
+        height: 100%;
+        animation: appears 0.5s ease-in;
+    }
+}
+
+@keyframes appears {
+    0% {
+        opacity: 0;
+        visibility: visible;
+    }
+
+    10% {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    30% {
+        transform: scale(1.4);
+    }
+
+    80% {
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.center {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.right {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}

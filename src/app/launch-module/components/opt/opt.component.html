@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="container-form">
+        <img class="close" [src]="srcClose" (click)="onClose()">
+
+        <p class="title"> Code de Vérification </p>
+
+        <form [formGroup]="otpForm" class="otp-container" (paste)="onPaste($event)" (keydown.enter)="onValidateCode()">
+            @for(ctrl of controls; track ctrl; let i = $index) {
+            <input maxlength="1" type="text" class="otp-input" [formControlName]="ctrl" (input)="onInput($event, i)"
+                (keydown)="onKeyDown($event, i)" />
+            }
+        </form>
+
+        <div class="container-button">
+            <button (click)="onSendNewCode()"> Renvoyer à nouveau </button>
+            <button (click)="onValidateCode()"> Valider </button>
+        </div>
+
+    </div>
+</div>

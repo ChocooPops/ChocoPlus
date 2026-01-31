@@ -1,0 +1,110 @@
+.scrollWrapper {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding-top: 10px;
+}
+
+.scroll-bar-perso {
+    height: 4px;
+    background-color: #555;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.scroll-bar-wrapper {
+    position: relative;
+    height: 4px;
+    background-color: #222;
+    margin-bottom: 15px;
+}
+
+.scroll-bar-perso:hover {
+    background-color: #999;
+}
+
+.containerPosters {
+    display: flex;
+    gap: 30px;
+    white-space: nowrap;
+    position: relative;
+    transition: transform 0.1s;
+    z-index: 999;
+}
+
+.containerPoster {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.textExemple {
+    font-size: 15px;
+    text-align: center;
+    color: #585858;
+    font-weight: lighter;
+}
+
+.containerSelectPosters {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.containerSelectPoster {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.containerButtonAdd {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 436.5px;
+    width: auto;
+}
+
+.containerBtRemove {
+    height: 20px;
+    width: 20px;
+    padding: 10px;
+    position: absolute;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 0;
+    transition: 0.3s transform;
+    cursor: pointer;
+    animation: 0.2s enter ease-in;
+
+    img {
+        height: 100%;
+        width: 100%;
+    }
+
+    &:hover {
+        transform: scale(0.8);
+    }
+}
+
+@keyframes enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

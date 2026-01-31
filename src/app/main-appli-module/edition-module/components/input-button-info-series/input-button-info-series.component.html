@@ -1,0 +1,17 @@
+<div class="container">
+
+    <div class="button" (click)="onChangeTypeInfo(false)"
+        [ngClass]="{'button-on-focus' : !typeInfo, 'button-dont-focus' : typeInfo}">
+        <p> Information principale</p>
+    </div>
+
+    <div class="button" (click)="onChangeTypeInfo(true)"
+        [ngClass]="{'button-on-focus' : typeInfo, 'button-dont-focus' : !typeInfo}">
+        <p> Information sur les saisons </p>
+    </div>
+
+</div>
+
+<div class="separation-bar">
+
+</div>

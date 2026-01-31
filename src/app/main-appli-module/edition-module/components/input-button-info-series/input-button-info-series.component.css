@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 30px;
+}
+
+.button {
+    width: auto;
+    padding-inline: 35px;
+    padding-block: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: color 0.3s, background-color 0.3s;
+    border: 1px solid white;
+
+    &:hover {
+        background-color: white;
+        color: black;
+    }
+}
+
+.button-on-focus {
+    background-color: white;
+    color: black;
+}
+
+.button-dont-focus {
+    background-color: transparent;
+    color: white;
+}
+
+p {
+    margin: 0;
+    text-align: center;
+}
+
+.separation-bar {
+    margin-top: 30px;
+    width: 100%;
+    background-color: #343434;
+    height: 3px;
+    border-radius: 5px;
+}

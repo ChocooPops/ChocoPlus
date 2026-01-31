@@ -1,0 +1,42 @@
+<div class="container">
+
+    <div class="container-zone-concerned">
+        <div class="title">
+            <p> Poster des films & séries </p>
+        </div>
+        @for(param of radioButtonPosterFilm; track param.id) {
+        <div class="container-param">
+            <p class="title-param"> {{ param.name }} </p>
+            <app-input-radio-button [radioButton]="param.radioButton"
+                (changeEmit)="onChangePosterFilm(param.id, $event)"></app-input-radio-button>
+        </div>
+        }
+    </div>
+
+    <div class="container-zone-concerned">
+        <div class="title">
+            <p> Poster des licenses </p>
+        </div>
+        @for(param of radioButtonPosterLicense; track param.id) {
+        <div class="container-param">
+            <p class="title-param"> {{ param.name }} </p>
+            <app-input-radio-button [radioButton]="param.radioButton"
+                (changeEmit)="onChangePosterLicense(param.id, $event)"></app-input-radio-button>
+        </div>
+        }
+    </div>
+
+    <div class="container-zone-concerned">
+        <div class="title">
+            <p> Format des posters </p>
+        </div>
+        @for(param of radioButtonPosterFormat; track param.id) {
+        <div class="container-param">
+            <p class="title-param"> {{ param.name }} </p>
+            <app-input-radio-button [radioButton]="param.radioButton"
+                (changeEmit)="onChangePosterFormat(param.id, $event)"></app-input-radio-button>
+        </div>
+        }
+    </div>
+
+</div>

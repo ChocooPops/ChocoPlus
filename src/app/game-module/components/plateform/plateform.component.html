@@ -1,0 +1,9 @@
+<div class="container-element" [style.height.px]="plateform.height" [style.bottom.px]="plateform.y"
+    [style.left.px]="plateform.x">
+    <div #scrollContent class="scroll-content">
+        @for(item of tabIteration; track item) {
+        <img (load)="onImageLoad()" #imgComponent [src]="plateform.image" [style.height.px]="plateform.height"
+            [style.width.px]="plateform.width">
+        }
+    </div>
+</div>

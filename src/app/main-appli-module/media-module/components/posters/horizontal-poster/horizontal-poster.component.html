@@ -1,0 +1,44 @@
+<div class="container-horizontal-poster" [style.transform]="transformStyle" [style.z-index]="zIndex"
+    [style.height.vw]="dimension.height" [style.width.vw]="dimension.width" (mouseleave)="onMouseLeave()"
+    [ngClass]="{'container-horizontal-poster-pressed' : isHover, 'animationPosterAndLicense' : true}">
+    <div class="container-main-poster" (mouseenter)="onMouseEnter()" (click)="selectedMovieActivate(media)"
+        [ngClass]="{'border-if-src-poster-is-undefined' : srcPoster === undefined}">
+        @if(srcPoster != undefined) {
+        <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()">
+        }
+        <div class="container-logo">
+            @if(srcLogo != undefined) {
+            <img [src]="srcLogo" (error)="onErrorLogo()">
+            }@else {
+            <p> {{ media.title }}</p>
+            }
+        </div>
+    </div>
+    <div class="container-interface-poster">
+        <div class="container-button-interface">
+            <div class="container-button">
+                <app-start-button [typeButton]="true" [media]="media"></app-start-button>
+                <app-mylist-button [typeDisplaying]="true" [media]="media"
+                    [isInList]="media.isInList"></app-mylist-button>
+                <app-modify-button [typeDisplaying]="true" [idMedia]="media.id"
+                    [mediaType]="media.mediaType"></app-modify-button>
+            </div>
+            @if(media.mediaType === MediaType.MOVIE) {
+            <p class="duration">{{ duration }}</p>
+            <div class="container-quality">
+                <p class="quality" [ngClass]="'text'">{{quality}}</p>
+            </div>
+            } @else if(media.mediaType === MediaType.SERIES) {
+            <p class="duration"> {{ nbSeason }} </p>
+            <div class="container-quality">
+                <p class="quality" [ngClass]="'text'"> Series </p>
+            </div>
+            }
+        </div>
+        <div class="container-keywords">
+            @for(key of keyWord; track key) {
+            <p class="text">• {{key | titlecase }}</p>
+            }
+        </div>
+    </div>
+</div>

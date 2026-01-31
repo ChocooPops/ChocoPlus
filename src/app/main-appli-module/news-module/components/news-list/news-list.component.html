@@ -1,0 +1,29 @@
+<div class="container" [style.aspect-ratio]="aspectRatio">
+    <div class="container-news-list" [style.height.vw]="dimension.height">
+
+        <app-scroll-button [direction]="true" [displayScrollButton]="displayScrollLeft" (hasBeenClicked)="clickLeft()"
+            [height]="dimension.height" [width]="marginLeft"></app-scroll-button>
+        <app-scroll-button [direction]="false" [displayScrollButton]="displayScrollRight"
+            (hasBeenClicked)="clickRight()" [height]="dimension.height" [width]="marginLeft"></app-scroll-button>
+
+        <div class="news-list" [style.gap.vw]="gap" [style.margin-left.vw]="marginLeft"
+            [ngClass]="{'activateTransition' : activateTransition, 'disableTransition' : !activateTransition}"
+            [style.left.px]="offsetX">
+            @if(newsList) {
+            @for(news of newsShowed; track news.id) {
+            <app-news [news]="news" [orientation]="news.orientation"></app-news>
+            }
+            }@else {
+            <app-news-loading [dimension]="dimension"></app-news-loading>
+            }
+        </div>
+
+        <div class="container-paginations" [style.right]="leftPagination">
+            @for(page of paginations; track page.id) {
+            <div class="numPagination"
+                [ngClass]="{'backgroundWhite' : page.isDisplayed, 'backgroundGrey' : !page.isDisplayed}"></div>
+            }
+        </div>
+
+    </div>
+</div>

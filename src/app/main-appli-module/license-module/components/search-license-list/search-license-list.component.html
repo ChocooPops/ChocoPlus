@@ -1,0 +1,14 @@
+<p class="parcourir" [style.margin-left.vw]="marginLeft">Parcourir</p>
+<div class="container-list-license" [style.gap.vw]="gap" [style.padding-left.vw]="marginLeft">
+    @if(licenseSearchList) {
+    @for(licenseSearch of licenseSearchList; track licenseSearch.id) {
+    <app-search-license [licenseSearch]="licenseSearch"></app-search-license>
+    }
+    }@else {
+    @for(licenseLoading of licenseLoadingList; track licenseLoading) {
+    <app-search-license-loading [dimension]="dimension"></app-search-license-loading>
+    }
+    }
+</div>
+
+<div [style.margin-bottom.vw]="marginBottom"></div>

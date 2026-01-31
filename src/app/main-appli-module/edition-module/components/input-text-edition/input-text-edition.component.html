@@ -1,0 +1,5 @@
+<form [formGroup]="formGroup">
+    <input #inputRef (focus)="focusIsEnabled()" (blur)="focusIsDisabled()"
+        [ngClass]="{'inputText_1' : type === 1, 'inputText_2' : type === 2, 'inputText_3' : type === 3}"
+        [placeholder]="placeHolder" type="text" formControlName="inputValue" />
+</form>

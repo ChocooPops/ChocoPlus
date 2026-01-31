@@ -1,0 +1,53 @@
+<div class="container" [ngClass]="back">
+
+    <div class="container-menu">
+        <div class="container-detail-type" (click)="displayInfoUser()"
+            [ngClass]="{'detail-false' : detailType, 'detail-true' : !detailType, 'info' : true}">
+            <p> Info </p>
+        </div>
+        <div class="container-detail-type" (click)="displayStats()"
+            [ngClass]="{'detail-false' : !detailType, 'detail-true' : detailType, 'stats' : true}">
+            <p> Stats </p>
+        </div>
+    </div>
+
+    <div class="container-detail">
+        @if(detailType) {
+        <div class="container-detail">
+            <app-user-historic></app-user-historic>
+        </div>
+        }@else {
+        <div class="container-info">
+            <div class="container-pp">
+                <img [src]="user.profilPhoto">
+                <div class="container-pp-tmp"></div>
+            </div>
+
+            <form [formGroup]="formGroup">
+                <div class="container-inputs">
+                    <div class="container-input">
+                        <label>Prénom : </label>
+                        <input placeholder="Prénom" [formControlName]="formControlFirstName">
+                    </div>
+                    <div class="container-input">
+                        <label>Nom : </label>
+                        <input placeholder="Nom" [formControlName]="formControlLastName">
+                    </div>
+                </div>
+
+                <div class="container-inputs">
+                    <div class="container-input">
+                        <label>Pseudo : </label>
+                        <input placeholder="Pseudo" [formControlName]="formControlPseudo">
+                    </div>
+                    <div class="container-input">
+                        <label>Date de naissance : </label>
+                        <input type="date" [formControlName]="formControlDateBorn">
+                    </div>
+                </div>
+            </form>
+        </div>
+        }
+    </div>
+
+</div>

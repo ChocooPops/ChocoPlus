@@ -1,0 +1,29 @@
+<div class="container" (click)="onClick()">
+    @if(!typeButton) {
+    <div [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}"
+        (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        @if(isInList) {
+        @if(isHover) {
+        <img [src]="srcInListEnter">
+        }@else {
+        <img [src]="srcInListLeave">
+        }
+        }@else {
+        @if(isHover) {
+        <img [src]="srcNotListEnter">
+        }@else {
+        <img [src]="srcNotListLeave">
+        }
+        }
+    </div>
+    }@else {
+    <div class="largestContainerButtonGrey">
+        @if(isInList) {
+        <img [src]="favoris">
+        }@else {
+        <img [src]="notFavoris">
+        }
+        <p>Favoris</p>
+    </div>
+    }
+</div>

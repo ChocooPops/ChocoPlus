@@ -1,0 +1,37 @@
+<div class="container-series" (click)="onClickContainer($event)" (mouseenter)="onMouseEnter()"
+    (mouseleave)="onMouseLeaving()">
+
+    <div class="container-overview"
+        [ngClass]="{'display-seasons-choice' : isHovering, 'hidden-seasons-choice': !isHovering}">
+        <div class="container-seasons">
+            <div class="container-seasons-option">
+                <img [src]="srcArrow" class="arrow">
+                <div class="container-season-selected" (click)="onClickDisplay()" #select>
+                    <p> {{ series.seasons[currentIndexSeasons].name}} </p>
+                </div>
+                @if (displaySelect) {
+                <div class="black"></div>
+                <div class="container-option">
+                    @for (season of series.seasons; track season.id; let idx = $index) {
+                    <div class="option" (click)="onClickSeason(idx)">
+                        <p> {{season.name }} </p>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            <div class="container-episodes">
+                @if(episodes) {
+                <app-episode-poster class="animation" [episodes]="episodes" [series]="series"
+                    [notRunning]="false"></app-episode-poster>
+                }@else {
+                <app-episode-poster-loading [notRunning]="false"></app-episode-poster-loading>
+                }
+                <div class="height-tmp"></div>
+            </div>
+        </div>
+    </div>
+
+    <app-bt-classic class="app-bt-classic" (hasBeenClicked)="onClick()" [srcFirstImage]="srcImage"
+        [srcSecondImage]="srcImage" [state]="state"></app-bt-classic>
+</div>

@@ -1,0 +1,28 @@
+<app-popup (emitActionData)="emitModifyLicenseOrder()"></app-popup>
+
+<div class="containerSettingSelected">
+
+    <div class="containerFieldToFill">
+        <p> Sélectionnez le type de license à modifier : </p>
+        <app-input-radio-button (changeEmit)="modifyLicenseType($event)" [radioButton]="radioButton"
+            [group]="groupLicenseType"></app-input-radio-button>
+    </div>
+
+    <div class="containerFieldToFill">
+        @if(licenseType != undefined) {
+        <app-license-overview [licenses]="licenses" [type]="licenseType" (emitActionUp)="moveTop($event)"
+            (emitActionDown)="moveBottom($event)" (emitActionLeft)="moveLeft($event)"
+            (emitActionRight)="moveRight($event)"></app-license-overview>
+        }
+    </div>
+
+    <div class="containerFieldToFill">
+        @if(licenseType != undefined) {
+        <div class="containerLastButton">
+            <app-button-remove (clickEmit)="onClickReset()"></app-button-remove>
+            <app-button-save (clickEmit)="onClickModify()"></app-button-save>
+        </div>
+        }
+    </div>
+
+</div>

@@ -1,0 +1,33 @@
+<div #scrollContainer class="container-movie-page" (click)="onClickBackground()"
+    [ngClass]="{'backgroundDesable' : isHidden}">
+    @if(media != undefined) {
+    <div class="container-movie-informations" (click)="onClickInformations($event)"
+        [ngClass]="{'animationWhenDisappears' : isHidden, 'animationWhenAppears' : !isHidden}">
+        <div class="container-illustration-movie" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()">
+            <app-media-background [media]="media" (newEmitLoader)="loadingDisplaying()"></app-media-background>
+            <div class="container-all-button">
+                <div class="container-groupe-button">
+                    <app-start-button [media]="media"></app-start-button>
+                </div>
+                <div class="container-groupe-button-other">
+                    <app-mylist-button [media]="media" [isInList]="media.isInList"></app-mylist-button>
+                    <app-modify-button [idMedia]="media.id" [mediaType]="media.mediaType"></app-modify-button>
+                </div>
+            </div>
+            <div class="containCrossButton"
+                [ngClass]="{'crossButtonDisappears' : !isHover, 'crossButtonAppears' : isHover}">
+                <app-cross-button (click)="deleteMoviePage()"></app-cross-button>
+            </div>
+        </div>
+
+        @if(media.mediaType === MediaType.MOVIE) {
+        <app-movie-page [movie]="transformMediaIntoMovie()" [displaying]="displaying"
+            (posterLoading)="onLoadPoster()"></app-movie-page>
+        } @else if (media.mediaType === MediaType.SERIES) {
+        <app-series-page [series]="transformMediaIntoSeries()"></app-series-page>
+        }
+
+    </div>
+
+    }
+</div>

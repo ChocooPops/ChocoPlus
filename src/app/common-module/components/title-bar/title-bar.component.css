@@ -1,0 +1,43 @@
+.container-title-bar {
+    height: 30px;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    z-index: 999999999;
+    margin: 0;
+    padding: 0;
+}
+
+.container-drag-region {
+    height: 30px;
+    flex: 1;
+    -webkit-app-region: drag;
+}
+
+.container-option {
+    height: 35px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.container-button {
+    height: 100%;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s background-color;
+
+    img {
+        image-rendering: crisp-edges;
+    }
+
+    &:hover {
+        background-color: #1b1b1b;
+    }
+}
+
+.cross:hover {
+    background-color: #D0011B;
+}

@@ -1,0 +1,180 @@
+.title {
+    color: #585858;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+}
+
+.containerAllSelection {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.containerSelectionOverview {
+    width: calc(96% + 2.6vw);
+    border: solid 2px #343434;
+    border-radius: 5px;
+    position: relative;
+    overflow-x: auto;
+    transition: 0.5s height;
+    max-height: 40vw;
+    min-height: 40px;
+
+    p {
+        margin: 0;
+    }
+}
+
+.containerSelectionOverview::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+}
+
+.enable-scroll {
+    overflow-y: scroll;
+}
+
+.disable-scroll {
+    overflow-y: hidden;
+}
+
+.containerAllMovieSelection {
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.67);
+    transform-origin: top left;
+}
+
+.margin-tmp {
+    margin-left: 2.5vw;
+    visibility: hidden;
+}
+
+.containerSelectionName {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 0.9vw;
+    gap: 15px;
+}
+
+.movieList {
+    height: auto;
+    width: auto;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.containerButton {
+    padding: 10px;
+    position: absolute;
+    border-radius: 5px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    z-index: 9999;
+    gap: 10px;
+    display: none;
+}
+
+.containerCover {
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: 9998;
+    position: absolute;
+    transition: 0.4s background-color;
+    cursor: pointer;
+}
+
+.movie {
+    height: auto;
+    width: auto;
+    position: relative;
+
+    &:hover {
+
+        .containerCover {
+            background-color: rgba(0, 0, 0, 0.233);
+        }
+
+        .containerButton {
+            display: flex;
+        }
+    }
+}
+
+.containerButtonForMovieSelection {
+    height: 30px;
+    display: none;
+    gap: 10px;
+    transition: 0.3s height;
+    align-items: center;
+    z-index: 99999;
+}
+
+.containerMovieSelection {
+    height: auto;
+    width: auto;
+
+    &:hover {
+        .containerButtonForMovieSelection {
+            display: flex;
+        }
+    }
+}
+
+@media (min-width: 1400px) {
+    .containerSelectionName {
+        font-size: 1.5vw;
+    }
+
+    .containerAllMovieSelection {
+        padding: 1.6vw;
+    }
+
+}
+
+/* Quand écran < 1400px */
+@media (max-width: 1400px) {
+    .containerSelectionName {
+        font-size: 2.2vw;
+    }
+
+    .containerAllMovieSelection {
+        padding: 2.2vw;
+    }
+}
+
+/* Quand écran < 1100px */
+@media (max-width: 1100px) {
+    .containerSelectionName {
+        font-size: 3vw;
+    }
+
+    .containerAllMovieSelection {
+        padding: 2.6vw;
+    }
+
+}
+
+/* Quand écran < 700px */
+@media (max-width: 700px) {
+    .containerSelectionName {
+        font-size: 3.8vw;
+    }
+
+    .containerAllMovieSelection {
+        padding: 3.2vw;
+    }
+
+}

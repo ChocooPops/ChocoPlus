@@ -1,0 +1,21 @@
+<div class="containerInputImage">
+    <div [ngClass]="[
+    srcImageAdded !== null && srcImageAdded !== undefined ? 'inputImageWhenImageAdded' : '',
+    classInputActual, isDragging ? 'isDragging' : ''
+  ]" class="inputImage" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()">
+        @if(srcImageAdded == undefined) {
+        <p class="textExemple">Insérer une image <br> {{exText}}</p>
+        <img class="insertPicture" [src]="srcImageInput" (error)="onErrorImage()">
+        }@else {
+        <img class="imageAdded" [src]="srcImageAdded" (error)="onErrorImage()">
+        }
+
+        @if(displayRemoveButton) {
+        @if(srcImageAdded != undefined && srcImageAdded != null) {
+        <div class="containerBtRemove" (click)="onClickRemove()">
+            <img [src]="srcBtDelete">
+        </div>
+        }
+        }
+    </div>
+</div>

@@ -1,0 +1,52 @@
+.container {
+    display: flex;
+    gap: 20px;
+    cursor: pointer;
+    padding: 30px;
+    background-color: transparent;
+    transition: 0.3s background-color;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: hsla(0, 0%, 20%, 0.25);
+    }
+}
+
+.container-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+.container-simple {
+    display: flex;
+    gap: 20px;
+}
+
+.container-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.container-episode-number {
+    height: 40px;
+    width: 40px;
+    position: relative;
+    font-size: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-button-direction {
+    height: auto;
+    width: auto;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}

@@ -1,0 +1,14 @@
+<div class="container-news" [style.width.vw]="dimension.width" [style.height.vw]="dimension.height"
+    (click)="onClickNews()" [ngClass]="'animationPosterAndLicense'">
+    <div class="container-back" [ngClass]="orientationClass">
+        <img [src]="srcBackground" (error)="onErrorBack()">
+    </div>
+
+    <div class="container-logo">
+        @if(srcLogo) {
+        <img [src]="srcLogo" (error)="onErrorLogo()">
+        }@else {
+        <p class="title"> {{ news.media.title }} </p>
+        }
+    </div>
+</div>

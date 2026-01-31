@@ -1,0 +1,7 @@
+<div class="MovieButtonSizeIfDisplayTypeIsTrue" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+    @if(isHover) {
+    <img [src]="srcImageEnter">
+    }@else {
+    <img [src]="srcImageLeave">
+    }
+</div>

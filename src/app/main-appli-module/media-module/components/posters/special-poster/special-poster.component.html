@@ -1,0 +1,12 @@
+<div [style.height.vw]="dimension.height" [style.transform]="transformStyle" [style.width.vw]="dimension.width" #poster
+    class="containerPosterHover" (click)="selectedMovieActivate(media)"
+    [ngClass]="{ 'containerSpecialPosterPressed': isHover }" [style.z-index]="zIndex" (mouseleave)="onMouseLeave()"
+    (mouseenter)="onMouseEnter()">
+    <div class="containerPoster">
+        @if(srcPoster != undefined) {
+        <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()">
+        } @else {
+        <p class="titleMovie"> {{media.title}}</p>
+        }
+    </div>
+</div>

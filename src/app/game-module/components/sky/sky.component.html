@@ -1,0 +1,7 @@
+<div class="container-element" [style.height.px]="sprite.height" [style.top.px]="sprite.y" [style.left.px]="sprite.x">
+    <div #scrollContent class="scroll-content">
+        @for(item of tabIteration; track item) {
+        <img #imgComponent [src]="sprite.image" [style.height.px]="sprite.height">
+        }
+    </div>
+</div>

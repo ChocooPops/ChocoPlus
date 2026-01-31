@@ -1,0 +1,47 @@
+<div class="container">
+    <p class="title">Exemple de l’aperçu final</p>
+    <div class="container-news-overview" [style.height.vw]="height">
+        <div class="news-overview" [style.gap.vw]="gap">
+            @for (news of newsList; track news) {
+            <div class="news">
+                <app-news [news]="news" [orientation]="news.orientation"
+                    [srcBackground]="news.srcBackground"></app-news>
+                <div class="container-vertical-button">
+                    <app-button-orientation [type]="1"
+                        (hasBeenClick)="onModifyOrientationNews(news.id, $event)"></app-button-orientation>
+                    <app-button-orientation [type]="3"
+                        (hasBeenClick)="onModifyOrientationNews(news.id, $event)"></app-button-orientation>
+                    <app-button-orientation [type]="2"
+                        (hasBeenClick)="onModifyOrientationNews(news.id, $event)"></app-button-orientation>
+                </div>
+                <div class="container-horizontal-button">
+                    <app-button-delete [displayPicture]="true" (click)="onDeleteNews(news.id)"></app-button-delete>
+                    <app-button-move [direction]="2" (click)="onMoveTop(news.id)"></app-button-move>
+                    <app-button-move [direction]="1" (click)="onMoveBottom(news.id)"></app-button-move>
+                </div>
+                <div class="container-cover"></div>
+
+                <div class="container-other-background">
+                    @if(news.media.srcBackgroundImage) {
+                    <div class="other-back" (click)="onModifySrcBackgroundNews(news.id, news.media.srcBackgroundImage)"
+                        [ngClass]="{'already-choosen' : news.media.srcBackgroundImage === news.srcBackground, 'not-choosen' : news.media.srcBackgroundImage !== news.srcBackground}">
+                        <img [src]="news.media.srcBackgroundImage">
+                    </div>
+                    }
+                    @for (poster of news.media.srcPosterHorizontal; track poster) {
+                    @if(poster !== news.media.srcBackgroundImage) {
+                    <div class="other-back" (click)="onModifySrcBackgroundNews(news.id, poster)"
+                        [ngClass]="{'already-choosen' : poster === news.srcBackground, 'not-choosen' : poster !== news.srcBackground}">
+                        <img [src]="poster">
+                    </div>
+                    }
+                    }
+                </div>
+            </div>
+            }
+            <div class="space">
+                p
+            </div>
+        </div>
+    </div>
+</div>

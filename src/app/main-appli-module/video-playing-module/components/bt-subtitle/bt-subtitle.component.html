@@ -1,0 +1,30 @@
+<div class="container-subtitle" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeaving()">
+
+    <div class="container-overview"
+        [ngClass]="{'display-seasons-choice' : isHovering, 'hidden-seasons-choice': !isHovering}">
+        <div class="container-info">
+            <div class="container-audios-subtitles">
+                <p class="container-title "> Audio</p>
+                @for (audio of audios; track audio; let idx = $index) {
+                <p class="container-index" [ngClass]="{'current' : audio.index === currentAudio}"
+                    (click)="onChangeAudio(audio.index)"> {{ audio.name | titlecase }} </p>
+                }
+            </div>
+            <div class="container-sepration"></div>
+            <div class="container-audios-subtitles">
+                <p class="container-title"> Sous-titres </p>
+                <p class="container-index" [ngClass]="{'current' : currentSubtitle <= -1}"
+                    (click)="onChangeSubtitle(-1)"> Désactiver
+                </p>
+                @for (subtitle of subtitles; track subtitle) {
+                <p class="container-index" [ngClass]="{'current' : subtitle.index === currentSubtitle}"
+                    (click)="onChangeSubtitle(subtitle.index)"> {{ subtitle.name | titlecase }}
+                </p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <app-bt-classic class="app-bt-classic" (hasBeenClicked)="onClick()" [srcFirstImage]="srcImageSubtitles"
+        [srcSecondImage]="srcImageSubtitles" [state]="state"></app-bt-classic>
+</div>

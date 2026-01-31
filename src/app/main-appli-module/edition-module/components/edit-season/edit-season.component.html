@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="containerFieldToFill">
+        <p>Poster <span class="yellow">*</span></p>
+        <app-input-image-edition [srcImageAdded]="season.srcPoster" (inputChange)="onFillPoster($event)"
+            [exText]="'ex : Affiche de la saison 1 de Breaking Bad'"></app-input-image-edition>
+    </div>
+    <div class="containerSettingSelected" style="position: relative;">
+        <div class="containerFieldToFill">
+            <p>Nom de la série <span class="yellow">*</span></p>
+            <app-input-text-edition [text]="season.name" (onInputChange)="onChangeTitle($event)"
+                [placeHolder]="'ex : Saison 1'"></app-input-text-edition>
+        </div>
+        <div class="containerFieldToFill">
+            <p>Jellyfin Id <span class="yellow">*</span></p>
+            <app-input-text-edition [text]="season.jellyfinId" (onInputChange)="onChangeJellyFinId($event)"
+                [placeHolder]="'ex : 817f577ac9be33579e0ec50ede240e43'"></app-input-text-edition>
+        </div>
+    </div>
+</div>

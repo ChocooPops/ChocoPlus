@@ -1,0 +1,23 @@
+@if(selections) {
+@for(selection of selections; track selection.id) {
+@if(selection.typeSelection === SelectionType.NORMAL_POSTER) {
+@if(format === FormatPoster.VERTICAL) {
+<app-vertical-selection [selection]="selection"></app-vertical-selection>
+}@else {
+<app-horizontal-selection [selection]="selection"></app-horizontal-selection>
+}
+}@else if (selection.typeSelection === SelectionType.SPECIAL_POSTER) {
+<app-special-selection [selection]="selection"></app-special-selection>
+}@else if (selection.typeSelection === SelectionType.LICENSE_POSTER) {
+<app-license-selection [selection]="selection"></app-license-selection>
+}
+}
+}@else {
+@if(licenseLoading) {
+<app-selection-loading [format]="format" [type]="SelectionType.LICENSE_POSTER"></app-selection-loading>
+}
+@for(selection of selectionsLoading; track selection.id) {
+<app-selection-loading [format]="format" [type]="selection.value"></app-selection-loading>
+}
+}
+<div [style.height.vw]="marginBottom"></div>

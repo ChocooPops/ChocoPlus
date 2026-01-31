@@ -1,0 +1,28 @@
+<div class="container">
+    <p class="title">Exemple de l’aperçu final</p>
+    <div class="container-license-overview" [style.height.vw]="height">
+        <div class="license-overview" [style.height.vw]="height" [style.grid-template-columns]="getGridTemplate()"
+            [style.gap.vw]="gap">
+            @for (license of licenses; track license.id) {
+            <div class="container-license">
+                @if(type) {
+                <app-home-license [licenceHome]="license"></app-home-license>
+                }@else {
+                <app-search-license [licenseSearch]="license"></app-search-license>
+                }
+                <div class="container-cover"></div>
+                <div class="container-button" [ngClass]="{'animationPosterAndLicense' : true}">
+                    <app-button-move class="box-top" [direction]="1"
+                        (click)="changeLocationToTop(license.id)"></app-button-move>
+                    <app-button-move class="box-bottom" [direction]="2"
+                        (click)="changeLocationToBottom(license.id)"></app-button-move>
+                    <app-button-move class="box-left" [direction]="4"
+                        (click)="changeLocationToLeft(license.id)"></app-button-move>
+                    <app-button-move class="box-right" [direction]="3"
+                        (click)="changeLocationToRight(license.id)"></app-button-move>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+.container-score {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+p {
+    margin-top: 10px;
+    margin-right: 20px;
+    font-size: 90px;
+    color: #FFDE36;
+    font-family: "wendy";
+}

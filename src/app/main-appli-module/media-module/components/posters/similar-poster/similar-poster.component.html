@@ -1,0 +1,40 @@
+<div class="container-horizontal-poster">
+    <div class="container-main-poster" (click)="onClickMovie()">
+        @if(srcPoster != undefined) {
+        <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()" class="img-poster">
+        }
+        <div class="container-logo">
+            @if(srcLogo != undefined) {
+            <img [src]="srcLogo" (error)="onErrorLogo()" class="img-logo">
+            }@else {
+            <p> {{ media.title }}</p>
+            }
+        </div>
+        <div class="container-button">
+            <div class="align-button" (click)="onClickButton($event)">
+                <app-start-button [typeButton]="true" [typeDisplaying]="true" [media]="media"></app-start-button>
+                <app-mylist-button [typeDisplaying]="false" [media]="media"
+                    [isInList]="media.isInList"></app-mylist-button>
+            </div>
+        </div>
+    </div>
+    <div class="container-info-movie">
+        <div class="container-first-line">
+            <div class="container-left">
+                @if(media.mediaType === MediaType.MOVIE) {
+                @if(date) {
+                <p> {{ date | date:'yyyy' }} </p>
+                }
+                <p> {{ duration }} </p>
+                <p class="quality"> {{ quality}} </p>
+                }@else if (media.mediaType === MediaType.SERIES) {
+                <p> {{ nbSeason }} </p>
+                <p class="quality"> Series </p>
+                }
+            </div>
+        </div>
+        <div class="container-description">
+            <p> {{ description }} </p>
+        </div>
+    </div>
+</div>

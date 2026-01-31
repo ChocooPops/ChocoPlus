@@ -1,0 +1,13 @@
+<div class="container-actions" [ngClass]="back">
+    <p> {{ user.lastName | uppercase }} {{ user.firstName | titlecase }} </p>
+    <div class="space"></div>
+    @for(action of actionUser; track action.id) {
+    <div class="container-action" (click)="onClickAction(action.value)"
+        [ngClass]="{'back-yellow' : action.value === RoleModel.ADMIN, 'back-green' :  action.value === RoleModel.USER, 'back-blue' :  action.value === RoleModel.FAMILY, 'back-red' :  action.value === RoleModel.SUSPENDED, 'back-grey' :  action.value === RoleModel.NOT_ACTIVATE}">
+        <div class="point"
+            [ngClass]="{'point-yellow' :  action.value === RoleModel.ADMIN, 'point-green' :  action.value === RoleModel.USER, 'point-blue' :  action.value === RoleModel.FAMILY, 'point-red' :  action.value === RoleModel.SUSPENDED, 'point-grey' :  action.value === RoleModel.NOT_ACTIVATE}">
+        </div>
+        <p> {{ action.name }} </p>
+    </div>
+    }
+</div>

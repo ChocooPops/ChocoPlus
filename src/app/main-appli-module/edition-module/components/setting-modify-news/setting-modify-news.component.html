@@ -1,0 +1,33 @@
+<app-popup (emitActionData)="onFetchModifyNews()"></app-popup>
+
+<div class="containerSettingSelected">
+    <div class="containerFieldToFill">
+        <p> Ajouter un film comme news <span>*</span></p>
+        <app-input-research-movie (addContentResearched)="onAddMediaIntoNews($event)"></app-input-research-movie>
+    </div>
+    <div class="containerFieldToFill">
+        <p> Ajouter une série comme news <span>*</span></p>
+        <app-input-research-series (addContentResearched)="onAddMediaIntoNews($event)"></app-input-research-series>
+    </div>
+
+    <div class="containerFieldToFill">
+        @if(newsList) {
+        <app-news-overview [newsList]="newsList" (emitDeleteNews)="onDeleteMediaIntoNews($event)"
+            (emitOrientationNews)="onModifyOrientationByNewsId($event)" (emitTop)="onMoveNewsToTop($event)"
+            (emitBottom)="onMoveNewsTopBottom($event)"
+            (emitSrcBackground)="onModifyBackgroundbyId($event)"></app-news-overview>
+        }@else if (displayLoader) {
+        <div class="container-laoder-content">
+            <div class="little-spinner"></div>
+        </div>
+        }
+    </div>
+
+    <div class="containerFieldToFill">
+        <div class="containerLastButton">
+            <app-button-remove [type]="false" (clickEmit)="resetEditNews()"></app-button-remove>
+            <app-button-save (clickEmit)="saveNews()"></app-button-save>
+        </div>
+    </div>
+
+</div>

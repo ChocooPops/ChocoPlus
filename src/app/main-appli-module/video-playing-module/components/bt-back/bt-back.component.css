@@ -1,0 +1,8 @@
+.containerBackArrow {
+    position: absolute;
+    height: 40px;
+    left: 0;
+    top: 0;
+    padding: 30px;
+    z-index: 99;
+}

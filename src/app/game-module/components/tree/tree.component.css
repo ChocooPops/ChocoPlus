@@ -1,0 +1,49 @@
+.container-yellow {
+    display: flex;
+    gap: 35px;
+    position: absolute;
+    height: 400px;
+    bottom: 50px;
+
+    img {
+        max-height: 100%;
+    }
+}
+
+.container-blue {
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    height: 400px;
+    bottom: 50px;
+    left: 60px;
+
+    img {
+        max-height: 100%;
+    }
+}
+
+
+.animated-gif {
+    animation: tomber 3.8s linear infinite;
+}
+
+@keyframes tomber {
+    0% {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    60% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(300px);
+        opacity: 0;
+    }
+}

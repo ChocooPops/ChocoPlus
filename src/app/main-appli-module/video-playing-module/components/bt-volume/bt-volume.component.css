@@ -1,0 +1,70 @@
+.container-sound {
+    position: relative;
+    z-index: 999999;
+}
+
+.container-overview {
+    position: absolute;
+    height: 235px;
+    width: 75px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    visibility: hidden;
+}
+
+.container-modif-sound {
+    cursor: pointer;
+    position: absolute;
+    height: 180px;
+    width: 20px;
+    background-color: #343434;
+    border-radius: 2px;
+    bottom: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-volume-total {
+    height: 150px;
+    width: 4px;
+    background-color: #828282;
+    display: flex;
+    justify-content: end;
+    position: relative;
+}
+
+.progress-volume {
+    width: 100%;
+    background-color: #FFD301;
+    position: absolute;
+    bottom: 0;
+}
+
+.hidden-progress-volume {
+    visibility: hidden;
+}
+
+.display-progress-volume {
+    visibility: visible;
+}
+
+.pointer-volume {
+    background-color: #FFD301;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: -5px;
+    transform: translateX(-50%);
+}
+
+.app-bt-classic {
+    position: relative;
+    z-index: 20;
+}

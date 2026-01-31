@@ -1,0 +1,8 @@
+<div [style.height.vw]="dimension.height" [style.width.vw]="dimension.width" class="container-license-home"
+    (click)="onClick()" (mouseenter)="onMouseEnter()" [style.z-index]="zIndex" [ngClass]="'animationPosterAndLicense'">
+    @if(srcIcon !== undefined) {
+    <img [src]="srcIcon" loading="lazy" [alt]="licenceHome.name" (error)="onErrorImage()">
+    }@else {
+    <p class="title-license-home"> {{licenceHome.name}}</p>
+    }
+</div>

@@ -1,0 +1,11 @@
+<button class="containerButtonDelete" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+    @if(!displayPicture) {
+    <div class="buttonDelete"></div>
+    }@else {
+    @if(isHover) {
+    <img [src]="srcImagePressed">
+    }@else {
+    <img [src]="srcImage">
+    }
+    }
+</button>

@@ -1,0 +1,23 @@
+<div class="containerMovieBackground">
+    <div class="containerLogo" [ngClass]="{'container-animation-gradient-normal' : !displaying, 'test' : !displaying}">
+        @if(srcLogo != undefined) {
+        <img [src]="srcLogo" loading="lazy" (error)="onErrorImageLogo()" (load)="onBackgroundLoad()"
+            [ngClass]="{'hidden' : !displaying}">
+        } @else {
+        <div class="containerTitle">
+            <p class="title"> {{title}}</p>
+        </div>
+        }
+    </div>
+    <div class="containerBackground" [ngClass]="{'container-animation-gradient-little' : !displaying}">
+        @if(srcBackground != undefined) {
+        <div class="secondContainerBackground">
+            <img [src]="srcBackground" loading="lazy" (error)="onErrorImageBackground()" (load)="onLogoLoad()"
+                [ngClass]="{'hidden' : !displaying}">
+        </div>
+        }@else {
+        <div class="borderBackground">
+        </div>
+        }
+    </div>
+</div>

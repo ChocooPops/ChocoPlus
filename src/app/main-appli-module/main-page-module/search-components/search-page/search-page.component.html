@@ -1,0 +1,19 @@
+<div class="container-research-page">
+    @if(mediaSelected != undefined) {
+    <app-media-page></app-media-page>
+    }
+    <app-menu-tmp></app-menu-tmp>
+    <form [formGroup]="formGroup" class="inputRecherche">
+        <div class="container-image-research">
+            <img [src]="srcImageResearch">
+        </div>
+        <input type="text" formControlName="inputValue" placeholder="Rechercher un film, une série ..." />
+    </form>
+
+    @if(!displayMediaWanted) {
+    <app-search-license-list></app-search-license-list>
+    }@else {
+
+    <app-grid-list [title]="title" [mediaList]="mediaWanted" [format]="format"></app-grid-list>
+    }
+</div>

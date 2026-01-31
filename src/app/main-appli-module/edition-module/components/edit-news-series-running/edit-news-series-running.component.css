@@ -1,0 +1,96 @@
+.container-series {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 600px;
+    position: absolute;
+}
+
+.container-seasons {
+    display: flex;
+    gap: 10px;
+    overflow-y: hidden;
+    overflow-y: auto;
+    padding-bottom: 5px;
+}
+
+.container-seasons::-webkit-scrollbar {
+    height: 2px;
+    width: 2px;
+}
+
+p {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.container-season-name {
+    width: auto;
+    font-size: 16px;
+    padding-inline: 35px;
+    padding-block: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: color 0.3s, background-color 0.3s;
+    border: 1px solid white;
+
+    &:hover {
+        background-color: white;
+        color: black;
+    }
+}
+
+.container-episodes {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    height: 385px;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    img {
+        width: 200px;
+        aspect-ratio: 1920 / 1080;
+        border-radius: 5px;
+        box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+        transition: opacity 0.3s;
+        box-sizing: border-box;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+.current-episode {
+    border: 2px solid white;
+}
+
+.container-episodes::-webkit-scrollbar {
+    height: 2px;
+    width: 2px;
+}
+
+.container-episode-on-edit-video-running {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.title-episode {
+    font-size: 16px;
+}
+
+.button-on-focus {
+    background-color: white;
+    color: black;
+}
+
+.button-dont-focus {
+    background-color: transparent;
+    color: white;
+}

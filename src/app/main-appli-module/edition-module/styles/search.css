@@ -1,0 +1,109 @@
+input {
+    width: 800px;
+    height: 45px;
+    border: transparent;
+    font-size: 20px;
+    padding-left: 75px;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    background-color: transparent;
+    box-sizing: border-box;
+}
+
+.containerResearchInput {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    position: relative;
+}
+
+.container-image-research {
+    height: 22px;
+    width: 22px;
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    img {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.containerInputResearch {
+    margin: 0;
+    border: 2px solid white;
+    border-radius: 5px;
+    background: linear-gradient(to right, #3E3E3E, #1E1E1E);
+}
+
+.borderRadiusTop {
+    border-radius: 5px 5px 0 0;
+}
+
+.containerAllResearch {
+    position: relative;
+    width: 800px;
+    height: 45px;
+}
+
+.containerInputResearch input::placeholder {
+    color: white;
+    opacity: 0.8;
+}
+
+.containerInputResearch input:focus {
+    outline: none;
+    border-color: transparent;
+}
+
+.containerMoviesSearched {
+    position: absolute;
+    height: auto;
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0px 0px 5px 5px;
+    z-index: 9999;
+    box-sizing: border-box;
+    max-height: calc(4*50px);
+    border: solid 2px white;
+    border-top: none;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.movieSearched {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    background-color: #353535;
+    border-bottom: solid 2px white;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-left: 50px;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    &:hover {
+        background-color: #585858;
+    }
+
+    img {
+        height: 45px;
+        border-radius: 1px;
+    }
+}
+
+.poster {
+    height: 45px;
+    width: 35px;
+}
+
+.containerAllResearch .containerMoviesSearched :last-child {
+    border-bottom: none;
+}

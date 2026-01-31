@@ -1,0 +1,32 @@
+<div class="container-menu-tab">
+    <div class="container-pp" (click)="onNavigateToUserPage()" (mouseenter)="onMouseEnter()"
+        (mouseleave)="onMouseLeave()">
+        <img [src]="user.profilPhoto" (error)="errorPpUser()">
+    </div>
+    <div class="container-arrow">
+        <div class="arrow-down" [ngClass]="classArrow"></div>
+    </div>
+    <div class="container-under-menu" [ngClass]="class" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        <div class="container-option" (click)="onClickReset()">
+            <img [src]="srcReset">
+            <p>Reset</p>
+        </div>
+        <div class="container-option" (click)="onClickRandomMovie()">
+            <img [src]="srcRandom">
+            <p>Start random movie</p>
+        </div>
+        <div class="container-option" (click)="onClickRandomSeries()">
+            <img [src]="srcRandom">
+            <p>Start random series</p>
+        </div>
+        @for(userTab of userMenu; track userTab.id) {
+        <div class="container-option" (click)="onNavigateToUserTab(userTab.id)">
+            <img [src]="userTab.srcImage">
+            <p> {{ userTab.name}} </p>
+        </div>
+        }
+        <div class="container-deco" (click)="onClickDeconnexion()">
+            <p>Déconnexion</p>
+        </div>
+    </div>
+</div>

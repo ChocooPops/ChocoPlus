@@ -1,0 +1,28 @@
+.containerVlcButton {
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    padding-inline: 10px;
+    transition: 0.3s transform;
+
+    p {
+        margin: 0;
+        font-size: 14px;
+        font-weight: bold;
+        color: black;
+    }
+
+    img {
+        height: 25%;
+        object-fit: cover;
+    }
+}
+
+.backgroundWhite {
+    background-color: white;
+}

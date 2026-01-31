@@ -1,0 +1,52 @@
+<div class="container">
+    <div class="container-form-movie">
+        <div class="container-first-line">
+            @if(date) {
+            <p>{{ date | date:'yyyy' }}</p>
+            }
+            <p>{{ duration }}</p>
+            <div class="container-quality">
+                <p> {{ quality }} </p>
+            </div>
+        </div>
+        <div class="container-movie-placement">
+            <div class="container-poster" [ngClass]='{"container-animation-gradient-poster" : !displaying}'>
+                <div class="container-tmp-poster"></div>
+                @if(poster) {
+                <img class="poster" [src]="poster" [ngClass]='{"hidden" : !displaying}' (load)="onLoadPoster()"
+                    (error)="onErrorPoster()">
+                }
+            </div>
+            <p class="title" [ngClass]="'margin-bottom-title'"> {{ movie.title }}
+            </p>
+            @if(description !== '') {
+            <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
+            }
+            <p [ngClass]="'margin-bottom-text'"> <span>Réalisateur : </span> {{ director }}</p>
+            <p [ngClass]="'margin-bottom-text'"> <span>Acteurs : </span> {{ actors }}</p>
+            <p [ngClass]="'margin-bottom-text'"> <span>Genres :</span> {{ genre }} </p>
+            <p [ngClass]="'margin-bottom-text'"> <span>Un film :</span> {{ keyWord }} </p>
+        </div>
+        <div class="separation-bar"> </div>
+
+        <div class="container-same-title">
+            <p [ngClass]="'color-white-dark'">Titres similaires</p>
+        </div>
+    </div>
+
+    @if(similarMedias) {
+    <div class="container-similar-movies" [ngClass]="'animationPosterAndLicense'">
+        @for (media of similarMedias; track media) {
+        <app-similar-poster (onClicked)="onClickSimilarTitle($event)" [media]="media"></app-similar-poster>
+        }
+    </div>
+    }@else {
+    <div class="container-similar-movies">
+        @for(media of similarMediasLoading; track media) {
+        <app-similar-poster-loading></app-similar-poster-loading>
+        }
+    </div>
+    }
+
+    <div class="margin-bottom"></div>
+</div>

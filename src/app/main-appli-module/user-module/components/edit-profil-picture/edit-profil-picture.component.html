@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="title">Choose your icon</div>
+
+    @if(profilPictures) {
+    <div class="container-profil-picture">
+        @for (picture of profilPictures; track picture.id) {
+        <div class="profil-picture" (click)="onClickProfilPicture(picture.id)">
+            <img [src]="picture.name">
+        </div>
+        }
+    </div>
+    }@else {
+    <div class="container-spinner">
+        <div class="little-spinner"></div>
+    </div>
+    }
+
+</div>

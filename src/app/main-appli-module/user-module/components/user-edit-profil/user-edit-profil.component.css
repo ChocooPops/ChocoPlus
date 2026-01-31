@@ -1,0 +1,234 @@
+.container {
+    height: 90%;
+    width: 100%;
+    background-color: #232323;
+    box-sizing: border-box;
+    padding-inline: 50px;
+    padding-block: 60px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    position: absolute;
+    bottom: 0;
+    z-index: 10;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.container-edit-profil-picture {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+    animation: enter-edit-profil 0.5s;
+}
+
+@keyframes enter-edit-profil {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.barre {
+    height: 2px;
+    width: 100%;
+    background-color: var(--white-dark);
+}
+
+.containe-edition {
+    display: flex;
+    gap: 45px;
+    justify-content: left;
+}
+
+.container-pp {
+    height: 180px;
+    width: 180px;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+
+    .pp {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .button-edit {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        z-index: 10;
+    }
+
+    &:hover {
+        .container-tmp {
+            opacity: 0.4;
+        }
+    }
+}
+
+.container-tmp {
+    background-color: #232323;
+    opacity: 0;
+    transition: 0.3s opacity;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.button-edit {
+    height: 29px;
+    width: 29px;
+    border-radius: 50%;
+    border: solid 3px #232323;
+    background-color: #141414;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: border 0.3s;
+
+    img {
+        height: 40%;
+        width: 40%;
+    }
+
+    .img-password {
+        height: 50%;
+        width: 50%;
+    }
+
+    &:hover {
+        border: solid 3px #c8aa14;
+    }
+}
+
+.container-title {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    p {
+        margin: 0;
+        font-size: 35px;
+        font-weight: bold;
+    }
+}
+
+.container-relative {
+    height: min-content;
+    width: min-content;
+    position: relative;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+label {
+    font-size: 15px;
+    color: var(--grey);
+}
+
+.container-input {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+
+    .button-edit {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+input {
+    color: white;
+    font-size: 20px;
+    width: 400px;
+    height: 50px;
+    border: solid 1px hsla(0, 0%, 100%, 0.3);
+    background-color: #282828;
+    font-weight: bold;
+    box-sizing: border-box;
+    padding-inline: 15px;
+    border-radius: 2px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input::placeholder {
+    color: var(--grey);
+    opacity: 0.8;
+}
+
+input:focus {
+    outline: none;
+    border: solid 1px hsla(0, 0%, 100%, 0.3);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.container-end {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.container-button {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.button {
+    height: 45px;
+    font-size: 20px;
+    padding-inline: 30px;
+    border-radius: 3px;
+    color: var(--grey);
+    border: solid 1px var(--grey);
+    background-color: transparent;
+    transition: color 0.3s, border 0.3s, background-color 0.3s;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    p {
+        margin: 0;
+    }
+
+    &:hover {
+        border: solid 1px white;
+        background-color: white;
+        color: black;
+    }
+}
+
+.container-button .button:last-child {
+    margin-left: 50px;
+}
+
+.space {
+    margin-block: 5px;
+}

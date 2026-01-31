@@ -1,0 +1,103 @@
+<app-popup [back]="true" (emitActionData)="onEmitDelete()"></app-popup>
+
+<div class="container">
+
+    @if(displayEditProfilPicture) {
+    <div class="container-edit-profil-picture" #containerProfilPicture>
+        <app-edit-profil-picture></app-edit-profil-picture>
+    </div>
+    }
+
+    <div class="container-title">
+        <p>Edition du profil</p>
+        <div class="barre"></div>
+    </div>
+
+    <div class="space"></div>
+
+    <div class="containe-edition">
+        <div class="container-pp" (click)="onClickProfilPicture($event)" #containerBtProfilPicture>
+            @if(profilPhoto) {
+            <img [src]="profilPhoto" class="pp" (error)="errorPpUser()">
+            }
+            <div class="button-edit">
+                <img [src]="srcButtonEdit">
+            </div>
+            <div class="container-tmp"></div>
+        </div>
+
+        <form [formGroup]="formGroupInfo">
+            <div class="container-input">
+                <label>Pseudo : </label>
+                <div class="container-relative">
+                    <input [formControlName]="formControlPseudo" placeholder="Pseudo">
+                    <div class="button-edit">
+                        <img [src]="srcButtonEdit">
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-input">
+                <label>Date de naissance : </label>
+                <div class="container-relative">
+                    <input type="date" [formControlName]="formControlDateBorn">
+                    <div class="button-edit">
+                        <img [src]="srcButtonEdit">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <form [formGroup]="formGroupPassWord">
+        <div class="container-input">
+            <label>Mots de passe actuel</label>
+            <div class="container-relative">
+                <input [formControlName]="formControlCurrentPassWord" [type]="typeCurrentMdp">
+                <div class="button-edit" (click)="onClickCurrentMdp()">
+                    <img [src]="srcCurrentMdp" class="img-password">
+                </div>
+            </div>
+        </div>
+
+        <div class="containe-edition">
+            <div class="container-input">
+                <label>Nouveau mots de passe</label>
+                <div class="container-relative">
+                    <input [formControlName]="formControlNewPassWord" [type]="typeNewMdp">
+                    <div class="button-edit" (click)="onClickNewMdp()">
+                        <img [src]="srcNewMdp" class="img-password">
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-input">
+                <label>Confirmation du nouveau mots de passe</label>
+                <div class="container-relative">
+                    <input [formControlName]="formControlReNewPassWord" [type]="typeReNewMdp">
+                    <div class="button-edit" (click)="onClickReNewMdp()">
+                        <img [src]="srcReNewMdp" class="img-password">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="space"></div>
+
+    <div class="container-end">
+        <div class="barre"></div>
+        <div class="container-button">
+            <div class="button" (click)="onClickSave()">
+                <p>Sauvegarder</p>
+            </div>
+            <div class="button" (click)="onClickCancel()">
+                <p>Annuler</p>
+            </div>
+            <div class="button" (click)="onClickDelete()">
+                <p>Supprimer le profil</p>
+            </div>
+        </div>
+    </div>
+
+</div>

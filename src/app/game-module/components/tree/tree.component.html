@@ -1,0 +1,7 @@
+<div class="container-element" [style.height.px]="tree.height" [style.bottom.px]="tree.y" [style.left.px]="tree.x">
+    <div #scrollContent class="scroll-content">
+        @for(item of tabIteration; track item) {
+        <img #imgComponent [src]="tree.image" [style.height.px]="tree.height" [style.width.px]="tree.width">
+        }
+    </div>
+</div>

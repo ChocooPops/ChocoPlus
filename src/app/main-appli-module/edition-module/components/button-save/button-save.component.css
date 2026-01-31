@@ -1,0 +1,32 @@
+.containerBtSave {
+    display: flex;
+    height: 100%;
+    justify-content: right;
+    padding-right: 50px;
+}
+
+.btSave {
+    width: 180px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFD301;
+    border-radius: 7px;
+    border: #141414;
+    cursor: pointer;
+    box-shadow: 10px 10px 15px black;
+    box-sizing: border-box;
+    transition: 0.3s background-color;
+
+    p {
+        margin: 0;
+        font-size: 23px;
+        font-weight: bold;
+        color: black;
+    }
+}
+
+.btSave:hover {
+    background-color: #e0bb00;
+}

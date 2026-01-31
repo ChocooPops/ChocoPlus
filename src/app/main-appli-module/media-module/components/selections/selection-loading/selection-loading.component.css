@@ -1,0 +1,33 @@
+.container-movie-selection-loading {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vw;
+}
+
+.container-selection {
+    display: flex;
+    position: relative;
+    height: auto;
+    width: auto;
+    justify-content: left;
+    align-items: center;
+}
+
+.container-header {
+    width: 95%;
+    height: auto;
+    position: relative;
+    font-size: 1.1vw;
+    font-weight: bold;
+    margin-top: 0;
+
+    p {
+        margin: 0;
+    }
+}
+
+.container-title {
+    width: 12vw;
+    height: 1.5vw;
+    margin-left: 2.1vw;
+}

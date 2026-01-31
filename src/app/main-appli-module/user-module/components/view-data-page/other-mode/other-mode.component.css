@@ -1,0 +1,43 @@
+.container-other-mode {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+    transition: height 0.3s ease-out;
+}
+
+.enable-height {
+    height: 300px;
+}
+
+.disable-height {
+    height: 0px;
+}
+
+.container-mode {
+    border: var(--grey) solid 1px;
+    color: var(--grey);
+    border-radius: 2px;
+    padding-inline: 10px;
+    padding-block: 5px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    transition: color 0.3s ease-out, background-color 0.3s ease-out;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--grey);
+        color: var(--white-dark);
+    }
+
+    p {
+        margin: 0;
+    }
+}
+
+.cliqued {
+    background-color: var(--grey);
+    color: var(--white-dark);
+}

@@ -1,0 +1,55 @@
+<div class="container-news">
+
+    <div class="container-media">
+        <div class="container-info">
+            <div class="containerFieldToFill">
+                <p>Jellyfin_id <span>*</span></p>
+                <div class="container-jellyfin">
+                    <p> {{ videoRunning.jellyfinId}} </p>
+                </div>
+            </div>
+            <div class="containerFieldToFill">
+                <p> Start Show <span>*</span></p>
+                <app-input-time-edition (onInputChange)="onChangeStart($event)"
+                    [time]="videoRunning.startShow"></app-input-time-edition>
+            </div>
+            <div class="containerFieldToFill">
+                <p> End Show <span>*</span></p>
+                <app-input-time-edition (onInputChange)="onChangeEnd($event)"
+                    [time]="videoRunning.endShow"></app-input-time-edition>
+            </div>
+        </div>
+
+        <div class="container-background" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeaving()"
+            [ngClass]="'animationEditField'">
+            <img class="img-choosen" [src]="currentBack">
+            @if(poster) {
+            <div class="container-logo">
+                <img [src]="poster" loading="lazy" (error)="onErrorImageLogo()">
+            </div>
+            }@else {
+            <div class="container-logo">
+                <p>{{ videoRunning.media.title }}</p>
+            </div>
+            }
+            @if(isHovering) {
+            <div class="container-cover-tmp"></div>
+            <div class="container-cover-background">
+                @for(back of backAvailable; track back) {
+                <img class="back-available" [src]="back" (click)="onChangeSrcBackground(back)"
+                    [ngClass]="{'already-choosen' : back === currentBack, 'not-choosen' : back !== currentBack}">
+                }
+            </div>
+            }
+            <app-button-delete class="button-delete" (click)="onClickDelete()"
+                [displayPicture]="true"></app-button-delete>
+        </div>
+    </div>
+
+    @if(series) {
+    <app-edit-news-series-running class="container-series" [series]="series"
+        [currentJellyfinId]="videoRunning.jellyfinId"
+        (changeJellyfinEpisode)="onChangeJellyfinId($event)"></app-edit-news-series-running>
+    }
+
+</div>

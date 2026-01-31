@@ -1,0 +1,57 @@
+<div class="container" (click)="onClickVideo()" (mouseleave)="onMouseLeaveFromWindow()"
+    (mousemove)="onMouseMovieIntoAllInterface($event)" (mouseup)="onMouseUpIntoInterface($event)"
+    [ngClass]="{'hidden-cursor' : !displayControls}">
+
+    @if(displayError) {
+    <app-error-video></app-error-video>
+    }
+
+    <div class="container-interface-controls"
+        [ngClass]="{'controls-displayed' : displayControls, 'controls-hidden' : !displayControls}">
+        <app-bt-back (click)="onClickControllers($event)"></app-bt-back>
+        <div class="container-controls" (click)="onClickControllers($event)">
+            <app-progress-bar (changeCurrentTime)="changeCurrentTime($event)"
+                [currentTimeTravelledInSecond]="currentTimeTravelled"
+                [totalDurationMovieInSecond]="totalDurationMedia"></app-progress-bar>
+            <div class="container-button">
+                <div class="container-group-button" [ngClass]="'position-left'">
+                    <app-bt-classic (hasBeenClicked)="setPauseOrPlayVideo()" [srcFirstImage]="srcImagePlay"
+                        [srcSecondImage]="srcImagePause" [state]="isReading"></app-bt-classic>
+                    <div class="container-forward">
+                        <app-bt-classic (hasBeenClicked)="onClickBacktracking()" [srcFirstImage]="srcImageBacktracking"
+                            [srcSecondImage]="srcImageBacktracking" [state]="isBacktracking"></app-bt-classic>
+                        <app-bt-classic (hasBeenClicked)="onClickForward()" [srcFirstImage]="srcImageForward"
+                            [srcSecondImage]="srcImageForward" [state]="isForward"></app-bt-classic>
+                    </div>
+                    <app-bt-volume (setDisplayControls)="setDisplayControlsWhenActivated($event)"
+                        (onChangeVolume)="onClickVolume($event)" [currentVolume]="currentVolume"></app-bt-volume>
+                </div>
+                <div class="container-text">
+                    <p> {{ title }} </p>
+                </div>
+                <div class="container-group-button" [ngClass]="'position-right'">
+                    @if(media && media.mediaType === MediaType.SERIES) {
+                    <app-bt-series (setDisplayControls)="setDisplayControlsWhenActivated($event)" [series]="media"
+                        [idx]="beginIdx"></app-bt-series>
+                    }
+                    <app-bt-quality (setDisplayControls)="setDisplayControlsWhenActivated($event)"></app-bt-quality>
+                    <app-bt-subtitle [currentAudio]="currentAudioIndex" [currentSubtitle]="currentSubtitleIndex"
+                        [audios]="audios" [subtitles]="subtitles" (changeAudio)="onChangeAudio($event)"
+                        (changeSubtitle)="onChangeSubtitles($event)"
+                        (setDisplayControls)="setDisplayControlsWhenActivated($event)"></app-bt-subtitle>
+                    <app-bt-fullscreen></app-bt-fullscreen>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-action-key [keyIsPressed]="keySpacePressed" [srcImage]="keyPlay" [position]="'center'"></app-action-key>
+    <app-action-key [keyIsPressed]="keyUpDownPressed" [srcImage]="keySound" [position]="'center'"></app-action-key>
+    <app-action-key [keyIsPressed]="keyRightPressed" [srcImage]="keyForward" [position]="'right'"></app-action-key>
+    <app-action-key [keyIsPressed]="keyLeftPressed" [srcImage]="keyBacktracking" [position]="'left'"></app-action-key>
+
+    <video [poster]="srcPoster" #videoRef autoplay [ngClass]="{'height' : whatDimension, 'width' : !whatDimension}">
+        <track #trackRef kind="subtitles" default>
+    </video>
+
+</div>

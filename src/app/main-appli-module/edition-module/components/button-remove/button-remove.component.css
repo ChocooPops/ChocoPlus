@@ -1,0 +1,35 @@
+.containerBtRemove {
+    display: flex;
+    height: 100%;
+    justify-content: left;
+}
+
+.btRemove {
+    width: 180px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border-radius: 7px;
+    border: solid white 2px;
+    box-shadow: 10px 10px 15px black;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: 0.3s background-color, 0.3s color;
+
+    p {
+        color: white;
+        font-weight: bold;
+        font-size: 23px;
+        margin: 0;
+    }
+}
+
+.btRemove:hover {
+    background-color: white;
+
+    p {
+        color: black;
+    }
+}

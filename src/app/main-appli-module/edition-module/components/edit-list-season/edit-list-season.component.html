@@ -1,0 +1,18 @@
+<div class="container">
+
+    @for(season of seasons; track season.id; let idx = $index) {
+    <div class="container-season">
+        <app-button-delete (click)="onClickDeleteSeason(idx)"></app-button-delete>
+        <div class="container-season-name" (click)="onSelectSeason(idx)"
+            [ngClass]="{'button-on-focus' : idx === seasonSelected, 'button-dont-focus' : idx !== seasonSelected}">
+            @if(season.name) {
+            <p> {{ season.name }} </p>
+            } @else {
+            <p> Saison {{ season.seasonNumber}} </p>
+            }
+        </div>
+    </div>
+    }
+
+    <app-button-add (click)="onClickAddNewSeason()"></app-button-add>
+</div>

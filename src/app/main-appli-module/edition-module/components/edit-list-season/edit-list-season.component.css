@@ -1,0 +1,46 @@
+.container {
+    display: flex;
+    justify-content: left;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.container-season {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.container-season-name {
+    width: auto;
+    padding-inline: 35px;
+    padding-block: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: color 0.3s, background-color 0.3s;
+    border: 1px solid white;
+
+    &:hover {
+        background-color: white;
+        color: black;
+    }
+}
+
+.button-on-focus {
+    background-color: white;
+    color: black;
+}
+
+.button-dont-focus {
+    background-color: transparent;
+    color: white;
+}
+
+p {
+    margin: 0;
+    text-align: center;
+}

@@ -1,0 +1,39 @@
+.fin {
+    z-index: 99;
+    position: relative;
+    padding-block: 25px;
+    width: 100%;
+    height: auto;
+    background-color: black;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.flexBoxBlabla {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.flexBoxReseau {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        width: 25px;
+    }
+}
+
+.companieName {
+    height: 25px;
+}

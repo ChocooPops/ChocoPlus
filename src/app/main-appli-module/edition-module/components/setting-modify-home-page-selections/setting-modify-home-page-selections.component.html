@@ -1,0 +1,31 @@
+<app-popup (emitActionData)="emitSaved()"></app-popup>
+
+<div class="containerSettingSelected">
+
+    <div class="containerFieldToFill">
+        <p> Rechercher une sélection </p>
+        <app-input-research-selection
+            (addContentResearched)="addSelectionIntoPage($event)"></app-input-research-selection>
+    </div>
+
+    @if(selections) {
+    <div class="containerFieldToFill">
+        <app-selection-overview [mediaSelectionList]="selections"
+            (moveSelectionBottomEmit)="moveSelectionOnTheBottomOfPage($event)"
+            (moveSelectionTopEmit)="moveSelectionOnTheTopOfPage($event)"
+            (removeSelectionEmit)="removeSelectionIntoPage($event)" [displaButtonForMediaLicense]="false"
+            [displaySettingSelection]="true"></app-selection-overview>
+    </div>
+    <div class="containerFieldToFill">
+        <div class="containerLastButton">
+            <app-button-remove (clickEmit)="onClickReset()"></app-button-remove>
+            <app-button-save (clickEmit)="onClickSaveNewSelectionIntoHomePage()"></app-button-save>
+        </div>
+    </div>
+    }@else{
+    <div class="container-laoder-content">
+        <div class="little-spinner"></div>
+    </div>
+    }
+
+</div>

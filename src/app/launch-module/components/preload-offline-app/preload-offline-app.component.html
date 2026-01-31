@@ -1,0 +1,22 @@
+<div class="container-prelaod">
+    <p> {{ message }} </p>
+    <div class="container-cat-loading" (click)="onClick()">
+        @if(transitionLoad) {
+        <div class="container-loading">
+            <img [src]="srcCat" alt="cat-loading">
+        </div>
+        }@else {
+        <div class="container-loading">
+            <img [src]="srcCat" alt="cat-loading">
+        </div>
+        }
+    </div>
+
+    <div class="container-button">
+        <app-button-form [name]="nameButtonLogin" [type]="TypeButton.SUBMIT"
+            (clickEmit)="onNavigateToLoginPage()"></app-button-form>
+        <app-button-form [name]="nameButtonRegister" [type]="TypeButton.NEXT_PAGE"
+            (clickEmit)="onNavigateToRegisterPage()"></app-button-form>
+    </div>
+
+</div>

@@ -1,0 +1,23 @@
+<div class="container-movie-selection">
+    <div class="containerHeader">
+        <div class="containerTitle" [style.padding-left.vw]="marginLeftTitle">
+            <p> {{selection.name}} </p>
+        </div>
+        <app-pagination [pagination]="pagination" [marginLeft]="marginLeft"></app-pagination>
+    </div>
+
+    <div class="container-line-film" [style.height.vw]="heightSelection" [style.margin-bottom.vw]="marginBottom">
+        <app-scroll-button [height]="heightSelection" [width]="marginLeft" [direction]="true"
+            [displayScrollButton]="displayScrollLeft" (hasBeenClicked)="clickLeft()"></app-scroll-button>
+        <app-scroll-button [height]="heightSelection" [width]="marginLeft" [direction]="false"
+            [displayScrollButton]="displayScrollRight" (hasBeenClicked)="clickRight()"></app-scroll-button>
+
+        <div class="container-list-film" [style.gap.vw]="gap" [style.left.px]="offsetX"
+            [style.margin-left.vw]="marginLeft"
+            [ngClass]="{'activateTransition' : activateTransition, 'disableTransition' : !activateTransition}">
+            @for(media of selectionShowed.mediaList; track media.id) {
+            <app-special-poster [media]="media" [typeZoomX]="media.typeZoomX"></app-special-poster>
+            }
+        </div>
+    </div>
+</div>

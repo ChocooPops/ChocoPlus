@@ -1,0 +1,16 @@
+.container {
+    display: grid;
+    grid-template-columns: calc(80% - 12.5px) calc(20% - 12.5px);
+    grid-template-rows: calc(40% - 12.5px) calc(60% - 12.5px);
+    gap: 25px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.container-info {
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    background-color: #232323;
+}

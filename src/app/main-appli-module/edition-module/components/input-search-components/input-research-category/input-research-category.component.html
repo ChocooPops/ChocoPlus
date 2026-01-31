@@ -1,0 +1,24 @@
+<div class="containerResearchInput">
+    <div class="containerAllResearch">
+        <form [formGroup]="formGroup">
+            <div class="containerInputResearch"
+                [ngClass]="{'borderRadiusTop' : displayContentWanted && contentWanted.length > 0}">
+                <div class="container-image-research">
+                    <img [src]="srcImageresearch">
+                </div>
+                <input type="text" formControlName="inputValue" [placeholder]="placeHolder"
+                    (keydown.enter)="onEnterKey()" (focus)="onFocus()" />
+            </div>
+        </form>
+
+        @if(displayContentWanted && contentWanted.length > 0) {
+        <div class="containerMoviesSearched">
+            @for(categorie of contentWanted; track categorie.id) {
+            <div class="movieSearched" (click)="onClickOnContentWanted(categorie)">
+                <p> {{categorie.name}}</p>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>

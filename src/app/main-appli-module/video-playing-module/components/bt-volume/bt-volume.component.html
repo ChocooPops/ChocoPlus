@@ -1,0 +1,17 @@
+<div class="container-sound" (mouseenter)="displayProgressVolume()" (mouseleave)="hiddenProgressVolume()">
+
+    <div class="container-overview"
+        [ngClass]="{'display-progress-volume' : volumeIsHover, 'hidden-progress-volume' : !volumeIsHover}">
+        <div class="container-modif-sound">
+            <div #volumeRef class="container-volume-total" (mousedown)="startDragSound($event)"
+                (mouseup)="endDragSound($event)">
+                <div class="progress-volume" [style.height.%]="progressSound">
+                    <div class="pointer-volume"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-bt-classic class="app-bt-classic" (hasBeenClicked)="onClickVolume()" [srcFirstImage]="srcImageSound"
+        [srcSecondImage]="srcImageMute" [state]="isVolumeSounded"></app-bt-classic>
+</div>

@@ -1,0 +1,13 @@
+@if(type === TypeButtonModel.SUBMIT) {
+<div class="button-submit">
+    <button type="submit" (click)="onClick()"> {{ name }}</button>
+</div>
+}@else if (type === TypeButtonModel.OFF_LINE) {
+<div class="button-off-line">
+    <button type="button" (click)="onClick()"> {{ name }}</button>
+</div>
+}@else if (type === TypeButtonModel.NEXT_PAGE) {
+<div class="button-router">
+    <button type="button" (click)="onClick()"> {{ name }}</button>
+</div>
+}

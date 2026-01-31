@@ -1,0 +1,53 @@
+<div class="containerAllSelection">
+    <p class="title">Exemple de l’aperçu final</p>
+    <div class="containerSelectionOverview" [style.height.vw]="height"
+        [ngClass]="{'enable-scroll' : mediaSelectionList.length > 1, 'disable-scroll' :  mediaSelectionList.length <= 1}">
+        <div class="containerAllMovieSelection" [style.gap.vw]="gapBetweenSelection" [style.height.vw]="height">
+            @for(mediaSelection of mediaSelectionList; track mediaSelection.id) {
+            @if(mediaSelection.mediaList.length > 0) {
+            <div #selection class="containerMovieSelection">
+                <div class="containerSelectionName">
+                    <p>{{ mediaSelection.name}}</p>
+                    @if(displaySettingSelection && mediaSelection.typeSelection !== SelectionType.LICENSE_POSTER)
+                    {
+                    <div class="containerButtonForMovieSelection" [ngClass]="{'animationPosterAndLicense' : true}">
+                        <app-button-delete [displayPicture]="true"
+                            (click)="removeSelection(mediaSelection.id)"></app-button-delete>
+                        <app-button-move [direction]="2"
+                            (click)="moveSelectionOnBottom(mediaSelection.id)"></app-button-move>
+                        <app-button-move [direction]="1"
+                            (click)="moveSelectionOnTop(mediaSelection.id)"></app-button-move>
+                    </div>
+                    }
+                </div>
+                <div class="movieList" [style.gap.vw]="gapBetweenMedia">
+                    @for(media of mediaSelection.mediaList; track media.id) {
+                    <div class="movie" [ngClass]="{'animationPosterAndLicense' : true}">
+                        @if(mediaSelection.typeSelection === SelectionType.NORMAL_POSTER) {
+                        <app-vertical-poster [displayOnEditionPage]="true" [media]="media"></app-vertical-poster>
+                        }@else if(mediaSelection.typeSelection === SelectionType.SPECIAL_POSTER) {
+                        <app-special-poster [media]="media"></app-special-poster>
+                        }@else if (mediaSelection.typeSelection === SelectionType.LICENSE_POSTER) {
+                        <app-license-poster [media]="media"></app-license-poster>
+                        }
+                        <div class="containerCover"></div>
+                        @if((mediaSelectionList.length < 2 && displaButtonForMediaLicense)) { <div
+                            class="containerButton" [ngClass]="{'animationPosterAndLicense': true}">
+                            <app-button-move [direction]="3" (click)="moveMediaOnRight(media.id)"></app-button-move>
+                            <app-button-move [direction]="4" (click)="moveMediaOnLeft(media.id)"></app-button-move>
+                            <app-button-delete [displayPicture]="true"
+                                (click)="removeMedia(media.id)"></app-button-delete>
+                    </div>
+                    }
+                </div>
+                }
+                <div class="margin-tmp">
+                    <p>f</p>
+                </div>
+            </div>
+        </div>
+        }
+        }
+    </div>
+</div>
+</div>

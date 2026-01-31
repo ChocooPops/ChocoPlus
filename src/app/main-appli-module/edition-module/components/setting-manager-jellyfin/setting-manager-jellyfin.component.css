@@ -1,0 +1,58 @@
+.container-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.container-button {
+    width: auto;
+    height: auto;
+    padding-inline: 30px;
+    padding-block: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border-radius: 7px;
+    border: solid white 2px;
+    box-shadow: 10px 10px 15px black;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: 0.3s background-color, 0.3s color;
+
+    p {
+        color: white;
+        font-weight: bold;
+        font-size: 23px;
+    }
+}
+
+.container-button:hover {
+    background-color: white;
+
+    p {
+        color: black;
+    }
+}
+
+.container-result {
+    width: 100%;
+    min-height: 15px;
+    max-height: calc(100vh - 370px);
+    height: auto;
+    border: 2px solid #343434;
+    overflow: auto;
+    border-radius: 5px;
+    padding-block: 15px;
+    padding-inline: 20px;
+    box-sizing: border-box;
+}
+
+.container-result::-webkit-scrollbar {
+    height: 2px;
+    width: 2px;
+}
+
+p {
+    margin: 0;
+}

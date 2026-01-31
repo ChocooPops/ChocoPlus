@@ -1,0 +1,13 @@
+<div class="containerButton" (click)="onClick()">
+    @if(!typeButton) {
+    <div class="largestContainerButton" [ngClass]="{'animationToGrey' : true}">
+        <img [src]="srcStartIcon">
+        <p>Lecture</p>
+    </div>
+    }@else {
+    <div class="containerStartButton"
+        [ngClass]="{'containerMovieButton' : !typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : typeDisplaying}">
+        <img [src]="srcStartButton">
+    </div>
+    }
+</div>

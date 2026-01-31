@@ -1,0 +1,33 @@
+<div class="container-list-episode">
+    @for(episode of episodes; track episode) {
+    <div class="container-episode">
+        <div class="container-index">
+            <div class="container-animation" [ngClass]="'container-animation-gradient-normal'">
+                <p class="index">10</p>
+            </div>
+        </div>
+        <div class="container-poster" [ngClass]="'container-animation-gradient-normal'">
+        </div>
+        <div class="container-info">
+            <div class="container-animation" [ngClass]="'container-animation-gradient-little'">
+                <p class="title"> JE SAIS PAS</p>
+            </div>
+            @if(notRunning) {
+            <div class="container-animation" [ngClass]="'container-animation-gradient-little'">
+                <p class="description" [ngClass]="'container-animation-gradient-little'"> JE SAIS PAS JE SAIS PAS JE
+                    SAIS
+                    PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS
+                    JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE
+                    SAIS
+                    PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS JE SAIS PAS
+                    JE
+                </p>
+            </div>
+            <div class="container-animation" [ngClass]="'container-animation-gradient-little'">
+                <p class="other-info" [ngClass]="'container-animation-gradient-little'"> 22 min <br> Dec 15, 2018 </p>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>

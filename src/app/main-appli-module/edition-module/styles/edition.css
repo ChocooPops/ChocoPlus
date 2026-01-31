@@ -1,0 +1,198 @@
+.containerSettingSelected {
+    margin-top: 40px;
+    max-height: 100vh;
+    min-height: 300px;
+    padding-inline: 35px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+}
+
+.containerFieldToFill {
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: 0.3s enterEditPage ease-in;
+
+    p {
+        margin: 0;
+    }
+}
+
+span {
+    color: #FFE500;
+}
+
+@keyframes enterEditPage {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.info {
+    color: #585858;
+    text-align: center;
+    padding-block: 15px;
+    font-size: 18px;
+}
+
+.containerSeparationBar {
+    height: 2px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.separationBar {
+    height: 100%;
+    width: 50%;
+    background-color: #585858;
+}
+
+.animationEditField {
+    animation: 0.3s enterEditField ease-in;
+}
+
+@keyframes enterEditField {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.containerAllInputTimer {
+    display: flex;
+    gap: 40px;
+}
+
+.containerInputTimer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    p {
+        font-size: 17px;
+    }
+}
+
+.containerLastButton {
+    display: grid;
+    grid-template: 1fr / 50% 50%;
+    margin-top: 50px;
+    margin-bottom: 150px;
+}
+
+.container-radio-button-and-poster {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 17px;
+}
+
+.container-flex {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.container-input {
+    position: relative;
+    height: 100%;
+}
+
+.container-img-language {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        height: 100%;
+        background-color: #30303095;
+        border-radius: 3px;
+        padding: 5px;
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: border 0.3s;
+
+        &:hover {
+            border: 1px solid white;
+        }
+    }
+}
+
+.container-img-language-border {
+    border: 1px solid white;
+    border-radius: 3px;
+}
+
+.container-input-multi-language {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    z-index: 999;
+    animation: 0.3s enter;
+}
+
+@keyframes enter {
+    0% {
+        transform: translate(-50%, 40px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+.container-episode {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.container-news-running-video {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.container-add-episode {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-laoder-content {
+    height: 200px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

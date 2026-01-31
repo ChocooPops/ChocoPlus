@@ -1,0 +1,16 @@
+@if(!typeButton) {
+<div (click)="onClick()"
+    [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}"
+    (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+    @if(isHover) {
+    <img [src]="srcImageEnter">
+    }@else {
+    <img [src]="srcImageLeave">
+    }
+</div>
+}@else {
+<div class="largestContainerButtonGrey" (click)="onClick()">
+    <img [src]="modify">
+    <p>Modifier</p>
+</div>
+}

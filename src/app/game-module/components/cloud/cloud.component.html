@@ -1,0 +1,8 @@
+<div class="container-element" [style.height.px]="cloud.height" [style.bottom.px]="cloud.y" [style.left.px]="cloud.x"
+    [style.width.px]="cloud.width">
+    <div #scrollContent class="scroll-content">
+        @for(item of tabIteration; track item) {
+        <img #imgComponent [src]="cloud.image" [style.height.px]="cloud.height" [style.width.px]="cloud.width">
+        }
+    </div>
+</div>

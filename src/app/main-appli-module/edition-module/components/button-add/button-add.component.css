@@ -1,0 +1,39 @@
+.containerButtonAdd {
+    height: 40px;
+    width: 40px;
+    margin: 0;
+    border-radius: 10px;
+    border: solid 2px white;
+    background-color: transparent;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+        background-color: white;
+
+        .buttonAdd {
+            background-color: black;
+        }
+    }
+}
+
+.buttonAdd {
+    transition: all 0.3s;
+    background-color: white;
+    border-radius: 1px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+}
+
+.buttonAdd:nth-child(1) {
+    height: 17px;
+    width: 3px;
+}
+
+.buttonAdd:nth-child(2) {
+    height: 3px;
+    width: 17px;
+}

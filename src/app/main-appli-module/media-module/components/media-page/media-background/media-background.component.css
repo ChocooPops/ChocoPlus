@@ -1,0 +1,101 @@
+.containerMovieBackground {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.containerMovieBackground::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 50%, rgba(20, 20, 20, 1) 100%);
+}
+
+.containerLogo {
+    bottom: 40px;
+    margin: 40px;
+    width: 55%;
+    height: 50%;
+    position: absolute;
+    z-index: 20;
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+}
+
+.containerBackground {
+    height: 100%;
+    width: 100%;
+}
+
+.secondContainerBackground {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+
+.containerTitle {
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+}
+
+.title {
+    max-width: 80%;
+    font-size: 2vw;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.216);
+    color: white;
+    border-radius: 5px;
+    padding-block: 1vw;
+    padding-inline: 1.5vw;
+    margin: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.borderBackground {
+    height: 100%;
+    width: 100%;
+    border-bottom: solid white 2px;
+}
+
+@media (max-width: 1400px) {
+    .title {
+        font-size: 35px;
+    }
+}
+
+.hidden {
+    visibility: hidden;
+}

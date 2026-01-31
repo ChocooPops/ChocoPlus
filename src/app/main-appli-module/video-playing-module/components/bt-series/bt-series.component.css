@@ -1,0 +1,183 @@
+.container-series {
+    position: relative;
+}
+
+.container-overview {
+    position: absolute;
+    width: 650px;
+    height: 635px;
+    bottom: 0;
+    right: 0;
+    visibility: hidden;
+    z-index: 30;
+}
+
+.container-seasons {
+    position: absolute;
+    height: 550px;
+    width: 100%;
+    background-color: #141414;
+    border-radius: 5px;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden-seasons-choice {
+    visibility: hidden;
+}
+
+.display-seasons-choice {
+    visibility: visible;
+}
+
+.container-seasons-option {
+    height: 60px;
+    font-size: 20px;
+    width: 100%;
+    background-color: #232323;
+    position: relative;
+    cursor: pointer;
+}
+
+.container-episodes {
+    width: 100%;
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: 25px;
+    padding-left: 15px;
+    box-sizing: border-box;
+}
+
+.container-episodes::-webkit-scrollbar {
+    height: 2px;
+    width: 2px;
+}
+
+.container-season-selected {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.container-option {
+    position: absolute;
+    top: 65px;
+    width: 100%;
+    max-height: calc(55px * 7);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    animation: 0.3s enter;
+    z-index: 999;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.container-option>* {
+    flex-shrink: 0;
+}
+
+.container-option::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+    background-color: #303030;
+}
+
+.black {
+    width: 100%;
+    height: 5px;
+    background-color: #141414;
+    position: absolute;
+    z-index: 999;
+    bottom: -5px;
+    animation: 0.3s enter;
+}
+
+.option {
+    height: 55px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    background-color: #232323;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #303030;
+    }
+}
+
+p {
+    margin: 0;
+    font-weight: bold;
+    margin-left: 30px;
+}
+
+@keyframes enter {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.arrow {
+    position: absolute;
+    top: 40%;
+    right: 15px;
+    height: 15px;
+    width: 15px;
+    transform: rotate(-90deg) translateY(-40%);
+}
+
+.height-tmp {
+    height: 30px;
+}
+
+@media (max-width: 1920px) {
+
+    .container-overview {
+        width: 500px;
+        height: 485px;
+    }
+
+    .container-seasons {
+        height: 400px;
+    }
+
+    .container-seasons-option {
+        height: 50px;
+        font-size: 15px;
+    }
+
+    .container-option {
+        top: 55px;
+        max-height: calc(45px * 7);
+    }
+
+    .option {
+        height: 45px;
+    }
+
+    p {
+        margin-left: 15px;
+    }
+}
+
+.animation {
+    animation: enter 0.3s;
+}
+
+.app-bt-classic {
+    z-index: 35;
+    position: relative;
+}

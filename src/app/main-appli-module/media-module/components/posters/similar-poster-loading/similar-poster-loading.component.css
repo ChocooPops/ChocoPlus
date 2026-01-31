@@ -1,0 +1,79 @@
+.container-horizontal-poster {
+    width: 100%;
+    display: grid;
+    grid-template: 1fr / 1fr;
+    flex-direction: column;
+    gap: 0px;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.container-main-poster {
+    width: 100%;
+    aspect-ratio: 341 / 192;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+
+    &:hover {
+        .container-button {
+            display: flex;
+        }
+    }
+}
+
+.container-logo {
+    height: 50%;
+    width: 60%;
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+}
+
+.container-info-movie {
+    width: 100%;
+    height: 107px;
+    background-color: #252525;
+    padding: 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.container-first-line {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.container-description {
+    width: 100%;
+    flex: 1;
+}
+
+.container-left {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 15px;
+    height: 20px
+}
+
+.date {
+    height: 100%;
+    width: 45px;
+}
+
+.duration {
+    height: 100%;
+    width: 60px;
+}
+
+.quality {
+    height: 100%;
+    width: 50px;
+}

@@ -1,0 +1,12 @@
+export interface EpisodeModel {
+    id: number,
+    seasonId: number,
+    jellyfinId: string
+    name: string,
+    episodeNumber: number
+    description: string,
+    date: Date,
+    time: number,
+    quality: string,
+    srcPoster: string | undefined,
+}

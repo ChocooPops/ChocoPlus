@@ -1,0 +1,8 @@
+<div class="container-button-orientation" (click)="onClick()" (mouseenter)="onMouseEnter()"
+    (mouseleave)="onMouseLeave()">
+    @if(isHover) {
+    <img [src]="srcImagePressed">
+    }@else {
+    <img [src]="srcImageReleased">
+    }
+</div>

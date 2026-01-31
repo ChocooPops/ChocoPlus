@@ -1,0 +1,9 @@
+<div class="containerPagination">
+    <div class="paginations">
+        @for(page of pagination; track page.id) {
+        <div class="numPagination"
+            [ngClass]="{'backgroundWhite' : page.isDisplayed, 'backgroundGrey' : !page.isDisplayed}"></div>
+        }
+        <div [style.width.vw]="marginLeft"></div>
+    </div>
+</div>

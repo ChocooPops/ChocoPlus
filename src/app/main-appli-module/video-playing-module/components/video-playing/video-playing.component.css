@@ -1,0 +1,136 @@
+.container {
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    overflow: hidden;
+
+    p {
+        color: white;
+        font-size: 16px;
+        margin: 0;
+        font-weight: bold;
+    }
+}
+
+.hidden-cursor {
+    cursor: none;
+}
+
+app-action-key {
+    z-index: 20;
+}
+
+.container-interface-controls {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+}
+
+.container-controls {
+    width: 97%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 35px;
+}
+
+.container-button {
+    width: 100%;
+    height: 30px;
+    display: grid;
+    grid-template: 100% / 1fr 1fr 1fr;
+    padding-inline: 10px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.container-text {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+
+    p {
+        text-align: center;
+    }
+}
+
+.position-left {
+    justify-content: left;
+}
+
+.position-right {
+    justify-content: right;
+}
+
+.container-group-button {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    gap: 25px;
+    position: relative;
+}
+
+.container-forward {
+    display: flex;
+    gap: 20px;
+    height: 40px;
+}
+
+.controls-hidden {
+    visibility: hidden;
+    animation: disappears 0.3s ease-out;
+}
+
+.controls-displayed {
+    display: block;
+    animation: appears 0.3s ease-out;
+}
+
+@keyframes appears {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes disappears {
+    from {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+}
+
+.height {
+    height: 100%;
+    aspect-ratio: 16/9;
+}
+
+.width {
+    width: 100%;
+    aspect-ratio: 16/9;
+}

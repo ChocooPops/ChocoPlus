@@ -1,0 +1,111 @@
+.container-input-other-title {
+    display: flex;
+    flex-direction: column;
+    background-color: #141414;
+    position: relative;
+    z-index: 999;
+}
+
+.container-button {
+    position: absolute;
+    right: -65px;
+    top: 0;
+    transform: scale(0.8);
+}
+
+.input-text {
+    width: 100%;
+    height: 45px;
+    border: solid white 2px;
+    border-top: none;
+    background-color: transparent;
+    box-sizing: border-box;
+}
+
+.container-input-other-title .input-text:last-child {
+    border-radius: 5px;
+}
+
+.container-input {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.flag {
+    height: calc(100% - 2px);
+    width: 40px;
+    transition: background-color 0.3s;
+    position: absolute;
+    right: 2px;
+    top: 0px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        height: 20px;
+    }
+
+    &:hover {
+        background-color: #303030;
+    }
+}
+
+input {
+    color: white;
+    font-size: 18px;
+    padding-left: 15px;
+}
+
+input::placeholder {
+    color: #585858;
+    opacity: 0.8;
+}
+
+input:focus {
+    outline: none;
+    border-color: white;
+}
+
+.container-choose-language {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    min-width: 40px;
+    max-width: 120px;
+    min-height: 40px;
+    z-index: 999;
+    flex-wrap: wrap;
+    background-color: #161616;
+    border-radius: 3px;
+    box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.4), -15px -15px 15px rgba(0, 0, 0, 0.4);
+}
+
+.container-language {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-radius: 2px;
+    position: relative;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #303030;
+    }
+
+    img {
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}

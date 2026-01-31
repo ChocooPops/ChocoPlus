@@ -1,0 +1,335 @@
+.containerPoster {
+    z-index: 20;
+    display: grid;
+    grid-template: 83% 17% / 100%;
+    margin: 0;
+    transition: transform 0.4s ease-out, border 0.3s, box-shadow 0.1s;
+    border-radius: 5px;
+    position: relative;
+    box-sizing: border-box;
+    transform-origin: center center;
+}
+
+.heightForEdition {
+    display: grid;
+    grid-template: 100% / 100%;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.containerPoster img {
+    border-radius: 5px 5px 0 0;
+    border: none;
+}
+
+.containerPosterPicture {
+    cursor: pointer;
+    transition: box-shadow 0.4s, border-radius 0.3s;
+    height: 100%;
+    width: 100%;
+    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 5px;
+
+    img {
+        height: 100%;
+        object-fit: cover;
+        border: transparent solid 2px;
+    }
+}
+
+.border-if-src-poster-is-undefined {
+    border: #40424a8a solid 1px;
+    border-radius: 5px;
+}
+
+.container-quality {
+    height: auto;
+    width: auto;
+    border-radius: 1.5px;
+    padding-inline: 0.31vw;
+    padding-block: 1.5px;
+    border: #8C8C8C solid 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p {
+        word-break: keep-all;
+    }
+}
+
+.duration {
+    font-size: 0.4vw;
+    margin: 0;
+    word-break: keep-all;
+    font-weight: bold;
+}
+
+.quality {
+    color: #8C8C8C;
+}
+
+.container-first-line {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 0;
+}
+
+.containerButtonInterface {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin: 0;
+}
+
+.containerInfoInterface {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    margin: 0;
+    overflow: hidden;
+}
+
+.containerKeyWords {
+    display: flex;
+    gap: 7px;
+    margin: 0;
+    align-items: left;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    p {
+        white-space: nowrap;
+    }
+}
+
+.containerKeyWords::-webkit-scrollbar {
+    height: 1px;
+}
+
+.containerInterfacePoster {
+    height: 100%;
+    width: auto;
+    background-color: rgb(20, 20, 20);
+    opacity: 0;
+    transition: opacity 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.52vw;
+    padding-left: 0.9vw;
+}
+
+.text {
+    font-size: 0.32vw;
+    margin: 0;
+    font-weight: bold;
+    word-break: keep-all;
+}
+
+.containerPosterPressed {
+    box-shadow: 0 0 10px 3px rgb(0, 0, 0);
+    border-radius: 5px;
+    border: #40424a8a solid 1px;
+    overflow-y: hidden;
+    position: relative;
+
+    img {
+        border-radius: 5px 5px 0 0;
+        border: none;
+    }
+
+    .containerPosterPicture {
+        box-shadow: 15px 15px 15px transparent;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .border-if-src-poster-is-undefined {
+        border: none;
+    }
+
+    .containerInterfacePoster {
+        opacity: 1;
+    }
+}
+
+.containerInterfacePosterPressed {
+    opacity: 1;
+}
+
+.titlePoster {
+    width: 90%;
+    font-size: 1vw;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.216);
+    color: white;
+    border-radius: 5px;
+    padding-block: 1.3vw;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Quand écran < 1400px */
+@media (max-width: 1400px) {
+    .text {
+        font-size: 0.45vw;
+    }
+
+    .duration {
+        font-size: 0.55vw;
+    }
+
+    .titlePoster {
+        font-size: 1.5vw;
+    }
+
+    .containerPoster {
+        border-radius: 4px;
+    }
+
+    .containerPosterPicture {
+        border-radius: 4px;
+    }
+
+    .containerPoster img {
+        border-radius: 4px 4px 0 0;
+    }
+
+    .border-if-src-poster-is-undefined {
+        border-radius: 4px;
+    }
+
+    .containerPosterPressed {
+        border-radius: 4px;
+    }
+
+    .containerPosterPressed img {
+        border-radius: 4px 4px 0 0;
+    }
+
+    .containerPosterPressed .containerPosterPicture {
+        border-radius: 4px 4px 0 0;
+    }
+
+    .containerButtonInterface {
+        gap: 3px;
+    }
+
+    .containerInterfacePoster {
+        padding-left: 1.1vw;
+    }
+}
+
+/* Quand écran < 1100px */
+@media (max-width: 1100px) {
+    .text {
+        font-size: 0.55vw;
+    }
+    .duration {
+        font-size: 0.65vw;
+    }
+    .titlePoster {
+        font-size: 2vw;
+    }
+
+    .containerPoster {
+        border-radius: 3px;
+    }
+
+    .containerPosterPicture {
+        border-radius: 3px;
+    }
+
+    .containerPoster img {
+        border-radius: 3px 3px 0 0;
+    }
+
+    .border-if-src-poster-is-undefined {
+        border: 3px;
+    }
+
+    .containerPosterPressed {
+        border-radius: 3px;
+    }
+
+    .containerPosterPressed img {
+        border-radius: 3px 3px 0 0;
+    }
+
+    .containerPosterPressed .containerPosterPicture {
+        border-radius: 3px 3px 0 0;
+    }
+
+    .containerButtonInterface {
+        gap: 2px;
+    }
+
+    .containerInterfacePoster {
+        padding-left: 1.2vw;
+    }
+}
+
+/* Quand écran < 700px */
+@media (max-width: 700px) {
+    .text {
+        font-size: 0.73vw;
+    }
+    .duration {
+        font-size: 0.93vw;
+    }
+    .titlePoster {
+        font-size: 2.5vw;
+    }
+
+    .containerPoster {
+        border-radius: 2px;
+    }
+
+    .containerPoster img {
+        border-radius: 2px 2px 0 0;
+    }
+
+    .containerPosterPicture {
+        border-radius: 2px;
+    }
+
+    .border-if-src-poster-is-undefined {
+        border: 2px;
+    }
+
+    .containerPosterPressed {
+        border-radius: 3px;
+    }
+
+    .containerPosterPressed img {
+        border-radius: 3px 3px 0 0;
+    }
+
+    .containerPosterPressed .containerPosterPicture {
+        border-radius: 3px 3px 0 0;
+    }
+
+    .container-first-line {
+        gap: 5px;
+    }
+
+    .containerButtonInterface {
+        gap: 2px;
+    }
+
+    .containerInterfacePoster {
+        padding-left: 1.3vw;
+    }
+
+    .container-quality {
+        padding-inline: 0.7vw;
+        border-radius: 1px;
+    }
+}

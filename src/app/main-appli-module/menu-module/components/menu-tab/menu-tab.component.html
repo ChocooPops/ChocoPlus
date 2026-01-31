@@ -1,0 +1,11 @@
+<div class="section" (click)="onClick()">
+    <div class="sectionName">
+        @if(menuTab.srcImage != undefined) {
+        <img [src]="menuTab.srcImage">
+        }
+        <p> {{menuTab.name}} </p>
+    </div>
+    @if(activateUnderline) {
+    <div class="ligne"></div>
+    }
+</div>

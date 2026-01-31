@@ -1,0 +1,19 @@
+<div class="container-posters">
+    @for(poster of posters; track poster.id) {
+    <div class="container-poster">
+        <app-input-image-edition [displayRemoveButton]="false" [srcImageAdded]="poster.srcPoster"
+            [srcImageAdded]="poster.srcPoster" (inputChange)="onClickFillPoster(poster.id, $event)"
+            (deleteImage)="onClickRemove(poster.id)" [typeInputImage]="3" [exText]="ex"></app-input-image-edition>
+        @if(posters.length > 1) {
+        <div class="containerBtRemove" (click)="onClickRemove(poster.id)">
+            <img [src]="srcRemove">
+        </div>
+        }@else if (poster.srcPoster != undefined && poster.srcPoster != null) {
+        <div class="containerBtRemove" (click)="onClickRemove(poster.id)">
+            <img [src]="srcRemove">
+        </div>
+        }
+    </div>
+    }
+    <app-button-add (click)="onClickAddPoster()"></app-button-add>
+</div>

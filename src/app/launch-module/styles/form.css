@@ -1,0 +1,21 @@
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.label {
+    font-size: 24px;
+    color: #f6f6f6;
+    font-weight: bold;
+}
+
+.container-message {
+    padding-block: 10px;
+    text-align: center;
+
+    p {
+        margin: 0;
+        padding: 0;
+    }
+}

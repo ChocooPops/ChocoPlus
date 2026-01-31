@@ -1,0 +1,7 @@
+<form [formGroup]="formGroup" class="containerInputArea" [ngClass]="currentClass">
+    <textarea class="inputTextArea" formControlName="inputValue" [placeholder]="placeHolder"
+        [maxLength]="maxLength"></textarea>
+    <div class="wordLimit">
+        <p>{{actualLength}} / {{maxLength}} mots</p>
+    </div>
+</form>

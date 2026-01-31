@@ -1,0 +1,19 @@
+<div class="container-home">
+    @if(seriesSelected != undefined) {
+    <app-media-page></app-media-page>
+    }
+
+    @if(seriesShowHome) {
+    <app-video-running-presentation [newsMedia]="seriesShowHome"></app-video-running-presentation>
+    }@else {
+    <app-video-running-presentation-loading></app-video-running-presentation-loading>
+    }
+
+    <div class="container-license-series">
+        <div class="divTmp"></div>
+    </div>
+
+    <div class="container-selection">
+        <app-selections-list [selections]="seriesSelection" [format]="format"></app-selections-list>
+    </div>
+</div>

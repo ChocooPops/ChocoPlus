@@ -1,0 +1,61 @@
+.containerLicenceSearch {
+    border-radius: 5px;
+    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+    overflow: hidden;
+    border: 2px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s;
+    position: relative;
+    box-sizing: border-box;
+
+    &:hover {
+        border: solid white 2px;
+        transform: scale(1.1);
+    }
+}
+
+.containerImageLicense {
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        z-index: 50;
+    }
+}
+
+.titleLicenceSearch {
+    width: 90%;
+    font-size: 1.5vw;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.216);
+    color: white;
+    border-radius: 5px;
+    padding-block: 1.3vw;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Quand écran < 1100px */
+@media (max-width: 1100px) {
+    .titleLicenceSearch {
+        font-size: 2.5vw;
+        padding-block: 2vw;
+    }
+}
+
+/* Quand écran < 700px */
+@media (max-width: 700px) {
+    .titleLicenceSearch {
+        font-size: 3vw;
+        padding-block: 3vw;
+    }
+}

@@ -1,0 +1,33 @@
+.licenseSearched {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    background-color: #353535;
+    border-bottom: solid 2px white;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-left: 50px;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    &:hover {
+        background-color: #585858;
+    }
+}
+
+.containerImage {
+    height: 40px;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    img {
+        max-width: 150px;
+        max-height: 40px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+}

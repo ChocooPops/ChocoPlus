@@ -1,0 +1,16 @@
+<div class="container-page">
+    <div class="container-men-tmp">
+        <app-menu-tmp></app-menu-tmp>
+    </div>
+    <div class="container-edition">
+        <div class="container-parameters">
+            <app-edition-parameters></app-edition-parameters>
+        </div>
+        <div class="container-dividing-bar">
+            <div class="dividing-bar" (mousedown)="onMouseDown($event)"></div>
+        </div>
+        <div class="container-router-outlet">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+<div class="container-list-episode">
+    @for(episode of episodes; track episode.id; let idx = $index) {
+    <div class="container-episode">
+        <div class="container-index">
+            <p class="index">{{ episode.episodeNumber}}</p>
+        </div>
+        <div class="container-poster" (click)="start.onClick()">
+            <div class="container-tmp-poster">
+                <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                    [idSeason]="episode.seasonId" [idEpisode]="episode.id"></app-start-button>
+            </div>
+            <img [src]="episodePoster[idx]">
+        </div>
+        <div class="container-info">
+            <p class="title"> {{ episode.name }} </p>
+            @if(notRunning) {
+            <p class="description"> {{ episode.description }} </p>
+            <div class="container-other-info">
+                <p class="other-info"> {{ getTimerEpisode(episode.time) }} </p>
+                <p class="other-info"> {{ episode.date | date:'d MMMM, y'}} </p>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>

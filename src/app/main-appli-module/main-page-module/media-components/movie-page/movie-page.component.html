@@ -1,0 +1,19 @@
+<div class="container-home">
+    @if(movieSelected != undefined) {
+    <app-media-page></app-media-page>
+    }
+
+    @if(movieShowHome) {
+    <app-video-running-presentation [newsMedia]="movieShowHome"></app-video-running-presentation>
+    }@else {
+    <app-video-running-presentation-loading></app-video-running-presentation-loading>
+    }
+
+    <div class="container-license-movie">
+        <div class="divTmp"></div>
+    </div>
+
+    <div class="container-selection">
+        <app-selections-list [selections]="movieSelections" [format]="format"></app-selections-list>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+<div class="container">
+    <div class="container-form-movie">
+        <div class="container-first-line">
+            @if(date) {
+            <p>{{ date | date:'yyyy' }}</p>
+            }
+            @if(series.seasons.length > 1) {
+            <p> {{ series.seasons.length }} Saisons </p>
+            }@else {
+            <p> {{ series.seasons.length }} Saison </p>
+            }
+            <div class="container-quality">
+                <p> Series </p>
+            </div>
+        </div>
+        <div class="container-movie-placement">
+            <p class="title" [ngClass]="'margin-bottom-title'"> {{ series.title }}
+            </p>
+            @if(description !== '') {
+            <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
+            }
+            <p [ngClass]="'margin-bottom-text'"> <span>Réalisateur : </span> {{ director }}</p>
+            <p [ngClass]="'margin-bottom-text'"> <span>Acteurs : </span> {{ actors }}</p>
+            <p [ngClass]="'margin-bottom-text'"> <span>Genres :</span> {{ genre }} </p>
+            <p [ngClass]="'margin-bottom-text'"> <span>Un film :</span> {{ keyWord }} </p>
+        </div>
+        <div class="separation-bar"> </div>
+
+        <div class="container-same-title">
+            <p (click)="onClickTypeSeasonsEpisodes()" [ngClass]="{'color-white-dark' : type, 'color-grey-dark' :!type}">
+                Saisons / Episodes</p>
+            <p (click)="onClickTypeSimilarTitles()" [ngClass]="{'color-white-dark' : !type, 'color-grey-dark' :type}">
+                Titres
+                similaires</p>
+        </div>
+    </div>
+
+    @if(type) {
+    <div class="container-series" [ngClass]="'animationPosterAndLicense'">
+        <div class="container-season">
+            @if(seasons.length > 0) {
+            @for(season of seasons; track season.id; let idx = $index) {
+            <div class="container-poster" (click)="onClickSeason(idx)">
+                @if(season.isClicked) {
+                <div class="container-icon-selected">
+                    <img [src]="srcSucces">
+                </div>
+                }
+                <div class="container-tmp-poster"></div>
+                @if(season.srcPoster) {
+                <img class="poster" [src]="season.srcPoster" (error)="onErrorPosterSeason(idx)">
+                } @else {
+                <p> {{ season.name }} </p>
+                }
+            </div>
+            }
+            @for(seasonTmp of seasonsPosterTmp; track seasonTmp) {
+            <div class="container-poster">
+                <div class="container-tmp-poster"></div>
+            </div>
+            }
+            } @else {
+            @for(season of seasonsLoading; track season) {
+            <div class="container-poster" [ngClass]='"container-animation-gradient-poster"'>
+            </div>
+            }
+            }
+        </div>
+        @if(episodes) {
+        <app-episode-poster [series]="series" [episodes]="episodes"
+            [ngClass]="'animationPosterAndLicense'"></app-episode-poster>
+        }@else {
+        <app-episode-poster-loading></app-episode-poster-loading>
+        }
+    </div>
+    } @else {
+    @if(similarMedias) {
+    <div class="container-similar-movies" [ngClass]="'animationPosterAndLicense'">
+        @for (media of similarMedias; track media) {
+        <app-similar-poster (onClicked)="onClickSimilarTitle($event)" [media]="media"></app-similar-poster>
+        }
+    </div>
+    }@else {
+    <div class="container-similar-movies">
+        @for(media of similarMediasLoading; track media) {
+        <app-similar-poster-loading></app-similar-poster-loading>
+        }
+    </div>
+    }
+    }
+
+    <div class="margin-bottom"></div>
+</div>

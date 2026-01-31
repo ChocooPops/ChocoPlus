@@ -1,0 +1,24 @@
+<div class="container-license">
+    @if(license) {
+    @if(mediaSelected != undefined) {
+    <app-media-page></app-media-page>
+    }
+
+    <div class="container-logo">
+        <div class="tmp"></div>
+        <div class="logo" [ngClass]="{'animationPosterAndLicense' : true}">
+            @if(srcLogo != undefined) {
+            <img [src]="srcLogo" (error)="onErrorLogo()" class="logo-img">
+            }@else {
+            <p class="title-logo"> {{ license.name }} </p>
+            }
+        </div>
+    </div>
+    <div class="espace"></div>
+
+    <app-selections-list [selections]="license.selectionList" [format]="format"
+        [licenseLoading]="true"></app-selections-list>>
+    }@else {
+    <app-license-components-loading [format]="format"></app-license-components-loading>
+    }
+</div>

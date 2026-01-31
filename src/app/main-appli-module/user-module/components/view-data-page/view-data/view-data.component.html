@@ -1,0 +1,15 @@
+<div class="container">
+  @if(loadData) {
+  @defer() {
+  <app-graph></app-graph>
+  }
+  }@else {
+  <div class="container-bt">
+    <p> La visualisation de la base de donnée peut consommer énormément de ressource pour les ordinateurs les moins
+      performant </p>
+    <div class="bt" (click)="onClick()">
+      <p>Charger le graphe</p>
+    </div>
+  </div>
+  }
+</div>

@@ -1,0 +1,26 @@
+<div class="container-licenses-home">
+    <div class="container-pagination">
+        <app-pagination [pagination]="pagination" [marginLeft]="marginLeft"></app-pagination>
+    </div>
+
+    <div class="container-list-license" [style.height.vw]="height">
+        <app-scroll-button [direction]="true" [displayScrollButton]="displayScrollLeft" (hasBeenClicked)="clickLeft()"
+            [height]="height" [width]="marginLeft"></app-scroll-button>
+        <app-scroll-button [direction]="false" [displayScrollButton]="displayScrollRight"
+            (hasBeenClicked)="clickRight()" [height]="height" [width]="marginLeft"></app-scroll-button>
+
+        <div class="list-license-home" [style.gap.vw]="gap" [style.margin-left.vw]="marginLeft"
+            [ngClass]="{'activateTransition' : activateTransition, 'disableTransition' : !activateTransition}"
+            [style.left.px]="offsetX">
+            @if(licenceHomeList) {
+            @for(licenceHome of licenseShowed; track licenceHome.id) {
+            <app-home-license [licenceHome]="licenceHome"></app-home-license>
+            }
+            }@else {
+            @for(license of licenseLoadingList; track license) {
+            <app-poster-loading [height]="height" [width]="width"></app-poster-loading>
+            }
+            }
+        </div>
+    </div>
+</div>

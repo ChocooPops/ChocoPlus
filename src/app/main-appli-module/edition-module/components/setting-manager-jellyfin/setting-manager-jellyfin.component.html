@@ -1,0 +1,42 @@
+<app-popup (emitActionData)="emitActionData()"></app-popup>
+
+<div class="containerSettingSelected">
+
+    <div class="container-buttons">
+        <div class="container-button" (click)="onClickButton(1)">
+            <p> Reset All Jellyfin Item's Movie </p>
+        </div>
+
+        <div class="container-button" (click)="onClickButton(2)">
+            <p> Reset All Jellyfin Item's Series </p>
+        </div>
+
+        <div class="container-button" (click)="onClickButton(3)">
+            <p> Reset All Movie's Data </p>
+        </div>
+
+        <div class="container-button" (click)="onClickButton(4)">
+            <p> Reset All Series's Data </p>
+        </div>
+
+        <div class="container-button" (click)="onClickButton(5)">
+            <p> Save All Movie Don't Saved </p>
+        </div>
+        <div class="container-button" (click)="onClickButton(6)">
+            <p> Save All Series Don't Saved </p>
+        </div>
+        <div class="container-button" (click)="onClickButton(7)">
+            <p> Rewrite all Similar Title's Data </p>
+        </div>
+        <div class="container-button" (click)="onClickButton(8)">
+            <p> Reload All Profil Picture </p>
+        </div>
+    </div>
+
+    <div class="container-result">
+        @if(object) {
+        <ngx-json-viewer [json]="object"></ngx-json-viewer>
+        }
+    </div>
+
+</div>

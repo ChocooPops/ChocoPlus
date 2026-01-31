@@ -1,0 +1,66 @@
+button {
+    height: 45px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: 0.3s background-color, 0.3s border;
+    border-radius: 3px;
+}
+
+.button-submit {
+
+    button {
+        background-color: #FFD812;
+        border: #FFD812 solid 2px;
+        color: black;
+    }
+
+    button:focus {
+        border: #FFD812 solid 2px;
+        outline: none;
+    }
+
+    button:hover {
+        background-color: #FFCB21;
+        border: #FFCB21 solid 2px;
+    }
+}
+
+.button-router {
+    button {
+        background-color: transparent;
+        border: #333333 solid 2px;
+        color: #808080;
+    }
+
+    button:focus {
+        border: #333333 solid 2px;
+        outline: none;
+    }
+
+    button:hover {
+        border: #454545 solid 2px;
+    }
+}
+
+.button-off-line {
+
+    button {
+        background-color: #83b4ef;
+        border: #83b4ef solid 2px;
+        color: black;
+    }
+
+    button:focus {
+        border: #83b4ef solid 2px;
+        outline: none;
+    }
+
+    button:hover {
+        background-color: #71a7e8;
+        border: #71a7e8 solid 2px;
+    }
+}

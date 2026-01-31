@@ -1,0 +1,132 @@
+.MovieButtonSizeIfDisplayTypeIsTrue {
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+
+    img {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.containerMovieButton {
+    height: 1vw;
+    width: 1vw;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+
+    img {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+.largestContainerButton {
+    background-color: hsla(0, 100%, 100%, 1);
+    border-radius: 5px;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    gap: 5px;
+    cursor: pointer;
+    padding-inline: 28px;
+    height: 40px;
+
+    p {
+        margin: 0;
+    }
+}
+
+.animationToGrey {
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: hsl(0, 0%, 87%);
+    }
+}
+
+.largestContainerButtonGrey {
+    background-color: hsla(0, 0%, 8%, 0.6);
+    border-radius: 5px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    gap: 10px;
+    cursor: pointer;
+    padding-inline: 28px;
+    height: 40px;
+    transition: 0.2s background-color;
+    position: relative;
+
+    p {
+        margin: 0;
+    }
+
+    &:hover {
+        background-color: hsla(0, 0%, 8%, 1);
+    }
+
+    img {
+        height: 60%;
+    }
+}
+
+
+
+.containerButtonForPresentation {
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    border: solid 2px white;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    transition: 0.3s background-color;
+
+    img {
+        height: 70%;
+        width: 70%;
+    }
+}
+
+.containerButtonForPresentation:hover {
+    background-color: hsla(0, 0%, 100%, 0.1);
+}
+
+
+/* Quand écran < 1400px */
+@media (max-width: 1400px) {
+    .containerMovieButton {
+        height: 1.2vw;
+        width: 1.2vw;
+    }
+}
+
+/* Quand écran < 1100px */
+@media (max-width: 1100px) {
+    .containerMovieButton {
+        height: 1.4vw;
+        width: 1.4vw;
+    }
+}
+
+/* Quand écran < 700px */
+@media (max-width: 700px) {
+    .containerMovieButton {
+        height: 2.2vw;
+        width: 2.2vw;
+    }
+}

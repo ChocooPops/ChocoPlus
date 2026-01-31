@@ -1,0 +1,38 @@
+<div class="scroll-bar-wrapper">
+    <div class="scroll-bar-perso" #scrollBar></div>
+</div>
+
+<div class="containerPosters" #postersContainer [style.transform]="transformStylePoster">
+    @for(poster of posters; track poster.id) {
+    <div class="containerPoster">
+        <app-input-image-edition [displayRemoveButton]="false" [srcImageAdded]="poster.srcPoster"
+            (inputChange)="onFillPoster(poster.id, $event)" [exText]="exText"></app-input-image-edition>
+        @if(posters.length > 1) {
+        <div class="containerBtRemove" (click)="onClickRemovePoster(poster.id)">
+            <img [src]="srcRemove">
+        </div>
+        }@else if (poster.srcPoster != undefined && poster.srcPoster != null) {
+        <div class="containerBtRemove" (click)="onClickRemovePoster(poster.id)">
+            <img [src]="srcRemove">
+        </div>
+        }
+        <div class="containerSelectPosters">
+            @for(selection of poster.typePoster; track selection.id) {
+            <div class="containerSelectPoster">
+                <app-input-selection-type [poster]="poster" [selectionId]="selection.id"
+                    [mediaType]="mediaType"></app-input-selection-type>
+                @if(selectionIsTheLast(poster.id, selection.id)) {
+                <app-button-add (click)="onClickAddNewSelectionInPoster(poster.id)"></app-button-add>
+                }@else {
+                <app-button-delete
+                    (click)="onClickDeleteSelectionInPoster(poster.id, selection.id)"></app-button-delete>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    }
+    <div class="containerButtonAdd">
+        <app-button-add (click)="onClickAddNewPoster()"></app-button-add>
+    </div>
+</div>

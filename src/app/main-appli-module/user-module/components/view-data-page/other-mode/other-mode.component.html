@@ -1,0 +1,8 @@
+<div class="container-other-mode"
+    [ngClass]="{'enable-height' : displayOtherMode, 'disable-height' : !displayOtherMode}">
+    @for (mode of modesGraph; track mode.id) {
+    <div class="container-mode" (click)="loadNewGraph(mode.id)" [ngClass]="{'cliqued' : mode.state}">
+        <p> {{ mode.name }} </p>
+    </div>
+    }
+</div>

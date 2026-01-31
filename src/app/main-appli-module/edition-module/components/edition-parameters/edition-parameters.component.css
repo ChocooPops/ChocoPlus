@@ -1,0 +1,124 @@
+.containerEditionParameters {
+    height: 100%;
+    width: 100%;
+    padding-top: 40px;
+    overflow-y: auto;
+}
+
+.containerEditionParameters::-webkit-scrollbar {
+    height: 0px;
+    width: 0px;
+}
+
+.dividingParameter {
+    height: 4px;
+    width: 90%;
+    background-color: #343434;
+}
+
+.containerParameter {
+    width: 100%;
+    gap: 10px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.containerParameterTab {
+    width: 90%;
+    padding-block: 8px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+    p {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0;
+        padding-inline: 20px;
+        width: auto;
+    }
+
+    img {
+        height: 13px;
+        width: 13px;
+        transform: rotate(90deg);
+        transition: transform 0.3s;
+        margin-right: 10px;
+    }
+
+}
+
+.containerParameterTabPressed {
+    &:hover {
+        background-color: #343434;
+
+        img {
+            transform: rotate(270deg);
+        }
+    }
+}
+
+.containerParameterTabClicked {
+    background-color: #343434;
+
+    img {
+        transform: rotate(270deg);
+    }
+}
+
+.containerTitleParameter {
+    display: grid;
+    grid-template: 1fr / 90% 10%;
+    align-items: center;
+
+}
+
+.containerArrow {
+    display: flex;
+    width: 100%;
+    justify-content: right;
+}
+
+.containerUnderParameters {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    animation: enter 0.5s ease-out;
+
+    p {
+        transition: background-color 0.2s;
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+        padding-block: 8px;
+        padding-left: 10px;
+        cursor: pointer;
+    }
+}
+
+.containerUnderParametersPressed {
+    &:hover {
+        background-color: #343434;
+    }
+}
+
+.containerUnderParametersClicked {
+    background-color: #343434;
+}
+
+@keyframes enter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.margin-block {
+    height: 50px;
+}

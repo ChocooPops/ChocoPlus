@@ -1,0 +1,79 @@
+html,
+body {
+    width: 100%;
+    height: auto;
+    background-color: #141414;
+    color: white;
+    font-family: 'Arial';
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+@font-face {
+    font-family: 'wendy';
+    src: url('../public/police/wendy.ttf');
+}
+
+@font-face {
+    font-family: 'knewave';
+    src: url('../public/police/knewave.ttf');
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 12px;
+    z-index: 50;
+}
+
+::-webkit-scrollbar-track {
+    background: #222;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+::-webkit-scrollbar-corner {
+    background: #222;
+}
+
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+img {
+    -webkit-user-drag: none;
+}
+
+@keyframes scroll-game {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+:root {
+    --grey: #808080;
+    --grey-dark: #535353;
+    --white-dark: #E6E6E6;
+}
+
+.ngx-json-viewer .segment-key {
+    color: #99b3ff !important;
+}
+
+.ngx-json-viewer .segment-value {
+    color: #ffe252 !important;
+}

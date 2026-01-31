@@ -1,0 +1,33 @@
+<div class="menu" [ngClass]="{'menu-visible' : isScrolled && activateTransition, 'menu-transparent' : !isScrolled && activateTransition,
+    'enable-transition' : activateTransition, 'disable-transition' : !activateTransition
+}">
+    <div class="section">
+        <img src="icon/choco.svg">
+    </div>
+</div>
+<div class="menu2">
+    <div class="section">
+        <img src="icon/choco.svg">
+    </div>
+    @for(menuTab of menuTabs; track menuTab.id) {
+    <app-menu-tab [menuTab]="menuTab"></app-menu-tab>
+    }
+
+    @if(menuPlus.length > 0) {
+    <div class="container-menu-plus" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        <app-menu-tab [menuTab]="plusTab"></app-menu-tab>
+        <div class="container-tabs-plus" [ngClass]="class">
+            @for(menuTab of menuPlus; track menuTab.id) {
+            <div class="container-option" (click)="tab.onClick()">
+                <app-menu-tab #tab [menuTab]="menuTab" [activateUnderline]="false"></app-menu-tab>
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+    <div class="container-other-tab">
+        <app-change-format-poster></app-change-format-poster>
+        <app-user-tab></app-user-tab>
+    </div>
+</div>

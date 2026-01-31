@@ -1,0 +1,169 @@
+<app-popup (emitActionData)="emitAddSeries()"></app-popup>
+
+<div class="containerSettingSelected">
+
+    <div class="containerFieldToFill">
+        <app-input-button-info-series (toggleTypeInfo)="modifyTypeInfoDisplayed($event)"
+            [typeInfo]="typeInfoDisplayed"></app-input-button-info-series>
+    </div>
+
+    @if(!typeInfoDisplayed) {
+    <div class="containerFieldToFill">
+        <p>Title <span class="yellow">*</span></p>
+        <div class="container-flex">
+            <div class="container-input">
+                <app-input-text-edition [text]="editSeries.title" [placeHolder]="placeHolderTitle"
+                    (onInputChange)="onInputTitle($event)"
+                    (keydown.enter)="onClickButtonTmdb()"></app-input-text-edition>
+                <div #buttonOtherLanguage class="container-img-language" (click)="toggleOtherTitleDisplayed()"
+                    [ngClass]="{'container-img-language-border' : displayOtherTitles}">
+                    <img [src]="srcLanguage">
+                </div>
+                @if(displayOtherTitles) {
+                <div #otherTitles class="container-input-multi-language">
+                    <app-input-language-title [titles]="editSeries.otherTitles"
+                        (changeTitles)="onInputOtherTitles($event)"></app-input-language-title>
+                </div>
+                }
+            </div>
+            <app-ai-button (clickEmit)="onClickButtonTmdb()" #buttonSearchTmdb></app-ai-button>
+        </div>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Jellyfin Id <span class="yellow">*</span></p>
+        <div class="container-flex">
+            <app-input-text-edition [text]="editSeries.jellyfinId" [placeHolder]="placeHolderJellyfinId"
+                (onInputChange)="onInputJellyfinId($event)"
+                (keydown.enter)="onClickButtonJellyfin()"></app-input-text-edition>
+            <app-ai-button (clickEmit)="onClickButtonJellyfin()" #buttonSearchJellyfin></app-ai-button>
+        </div>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Creator <span class="yellow">**</span></p>
+        <app-input-keywords-edition [keyWords]="editSeries.directors" (onInputChange)="onInputDirector($event)"
+            [placeHolder]="placeHolderDirector"></app-input-keywords-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Acteurs <span class="yellow">**</span></p>
+        <app-input-keywords-edition [keyWords]="editSeries.actors" (onInputChange)="onInputActors($event)"
+            [placeHolder]="placeHolderActor"></app-input-keywords-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Date d'apparition de la série <span class="yellow">**</span></p>
+        <app-input-date [date]="editSeries.date" (onInputChange)="onInputDate($event)"></app-input-date>
+    </div>
+
+    <div class="containerFieldToFill" [ngClass]="{'NgClass' : true}">
+        <p>Intervalle de présentation du film <span class="yellow">**</span></p>
+        <div class="containerAllInputTimer">
+            <div class="containerInputTimer">
+                <p>Début :</p>
+                <app-input-time-edition [time]="editSeries.startShow"
+                    (onInputChange)="modifyStartShow($event)"></app-input-time-edition>
+            </div>
+            <div class="containerInputTimer">
+                <p>Fin :</p>
+                <app-input-time-edition [time]="editSeries.endShow"
+                    (onInputChange)="modifyEndShow($event)"></app-input-time-edition>
+            </div>
+        </div>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Category <span class="yellow">**</span></p>
+        <app-input-categories-edition (onChangeCategory)="onInputCategory($event)"
+            [categoriesSelected]="editSeries.categories"></app-input-categories-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Key Words <span class="yellow">**</span></p>
+        <app-input-keywords-edition [keyWords]="editSeries.keyWords"
+            (onInputChange)="onInputKeyWords($event)"></app-input-keywords-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Description</p>
+        <app-input-text-area-edition [text]="editSeries.description" (onInputChange)="onInputDescription($event)"
+            [maxLength]="maxLength"></app-input-text-area-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Logo du film <span class="yellow">**</span></p>
+        <app-input-image-edition [srcImageAdded]="editSeries.logo" (inputChange)="onInputLogo($event)"
+            [exText]="exTextLogo" [typeInputImage]="2"></app-input-image-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Poster <span class="yellow">*</span></p>
+        <app-input-poster-edition (fillPoster)="fillPoster($event)" (removeSelection)="removeSelection($event)"
+            (addNewSelection)="addNewSelection($event)" (removePoster)="deletePoster($event)"
+            (addNewPoster)="addNewPoster()" [posters]="editSeries.posters"
+            [mediaType]="mediaType"></app-input-poster-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Image second-plan du film <span class="yellow">**</span></p>
+        <app-input-image-edition [srcImageAdded]="editSeries.backgroundImage"
+            (inputChange)="onInputBackgroundImage($event)" [exText]="exTestBackgroundImage"
+            [typeInputImage]="3"></app-input-image-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Poster Horizontal <span class="yellow">*</span></p>
+        <div class="container-radio-button-and-poster">
+            <p> Poster Horizontal identique au background ?</p>
+            <app-input-radio-button [radioButton]="buttonHorizontalSameAsBack" [group]="groupPosterHorizontalBack"
+                (changeEmit)="modifyStateHorizontalPoster($event)"></app-input-radio-button>
+        </div>
+        <app-input-poster-horizontal-edition [posters]="editSeries.horizontalPoster"
+            (addNewPoster)="addPosterHorizontal()" (removePoster)="removePosterHorizontal($event)"
+            (fillPoster)="fillPosterHorizontal($event)"></app-input-poster-horizontal-edition>
+    </div>
+    } @else {
+    <div class="containerFieldToFill">
+        <app-edit-list-season (deleteSeason)="deleteSeasonByIndex($event)"
+            (selectSeason)="changeSeasonIndexSelected($event)" (addSeason)="addNewSeason()" [seasons]="editSeasons"
+            [seasonSelected]="seasonIndexSelected"></app-edit-list-season>
+    </div>
+    @if(seasonIndexSelected >= 0 && editSeasons[seasonIndexSelected]) {
+    <div class="containerFieldToFill">
+        <app-edit-season [season]="editSeasons[seasonIndexSelected]"
+            (changeTitleSeason)="modifyNameBySeasonIndex(seasonIndexSelected, $event)"
+            (changeJellyfinIdSeason)="modifyJellyfinIdBySeasonIndex(seasonIndexSelected, $event)"
+            (fillPosterSeason)="modifyPosterBySeasonIndex(seasonIndexSelected, $event)"></app-edit-season>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Episodes <span class="yellow">*</span></p>
+        @for(episode of editSeasons[seasonIndexSelected].episodes; track episode.id; let episodeIndex = $index) {
+        <div class="container-episode">
+            <app-edit-episode [episode]="episode"
+                (deleteEpisode)="deleteEpisodeByIndex(seasonIndexSelected, episodeIndex)"
+                (changePoster)="modifyPosterEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
+                (changeJellyfinId)="modifyJellyfinIdEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
+                (changeTitle)="modifyTitleEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
+                (changeDescription)="modifyDescriptionEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
+                (changeDate)="modifyDateEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
+                (moveToTop)="moveEpisodeToTop(seasonIndexSelected, episodeIndex)"
+                (moveToBottom)="moveEpisodeToBottom(seasonIndexSelected, episodeIndex)"></app-edit-episode>
+        </div>
+        }
+        <div class="container-add-episode">
+            <app-button-add (click)="addNewEpisode(seasonIndexSelected)"></app-button-add>
+        </div>
+    </div>
+
+    }
+    }
+
+    <div class="containerFieldToFill">
+        <div class="containerLastButton">
+            <app-button-remove (clickEmit)="onClickReset()"></app-button-remove>
+            <app-button-save (clickEmit)="onClickAddSeries()"></app-button-save>
+        </div>
+    </div>
+</div>

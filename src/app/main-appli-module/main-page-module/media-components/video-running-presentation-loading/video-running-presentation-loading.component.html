@@ -1,0 +1,43 @@
+<div class="container-preload">
+
+    <div class="container-movie-presentation">
+        <div class="container-video" [ngClass]="{'container-animation-gradient-little' : true}">
+        </div>
+        <div class="set-position">
+            <div class="container-movie-information">
+                <div class="container-info-absolute">
+                    <div class="container-logo"
+                        [ngClass]="{'size-logo-not-during-streaming' : true, 'container-animation-gradient-normal' : true}">
+                    </div>
+                    <div class="container-description" [ngClass]="{'container-animation-gradient-normal' : true}"
+                        style="border-radius: 0px;">
+                        <p class="hidden"> {{ text }}</p>
+                    </div>
+                    <div class="container-column-button">
+                        <div class="container-row-button">
+                            <div class="container-animation-gradient-little">
+                                <app-start-button class="hidden"></app-start-button>
+                            </div>
+                            <div class="container-animation-gradient-little">
+                                <app-vlc-button class="hidden" [typeButton]="true"></app-vlc-button>
+                            </div>
+                            <div class="container-other-row-button">
+                                <div class="container-animation-gradient-little">
+                                    <app-volume-button class="hidden"></app-volume-button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-row-button">
+                            <div class="container-animation-gradient-little">
+                                <app-mylist-button class="hidden" [typeButton]="true"></app-mylist-button>
+                            </div>
+                            <div class="container-animation-gradient-little">
+                                <app-modify-button class="hidden" [typeButton]="true"></app-modify-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

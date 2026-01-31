@@ -1,0 +1,20 @@
+<div class="containerMainError" [ngClass]="{'errorVisible' : displayError, 'errorHidden' : !displayError}">
+    <div class="conntainerIconWarning">
+        <img [src]="srcWarning">
+    </div>
+    <div class="containerMessageError">
+        <div class="containerTitleError">
+            <p>Erreur</p>
+            <div class="underscore"></div>
+        </div>
+        <div class="containerText">
+            <p>Lecture impossible. Le flux vidéo est introuvable ou sont éxécution rencontre des problèmes. Vérifiez
+                le chemin de votre vidéo ou votre requête Web HTTP. </p>
+            <br>
+        </div>
+        <div class="containerButton">
+            <button class="white" (click)="onClickCancel()">Annuler</button>
+            <button class="yellow" (click)="onClickBack()">Retour</button>
+        </div>
+    </div>
+</div>

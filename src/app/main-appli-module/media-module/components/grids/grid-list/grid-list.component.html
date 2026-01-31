@@ -1,0 +1,5 @@
+@if(format === FormatType.VERTICAL) {
+<app-vertical-grid [mediaList]="mediaList" [title]="title"></app-vertical-grid>
+}@else if (format === FormatType.HORIZONTAL) {
+<app-horizontal-grid [mediaList]="mediaList" [title]="title"></app-horizontal-grid>
+}

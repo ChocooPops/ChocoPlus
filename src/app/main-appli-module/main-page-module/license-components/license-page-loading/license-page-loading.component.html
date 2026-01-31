@@ -1,0 +1,15 @@
+<div class="container-logo">
+    <div class="tmp"></div>
+    <div class="tmp">
+        <div class="logo-loading" [ngClass]="{'container-animation-gradient-normal' : true}">
+        </div>
+    </div>
+</div>
+
+<div class="espace"></div>
+
+<app-selection-loading [type]="SelectionType.LICENSE_POSTER"></app-selection-loading>
+@for(selection of selections; track selection.id) {
+<app-selection-loading [type]="selection.value" [format]="format"></app-selection-loading>
+}
+<div class="margin-tmp"></div>

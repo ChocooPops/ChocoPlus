@@ -1,0 +1,5 @@
+.container-input-other-title {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}

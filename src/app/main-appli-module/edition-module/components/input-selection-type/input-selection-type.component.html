@@ -1,0 +1,21 @@
+<div class="containerSelectTypePoster">
+    <div class="containerMainSelection" (click)="onClick()"
+        [ngClass]="{'borderRadiusEveryWhere' : !isClick, 'borderRadiusBottom' : isClick}">
+        <div class="containerSelectedType">
+            <p> {{nameSelectedType}}</p>
+        </div>
+        <div class="containerArrow">
+            <img [src]="srcArrow">
+        </div>
+    </div>
+    @if(isClick) {
+    <div class="containerListTypeSelection">
+        @for(typeSelectionPoster of getSelectionNotSelected(); track typeSelectionPoster.id) {
+        <div class="containerTypeSelection" (click)="onClickSelection(typeSelectionPoster.type)">
+            <p>{{typeSelectionPoster.name}}</p>
+        </div>
+        }
+
+    </div>
+    }
+</div>

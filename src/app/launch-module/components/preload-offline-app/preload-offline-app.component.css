@@ -1,0 +1,76 @@
+.container-prelaod {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+p {
+    font-family: 'knewave';
+    text-align: center;
+    font-size: 26px;
+    color: #f6f6f6;
+}
+
+.container-loading {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 165px;
+    position: relative;
+    transition: transform 0.3s ease-out;
+    transform-origin: center center;
+    animation: zoom 0.5s;
+    cursor: pointer;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+
+    img {
+        height: 100%;
+        image-rendering: crisp-edges;
+    }
+}
+
+.container-loading::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    z-index: 999;
+    height: 100%;
+    background: linear-gradient(to right, hsla(0, 0%, 9%, 0.7) 0%, #16161600 100%);
+    width: 20px;
+}
+
+.container-loading::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    z-index: 999;
+    height: 100%;
+    width: 20px;
+    background: linear-gradient(to right, #16161600 0%, hsla(0, 0%, 9%, 0.7) 100%);
+}
+
+@keyframes zoom {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1s);
+    }
+}
+
+.container-button {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}

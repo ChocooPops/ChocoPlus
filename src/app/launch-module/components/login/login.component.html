@@ -1,0 +1,26 @@
+<div class="container-login">
+    <p class="label">S'identifier</p>
+
+    <form [formGroup]="formGroup">
+        <input [formControlName]="formControlEmail" [placeholder]="placeHolderEmail" type="text">
+        <div class="container-textarea">
+            <input [formControlName]="formControlAccessKey" [placeholder]="placeHolderAccessKey"
+                (keydown.enter)="onSubmit()" [type]="type">
+            <div class="container-image" (click)="onChangeVisibilityOfKeyAccess()">
+                <img [src]="srcImageKey">
+            </div>
+        </div>
+        <div class="container-message">
+            <p> {{ message }} </p>
+        </div>
+
+        <app-button-form [name]="nameButtonLogin" [type]="TypeButtonModel.SUBMIT"
+            (clickEmit)="onSubmit()"></app-button-form>
+        <app-button-form [name]="nameButtonRegister" [type]="TypeButtonModel.NEXT_PAGE"
+            (clickEmit)="navigateToRegisterPage()"></app-button-form>
+        <app-button-form [name]="nameButtonOffLine" [type]="TypeButtonModel.NEXT_PAGE"
+            (clickEmit)="navigateToOfflineMode()"></app-button-form>
+
+    </form>
+
+</div>

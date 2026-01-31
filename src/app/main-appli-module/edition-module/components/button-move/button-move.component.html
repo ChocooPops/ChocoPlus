@@ -1,0 +1,8 @@
+<button class="containerButtonMove" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [ngClass]="{'directionTop' : direction === 1, 'directionBottom' :direction === 2, 'directionRight' :direction === 3, 
+    'directionLeft' : direction != 1 && direction != 2 && direction != 3}">
+    @if(isHover) {
+    <img [src]="srcImagePressed">
+    }@else {
+    <img [src]="srcImage">
+    }
+</button>

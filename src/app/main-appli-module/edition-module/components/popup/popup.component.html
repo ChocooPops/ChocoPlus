@@ -1,0 +1,29 @@
+@if(displayPopup) {
+<div class="container" (click)="onClick()">
+    <div class="container-popup" (click)="onClickPopup($event)"
+        [ngClass]="{'animation' : true, 'background-false' : !back, 'background-true' : back}">
+        @if(messages) {
+        <div class="container-message">
+            @for(message of messages; track message) {
+            <p> {{ message }}</p>
+            }
+            <div class="last-message">
+                <img [src]="srcImage">
+            </div>
+        </div>
+        }@else {
+        <div class="little-spinner"></div>
+        }
+        @if(displayButton) {
+        <div class="container-buttons">
+            <div class="container-button" (click)="onClickCancel()">
+                <p>Annuler</p>
+            </div>
+            <div class="container-button" (click)="onClickValidate()">
+                <p>Valider</p>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+}

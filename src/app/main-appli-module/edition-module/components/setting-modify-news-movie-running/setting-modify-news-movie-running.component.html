@@ -1,0 +1,31 @@
+<app-popup (emitActionData)="onFetchModifyNewsSeries()"></app-popup>
+
+<div class="containerSettingSelected">
+    <div class="containerFieldToFill">
+        <p> Ajouter un film comme news <span>*</span></p>
+        <app-input-research-movie (addContentResearched)="addMediaIntoNews($event)"></app-input-research-movie>
+    </div>
+
+    @if(displayLoader) {
+    <div class="container-laoder-content">
+        <div class="little-spinner"></div>
+    </div>
+    }@else {
+    <div class="container-news-running-video">
+        @for(videoRunning of editNewsRunningVideo; track videoRunning) {
+        <app-edit-new-video-running (deleteNews)="deleteMediaIntoNews($event)"
+            (modifyStartShow)="modifyStartShowById($event)" (modifyEndShow)="modifyEndShowById($event)"
+            (modifySrcBackground)="modifySrcBackground($event)"
+            [videoRunning]="videoRunning"></app-edit-new-video-running>
+        }
+    </div>
+
+    <div class="containerFieldToFill">
+        <div class="containerLastButton">
+            <app-button-remove [type]="false" (clickEmit)="resetNewsMovie()"></app-button-remove>
+            <app-button-save (clickEmit)="saveNewsMovie()"></app-button-save>
+        </div>
+    </div>
+    }
+
+</div>

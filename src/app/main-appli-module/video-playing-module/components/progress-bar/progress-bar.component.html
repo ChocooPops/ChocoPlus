@@ -1,0 +1,11 @@
+<div class="container-timer">
+    <div #progressRef class="container-progress-bar" (click)="updateProgressBar($event)"
+        (mousedown)="startDragProgressBar($event)" (mouseup)="endDragProgressBar($event)">
+        <div class="container-progress-bar-info">
+            <div class="progress-bar" [style.width.%]="progress">
+                <div class="pointer"></div>
+            </div>
+        </div>
+    </div>
+    <p> {{ currentTimeTravelled }} / {{ totalDurationMovie }} </p>
+</div>

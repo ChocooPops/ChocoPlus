@@ -1,0 +1,55 @@
+<app-popup (emitActionData)="emitAddSelection()"></app-popup>
+
+<div class="containerSettingSelected">
+    <div class="containerFieldToFill">
+        <p> Type de sélection <span>*</span> </p>
+        <app-input-radio-button [radioButton]="radioButtonTypeSelection" [group]="groupTypeSelection"
+            (changeEmit)="changeTypeSelection($event)"></app-input-radio-button>
+
+        @if(radioButtonTypeSelection[0].state) {
+        <p class="info">Les sélections normales sont représentées par de plus petite affiche. Elles sont créées <br>
+            automatiquement à partir de vos catégories mais vous pouvez aussi en créer pour qu’elles soient plus
+            spécifiques </p>
+        <div class="containerSeparationBar">
+            <div class="separationBar"></div>
+        </div>
+        } @else if (radioButtonTypeSelection[1].state) {
+        <p class="info">Les sélections spéciales sont représentées par de plus grande affiche, <br>
+            à la différence des sélections normale elles ne sont pas crée automatiquement dans l’interface de streaming
+        </p>
+        <div class="containerSeparationBar">
+            <div class="separationBar"></div>
+        </div>
+        }
+    </div>
+
+    @if (radioButtonTypeSelection[0].state || radioButtonTypeSelection[1].state) {
+    <div class="containerFieldToFill">
+        <p> Nom de la sélection normale <span>*</span> </p>
+        <app-input-text-edition [placeHolder]="placeHolderNameSelection" [text]="editSelection.name"
+            (onInputChange)="changeSelectionName($event)"></app-input-text-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p> Ajouter un film dans la sélection <span>*</span> </p>
+        <app-input-research-movie (addContentResearched)="addMediaIntoSelection($event)"></app-input-research-movie>
+    </div>
+    <div class="containerFieldToFill">
+        <p> Ajouter une série dans la sélection <span>*</span> </p>
+        <app-input-research-series (addContentResearched)="addMediaIntoSelection($event)"></app-input-research-series>
+    </div>
+
+    <div class="containerFieldToFill">
+        <app-selection-overview [mediaSelectionList]="selectionTabFormated" (moveMediaLeftEmit)="moveMediaLeft($event)"
+            (moveMediaRightEmit)="moveMediaRight($event)"
+            (removeMediaEmit)="removeMedia($event)"></app-selection-overview>
+    </div>
+
+    <div class="containerFieldToFill">
+        <div class="containerLastButton">
+            <app-button-remove (clickEmit)="onClickReset()"></app-button-remove>
+            <app-button-save (clickEmit)="onClickAddSelection()"></app-button-save>
+        </div>
+    </div>
+    }
+</div>

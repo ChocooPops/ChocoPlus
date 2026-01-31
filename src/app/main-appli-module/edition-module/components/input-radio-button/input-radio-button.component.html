@@ -1,0 +1,14 @@
+<form>
+    <div class="radio-group">
+        @for(button of radioButton; track button.id) {
+        @if(button.value != undefined && button.state != undefined) {
+        @if(button.state) {
+        <input type="radio" [id]="button.id" [name]="group" (change)="onRadioChange(button.id)" checked>
+        }@else {
+        <input type="radio" [id]="button.id" [name]="group" (change)="onRadioChange(button.id)">
+        }
+        <label [for]="button.id"> {{button.name}} </label>
+        }
+        }
+    </div>
+</form>

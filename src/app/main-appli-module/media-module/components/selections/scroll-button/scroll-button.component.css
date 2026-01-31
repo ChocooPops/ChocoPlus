@@ -1,0 +1,59 @@
+.scrollButton {
+    position: absolute;
+    z-index: 99;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.scrollButton img {
+    width: 1.8vw;
+    min-width: 20px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.scrollButton:hover img {
+    opacity: 1;
+}
+
+/* Boutons gauche et droite */
+
+.scrollButtonLeft {
+    left: 0;
+    justify-content: left;
+    padding-left: 3px;
+}
+
+.scrollButtonRight {
+    right: 0;
+    justify-content: right;
+    padding-right: 3px;
+}
+
+.scrollButtonRight img {
+    transform: rotate(180deg);
+}
+
+
+/* Quand écran < 1400px */
+@media (max-width: 1400px) {
+    .scrollButton {
+        width: 2.5vw;
+    }
+}
+
+/* Quand écran < 1100px */
+@media (max-width: 1100px) {
+    .scrollButton {
+        width: 3.5vw;
+    }
+}
+
+/* Quand écran < 700px */
+@media (max-width: 700px) {
+    .scrollButton {
+        width: 4.5vw;
+    }
+}

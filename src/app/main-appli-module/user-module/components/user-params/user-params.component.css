@@ -1,0 +1,102 @@
+.container-user-params {
+    background-color: #232323;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    padding: 35px;
+    border-radius: 5px;
+}
+
+.container-pp {
+    height: 130px;
+    width: 130px;
+    overflow: hidden;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+
+    img {
+        height: 130px;
+        width: 130px;
+    }
+
+    &:hover {
+        .container-tmp {
+            opacity: 0.4;
+        }
+    }
+}
+
+.container-tmp {
+    height: 100%;
+    width: 100%;
+    background-color: #232323;
+    opacity: 0;
+    transition: 0.3s opacity;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.container-info-user {
+    display: flex;
+    width: 100%;
+    height: 175px;
+    gap: 20px;
+    justify-content: left;
+
+    img {
+        height: 130px;
+        width: 130px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+}
+
+.info-user {
+    margin-top: 5px;
+}
+
+.pseudo {
+    font-size: 28px;
+    color: var(--white-dark);
+    margin-bottom: 15px;
+}
+
+.text {
+    color: var(--grey);
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+p {
+    margin: 0;
+    font-weight: bold;
+}
+
+.container-params {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 85%;
+}
+
+.current-param {
+    color: var(--white-dark);
+}
+
+.not-current-param {
+    color: var(--grey-dark);
+}
+
+.container-param {
+    font-size: 20px;
+    height: auto;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+        color: var(--white-dark);
+    }
+}

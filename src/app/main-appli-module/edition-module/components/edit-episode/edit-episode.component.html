@@ -1,0 +1,36 @@
+<div class="container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeaving()">
+    <div class="container-left">
+        @if(isHovering) {
+        <app-button-delete (click)="onDeleteEpisode()" [displayPicture]="true"
+            class="animationEditField"></app-button-delete>
+        } @else {
+        <div class="container-episode-number" [ngClass]="'animationEditField'">
+            <p> {{ episode.episodeNumber}} </p>
+        </div>
+        }
+    </div>
+    <div class="container-info">
+        <app-input-text-edition (onInputChange)="onChangeJellyfinId($event)" [placeHolder]="'Jellyfin_id'"
+            [text]="episode.jellyfinId"></app-input-text-edition>
+        <div class="container-simple">
+            <app-input-image-edition (inputChange)="onChangePoster($event)" [typeInputImage]="4"
+                [srcImageAdded]="episode.srcPoster"></app-input-image-edition>
+            <div class="container-info">
+                <app-input-text-edition (onInputChange)="onChangeTitle($event)" [placeHolder]="'Titre'"
+                    [text]="episode.name"></app-input-text-edition>
+                <app-input-text-area-edition (onInputChange)="onChangeDescritpion($event)" [mode]="true"
+                    [placeHolder]="'Description'" [maxLength]="maxLength"
+                    [text]="episode.description"></app-input-text-area-edition>
+            </div>
+            <div class="container-info">
+                <div class="container-info">
+                    <app-input-date (onInputChange)="onChangeDate($event)" [date]="episode.date"></app-input-date>
+                </div>
+                <div class="container-button-direction">
+                    <app-button-move [direction]="1" (click)="onMoveToTop()"></app-button-move>
+                    <app-button-move [direction]="2" (click)="onMoveToBottom()"></app-button-move>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

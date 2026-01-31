@@ -1,0 +1,109 @@
+.container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 9999;
+}
+
+.container-popup {
+    min-height: 200px;
+    height: auto;
+    width: 600px;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    box-shadow: 10px 10px 15px black;
+    padding-block: 30px;
+    padding-inline: 15px;
+    box-sizing: border-box;
+}
+
+.background-false {
+    background-color: #1a1a1a;
+}
+
+.background-true {
+    background-color: #232323;
+}
+
+
+p {
+    margin: 0;
+    font-weight: bold;
+    text-align: center;
+}
+
+@keyframes enter {
+    from {
+        opacity: 0.5;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animation {
+    animation: 0.25s enter ease-in;
+}
+
+.container-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+.container-button {
+    border: 2px white solid;
+    background-color: transparent;
+    border-radius: 5px;
+    color: white;
+    transition: 0.3s color, 0.3s background-color;
+    height: auto;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+        background-color: white;
+        color: black;
+    }
+
+    p {
+        padding-block: 10px;
+        padding-inline: 20px;
+    }
+}
+
+.container-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.last-message {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    img {
+        height: 15px;
+    }
+}

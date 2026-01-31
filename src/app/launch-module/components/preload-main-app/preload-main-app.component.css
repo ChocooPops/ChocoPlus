@@ -1,0 +1,51 @@
+.container-prelaod {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+p {
+    font-family: 'knewave';
+    text-align: center;
+    font-size: 26px;
+    color: #f6f6f6;
+}
+
+img {
+    height: 144px;
+    width: 144px;
+    object-fit: cover;
+    box-shadow: 4px 4px 10px hsla(0, 0%, 29%, 0.4);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease-out;
+    transform-origin: center center;
+    animation: zoom 0.5s;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.container-loading {
+    margin-top: 50px;
+}
+
+@keyframes zoom {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1s);
+    }
+}
+
+.logout {
+    padding-top: 75px;
+}

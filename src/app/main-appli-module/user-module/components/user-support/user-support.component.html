@@ -1,0 +1,75 @@
+<app-popup [back]="true"></app-popup>
+
+<div class="container">
+    <div class="container-info">
+        <p>Vous êtes témoin d’un dysfonctionnement, alertez-nous pour qu’ils soient corriger le plus plus rapidement
+            possible.</p>
+        <p>Vous voulez regarder un film ou une série non disponible sur la plateforme, n’hésitez pas à nous envoyer une
+            liste du contenu que vous souhaiter regarder.</p>
+    </div>
+
+    <div class="container-form">
+        <div class="container-input">
+            <p class="label">Sujet principal :</p>
+            <div class="selection" #inputSubject
+                [ngClass]="{'border-radius' : !displaySubject, 'border-radius-top' : displaySubject}">
+                @if(currentForm.subject) {
+                <p class="input" (click)="onSubjectClick()"> {{ currentForm.subject }} </p>
+                } @else {
+                <p class="input" (click)="onSubjectClick()"> -- Sélectionnez un sujet -- </p>
+                }
+                <img [src]="srcArrow" class="arrow">
+                @if(displaySubject) {
+                <div class="support-list">
+                    @for(form of formTab; track form.id) {
+                    <div class="item" (click)="onClickItemSubject(form.id)">
+                        <p> {{ form.subject }} </p>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+
+        <div class="container-input">
+            <p class="label">Thème ou Zone concernée :</p>
+            <div class="selection" #inputTheme
+                [ngClass]="{'border-radius' : !displayTheme, 'border-radius-top' : displayTheme}">
+                @if(currentForm.areaConcerned) {
+                <p class="input" (click)="onThemeClick()"> {{ currentForm.areaConcerned }} </p>
+                } @else {
+                <p class="input" (click)="onThemeClick()"> -- Sélectionnez un thème -- </p>
+                }
+                <img [src]="srcArrow" class="arrow">
+                @if(displayTheme) {
+                <div class="support-list">
+                    @for(form of formThemeTab; track form) {
+                    <div class="item" (click)="onClickItemTheme(form)">
+                        <p> {{ form }} </p>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+
+        <div class="container-input" style="height: 50%;">
+            <p class="label">Message :</p>
+            <form [formGroup]="formGroup">
+                <textarea rows="7" [formControlName]="formControlMessage"></textarea>
+                <p>{{ currentLength }}/{{ maxLength}} caractères</p>
+            </form>
+        </div>
+
+        <div class="container-button">
+            <div class="button" (click)="resetForm()">
+                <p>Annuler</p>
+            </div>
+            <div class="button" (click)="sendForm()">
+                <p>Envoyer</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>

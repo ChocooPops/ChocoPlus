@@ -1,0 +1,26 @@
+<div class="container-series">
+
+    <div class="containerFieldToFill">
+        <p> Liste des saisons </p>
+        <div class="container-seasons">
+            @for (season of series.seasons; track season; let idx = $index) {
+            <div class="container-season-name" (click)="onClickSeason(idx)"
+                [ngClass]="{'button-on-focus' : season.isClicked, 'button-dont-focus' : !season.isClicked}">
+                <p> {{ season.name }} </p>
+            </div>
+            }
+        </div>
+        @if(episodes) {
+        <div class="container-episodes" [ngClass]="'animationEditField'">
+            @for(episode of episodes; track episode.id) {
+            <div class="container-episode-on-edit-video-running">
+                <img [ngClass]="{'current-episode' : episode.jellyfinId === currentJellyfinId}"
+                    [src]="episode.srcPoster" (click)="onChangeJellyfinEpisode(episode.jellyfinId)">
+                <p class="title-episode"> {{ episode.name }} </p>
+            </div>
+            }
+        </div>
+        }
+    </div>
+
+</div>

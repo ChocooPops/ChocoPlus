@@ -1,0 +1,27 @@
+<div class="containerEditionParameters">
+
+    @for(editionParameter of editionParameters; track editionParameter.id) {
+    <div class="containerParameter">
+        <div class="dividingParameter"></div>
+        <div class="containerParameterTab" (click)="onClickParameter(editionParameter.id)"
+            [ngClass]="{'containerParameterTabPressed' : !editionParameter.isClicked, 'containerParameterTabClicked' : editionParameter.isClicked}">
+            <div class="containerTitleParameter">
+                <p> {{editionParameter.name}}</p>
+                <div class="containerArrow">
+                    <img [src]="srcImageArrow" alt="arrow">
+                </div>
+            </div>
+        </div>
+        @if(editionParameter.isClicked) {
+        <div class="containerUnderParameters">
+            @for(underParameter of editionParameter.underParameter; track underParameter.id) {
+            <p (click)="onClickUnderParameter(editionParameter.id, underParameter.id)"
+                [ngClass]="{'containerUnderParametersClicked' : underParameter.isClicked, 'containerUnderParametersPressed' : !underParameter.isClicked}">
+                {{underParameter.name}}</p>
+            }
+        </div>
+        }
+    </div>
+    }
+    <div class="margin-block"></div>
+</div>

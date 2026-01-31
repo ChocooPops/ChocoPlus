@@ -1,0 +1,79 @@
+<div class="container-graph">
+    <svg #svgGraph width="100%" height="100%"></svg>
+    <div class="container-overview">
+        <div class="title">
+            <p> Overview </p>
+            <img class="img-button" [src]="srcImageName" [ngClass]="{'img-border' : labelsVisible}"
+                (click)="toggleLabels()">
+            <form [formGroup]="formGroup">
+                <input type="text" [formControlName]="formInputSearch" (keydown.enter)="onSearchNode()">
+                <img [src]="srcImageSearch" class="img-search">
+            </form>
+        </div>
+        <p> Node label </p>
+        <div class="container-legends">
+            @for(legend of legends; track legend) {
+            <div class="container-legend">
+                <div class="legend" [style.background-color]="legend.color">
+                    <p> {{legend.name }} ({{ legend.effective }})</p>
+                </div>
+                <div class="container-is-visible" (click)="onClickVisibilityLegends(legend)">
+                    @if(legend.isVisible) {
+                    <img [src]="srcVisible">
+                    }@else {
+                    <img [src]="srcNotVisible">
+                    }
+                </div>
+            </div>
+            }
+        </div>
+        @if(nodeClicked && nodeClicked.length > 0) {
+        <div class="container-node-clicked">
+            <div class="title">
+                <p> Information du Noeud </p>
+                <img class="img-button" [src]="srcImageGraph" [ngClass]="{'img-border' : isNewGraph}"
+                    (click)="createNewGraphAccordingToNodeClicked()">
+                <img class="img-button-edit" [src]="srcEdition" (click)="onClickEdit()">
+            </div>
+
+            <div class="container-field">
+                <p>Id</p>
+                <div class="link">
+                    <p> {{ nodeClicked[0].id }} </p>
+                    <div class="point" [style.background-color]="nodeClicked[0].color"></div>
+                </div>
+            </div>
+            <div class="container-field">
+                <p>Name</p>
+                <p> {{ nodeClicked[0].name }} </p>
+            </div>
+            <div class="container-field">
+                <p>Effectif</p>
+                <p> {{ nodeClicked.length - 1 }} </p>
+            </div>
+            <div class="container-field">
+                <p>links</p>
+                <div class="container-field-link">
+                    @for (node of nodeClicked; track $index) {
+                    @if($index !== 0) {
+                    <div class="link">
+                        <div class="point" [style.background-color]="node.color"></div>
+                        <p> {{ node.id }} -- {{ node.name}} </p>
+                    </div>
+                    }
+                    }
+                </div>
+            </div>
+        </div>
+        }
+
+        @if(user && user.role === RoleModel.ADMIN) {
+        <div class="container-arrow">
+            <img [src]="srcImageArrow" (click)="toggleDisplayOtherMode()"
+                [ngClass]="{'arrow-180deg' : diplayOtherMode}">
+        </div>
+        <app-other-mode [displayOtherMode]="diplayOtherMode"></app-other-mode>
+        }
+
+    </div>
+</div>

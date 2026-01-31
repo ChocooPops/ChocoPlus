@@ -1,0 +1,84 @@
+.containerSelectTypePoster {
+    display: flex;
+    flex-direction: column;
+    height: 40px;
+    width: 200px;
+    position: relative;
+    font-size: 18px;
+    gap: 5px;
+    overflow: visible;
+}
+
+.containerMainSelection {
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    border: solid 2px white;
+    text-align: center;
+    position: relative;
+    display: grid;
+    grid-template: 100% / 88% 12%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.borderRadiusEveryWhere {
+    border-radius: 5px;
+}
+
+.borderRadiusBottom {
+    border-radius: 5px 5px 0 0;
+}
+
+.containerArrow {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        height: 30%;
+        transform: rotate(-90deg)
+    }
+}
+
+.containerSelectedType {
+    height: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.containerListTypeSelection {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    top: 110%;
+    position: absolute;
+    cursor: pointer;
+    z-index: 99;
+}
+
+.containerTypeSelection {
+    width: 100%;
+    padding-block: 10px;
+    background-color: #353535;
+    text-align: center;
+
+    &:hover {
+        background-color: #585858;
+    }
+
+    p {
+        margin: 0;
+    }
+}
+
+.containerListTypeSelection .containerTypeSelection:last-child {
+    border-radius: 0px 0px 5px 5px;
+}

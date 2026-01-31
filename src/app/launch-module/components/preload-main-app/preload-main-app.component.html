@@ -1,0 +1,20 @@
+@defer (on immediate) {
+<div class="container-prelaod">
+    <p> {{ messageWelcome }} </p>
+    @if(transitionPP) {
+    <img [src]="srcPP" (click)="onClickProfil()" (error)="errorPpUser()">
+    }@else {
+    <img [src]="srcPP" (click)="onClickProfil()" (error)="errorPpUser()">
+    }
+    @if(activateLoader) {
+    <div class="container-loading">
+        <div class="little-spinner"></div>
+    </div>
+    }
+</div>
+@if(!activateLoader) {
+<div class="logout">
+    <app-button-form [name]="nameButtonLogin" [type]="TypeButton.NEXT_PAGE" (clickEmit)="onLogout()"></app-button-form>
+</div>
+}
+}

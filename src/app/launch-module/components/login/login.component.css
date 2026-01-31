@@ -1,0 +1,31 @@
+.container-textarea {
+    height: auto;
+    width: auto;
+    position: relative;
+    background-color: #282828;
+    border-radius: 2px;
+    height: 80px;
+}
+
+.container-image {
+    height: 35px;
+    width: 35px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #282828;
+    border-radius: 2px;
+    transition: 0.3s background-color;
+
+    &:hover {
+        background-color: #222222;
+    }
+
+    img {
+        height: 50%;
+    }
+}

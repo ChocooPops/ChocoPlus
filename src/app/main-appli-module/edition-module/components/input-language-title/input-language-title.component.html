@@ -1,0 +1,26 @@
+<div class="container-input-other-title" (click)="onClickContainer()">
+    <div class="container-button">
+        <app-button-add (click)="addNewTitle()"></app-button-add>
+    </div>
+    @for(title of titles; track title.iso_639_1) {
+    <div class="container-input">
+        <input #myInput class="input-text" type="text" [value]="title.title"
+            (blur)="onBlur(title.iso_639_1, myInput.value)">
+        <div class="flag">
+            <img [src]="srcImages[title.iso_639_1]" (click)="onClickLanguage(title.iso_639_1, $event)">
+        </div>
+        @if(displayLanguageChoice[title.iso_639_1]) {
+        <div class="container-choose-language">
+            @for (iso of isoAvailable; track iso) {
+            <div class="container-language" (click)="changeLanguage(title.iso_639_1, iso)">
+                <img [src]="srcImages[iso]">
+            </div>
+            }
+            <div class="container-language">
+                <img [src]="srcDelete" (click)="deleteTitle(title.iso_639_1)">
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>

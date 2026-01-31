@@ -1,0 +1,16 @@
+@if(mediaSelected != undefined) {
+<app-media-page></app-media-page>
+}
+
+<div class="container-home">
+    <app-menu-tmp></app-menu-tmp>
+
+    <div class="container-news">
+        <app-news-list [newsList]="news"></app-news-list>
+    </div>
+
+    <app-home-license-list></app-home-license-list>
+    <div class="space_1"></div>
+    <app-selections-list [selections]="selections" [format]="format"></app-selections-list>
+
+</div>

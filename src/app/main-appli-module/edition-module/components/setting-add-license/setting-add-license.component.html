@@ -1,0 +1,71 @@
+<app-popup (emitActionData)="emitAddLicense()"></app-popup>
+
+<div class="containerSettingSelected">
+
+    <div class="containerFieldToFill">
+        <p>Emplacement de la License <span>*</span></p>
+        <app-input-radio-button (changeEmit)="modifyLicensePosition($event)"
+            [radioButton]="radioButtonLocationLicense"></app-input-radio-button>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Nom de la License <span>*</span></p>
+        <app-input-text-edition [text]="editLicense.name" [placeHolder]="placeHolderInputText"
+            (onInputChange)="modifyNameLicense($event)"></app-input-text-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Illustration du bouton renvoyant sur la licence <span>**</span></p>
+        <app-input-image-edition (inputChange)="onModifyImageLicense($event)" [srcImageAdded]="editLicense.srcIcon"
+            [typeInputImage]="3" [exText]="placeHolderInputButton"></app-input-image-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Image en arrière-plan de la page <span>**</span></p>
+        <app-input-image-edition (inputChange)="onModifyBackgroundImageLicense($event)"
+            [srcImageAdded]="editLicense.srcBackground" [typeInputImage]="3"
+            [exText]="placeHolderInputBack"></app-input-image-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Logo de la licence <span>**</span></p>
+        <app-input-image-edition (inputChange)="onModifyLogoLicense($event)" [srcImageAdded]="editLicense.srcLogo"
+            [typeInputImage]="2" [exText]="placeHolderInputLogo"></app-input-image-edition>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Ajouter un film dans la licence <span>*</span></p>
+        <app-input-research-movie (addContentResearched)="addMediaIntoSelection($event)"></app-input-research-movie>
+    </div>
+    <div class="containerFieldToFill">
+        <p>Ajouter une série dans la licence <span>*</span></p>
+        <app-input-research-series (addContentResearched)="addMediaIntoSelection($event)"></app-input-research-series>
+    </div>
+
+    <div class="containerFieldToFill">
+        <app-selection-overview [mediaSelectionList]="mediasIntoLicense" (moveMediaLeftEmit)="moveMediaLeft($event)"
+            (moveMediaRightEmit)="moveMediaRight($event)"
+            (removeMediaEmit)="removeMedia($event)"></app-selection-overview>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Ajouter une sélection dans votre licence <span>*</span></p>
+        <app-input-research-selection (addContentResearched)="addMediaSelection($event)"></app-input-research-selection>
+    </div>
+
+    <div class="containerFieldToFill">
+        @if(editLicense.selectionList) {
+        <app-selection-overview (moveSelectionBottomEmit)="moveSelectionBottom($event)"
+            (moveSelectionTopEmit)="moveSelectionTop($event)" (removeSelectionEmit)="removeSelection($event)"
+            [mediaSelectionList]="allSelectionsIntoLicense" [displaButtonForMediaLicense]="false"
+            [displaySettingSelection]="true"></app-selection-overview>
+        }
+    </div>
+
+    <div class="containerFieldToFill">
+        <div class="containerLastButton">
+            <app-button-remove (clickEmit)="onClickReset()"></app-button-remove>
+            <app-button-save (clickEmit)="onClickAddLicense()"></app-button-save>
+        </div>
+    </div>
+</div>

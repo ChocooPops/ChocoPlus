@@ -1,0 +1,15 @@
+<div class="container-movie-selection-loading">
+    <div class="container-header" [style.margin-left.vw]="marginLeftTitle">
+        <div class="container-title" [ngClass]="'container-animation-gradient-little'">
+        </div>
+    </div>
+
+    <div class="container-selection" [style.gap.vw]="gap" [style.margin-left.vw]="marginLeft"
+        [style.margin-bottom.vw]="marginBottom">
+        @for(movie of tabMovie; track movie) {
+        <div class="container-animation-gradient-poster" [style.height.vw]="dimensionPoster.height"
+            [style.width.vw]="dimensionPoster.width">
+        </div>
+        }
+    </div>
+</div>

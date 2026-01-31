@@ -1,0 +1,14 @@
+<div class="container" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeaving()">
+
+    <div class="container-overview"
+        [ngClass]="{'display-seasons-choice' : isHovering, 'hidden-seasons-choice': !isHovering}">
+        <div class="container-qualities">
+            <div class="container-quality">
+                <p class="quality"> Auto </p>
+            </div>
+        </div>
+    </div>
+
+    <app-bt-classic class="app-bt-classic" (hasBeenClicked)="onClick()" [srcFirstImage]="srcImage"
+        [srcSecondImage]="srcImage" [state]="state"></app-bt-classic>
+</div>

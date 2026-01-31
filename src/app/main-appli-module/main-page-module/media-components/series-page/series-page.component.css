@@ -1,0 +1,14 @@
+.container-license-series {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: grid;
+    grid-template: 90% 10% / 100%;
+    aspect-ratio: 1920/1080;
+}
+
+.container-selection {
+    position: relative;
+    z-index: 20;
+    margin-top: -7.5vw;
+}

@@ -1,0 +1,25 @@
+<div class="container-register">
+
+    @if(displayPopup) {
+    <app-opt (close)="onClosePopup()" (sendNewCode)="onSendNewCode()" (validate)="onValidate($event)"></app-opt>
+    }
+
+    <p class="label"> Créer un compte</p>
+
+    <form [formGroup]="formGroup">
+        <input [formControlName]="formControlPseudo" [placeholder]="placeHolderPseudo" type="text">
+        <input [formControlName]="formControlFirstName" [placeholder]="placeHolderFirstName" type="text">
+        <input [formControlName]="formControlLastName" [placeholder]="placeHolderLastName" type="text">
+        <input [formControlName]="formControlDateBorn" type="date">
+        <input [formControlName]="formControlEmail" [placeholder]="placeHolderEmail" type="text">
+
+        <div class="container-message">
+            <p> {{ message }}</p>
+        </div>
+
+        <app-button-form [name]="nameButtonRegister" [type]="TypeButtonModel.SUBMIT"
+            (clickEmit)="onSubmit()"></app-button-form>
+        <app-button-form [name]="nameButtonLogin" [type]="TypeButtonModel.NEXT_PAGE"
+            (clickEmit)="navigateToLoginPage()"></app-button-form>
+    </form>
+</div>

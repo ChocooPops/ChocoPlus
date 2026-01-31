@@ -1,0 +1,59 @@
+<div #mediaPresentationContainer class="container-preload">
+    <div class="container-movie-presentation" [ngClass]="'animationPosterAndLicense'">
+        <div class="container-video">
+            @if(!isVideoLoaded) {
+            @if(srcBackground) {
+            <img [src]="srcBackground" loading="lazy" [ngClass]="'animationPosterAndLicense'">
+            }
+            }
+            <video #videoElement [ngClass]="{'display-video' : isVideoLoaded, 'hidde-video' : !isVideoLoaded}" autoplay>
+            </video>
+        </div>
+
+        <div class="set-position">
+            <div class="container-movie-information">
+                <div class="container-info-absolute">
+                    @if(srcLogo) {
+                    <div class="container-logo"
+                        [ngClass]="{'size-logo-during-streaming' : isVideoLoaded, 'size-logo-not-during-streaming' : !isVideoLoaded, 'enable-logo-transition' : activateTransition, 'disable-logo-transition' : !activateTransition}">
+                        <img [src]="srcLogo" loading="lazy" (error)="onErrorImageLogo()">
+                    </div>
+                    }@else {
+                    <div class="container-logo">
+                        <p>{{ newsMedia.media.title }}</p>
+                    </div>
+                    }
+                    @if(!isVideoLoaded) {
+                    <div class="container-description">
+                        <p>{{ description }}</p>
+                    </div>
+                    }
+                    <div class="container-column-button">
+                        <div class="container-row-button">
+                            <app-start-button [media]="newsMedia.media"></app-start-button>
+
+                            <div class="container-other-row-button">
+                                @if(isVideoLoaded) {
+                                <app-volume-button (changeVolume)="setCurrentVolume($event)"
+                                    [volume]="currentVolume"></app-volume-button>
+                                }@else {
+                                <app-restream-button [idMovie]="newsMedia.media.id" [activateRetream]="activateReStream"
+                                    (emitNewStream)="setNewStream()"></app-restream-button>
+                                }
+                                @if(isVideoLoaded) {
+                                <app-cutoff-button (cutoffMedia)="stopStreamingVideo()"></app-cutoff-button>
+                                }
+                            </div>
+                        </div>
+                        <div class="container-row-button">
+                            <app-mylist-button [typeButton]="true" [media]="newsMedia.media"
+                                [isInList]="newsMedia.media.isInList"></app-mylist-button>
+                            <app-modify-button [typeButton]="true" [idMedia]="newsMedia.media.id"
+                                [mediaType]="newsMedia.media.mediaType"></app-modify-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
