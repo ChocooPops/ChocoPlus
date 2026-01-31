@@ -210,6 +210,7 @@ namespace ChocoPlayer
                 this.WindowState = FormWindowState.Maximized;
                 _isFullscreen = true;
             }
+            _playerControls?.SetFullscreen(_isFullscreen);
             UpdateLayout();
         }
 

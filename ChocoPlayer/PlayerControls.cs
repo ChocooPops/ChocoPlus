@@ -3,55 +3,63 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using System.IO;
+
 namespace ChocoPlayer
 {
     public class PlayerControls : Panel
     {
-        // Progression
         private float _progress = 0.0f;
         private float _volumeProgress = 0.5f;
         private bool _isDragging = false;
         private bool _isDraggingVolume = false;
 
-        // Dimensions ligne de progression
         private int _pointRadius = 8;
         private int _lineHeight = 6;
         private int _leftMargin = 30;
-        private int _rightMargin = 140;
+        private int _rightMargin = 30;
 
-        // Timer et listener
         private IProgressChangeListener? _listener;
         private System.Windows.Forms.Timer? _updateTimer;
 
-        // Affichage
         private string _timeText = "00:00:00 / 00:00:00";
         private Color _colorYellow = Color.FromArgb(255, 211, 1);
         private bool _isPlaying = true;
 
-        // Dimensions boutons
         private int _buttonSize = 30;
-        private int _buttonSpacing = 10;
+        private int _buttonSpacing = 15;
+        private int _buttonMarginBottom = 10;
         private int _buttonsY;
 
-        // Volume
-        private int _volumeBarWidth = 80;
+        private int _volumeBarWidth = 110;
         private int _volumeBarHeight = 4;
         private int _volumePointRadius = 6;
 
-        // Positions X des boutons
         private int _playButtonX;
         private int _volumeButtonX;
         private int _volumeBarX;
         private int _settingsButtonX;
         private int _fullscreenButtonX;
 
-        // Constantes
-        private const int CONTROLS_HEIGHT = 60;
+        private int _timeTextWidth = 0;
+        private int _timeTextGap = 15;
+
+        private const int CONTROLS_HEIGHT = 95;
+
+        private Bitmap? _playIcon;
+        private Bitmap? _pauseIcon;
+        private Bitmap? _volumeIcon;
+        private Bitmap? _volumeMuteIcon;
+        private Bitmap? _settingsIcon;
+        private Bitmap? _fullscreenIcon;
+        private Bitmap? _fullscreenExitIcon;  // AJOUTER CETTE LIGNE
+        private bool _isFullscreen = false;
 
         public PlayerControls()
         {
             this.BackColor = Color.FromArgb(20, 20, 20);
             this.DoubleBuffered = true;
+            LoadIcons();
 
             _updateTimer = new System.Windows.Forms.Timer();
             _updateTimer.Interval = 100;
@@ -69,6 +77,81 @@ namespace ChocoPlayer
             this.MouseMove += PlayerControls_MouseMove;
         }
 
+        private void LoadIcons()
+        {
+            try
+            {
+                string iconsPath = Path.Combine(
+                    Path.GetDirectoryName(Application.ExecutablePath) ?? "",
+                    "icons"
+                );
+
+                Console.WriteLine($"Chemin des icônes: {iconsPath}");
+                Console.WriteLine($"Le dossier existe: {Directory.Exists(iconsPath)}");
+
+                if (!Directory.Exists(iconsPath))
+                {
+                    Console.WriteLine("ERREUR: Le dossier icons n'existe pas!");
+                    return;
+                }
+
+                var pngFiles = Directory.GetFiles(iconsPath, "*.png");
+                Console.WriteLine($"Fichiers PNG trouvés: {pngFiles.Length}");
+                foreach (var file in pngFiles)
+                {
+                    Console.WriteLine($"  - {Path.GetFileName(file)}");
+                }
+
+                _playIcon = LoadPngIcon(Path.Combine(iconsPath, "play.png"));
+                _pauseIcon = LoadPngIcon(Path.Combine(iconsPath, "pause.png"));
+                _volumeIcon = LoadPngIcon(Path.Combine(iconsPath, "volume.png"));
+                _volumeMuteIcon = LoadPngIcon(Path.Combine(iconsPath, "volume-mute.png"));
+                _settingsIcon = LoadPngIcon(Path.Combine(iconsPath, "settings.png"));
+                _fullscreenIcon = LoadPngIcon(Path.Combine(iconsPath, "fullscreen.png"));
+                _fullscreenExitIcon = LoadPngIcon(Path.Combine(iconsPath, "fullscreen-exit.png"));
+
+                Console.WriteLine($"Icônes chargées:");
+                Console.WriteLine($"  Play: {(_playIcon != null ? "OK" : "FAIL")}");
+                Console.WriteLine($"  Pause: {(_pauseIcon != null ? "OK" : "FAIL")}");
+                Console.WriteLine($"  Volume: {(_volumeIcon != null ? "OK" : "FAIL")}");
+                Console.WriteLine($"  Volume Mute: {(_volumeMuteIcon != null ? "OK" : "FAIL")}");
+                Console.WriteLine($"  Settings: {(_settingsIcon != null ? "OK" : "FAIL")}");
+                Console.WriteLine($"  Fullscreen: {(_fullscreenIcon != null ? "OK" : "FAIL")}");
+                Console.WriteLine($"  Fullscreen Exit: {(_fullscreenExitIcon != null ? "OK" : "FAIL")}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du chargement des icônes: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+        }
+
+        private Bitmap? LoadPngIcon(string pngPath)
+        {
+            try
+            {
+                if (!File.Exists(pngPath))
+                {
+                    Console.WriteLine($"Fichier PNG introuvable: {pngPath}");
+                    return null;
+                }
+
+                Console.WriteLine($"Chargement de: {pngPath}");
+
+                // Charger l'image PNG
+                Bitmap originalBitmap = new Bitmap(pngPath);
+
+                Console.WriteLine($"  Image chargée: {originalBitmap.Width}x{originalBitmap.Height}");
+
+                return originalBitmap;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors du chargement de {pngPath}: {ex.Message}");
+                return null;
+            }
+        }
+
         public void SetPosition(int width, int height)
         {
             this.SetBounds(0, height - CONTROLS_HEIGHT, width, CONTROLS_HEIGHT);
@@ -81,10 +164,11 @@ namespace ChocoPlayer
         private void PlayerControls_MouseDown(object? sender, MouseEventArgs e)
         {
             int lineY = this.Height / 2 - 15;
-            int lineWidth = this.Width - _leftMargin - _rightMargin;
+            int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
+            int lineWidth = lineEnd - _leftMargin;
             int progressX = _leftMargin + (int)(_progress * lineWidth);
 
-            if (IsOverPoint(e.X, e.Y, progressX, lineY) || IsOverLine(e.X, e.Y, lineY))
+            if (IsOverPoint(e.X, e.Y, progressX, lineY) || IsOverLine(e.X, e.Y, lineY, lineEnd))
             {
                 _isDragging = true;
                 UpdateProgress(e.X);
@@ -126,11 +210,12 @@ namespace ChocoPlayer
             else
             {
                 int lineY = this.Height / 2 - 15;
-                int lineWidth = this.Width - _leftMargin - _rightMargin;
+                int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
+                int lineWidth = lineEnd - _leftMargin;
                 int progressX = _leftMargin + (int)(_progress * lineWidth);
 
                 if (IsOverPoint(e.X, e.Y, progressX, lineY) ||
-                    IsOverLine(e.X, e.Y, lineY) ||
+                    IsOverLine(e.X, e.Y, lineY, lineEnd) ||
                     IsOverVolumeLine(e.X, e.Y) ||
                     IsOverVolumePoint(e.X, e.Y) ||
                     IsOverAnyButton(e.X, e.Y))
@@ -151,10 +236,10 @@ namespace ChocoPlayer
             return Math.Sqrt(dx * dx + dy * dy) <= _pointRadius + 5;
         }
 
-        private bool IsOverLine(int mouseX, int mouseY, int lineY)
+        private bool IsOverLine(int mouseX, int mouseY, int lineY, int lineEnd)
         {
             return mouseX >= _leftMargin &&
-                   mouseX <= this.Width - _rightMargin &&
+                   mouseX <= lineEnd &&
                    Math.Abs(mouseY - lineY) <= _lineHeight + 5;
         }
 
@@ -216,8 +301,9 @@ namespace ChocoPlayer
 
         private void UpdateProgress(int mouseX)
         {
-            int lineWidth = this.Width - _leftMargin - _rightMargin;
-            int clampedX = Math.Max(_leftMargin, Math.Min(mouseX, this.Width - _rightMargin));
+            int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
+            int lineWidth = lineEnd - _leftMargin;
+            int clampedX = Math.Max(_leftMargin, Math.Min(mouseX, lineEnd));
             _progress = (float)(clampedX - _leftMargin) / lineWidth;
 
             long totalTime = Player.GetTotalTime();
@@ -266,15 +352,41 @@ namespace ChocoPlayer
 
             int width = this.Width;
             int height = this.Height;
+
+            // Position Y centrée pour la barre de progression
             int lineY = height / 2 - 15;
-            int lineWidth = width - _leftMargin - _rightMargin;
+
+            // Calculer la largeur et la hauteur du texte
+            using (Font font = new Font("Arial", 10, FontStyle.Regular))
+            {
+                SizeF textSize = g2d.MeasureString(_timeText, font);
+                _timeTextWidth = (int)textSize.Width;
+                int textHeight = (int)textSize.Height;
+
+                // Position X du texte (à droite)
+                float textX = width - _rightMargin - _timeTextWidth;
+
+                // Position Y du texte - CENTRÉ SUR LA LIGNE
+                // On centre le texte verticalement par rapport à la ligne
+                float textY = lineY - (textHeight / 2f);
+
+                using (SolidBrush brush = new SolidBrush(Color.White))
+                {
+                    // Dessiner le texte aligné verticalement avec la ligne
+                    g2d.DrawString(_timeText, font, brush, new PointF(textX, textY));
+                }
+            }
+
+            // Calculer la fin de la ligne de progression (avant le texte)
+            int lineEnd = width - _rightMargin - _timeTextWidth - _timeTextGap;
+            int lineWidth = lineEnd - _leftMargin;
 
             // Ligne de fond grise
             using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), _lineHeight))
             {
                 pen.StartCap = LineCap.Round;
                 pen.EndCap = LineCap.Round;
-                g2d.DrawLine(pen, _leftMargin, lineY, width - _rightMargin, lineY);
+                g2d.DrawLine(pen, _leftMargin, lineY, lineEnd, lineY);
             }
 
             // Ligne de progression jaune
@@ -305,21 +417,6 @@ namespace ChocoPlayer
                     _pointRadius * 2);
             }
 
-            using (Font font = new Font("SansSerif", 10))
-            using (SolidBrush brush = new SolidBrush(Color.White))
-            {
-                float textX = width - _rightMargin + 10;
-                float textY = lineY;
-
-                StringFormat sf = new StringFormat
-                {
-                    LineAlignment = StringAlignment.Center,
-                    Alignment = StringAlignment.Near
-                };
-
-                g2d.DrawString(_timeText, font, brush, new PointF(textX, textY), sf);
-            }
-
             DrawButtons(g2d);
             DrawVolumeBar(g2d);
         }
@@ -328,25 +425,77 @@ namespace ChocoPlayer
         {
             int width = this.Width;
             int height = this.Height;
-            _buttonsY = height - 30;
+            _buttonsY = height - _buttonSize - _buttonMarginBottom;
 
             _playButtonX = _leftMargin;
             _volumeButtonX = _playButtonX + _buttonSize + _buttonSpacing;
             _volumeBarX = _volumeButtonX + _buttonSize + _buttonSpacing;
-            _fullscreenButtonX = width - 50;
+            _fullscreenButtonX = width - _rightMargin - _buttonSize;
             _settingsButtonX = _fullscreenButtonX - _buttonSize - _buttonSpacing;
 
-            DrawPlaceholderButton(g2d, _playButtonX, _buttonsY, _isPlaying ? "⏸" : "▶");
-            DrawPlaceholderButton(g2d, _volumeButtonX, _buttonsY, _volumeProgress == 0 ? "🔇" : "🔊");
-            DrawPlaceholderButton(g2d, _settingsButtonX, _buttonsY, "⚙");
-            DrawPlaceholderButton(g2d, _fullscreenButtonX, _buttonsY, "⛶");
+            DrawIconButton(g2d, _playButtonX, _buttonsY, _isPlaying ? _pauseIcon : _playIcon, _isPlaying ? "⏸" : "▶");
+            DrawIconButton(g2d, _volumeButtonX, _buttonsY, _volumeProgress == 0 ? _volumeMuteIcon : _volumeIcon, _volumeProgress == 0 ? "🔇" : "🔊");
+            DrawIconButton(g2d, _settingsButtonX, _buttonsY, _settingsIcon, "⚙");
+            DrawIconButton(g2d, _fullscreenButtonX, _buttonsY, _isFullscreen ? _fullscreenExitIcon : _fullscreenIcon, _isFullscreen ? "⊡" : "⛶");
+        }
+
+        public void SetFullscreen(bool isFullscreen)
+        {
+            _isFullscreen = isFullscreen;
+            this.Invalidate();  // Redessiner les contrôles
+        }
+
+        private void DrawIconButton(Graphics g2d, int x, int y, Bitmap? icon, string fallbackText)
+        {
+            // Fond du bouton
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 80, 80, 80)))
+            {
+                g2d.FillRoundedRectangle(brush, x, y, _buttonSize, _buttonSize, 5);
+            }
+
+            // BORDURE DU BOUTON
+            using (Pen borderPen = new Pen(Color.FromArgb(150, 150, 150), 2))  // Gris clair, épaisseur 2
+            {
+                g2d.DrawRoundedRectangle(borderPen, x, y, _buttonSize, _buttonSize, 5);
+            }
+
+            if (icon != null)
+            {
+                // Taille de l'icône (70% de la taille du bouton)
+                int iconSize = (int)(_buttonSize * 0.6f);
+
+                // Calculer la position pour centrer l'icône
+                int iconX = x + (_buttonSize - iconSize) / 2;
+                int iconY = y + (_buttonSize - iconSize) / 2;
+
+                // Dessiner l'icône PNG avec antialiasing de haute qualité
+                g2d.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g2d.CompositingQuality = CompositingQuality.HighQuality;
+                g2d.SmoothingMode = SmoothingMode.HighQuality;
+
+                g2d.DrawImage(icon, iconX, iconY, iconSize, iconSize);
+            }
+            else
+            {
+                // Fallback avec texte
+                using (Font font = new Font("Segoe UI Symbol", 12, FontStyle.Bold))
+                using (SolidBrush textBrush = new SolidBrush(Color.White))
+                {
+                    RectangleF rect = new RectangleF(x, y, _buttonSize, _buttonSize);
+                    StringFormat sf = new StringFormat
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    };
+                    g2d.DrawString(fallbackText, font, textBrush, rect, sf);
+                }
+            }
         }
 
         private void DrawVolumeBar(Graphics g2d)
         {
             int volumeY = _buttonsY + _buttonSize / 2;
 
-            // Ligne de fond
             using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), _volumeBarHeight))
             {
                 pen.StartCap = LineCap.Round;
@@ -354,7 +503,6 @@ namespace ChocoPlayer
                 g2d.DrawLine(pen, _volumeBarX, volumeY, _volumeBarX + _volumeBarWidth, volumeY);
             }
 
-            // Ligne de progression volume
             int volumeProgressX = _volumeBarX + (int)(_volumeProgress * _volumeBarWidth);
             using (Pen pen = new Pen(_colorYellow, _volumeBarHeight))
             {
@@ -363,7 +511,6 @@ namespace ChocoPlayer
                 g2d.DrawLine(pen, _volumeBarX, volumeY, volumeProgressX, volumeY);
             }
 
-            // Point de volume
             using (SolidBrush brush = new SolidBrush(_colorYellow))
             {
                 g2d.FillEllipse(brush,
@@ -380,33 +527,6 @@ namespace ChocoPlayer
                     volumeY - _volumePointRadius,
                     _volumePointRadius * 2,
                     _volumePointRadius * 2);
-            }
-        }
-
-        private void DrawPlaceholderButton(Graphics g2d, int x, int y, string symbol)
-        {
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(80, 80, 80)))
-            {
-                g2d.FillRoundedRectangle(brush, x, y, _buttonSize, _buttonSize, 5);
-            }
-
-            using (Pen pen = new Pen(Color.White, 1))
-            {
-                g2d.DrawRoundedRectangle(pen, x, y, _buttonSize, _buttonSize, 5);
-            }
-
-            using (Font font = new Font("SansSerif", 12, FontStyle.Bold))
-            using (SolidBrush brush = new SolidBrush(Color.White))
-            {
-                RectangleF rect = new RectangleF(x, y, _buttonSize, _buttonSize);
-
-                StringFormat sf = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                g2d.DrawString(symbol, font, brush, rect, sf);
             }
         }
 
@@ -448,9 +568,24 @@ namespace ChocoPlayer
             void OnFullscreenClicked();
             void OnSettingsClicked(int buttonX, int buttonY, int buttonSize);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _playIcon?.Dispose();
+                _pauseIcon?.Dispose();
+                _volumeIcon?.Dispose();
+                _volumeMuteIcon?.Dispose();
+                _settingsIcon?.Dispose();
+                _fullscreenIcon?.Dispose();
+                _fullscreenExitIcon?.Dispose();
+                _updateTimer?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 
-    // Extension pour dessiner des rectangles arrondis
     public static class GraphicsExtensions
     {
         public static void FillRoundedRectangle(this Graphics g, Brush brush, int x, int y, int width, int height, int radius)
@@ -479,5 +614,9 @@ namespace ChocoPlayer
             path.CloseFigure();
             return path;
         }
+
+
     }
+
+
 }
