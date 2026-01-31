@@ -203,23 +203,24 @@ ipcMain.handle('launch-java-app', async (event, dataObject) => {
       }
     );
 
-    // csharpProcess.stdout.on('data', (data) => {
-    //   console.log(`C# stdout: ${data}`);
-    // });
+    csharpProcess.stdout.on('data', (data) => {
+      //console.log(`C# stdout: ${data}`);
+    });
 
-    // csharpProcess.stderr.on('data', (data) => {
-    //   console.error(`C# stderr: ${data}`);
-    // });
+    csharpProcess.stderr.on('data', (data) => {
+      //console.error(`C# stderr: ${data}`);
+    });
 
-    // csharpProcess.on('close', (code) => {
-    //   console.log(`C# process exited with code ${code}`);
-    //   csharpProcess = null;
-    // });
+    csharpProcess.on('close', (code) => {
+      //console.log(`C# process exited with code ${code}`);
+      csharpProcess = null;
+    });
 
-    // csharpProcess.on('error', (err) => {
-    //   console.error('Failed to start C# process:', err);
-    //   csharpProcess = null;
-    // });
+    csharpProcess.on('error', (err) => {
+      //console.error('Failed to start C# process:', err);
+      csharpProcess = null;
+    });
+
     return 'C# Player lancé';
   } catch (err) {
     throw new Error(err.message);

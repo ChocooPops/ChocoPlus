@@ -23,7 +23,6 @@ namespace ChocoPlayer
             this.FormClosing += Form1_FormClosing;
             this.Resize += Form1_Resize;
 
-            // Si un chemin vidéo est fourni, ouvrir la vidéo
             if (!string.IsNullOrEmpty(videoPath))
             {
                 OpenFile(videoPath);
@@ -34,49 +33,36 @@ namespace ChocoPlayer
         {
             Core.Initialize();
 
-            // Arguments VLC optimisés pour les streams en ligne
             string[] vlcArgs = new string[]
             {
                 "--no-video-title-show",
                 "--avcodec-hw=any",
-                
-                // Optimisations pour le streaming
-                "--file-caching=2000",           // Cache pour fichiers locaux (ms)
-                "--network-caching=3000",        // Cache pour streams réseau (ms) - augmenté pour meilleure stabilité
-                "--live-caching=1000",           // Cache pour streams live
+                "--file-caching=2000",
+                "--network-caching=3000",
+                "--live-caching=1000",
                 "--sout-mux-caching=2000",
-                "--clock-jitter=1000",           // Augmenté pour compenser les variations réseau
-                
+                "--clock-jitter=1000",
                 "--no-sub-autodetect-file",
                 "--no-video-deco",
                 "--drop-late-frames",
                 "--skip-frames",
-                
-                // Optimisations codec
                 "--avcodec-skiploopfilter=4",
                 "--avcodec-skip-idct=4",
                 "--avcodec-threads=4",
                 "--avcodec-fast",
-                
-                // Performance
                 "--no-plugins-cache",
                 "--no-stats",
                 "--no-osd",
                 "--quiet",
-                
-                // Audio
                 "--audio-resampler=soxr",
-                
-                // HTTP/Network optimizations
-                "--http-reconnect",              // Reconnexion automatique
-                "--http-continuous",             // Stream continu
-                "--adaptive-logic=highrate",     // Logique adaptative pour streaming
+                "--http-reconnect",
+                "--http-continuous",
+                "--adaptive-logic=highrate",
             };
 
             _libVLC = new LibVLC();
             _mediaPlayer = new MediaPlayer(_libVLC);
 
-            // Configurer les événements du lecteur pour déboguer
             _mediaPlayer.Playing += (sender, e) =>
             {
                 Console.WriteLine("Lecture en cours...");
@@ -102,16 +88,13 @@ namespace ChocoPlayer
             this.Size = new Size(800, 600);
             this.BackColor = Color.Black;
 
-            // Activer le mode sombre de la barre de titre (Windows 11)
             if (Environment.OSVersion.Version.Build >= 22000)
             {
                 UseImmersiveDarkMode(this.Handle, true);
             }
 
-            // Créer l'icône personnalisée
             this.Icon = CreateCustomIcon();
 
-            // Zone vidéo
             _videoView = new VideoView
             {
                 MediaPlayer = _mediaPlayer,
@@ -119,18 +102,51 @@ namespace ChocoPlayer
             };
             this.Controls.Add(_videoView);
 
-            // Contrôles du lecteur
+            _videoView.MouseDown += VideoView_MouseDown;
+
             _playerControls = new PlayerControls();
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
             this.Controls.Add(_playerControls);
 
-            // Menu des pistes
+            _playerControls.MouseDown += PlayerControls_MouseDown;
+
             _trackSettingsMenu = new TrackSettingsMenu();
             _trackSettingsMenu.SetListener(new TrackListener(this));
             this.Controls.Add(_trackSettingsMenu);
             _trackSettingsMenu.BringToFront();
 
             UpdateLayout();
+        }
+
+        private void VideoView_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (_trackSettingsMenu != null && _trackSettingsMenu.Visible)
+            {
+                Point menuPoint = _trackSettingsMenu.PointToClient(_videoView!.PointToScreen(e.Location));
+
+                if (!_trackSettingsMenu.ClientRectangle.Contains(menuPoint))
+                {
+                    _trackSettingsMenu.Hide();
+                }
+            }
+        }
+
+        private void PlayerControls_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (_trackSettingsMenu != null && _trackSettingsMenu.Visible)
+            {
+                bool isClickOnSettingsButton = _playerControls!.IsClickOnSettingsButton(e.X, e.Y);
+
+                if (!isClickOnSettingsButton)
+                {
+                    Point menuPoint = _trackSettingsMenu.PointToClient(_playerControls.PointToScreen(e.Location));
+
+                    if (!_trackSettingsMenu.ClientRectangle.Contains(menuPoint))
+                    {
+                        _trackSettingsMenu.Hide();
+                    }
+                }
+            }
         }
 
         private void UpdateLayout()
@@ -142,7 +158,7 @@ namespace ChocoPlayer
             _playerControls.BringToFront();
 
             int settingsX = _playerControls.GetSettingX();
-            _trackSettingsMenu!.SetPosition(settingsX, this.ClientSize.Height - controlsHeight, controlsHeight);
+            _trackSettingsMenu!.SetPosition(settingsX, this.ClientSize.Height - controlsHeight);
             _trackSettingsMenu.BringToFront();
         }
 
@@ -151,20 +167,14 @@ namespace ChocoPlayer
             UpdateLayout();
         }
 
-        // Méthode pour ouvrir fichier local OU URL de stream
         private void OpenFile(string path)
         {
             try
             {
-                Console.WriteLine($"Ouverture de: {path}");
-
-                // Créer le media (fonctionne pour fichiers locaux ET URLs)
                 var media = new Media(_libVLC, path, FromType.FromLocation);
 
-                // Options additionnelles pour les streams HTTP
                 if (path.StartsWith("http://") || path.StartsWith("https://"))
                 {
-                    // Ajouter des options spécifiques au stream
                     media.AddOption(":http-reconnect");
                     media.AddOption(":network-caching=3000");
                 }
@@ -172,27 +182,10 @@ namespace ChocoPlayer
                 _mediaPlayer!.Media = media;
                 _mediaPlayer.Play();
                 _playerControls!.SetPlaying(true);
-
-                Console.WriteLine("Lecture démarrée");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erreur: {ex.Message}");
                 MessageBox.Show($"Impossible de lire le média: {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // Méthode originale avec dialogue
-        private void OpenFileDialog()
-        {
-            using (var openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Fichiers vidéo|*.mp4;*.avi;*.mkv;*.mov;*.wmv;*.flv;*.webm|Tous les fichiers|*.*";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    OpenFile(openFileDialog.FileName);
-                }
             }
         }
 
@@ -229,13 +222,10 @@ namespace ChocoPlayer
         {
             try
             {
-                // Charger l'icône depuis le fichier
                 string iconPath = System.IO.Path.Combine(
                     System.IO.Path.GetDirectoryName(Application.ExecutablePath) ?? "",
                     "icon.ico"
                 );
-
-                Console.WriteLine(iconPath);
 
                 if (System.IO.File.Exists(iconPath))
                 {
@@ -254,7 +244,6 @@ namespace ChocoPlayer
 
         private Icon CreateDefaultIcon()
         {
-            // L'ancienne méthode comme fallback
             Bitmap bitmap = new Bitmap(32, 32);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
@@ -279,7 +268,6 @@ namespace ChocoPlayer
             _libVLC?.Dispose();
         }
 
-        // Classes de listeners
         private class ProgressListener : PlayerControls.IProgressChangeListener
         {
             private Form1 _form;
@@ -301,7 +289,6 @@ namespace ChocoPlayer
 
             public void OnProgressChanging(float progress)
             {
-                // Optionnel: mise à jour pendant le drag
             }
 
             public void OnPlayPauseClicked(bool isPlaying)
@@ -324,6 +311,7 @@ namespace ChocoPlayer
                 if (_form._mediaPlayer != null)
                 {
                     _form._mediaPlayer.Mute = !_form._mediaPlayer.Mute;
+                    _form._playerControls?.SetMuted(_form._mediaPlayer.Mute);
                 }
             }
 
@@ -342,6 +330,7 @@ namespace ChocoPlayer
 
             public void OnSettingsClicked(int buttonX, int buttonY, int buttonSize)
             {
+                _form.UpdateLayout();
                 _form._trackSettingsMenu?.Toggle();
             }
         }
@@ -361,7 +350,6 @@ namespace ChocoPlayer
                 {
                     _form._mediaPlayer.SetAudioTrack(trackId);
                 }
-                _form._trackSettingsMenu?.Hide();
             }
 
             public void OnSubtitleTrackSelected(int trackId)
@@ -370,7 +358,6 @@ namespace ChocoPlayer
                 {
                     _form._mediaPlayer.SetSpu(trackId);
                 }
-                _form._trackSettingsMenu?.Hide();
             }
         }
     }

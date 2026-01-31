@@ -11,13 +11,21 @@ namespace ChocoPlayer
         private List<TrackItem> _audioItems = new List<TrackItem>();
         private List<TrackItem> _subtitleItems = new List<TrackItem>();
 
-        private const int MENU_WIDTH = 500;
-        private const int MENU_HEIGHT = 300;
-        private const int PADDING = 25;
-        private const int ITEM_HEIGHT = 25;
-        private const int COLUMN_WIDTH = (MENU_WIDTH - 3 * PADDING) / 2;
+        private const int MENU_WIDTH = 700;
+        private const int MENU_HEIGHT = 600;
+        private const int PADDING = 20;
+        private const int COLUMN_SPACING = 20;
+        private const int ITEM_HEIGHT = 40;
+        private const int ITEM_SPACING = 8;
+        private const int BORDER_RADIUS = 12;
 
         private ITrackSelectionListener? _listener;
+        private Color _accentColor = Color.FromArgb(255, 211, 1);
+        private Color _backgroundColor = Color.FromArgb(230, 30, 30, 30);
+        private Color _itemHoverColor = Color.FromArgb(50, 255, 255, 255);
+        private Color _itemSelectedColor = Color.FromArgb(80, 255, 211, 1);
+
+        private int _hoveredItemId = -999;
 
         public TrackSettingsMenu()
         {
@@ -27,8 +35,8 @@ namespace ChocoPlayer
             this.DoubleBuffered = true;
 
             this.MouseDown += TrackSettingsMenu_MouseDown;
-            this.MouseEnter += (s, e) => this.Cursor = Cursors.Hand;
-            this.MouseLeave += (s, e) => this.Cursor = Cursors.Default;
+            this.MouseMove += TrackSettingsMenu_MouseMove;
+            this.MouseLeave += TrackSettingsMenu_MouseLeave;
         }
 
         public void SetListener(ITrackSelectionListener listener)
@@ -45,9 +53,63 @@ namespace ChocoPlayer
             }
         }
 
-        public void SetPosition(int buttonX, int buttonY, int gap)
+        public void SetPosition(int buttonX, int buttonY)
         {
-            this.SetBounds(buttonX - MENU_WIDTH, buttonY - MENU_HEIGHT - gap - 5, MENU_WIDTH, MENU_HEIGHT);
+            this.SetBounds(buttonX - MENU_WIDTH, buttonY - MENU_HEIGHT - 20, MENU_WIDTH, MENU_HEIGHT);
+        }
+
+        private void TrackSettingsMenu_MouseMove(object? sender, MouseEventArgs e)
+        {
+            if (!this.Visible)
+                return;
+
+            int previousHoveredId = _hoveredItemId;
+            _hoveredItemId = -999;
+
+            foreach (var item in _audioItems)
+            {
+                if (e.X >= item.X && e.X <= item.X + item.Width &&
+                    e.Y >= item.Y && e.Y <= item.Y + item.Height)
+                {
+                    _hoveredItemId = item.TrackId + 1000;
+                    this.Cursor = Cursors.Hand;
+                    break;
+                }
+            }
+
+            if (_hoveredItemId == -999)
+            {
+                foreach (var item in _subtitleItems)
+                {
+                    if (e.X >= item.X && e.X <= item.X + item.Width &&
+                        e.Y >= item.Y && e.Y <= item.Y + item.Height)
+                    {
+                        _hoveredItemId = item.TrackId + 2000;
+                        this.Cursor = Cursors.Hand;
+                        break;
+                    }
+                }
+            }
+
+            if (_hoveredItemId == -999)
+            {
+                this.Cursor = Cursors.Default;
+            }
+
+            if (previousHoveredId != _hoveredItemId)
+            {
+                this.Invalidate();
+            }
+        }
+
+        private void TrackSettingsMenu_MouseLeave(object? sender, EventArgs e)
+        {
+            if (_hoveredItemId != -999)
+            {
+                _hoveredItemId = -999;
+                this.Cursor = Cursors.Default;
+                this.Invalidate();
+            }
         }
 
         private void TrackSettingsMenu_MouseDown(object? sender, MouseEventArgs e)
@@ -87,139 +149,202 @@ namespace ChocoPlayer
             g2d.SmoothingMode = SmoothingMode.AntiAlias;
             g2d.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-            // Fond semi-transparent
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(240, 50, 50, 50)))
+            using (SolidBrush brush = new SolidBrush(_backgroundColor))
             {
-                g2d.FillRectangle(brush, 0, 0, this.Width, this.Height);
+                g2d.FillRoundedRectangle(brush, 0, 0, this.Width, this.Height, BORDER_RADIUS);
             }
 
-            // Bordure
             using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), 2))
             {
-                g2d.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
+                g2d.DrawRoundedRectangle(pen, 1, 1, this.Width - 2, this.Height - 2, BORDER_RADIUS);
             }
 
             _audioItems.Clear();
             _subtitleItems.Clear();
 
-            // Séparateur vertical
-            int separatorX = this.Width / 2;
-            using (Pen pen = new Pen(Color.FromArgb(100, 100, 100)))
+            int currentY = PADDING;
+            using (Font titleFont = new Font("Segoe UI", 14, FontStyle.Bold))
+            using (SolidBrush brush = new SolidBrush(Color.White))
             {
-                g2d.DrawLine(pen, separatorX, PADDING, separatorX, this.Height - PADDING);
+                g2d.DrawString("Paramètres de lecture", titleFont, brush, PADDING, currentY);
+            }
+            currentY += 35;
+
+            // Ligne séparatrice
+            // using (Pen pen = new Pen(Color.FromArgb(80, 255, 255, 255), 1))
+            // {
+            //     g2d.DrawLine(pen, PADDING, currentY, this.Width - PADDING, currentY);
+            // }
+            currentY += 25;
+
+            int columnWidth = (this.Width - 3 * PADDING - COLUMN_SPACING) / 2;
+            int leftColumnX = PADDING;
+            int rightColumnX = PADDING + columnWidth + COLUMN_SPACING;
+
+            int separatorX = leftColumnX + columnWidth + (COLUMN_SPACING / 2);
+            using (Pen pen = new Pen(Color.FromArgb(60, 255, 255, 255), 1))
+            {
+                g2d.DrawLine(pen, separatorX, currentY, separatorX, this.Height - PADDING);
             }
 
-            DrawAudioSection(g2d, PADDING, PADDING, COLUMN_WIDTH);
-            DrawSubtitleSection(g2d, separatorX + PADDING, PADDING, COLUMN_WIDTH);
+            DrawAudioSection(g2d, leftColumnX, currentY, columnWidth);
+            DrawSubtitleSection(g2d, rightColumnX, currentY, columnWidth);
         }
 
-        private void DrawAudioSection(Graphics g2d, int startX, int startY, int columnWidth)
+        private void DrawAudioSection(Graphics g2d, int startX, int startY, int width)
         {
             int currentY = startY;
 
-            using (Font font = new Font("SansSerif", 13, FontStyle.Bold))
-            using (SolidBrush brush = new SolidBrush(Color.White))
+            using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
+            using (SolidBrush brush = new SolidBrush(_accentColor))
             {
-                g2d.DrawString("Pistes Audio", font, brush, startX, currentY);
+                g2d.DrawString("  Pistes Audio", font, brush, startX, currentY);
             }
-            currentY += 20;
+            currentY += 45;
 
             var audioTracks = Player.GetAudioTracks();
             int currentAudioTrack = Player.GetCurrentAudioTrack();
 
-            using (Font font = new Font("SansSerif", 12))
+            if (audioTracks.Count == 0)
             {
-                if (audioTracks.Count == 0)
+                using (Font font = new Font("Segoe UI", 10))
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(150, 150, 150)))
                 {
-                    using (SolidBrush brush = new SolidBrush(Color.LightGray))
-                    {
-                        g2d.DrawString("Aucune piste", font, brush, startX, currentY);
-                    }
+                    g2d.DrawString("Aucune piste disponible", font, brush, startX + 5, currentY);
                 }
-                else
+            }
+            else
+            {
+                foreach (var track in audioTracks)
                 {
-                    foreach (var track in audioTracks)
-                    {
-                        currentY = DrawTrackItem(g2d, track, startX, currentY, columnWidth,
-                            track.Id == currentAudioTrack, true);
-                    }
+                    bool isSelected = track.Id == currentAudioTrack;
+                    bool isHovered = _hoveredItemId == track.Id + 1000;
+
+                    currentY = DrawModernTrackItem(g2d, track, startX, currentY, width,
+                        isSelected, isHovered, true);
+                    currentY += ITEM_SPACING;
                 }
             }
         }
 
-        private void DrawSubtitleSection(Graphics g2d, int startX, int startY, int columnWidth)
+        private void DrawSubtitleSection(Graphics g2d, int startX, int startY, int width)
         {
             int currentY = startY;
 
-            using (Font font = new Font("SansSerif", 13, FontStyle.Bold))
-            using (SolidBrush brush = new SolidBrush(Color.White))
+            using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
+            using (SolidBrush brush = new SolidBrush(_accentColor))
             {
-                g2d.DrawString("Sous-titres", font, brush, startX, currentY);
+                g2d.DrawString("  Sous-titres", font, brush, startX, currentY);
             }
-            currentY += 20;
+            currentY += 45;
 
-            using (Font font = new Font("SansSerif", 12))
+            var subtitleTracks = Player.GetSubtitleTracks();
+            int currentSubTrack = Player.GetCurrentSubtitleTrack();
+
+            // Option "Désactiver"
+            bool isDisabled = currentSubTrack == -1;
+            bool isHoveredDisable = _hoveredItemId == -1 + 2000;
+
+            currentY = DrawModernTrackItem(g2d,
+                new TrackInfo(-1, "Désactiver"),
+                startX, currentY, width, isDisabled, isHoveredDisable, false);
+
+            _subtitleItems.Add(new TrackItem(-1, startX, currentY - ITEM_HEIGHT, width, ITEM_HEIGHT));
+            currentY += ITEM_SPACING;
+
+            if (subtitleTracks.Count == 0 || subtitleTracks.Count == 1)
             {
-                var subtitleTracks = Player.GetSubtitleTracks();
-                int currentSubTrack = Player.GetCurrentSubtitleTrack();
-
-                bool isDisabled = currentSubTrack == -1;
-                if (isDisabled)
+                using (Font font = new Font("Segoe UI", 10))
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(150, 150, 150)))
                 {
-                    using (SolidBrush brush = new SolidBrush(Color.FromArgb(80, 80, 80)))
-                    {
-                        g2d.FillRoundedRectangle(brush, startX, currentY - 15, columnWidth, ITEM_HEIGHT, 5);
-                    }
+                    g2d.DrawString("Aucun sous-titre disponible", font, brush, startX + 5, currentY);
                 }
-
-                using (SolidBrush brush = new SolidBrush(Color.White))
+            }
+            else
+            {
+                foreach (var track in subtitleTracks)
                 {
-                    g2d.DrawString((isDisabled ? "✓ " : "  ") + "Désactiver", font, brush, startX + 5, currentY);
-                }
-                _subtitleItems.Add(new TrackItem(-1, startX, currentY - 15, columnWidth, ITEM_HEIGHT));
-                currentY += ITEM_HEIGHT;
+                    if (track.Id == -1)
+                        continue;
 
-                if (subtitleTracks.Count == 0 || subtitleTracks.Count == 1)
-                {
-                    using (SolidBrush brush = new SolidBrush(Color.LightGray))
-                    {
-                        g2d.DrawString("Aucun sous-titre", font, brush, startX, currentY);
-                    }
-                }
-                else
-                {
-                    foreach (var track in subtitleTracks)
-                    {
-                        if (track.Id == -1)
-                            continue;
+                    bool isSelected = track.Id == currentSubTrack;
+                    bool isHovered = _hoveredItemId == track.Id + 2000;
 
-                        currentY = DrawTrackItem(g2d, track, startX, currentY, columnWidth,
-                            track.Id == currentSubTrack, false);
-                    }
+                    currentY = DrawModernTrackItem(g2d, track, startX, currentY, width,
+                        isSelected, isHovered, false);
+                    currentY += ITEM_SPACING;
                 }
             }
         }
 
-        private int DrawTrackItem(Graphics g2d, TrackInfo track,
-            int startX, int currentY, int columnWidth, bool isSelected, bool isAudio)
+        private int DrawModernTrackItem(Graphics g2d, TrackInfo track,
+            int startX, int currentY, int width, bool isSelected, bool isHovered, bool isAudio)
         {
+            int itemY = currentY;
+
+            Color backgroundColor = Color.Transparent;
             if (isSelected)
+                backgroundColor = _itemSelectedColor;
+            else if (isHovered)
+                backgroundColor = _itemHoverColor;
+
+            if (backgroundColor != Color.Transparent)
             {
-                using (SolidBrush brush = new SolidBrush(Color.FromArgb(80, 80, 80)))
+                using (SolidBrush brush = new SolidBrush(backgroundColor))
                 {
-                    g2d.FillRoundedRectangle(brush, startX, currentY - 15, columnWidth, ITEM_HEIGHT, 5);
+                    g2d.FillRoundedRectangle(brush, startX, itemY, width, ITEM_HEIGHT, 8);
                 }
             }
 
-            string text = (isSelected ? "✓ " : "  ") + track.Name;
-
-            using (Font font = new Font("SansSerif", 12))
-            using (SolidBrush brush = new SolidBrush(Color.White))
+            if (isSelected)
             {
-                int textWidth = (int)g2d.MeasureString(text, font).Width;
-                if (textWidth > columnWidth - 10)
+                using (Pen pen = new Pen(_accentColor, 2))
                 {
-                    while (textWidth > columnWidth - 20 && text.Length > 3)
+                    g2d.DrawRoundedRectangle(pen, startX + 1, itemY + 1, width - 2, ITEM_HEIGHT - 2, 8);
+                }
+            }
+
+            int iconX = startX + 12;
+            int iconY = itemY + (ITEM_HEIGHT / 2);
+
+            if (isSelected)
+            {
+                using (SolidBrush brush = new SolidBrush(_accentColor))
+                {
+                    g2d.FillEllipse(brush, iconX - 6, iconY - 6, 12, 12);
+
+                    Point[] checkPoints = new Point[]
+                    {
+                        new Point(iconX - 3, iconY),
+                        new Point(iconX - 1, iconY + 2),
+                        new Point(iconX + 3, iconY - 2)
+                    };
+                    using (Pen checkPen = new Pen(Color.FromArgb(30, 30, 30), 2))
+                    {
+                        g2d.DrawLines(checkPen, checkPoints);
+                    }
+                }
+            }
+            else
+            {
+                using (Pen pen = new Pen(Color.FromArgb(120, 120, 120), 2))
+                {
+                    g2d.DrawEllipse(pen, iconX - 6, iconY - 6, 12, 12);
+                }
+            }
+
+            string text = track.Name;
+            int textX = iconX + 20;
+
+            using (Font font = new Font("Segoe UI", 10, isSelected ? FontStyle.Bold : FontStyle.Regular))
+            using (SolidBrush brush = new SolidBrush(isSelected ? Color.White : Color.FromArgb(220, 220, 220)))
+            {
+                int maxTextWidth = width - (textX - startX) - 10;
+                int textWidth = (int)g2d.MeasureString(text, font).Width;
+
+                if (textWidth > maxTextWidth)
+                {
+                    while (textWidth > maxTextWidth - 30 && text.Length > 3)
                     {
                         text = text.Substring(0, text.Length - 1);
                         textWidth = (int)g2d.MeasureString(text + "...", font).Width;
@@ -227,16 +352,19 @@ namespace ChocoPlayer
                     text += "...";
                 }
 
-                g2d.DrawString(text, font, brush, startX + 5, currentY);
+                SizeF textSize = g2d.MeasureString(text, font);
+                int textY = itemY + (ITEM_HEIGHT - (int)textSize.Height) / 2;
+
+                g2d.DrawString(text, font, brush, textX, textY);
             }
 
             if (isAudio)
             {
-                _audioItems.Add(new TrackItem(track.Id, startX, currentY - 15, columnWidth, ITEM_HEIGHT));
+                _audioItems.Add(new TrackItem(track.Id, startX, itemY, width, ITEM_HEIGHT));
             }
             else
             {
-                _subtitleItems.Add(new TrackItem(track.Id, startX, currentY - 15, columnWidth, ITEM_HEIGHT));
+                _subtitleItems.Add(new TrackItem(track.Id, startX, itemY, width, ITEM_HEIGHT));
             }
 
             return currentY + ITEM_HEIGHT;

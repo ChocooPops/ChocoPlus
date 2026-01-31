@@ -25,6 +25,7 @@ namespace ChocoPlayer
         private string _timeText = "00:00:00 / 00:00:00";
         private Color _colorYellow = Color.FromArgb(255, 211, 1);
         private bool _isPlaying = true;
+        private bool _isMuted = false;
 
         private int _buttonSize = 30;
         private int _buttonSpacing = 15;
@@ -86,21 +87,7 @@ namespace ChocoPlayer
                     "icons"
                 );
 
-                Console.WriteLine($"Chemin des icônes: {iconsPath}");
-                Console.WriteLine($"Le dossier existe: {Directory.Exists(iconsPath)}");
-
-                if (!Directory.Exists(iconsPath))
-                {
-                    Console.WriteLine("ERREUR: Le dossier icons n'existe pas!");
-                    return;
-                }
-
                 var pngFiles = Directory.GetFiles(iconsPath, "*.png");
-                Console.WriteLine($"Fichiers PNG trouvés: {pngFiles.Length}");
-                foreach (var file in pngFiles)
-                {
-                    Console.WriteLine($"  - {Path.GetFileName(file)}");
-                }
 
                 _playIcon = LoadPngIcon(Path.Combine(iconsPath, "play.png"));
                 _pauseIcon = LoadPngIcon(Path.Combine(iconsPath, "pause.png"));
@@ -109,20 +96,11 @@ namespace ChocoPlayer
                 _settingsIcon = LoadPngIcon(Path.Combine(iconsPath, "settings.png"));
                 _fullscreenIcon = LoadPngIcon(Path.Combine(iconsPath, "fullscreen.png"));
                 _fullscreenExitIcon = LoadPngIcon(Path.Combine(iconsPath, "fullscreen-exit.png"));
-
-                Console.WriteLine($"Icônes chargées:");
-                Console.WriteLine($"  Play: {(_playIcon != null ? "OK" : "FAIL")}");
-                Console.WriteLine($"  Pause: {(_pauseIcon != null ? "OK" : "FAIL")}");
-                Console.WriteLine($"  Volume: {(_volumeIcon != null ? "OK" : "FAIL")}");
-                Console.WriteLine($"  Volume Mute: {(_volumeMuteIcon != null ? "OK" : "FAIL")}");
-                Console.WriteLine($"  Settings: {(_settingsIcon != null ? "OK" : "FAIL")}");
-                Console.WriteLine($"  Fullscreen: {(_fullscreenIcon != null ? "OK" : "FAIL")}");
-                Console.WriteLine($"  Fullscreen Exit: {(_fullscreenExitIcon != null ? "OK" : "FAIL")}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erreur lors du chargement des icônes: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                //Console.WriteLine($"Erreur lors du chargement des icônes: {ex.Message}");
+                //Console.WriteLine($"Stack trace: {ex.StackTrace}");
             }
         }
 
@@ -130,24 +108,12 @@ namespace ChocoPlayer
         {
             try
             {
-                if (!File.Exists(pngPath))
-                {
-                    Console.WriteLine($"Fichier PNG introuvable: {pngPath}");
-                    return null;
-                }
-
-                Console.WriteLine($"Chargement de: {pngPath}");
-
-                // Charger l'image PNG
                 Bitmap originalBitmap = new Bitmap(pngPath);
-
-                Console.WriteLine($"  Image chargée: {originalBitmap.Width}x{originalBitmap.Height}");
-
                 return originalBitmap;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erreur lors du chargement de {pngPath}: {ex.Message}");
+                //Console.WriteLine($"Erreur lors du chargement de {pngPath}: {ex.Message}");
                 return null;
             }
         }
@@ -227,6 +193,13 @@ namespace ChocoPlayer
                     this.Cursor = Cursors.Default;
                 }
             }
+        }
+
+        public int GetButtonSize() => _buttonSize;
+
+        public bool IsClickOnSettingsButton(int mouseX, int mouseY)
+        {
+            return IsOverButton(mouseX, mouseY, _settingsButtonX);
         }
 
         private bool IsOverPoint(int mouseX, int mouseY, int pointX, int pointY)
@@ -353,35 +326,27 @@ namespace ChocoPlayer
             int width = this.Width;
             int height = this.Height;
 
-            // Position Y centrée pour la barre de progression
             int lineY = height / 2 - 15;
 
-            // Calculer la largeur et la hauteur du texte
             using (Font font = new Font("Arial", 10, FontStyle.Regular))
             {
                 SizeF textSize = g2d.MeasureString(_timeText, font);
                 _timeTextWidth = (int)textSize.Width;
                 int textHeight = (int)textSize.Height;
 
-                // Position X du texte (à droite)
                 float textX = width - _rightMargin - _timeTextWidth;
 
-                // Position Y du texte - CENTRÉ SUR LA LIGNE
-                // On centre le texte verticalement par rapport à la ligne
                 float textY = lineY - (textHeight / 2f);
 
                 using (SolidBrush brush = new SolidBrush(Color.White))
                 {
-                    // Dessiner le texte aligné verticalement avec la ligne
                     g2d.DrawString(_timeText, font, brush, new PointF(textX, textY));
                 }
             }
 
-            // Calculer la fin de la ligne de progression (avant le texte)
             int lineEnd = width - _rightMargin - _timeTextWidth - _timeTextGap;
             int lineWidth = lineEnd - _leftMargin;
 
-            // Ligne de fond grise
             using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), _lineHeight))
             {
                 pen.StartCap = LineCap.Round;
@@ -389,7 +354,6 @@ namespace ChocoPlayer
                 g2d.DrawLine(pen, _leftMargin, lineY, lineEnd, lineY);
             }
 
-            // Ligne de progression jaune
             int progressX = _leftMargin + (int)(_progress * lineWidth);
             using (Pen pen = new Pen(_colorYellow, _lineHeight))
             {
@@ -398,7 +362,6 @@ namespace ChocoPlayer
                 g2d.DrawLine(pen, _leftMargin, lineY, progressX, lineY);
             }
 
-            // Point de progression
             using (SolidBrush brush = new SolidBrush(_colorYellow))
             {
                 g2d.FillEllipse(brush,
@@ -434,7 +397,9 @@ namespace ChocoPlayer
             _settingsButtonX = _fullscreenButtonX - _buttonSize - _buttonSpacing;
 
             DrawIconButton(g2d, _playButtonX, _buttonsY, _isPlaying ? _pauseIcon : _playIcon, _isPlaying ? "⏸" : "▶");
-            DrawIconButton(g2d, _volumeButtonX, _buttonsY, _volumeProgress == 0 ? _volumeMuteIcon : _volumeIcon, _volumeProgress == 0 ? "🔇" : "🔊");
+            DrawIconButton(g2d, _volumeButtonX, _buttonsY,
+                    (_isMuted || _volumeProgress == 0) ? _volumeMuteIcon : _volumeIcon,
+                    (_isMuted || _volumeProgress == 0) ? "🔇" : "🔊");
             DrawIconButton(g2d, _settingsButtonX, _buttonsY, _settingsIcon, "⚙");
             DrawIconButton(g2d, _fullscreenButtonX, _buttonsY, _isFullscreen ? _fullscreenExitIcon : _fullscreenIcon, _isFullscreen ? "⊡" : "⛶");
         }
@@ -442,33 +407,28 @@ namespace ChocoPlayer
         public void SetFullscreen(bool isFullscreen)
         {
             _isFullscreen = isFullscreen;
-            this.Invalidate();  // Redessiner les contrôles
+            this.Invalidate();
         }
 
         private void DrawIconButton(Graphics g2d, int x, int y, Bitmap? icon, string fallbackText)
         {
-            // Fond du bouton
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 80, 80, 80)))
             {
                 g2d.FillRoundedRectangle(brush, x, y, _buttonSize, _buttonSize, 5);
             }
 
-            // BORDURE DU BOUTON
-            using (Pen borderPen = new Pen(Color.FromArgb(150, 150, 150), 2))  // Gris clair, épaisseur 2
+            using (Pen borderPen = new Pen(Color.FromArgb(150, 150, 150), 2))
             {
                 g2d.DrawRoundedRectangle(borderPen, x, y, _buttonSize, _buttonSize, 5);
             }
 
             if (icon != null)
             {
-                // Taille de l'icône (70% de la taille du bouton)
                 int iconSize = (int)(_buttonSize * 0.6f);
 
-                // Calculer la position pour centrer l'icône
                 int iconX = x + (_buttonSize - iconSize) / 2;
                 int iconY = y + (_buttonSize - iconSize) / 2;
 
-                // Dessiner l'icône PNG avec antialiasing de haute qualité
                 g2d.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g2d.CompositingQuality = CompositingQuality.HighQuality;
                 g2d.SmoothingMode = SmoothingMode.HighQuality;
@@ -477,7 +437,6 @@ namespace ChocoPlayer
             }
             else
             {
-                // Fallback avec texte
                 using (Font font = new Font("Segoe UI Symbol", 12, FontStyle.Bold))
                 using (SolidBrush textBrush = new SolidBrush(Color.White))
                 {
@@ -558,6 +517,12 @@ namespace ChocoPlayer
             return string.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
         }
 
+        public void SetMuted(bool isMuted)
+        {
+            _isMuted = isMuted;
+            this.Invalidate();
+        }
+
         public interface IProgressChangeListener
         {
             void OnProgressChanged(float progress);
@@ -615,8 +580,6 @@ namespace ChocoPlayer
             return path;
         }
 
-
     }
-
 
 }
