@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using LibVLCSharp.Shared;
 using LibVLCSharp.WinForms;
+using DarkTitleBar;
 
 namespace ChocoPlayer
 {
@@ -195,10 +196,7 @@ namespace ChocoPlayer
             this.ClientSize = new Size(width, height);
             this.BackColor = Color.Black;
 
-            if (Environment.OSVersion.Version.Build >= 22000)
-            {
-                UseImmersiveDarkMode(this.Handle, true);
-            }
+            DarkTitleBarManager.ApplyDarkTitleBar(this.Handle);
 
             this.Icon = CreateCustomIcon();
             this.KeyPreview = true;
