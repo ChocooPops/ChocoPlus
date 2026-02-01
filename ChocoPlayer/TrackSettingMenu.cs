@@ -11,7 +11,7 @@ namespace ChocoPlayer
         private List<TrackItem> _audioItems = new List<TrackItem>();
         private List<TrackItem> _subtitleItems = new List<TrackItem>();
 
-        private const int MENU_WIDTH = 700;
+        private const int MENU_WIDTH = 800;
         private const int MENU_HEIGHT = 600;
         private const int PADDING = 20;
         private const int COLUMN_SPACING = 20;

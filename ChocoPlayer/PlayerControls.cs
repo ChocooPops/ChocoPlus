@@ -53,7 +53,7 @@ namespace ChocoPlayer
         private Bitmap? _volumeMuteIcon;
         private Bitmap? _settingsIcon;
         private Bitmap? _fullscreenIcon;
-        private Bitmap? _fullscreenExitIcon;  // AJOUTER CETTE LIGNE
+        private Bitmap? _fullscreenExitIcon;
         private bool _isFullscreen = false;
 
         public PlayerControls()
@@ -520,6 +520,14 @@ namespace ChocoPlayer
         public void SetMuted(bool isMuted)
         {
             _isMuted = isMuted;
+            this.Invalidate();
+        }
+
+        public void SetVolume(int volume)
+        {
+            volume = Math.Max(0, Math.Min(100, volume));
+            _volumeProgress = volume / 100f;
+            _isMuted = volume == 0;
             this.Invalidate();
         }
 

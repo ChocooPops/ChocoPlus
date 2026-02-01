@@ -1,6 +1,6 @@
 export interface ChocoPlayerModel {
-    title: string,
-    url: string,
-    height: number,
-    width: number
+    Title: string,
+    Url: string,
+    Height: number,
+    Width: number
 }

@@ -30,15 +30,15 @@ export class StartButtonComponent {
 
   public async onClick(): Promise<void> {
     const chocoPlayer: ChocoPlayerModel = {
-      title: this.media.title,
-      url: '',
-      height: window.innerHeight,
-      width: window.innerWidth
+      Title: this.media.title,
+      Url: '',
+      Height: window.innerHeight,
+      Width: window.innerWidth
     }
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
-      chocoPlayer.url = this.streamService.getUrlStreamMovie(this.media.id);
+      chocoPlayer.Url = this.streamService.getUrlStreamMovie(this.media.id);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
-      chocoPlayer.url = this.streamService.getUrlStreamEpisode(this.idEpisode);
+      chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.idEpisode);
     }
 
     await this.streamService.launchJavaAppToMovie(chocoPlayer);

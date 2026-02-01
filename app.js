@@ -180,23 +180,21 @@ ipcMain.handle('secureStore:deleteRefreshToken', async () =>
 ipcMain.handle('launch-java-app', async (event, dataObject) => {
   try {
     await stopCSharpProcess(true);
-    console.log(dataObject)
+
+    const bounds = mainWindow.getBounds();
+    dataObject.PositionX = bounds.x;
+    dataObject.PositionY = bounds.y;
 
     const csharpAppPath = path.join(
       __dirname,
       'ChocoPlayer/bin/Debug/net9.0-windows/ChocoPlayer.exe'
     );
 
-    const videoPath = dataObject.url;
-
-    const args = [];
-    if (videoPath) {
-      args.push(videoPath);
-    }
+    const jsonString = JSON.stringify(dataObject);
 
     csharpProcess = spawn(
       csharpAppPath,
-      args,
+      [jsonString],
       {
         detached: false,
         stdio: ['ignore', 'pipe', 'pipe']

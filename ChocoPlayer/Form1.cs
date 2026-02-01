@@ -15,10 +15,10 @@ namespace ChocoPlayer
         private TrackSettingsMenu? _trackSettingsMenu;
         private bool _isFullscreen = false;
 
-        public Form1(string? videoPath = null)
+        public Form1(string title, string videoPath, int width, int height, int positionX, int positionY)
         {
             InitializeVLC();
-            SetupUI();
+            SetupUI(title, width, height, positionX, positionY);
 
             this.FormClosing += Form1_FormClosing;
             this.Resize += Form1_Resize;
@@ -82,10 +82,12 @@ namespace ChocoPlayer
             Player.SetMediaPlayer(_mediaPlayer);
         }
 
-        private void SetupUI()
+        private void SetupUI(string title, int width, int height, int positionX, int positionY)
         {
-            this.Text = "ChocoPlayer";
-            this.Size = new Size(800, 600);
+            this.Text = "ChocoPlayer" + " - " + title;
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = new Point(positionX, positionY);
+            this.ClientSize = new Size(width, height);
             this.BackColor = Color.Black;
 
             if (Environment.OSVersion.Version.Build >= 22000)
@@ -94,6 +96,9 @@ namespace ChocoPlayer
             }
 
             this.Icon = CreateCustomIcon();
+            this.KeyPreview = true;
+
+            this.KeyDown += Form1_KeyDown;
 
             _videoView = new VideoView
             {
@@ -310,8 +315,8 @@ namespace ChocoPlayer
             {
                 if (_form._mediaPlayer != null)
                 {
+                    _form._playerControls?.SetMuted(!_form._mediaPlayer.Mute);
                     _form._mediaPlayer.Mute = !_form._mediaPlayer.Mute;
-                    _form._playerControls?.SetMuted(_form._mediaPlayer.Mute);
                 }
             }
 
@@ -332,6 +337,65 @@ namespace ChocoPlayer
             {
                 _form.UpdateLayout();
                 _form._trackSettingsMenu?.Toggle();
+            }
+        }
+
+        private void Form1_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (_mediaPlayer == null)
+                return;
+
+            const int seekMs = 10_000;
+            const int volumeStep = 5;
+
+            switch (e.KeyCode)
+            {
+                case Keys.Right:
+                    // Avancer la vidéo
+                    _mediaPlayer.Time = Math.Min(
+                        _mediaPlayer.Time + seekMs,
+                        _mediaPlayer.Length
+                    );
+                    e.Handled = true;
+                    break;
+
+                case Keys.Left:
+                    // Reculer la vidéo
+                    _mediaPlayer.Time = Math.Max(
+                        _mediaPlayer.Time - seekMs,
+                        0
+                    );
+                    e.Handled = true;
+                    break;
+
+                case Keys.Up:
+                    // Augmenter le volume
+                    _mediaPlayer.Volume = Math.Min(_mediaPlayer.Volume + volumeStep, 100);
+                    _playerControls?.SetVolume(_mediaPlayer.Volume);
+                    e.Handled = true;
+                    break;
+
+                case Keys.Down:
+                    // Diminuer le volume
+                    _mediaPlayer.Volume = Math.Max(_mediaPlayer.Volume - volumeStep, 0);
+                    _playerControls?.SetVolume(_mediaPlayer.Volume);
+                    e.Handled = true;
+                    break;
+
+                case Keys.F11:
+                    // Toggle fullscreen
+                    ToggleFullscreen();
+                    e.Handled = true;
+                    break;
+
+                case Keys.Escape:
+                    // Sortir du fullscreen
+                    if (_isFullscreen)
+                    {
+                        ToggleFullscreen();
+                        e.Handled = true;
+                    }
+                    break;
             }
         }
 

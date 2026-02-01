@@ -1,3 +1,4 @@
+using System.Text.Json;
 namespace ChocoPlayer;
 
 static class Program
@@ -7,8 +8,28 @@ static class Program
     {
         ApplicationConfiguration.Initialize();
 
-        string? videoPath = args.Length > 0 ? args[0] : null;
+        string? json = args.Length > 0 ? args[0] : null;
+        VideoInfo? videoInfo = null;
 
-        Application.Run(new Form1(videoPath));
+        if (!string.IsNullOrEmpty(json))
+        {
+            try
+            {
+                videoInfo = JsonSerializer.Deserialize<VideoInfo>(json);
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show($"Impossible de parser le JSON : {ex.Message}");
+            }
+        }
+
+        Application.Run(new Form1(
+                    videoInfo?.Title ?? "",
+                    videoInfo?.Url ?? "",
+                    videoInfo?.Width ?? 0,
+                    videoInfo?.Height ?? 0,
+                    videoInfo?.PositionX ?? 0,
+                    videoInfo?.PositionY ?? 0
+                ));
     }
 }
