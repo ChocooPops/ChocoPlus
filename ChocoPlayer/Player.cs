@@ -35,6 +35,17 @@ namespace ChocoPlayer
             return _currentMediaPlayer?.Time ?? 0;
         }
 
+        public static bool IsMuted()
+        {
+            return _currentMediaPlayer?.Mute ?? false;
+        }
+
+        // AJOUTER CETTE MÉTHODE
+        public static int GetVolume()
+        {
+            return _currentMediaPlayer?.Volume ?? -1;
+        }
+
         public static List<TrackInfo> GetAudioTracks()
         {
             if (_currentMediaPlayer == null)

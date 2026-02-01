@@ -26,8 +26,8 @@ static class Program
         Application.Run(new Form1(
                     videoInfo?.Title ?? "",
                     videoInfo?.Url ?? "",
-                    videoInfo?.Width ?? 0,
-                    videoInfo?.Height ?? 0,
+                    videoInfo?.Width ?? 1920,
+                    videoInfo?.Height ?? 1080,
                     videoInfo?.PositionX ?? 0,
                     videoInfo?.PositionY ?? 0
                 ));

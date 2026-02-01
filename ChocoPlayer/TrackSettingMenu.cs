@@ -151,12 +151,12 @@ namespace ChocoPlayer
 
             using (SolidBrush brush = new SolidBrush(_backgroundColor))
             {
-                g2d.FillRoundedRectangle(brush, 0, 0, this.Width, this.Height, BORDER_RADIUS);
+                g2d.FillRectangle(brush, 0, 0, this.Width, this.Height);
             }
 
             using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), 2))
             {
-                g2d.DrawRoundedRectangle(pen, 1, 1, this.Width - 2, this.Height - 2, BORDER_RADIUS);
+                g2d.DrawRectangle(pen, 1, 1, this.Width - 2, this.Height - 2);
             }
 
             _audioItems.Clear();

@@ -63,10 +63,10 @@ namespace ChocoPlayer
             LoadIcons();
 
             _updateTimer = new System.Windows.Forms.Timer();
-            _updateTimer.Interval = 100;
+            _updateTimer.Interval = 50;
             _updateTimer.Tick += (s, e) =>
             {
-                if (!_isDragging)
+                if (!_isDragging && !_isDraggingVolume)
                 {
                     UpdateProgressFromPlayer();
                 }
@@ -148,6 +148,21 @@ namespace ChocoPlayer
             {
                 HandleButtonClick(e.X, e.Y);
             }
+
+            // AJOUTER CETTE LIGNE : Notifier le parent du clic
+            _controlsClickListener?.OnControlsClicked(e.X, e.Y);
+        }
+
+        public interface IControlsClickListener
+        {
+            void OnControlsClicked(int mouseX, int mouseY);
+        }
+
+        private IControlsClickListener? _controlsClickListener;
+
+        public void SetControlsClickListener(IControlsClickListener listener)
+        {
+            _controlsClickListener = listener;
         }
 
         private void PlayerControls_MouseUp(object? sender, MouseEventArgs e)
@@ -311,6 +326,14 @@ namespace ChocoPlayer
                 _progress = 0.0f;
                 _timeText = "00:00:00 / 00:00:00";
             }
+
+            int currentVolume = Player.GetVolume();
+            if (currentVolume >= 0)
+            {
+                _volumeProgress = currentVolume / 100f;
+            }
+
+            _isMuted = Player.IsMuted();
 
             this.Invalidate();
         }
@@ -525,9 +548,7 @@ namespace ChocoPlayer
 
         public void SetVolume(int volume)
         {
-            volume = Math.Max(0, Math.Min(100, volume));
             _volumeProgress = volume / 100f;
-            _isMuted = volume == 0;
             this.Invalidate();
         }
 

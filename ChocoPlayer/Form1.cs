@@ -14,9 +14,10 @@ namespace ChocoPlayer
         private PlayerControls? _playerControls;
         private TrackSettingsMenu? _trackSettingsMenu;
         private bool _isFullscreen = false;
-
+        private bool _ignoreNextMenuClose = false;  // AJOUTER CETTE LIGNE
         public Form1(string title, string videoPath, int width, int height, int positionX, int positionY)
         {
+
             InitializeVLC();
             SetupUI(title, width, height, positionX, positionY);
 
@@ -98,8 +99,6 @@ namespace ChocoPlayer
             this.Icon = CreateCustomIcon();
             this.KeyPreview = true;
 
-            this.KeyDown += Form1_KeyDown;
-
             _videoView = new VideoView
             {
                 MediaPlayer = _mediaPlayer,
@@ -107,13 +106,23 @@ namespace ChocoPlayer
             };
             this.Controls.Add(_videoView);
 
-            _videoView.MouseDown += VideoView_MouseDown;
+            // AJOUTER CET ÉVÉNEMENT avec une gestion par timer
+            _videoView.Click += (s, e) =>
+            {
+                // Utiliser BeginInvoke pour retarder légèrement l'exécution
+                this.BeginInvoke(new Action(() =>
+                {
+                    if (_trackSettingsMenu != null && _trackSettingsMenu.Visible)
+                    {
+                        _trackSettingsMenu.Hide();
+                    }
+                }));
+            };
 
             _playerControls = new PlayerControls();
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
+            _playerControls.SetControlsClickListener(new ControlsClickListener(this));
             this.Controls.Add(_playerControls);
-
-            _playerControls.MouseDown += PlayerControls_MouseDown;
 
             _trackSettingsMenu = new TrackSettingsMenu();
             _trackSettingsMenu.SetListener(new TrackListener(this));
@@ -123,32 +132,34 @@ namespace ChocoPlayer
             UpdateLayout();
         }
 
-        private void VideoView_MouseDown(object? sender, MouseEventArgs e)
+        private class ControlsClickListener : PlayerControls.IControlsClickListener
         {
-            if (_trackSettingsMenu != null && _trackSettingsMenu.Visible)
-            {
-                Point menuPoint = _trackSettingsMenu.PointToClient(_videoView!.PointToScreen(e.Location));
+            private Form1 _form;
 
-                if (!_trackSettingsMenu.ClientRectangle.Contains(menuPoint))
-                {
-                    _trackSettingsMenu.Hide();
-                }
+            public ControlsClickListener(Form1 form)
+            {
+                _form = form;
             }
-        }
 
-        private void PlayerControls_MouseDown(object? sender, MouseEventArgs e)
-        {
-            if (_trackSettingsMenu != null && _trackSettingsMenu.Visible)
+            public void OnControlsClicked(int mouseX, int mouseY)
             {
-                bool isClickOnSettingsButton = _playerControls!.IsClickOnSettingsButton(e.X, e.Y);
-
-                if (!isClickOnSettingsButton)
+                if (_form._trackSettingsMenu != null && _form._trackSettingsMenu.Visible)
                 {
-                    Point menuPoint = _trackSettingsMenu.PointToClient(_playerControls.PointToScreen(e.Location));
+                    // Vérifier si le clic est sur le bouton settings
+                    bool isClickOnSettingsButton = _form._playerControls!.IsClickOnSettingsButton(mouseX, mouseY);
 
-                    if (!_trackSettingsMenu.ClientRectangle.Contains(menuPoint))
+                    if (!isClickOnSettingsButton)
                     {
-                        _trackSettingsMenu.Hide();
+                        // Convertir les coordonnées des contrôles vers les coordonnées du menu
+                        Point controlPoint = new Point(mouseX, mouseY);
+                        Point screenPoint = _form._playerControls.PointToScreen(controlPoint);
+                        Point menuPoint = _form._trackSettingsMenu.PointToClient(screenPoint);
+
+                        // Si le clic est en dehors du menu, le fermer
+                        if (!_form._trackSettingsMenu.ClientRectangle.Contains(menuPoint))
+                        {
+                            _form._trackSettingsMenu.Hide();
+                        }
                     }
                 }
             }
@@ -204,6 +215,11 @@ namespace ChocoPlayer
             }
             else
             {
+                if (this.WindowState == FormWindowState.Maximized)
+                {
+                    this.WindowState = FormWindowState.Normal;
+                }
+
                 this.FormBorderStyle = FormBorderStyle.None;
                 this.WindowState = FormWindowState.Maximized;
                 _isFullscreen = true;
@@ -335,20 +351,25 @@ namespace ChocoPlayer
 
             public void OnSettingsClicked(int buttonX, int buttonY, int buttonSize)
             {
+                // MODIFIER CETTE MÉTHODE
                 _form.UpdateLayout();
+
+                // Activer le flag pour ignorer la prochaine tentative de fermeture
+                _form._ignoreNextMenuClose = true;
+
                 _form._trackSettingsMenu?.Toggle();
             }
         }
 
-        private void Form1_KeyDown(object? sender, KeyEventArgs e)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (_mediaPlayer == null)
-                return;
+                return base.ProcessCmdKey(ref msg, keyData);
 
             const int seekMs = 10_000;
             const int volumeStep = 5;
 
-            switch (e.KeyCode)
+            switch (keyData)
             {
                 case Keys.Right:
                     // Avancer la vidéo
@@ -356,8 +377,7 @@ namespace ChocoPlayer
                         _mediaPlayer.Time + seekMs,
                         _mediaPlayer.Length
                     );
-                    e.Handled = true;
-                    break;
+                    return true;
 
                 case Keys.Left:
                     // Reculer la vidéo
@@ -365,38 +385,82 @@ namespace ChocoPlayer
                         _mediaPlayer.Time - seekMs,
                         0
                     );
-                    e.Handled = true;
-                    break;
+                    return true;
 
                 case Keys.Up:
                     // Augmenter le volume
                     _mediaPlayer.Volume = Math.Min(_mediaPlayer.Volume + volumeStep, 100);
                     _playerControls?.SetVolume(_mediaPlayer.Volume);
-                    e.Handled = true;
-                    break;
+                    return true;
 
                 case Keys.Down:
                     // Diminuer le volume
                     _mediaPlayer.Volume = Math.Max(_mediaPlayer.Volume - volumeStep, 0);
                     _playerControls?.SetVolume(_mediaPlayer.Volume);
-                    e.Handled = true;
-                    break;
+                    return true;
+
+                case Keys.Space:
+                    // Play/Pause avec la barre d'espace
+                    if (_mediaPlayer.IsPlaying)
+                    {
+                        _mediaPlayer.Pause();
+                        _playerControls?.SetPlaying(false);
+                    }
+                    else
+                    {
+                        _mediaPlayer.Play();
+                        _playerControls?.SetPlaying(true);
+                    }
+                    return true;
 
                 case Keys.F11:
                     // Toggle fullscreen
                     ToggleFullscreen();
-                    e.Handled = true;
-                    break;
+                    return true;
 
                 case Keys.Escape:
                     // Sortir du fullscreen
                     if (_isFullscreen)
                     {
                         ToggleFullscreen();
-                        e.Handled = true;
+                        return true;
                     }
                     break;
+
+                case Keys.M:
+                    // Mute/Unmute avec la touche M
+                    _mediaPlayer.Mute = !_mediaPlayer.Mute;
+                    _playerControls?.SetMuted(_mediaPlayer.Mute);
+                    return true;
             }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private const int WM_SYSCOMMAND = 0x0112;
+        private const int SC_MAXIMIZE = 0xF030;
+        private const int SC_RESTORE = 0xF120;
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_SYSCOMMAND)
+            {
+                int command = m.WParam.ToInt32() & 0xFFF0;
+
+                if (command == SC_MAXIMIZE || command == SC_RESTORE)
+                {
+                    _trackSettingsMenu?.Hide();
+                    base.WndProc(ref m);
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        UpdateLayout();
+                        this.Refresh();
+                    }));
+                    return;
+                }
+            }
+
+            base.WndProc(ref m);
         }
 
         private class TrackListener : TrackSettingsMenu.ITrackSelectionListener
