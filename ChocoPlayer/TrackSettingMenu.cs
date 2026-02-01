@@ -53,9 +53,16 @@ namespace ChocoPlayer
             }
         }
 
-        public void SetPosition(int buttonX, int buttonY)
+        public void SetPosition(int buttonX, int buttonY, bool isFullScreen)
         {
-            this.SetBounds(buttonX - MENU_WIDTH, buttonY - MENU_HEIGHT - 20, MENU_WIDTH, MENU_HEIGHT);
+            if (isFullScreen)
+            {
+                this.SetBounds((buttonX - MENU_WIDTH) / 2, buttonY - MENU_HEIGHT - 20, MENU_WIDTH, MENU_HEIGHT);
+            }
+            else
+            {
+                this.SetBounds(buttonX - MENU_WIDTH, buttonY - MENU_HEIGHT - 20, MENU_WIDTH, MENU_HEIGHT);
+            }
         }
 
         private void TrackSettingsMenu_MouseMove(object? sender, MouseEventArgs e)
@@ -241,7 +248,6 @@ namespace ChocoPlayer
             var subtitleTracks = Player.GetSubtitleTracks();
             int currentSubTrack = Player.GetCurrentSubtitleTrack();
 
-            // Option "Désactiver"
             bool isDisabled = currentSubTrack == -1;
             bool isHoveredDisable = _hoveredItemId == -1 + 2000;
 

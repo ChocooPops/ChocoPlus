@@ -148,21 +148,6 @@ namespace ChocoPlayer
             {
                 HandleButtonClick(e.X, e.Y);
             }
-
-            // AJOUTER CETTE LIGNE : Notifier le parent du clic
-            _controlsClickListener?.OnControlsClicked(e.X, e.Y);
-        }
-
-        public interface IControlsClickListener
-        {
-            void OnControlsClicked(int mouseX, int mouseY);
-        }
-
-        private IControlsClickListener? _controlsClickListener;
-
-        public void SetControlsClickListener(IControlsClickListener listener)
-        {
-            _controlsClickListener = listener;
         }
 
         private void PlayerControls_MouseUp(object? sender, MouseEventArgs e)

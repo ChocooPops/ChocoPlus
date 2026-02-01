@@ -14,7 +14,19 @@ namespace ChocoPlayer
         private PlayerControls? _playerControls;
         private TrackSettingsMenu? _trackSettingsMenu;
         private bool _isFullscreen = false;
-        private bool _ignoreNextMenuClose = false;  // AJOUTER CETTE LIGNE
+        private bool _ignoreNextMenuClose = false;
+
+        private const int FULLSCREEN_CONTROLS_WIDTH = 800;
+
+        private System.Windows.Forms.Timer? _hideControlsTimer;
+        private const int HIDE_CONTROLS_DELAY = 3000;
+        private bool _controlsVisible = true;
+
+        private System.Windows.Forms.Timer? _mouseDetectionTimer;
+        private Point _lastMousePosition;
+        private DateTime _lastMouseMoveTime;
+        private bool _wasMouseButtonDown = false;
+
         public Form1(string title, string videoPath, int width, int height, int positionX, int positionY)
         {
 
@@ -28,6 +40,88 @@ namespace ChocoPlayer
             {
                 OpenFile(videoPath);
             }
+
+            InitializeHideControlsTimer();
+        }
+
+        private void InitializeHideControlsTimer()
+        {
+            _lastMousePosition = Cursor.Position;
+            _lastMouseMoveTime = DateTime.Now;
+
+            _mouseDetectionTimer = new System.Windows.Forms.Timer();
+            _mouseDetectionTimer.Interval = 100;
+            _mouseDetectionTimer.Tick += (s, e) =>
+            {
+                Point currentPosition = Cursor.Position;
+
+                bool isMouseButtonDown = (Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left;
+
+                if (isMouseButtonDown && !_wasMouseButtonDown)
+                {
+                    if (_trackSettingsMenu != null && _trackSettingsMenu.Visible)
+                    {
+                        Point menuPoint = _trackSettingsMenu.PointToClient(currentPosition);
+
+                        Point controlsPoint = _playerControls!.PointToClient(currentPosition);
+                        bool isClickOnSettingsButton = false;
+
+                        if (_playerControls.ClientRectangle.Contains(controlsPoint))
+                        {
+                            isClickOnSettingsButton = _playerControls.IsClickOnSettingsButton(controlsPoint.X, controlsPoint.Y);
+                        }
+
+                        if (!_trackSettingsMenu.ClientRectangle.Contains(menuPoint) && !isClickOnSettingsButton)
+                        {
+                            _trackSettingsMenu.Hide();
+                        }
+                    }
+                }
+
+                _wasMouseButtonDown = isMouseButtonDown;
+
+                if (currentPosition != _lastMousePosition)
+                {
+                    _lastMousePosition = currentPosition;
+                    _lastMouseMoveTime = DateTime.Now;
+
+                    if (this.ClientRectangle.Contains(this.PointToClient(currentPosition)))
+                    {
+                        ShowControls();
+                    }
+                }
+                else
+                {
+                    TimeSpan timeSinceLastMove = DateTime.Now - _lastMouseMoveTime;
+                    if (timeSinceLastMove.TotalMilliseconds >= HIDE_CONTROLS_DELAY)
+                    {
+                        if (_trackSettingsMenu == null || !_trackSettingsMenu.Visible)
+                        {
+                            HideControls();
+                        }
+                    }
+                }
+            };
+            _mouseDetectionTimer.Start();
+        }
+
+        private void ShowControls()
+        {
+            if (!_controlsVisible)
+            {
+                _controlsVisible = true;
+                _playerControls!.Visible = true;
+                this.Cursor = Cursors.Default;
+                Console.WriteLine("Contrôles affichés");
+            }
+        }
+
+        private void HideControls()
+        {
+            Console.WriteLine("HideControls appelé");
+            _controlsVisible = false;
+            _playerControls!.Visible = false;
+            _hideControlsTimer?.Stop();
         }
 
         private void InitializeVLC()
@@ -106,22 +200,8 @@ namespace ChocoPlayer
             };
             this.Controls.Add(_videoView);
 
-            // AJOUTER CET ÉVÉNEMENT avec une gestion par timer
-            _videoView.Click += (s, e) =>
-            {
-                // Utiliser BeginInvoke pour retarder légèrement l'exécution
-                this.BeginInvoke(new Action(() =>
-                {
-                    if (_trackSettingsMenu != null && _trackSettingsMenu.Visible)
-                    {
-                        _trackSettingsMenu.Hide();
-                    }
-                }));
-            };
-
             _playerControls = new PlayerControls();
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
-            _playerControls.SetControlsClickListener(new ControlsClickListener(this));
             this.Controls.Add(_playerControls);
 
             _trackSettingsMenu = new TrackSettingsMenu();
@@ -132,49 +212,29 @@ namespace ChocoPlayer
             UpdateLayout();
         }
 
-        private class ControlsClickListener : PlayerControls.IControlsClickListener
-        {
-            private Form1 _form;
-
-            public ControlsClickListener(Form1 form)
-            {
-                _form = form;
-            }
-
-            public void OnControlsClicked(int mouseX, int mouseY)
-            {
-                if (_form._trackSettingsMenu != null && _form._trackSettingsMenu.Visible)
-                {
-                    // Vérifier si le clic est sur le bouton settings
-                    bool isClickOnSettingsButton = _form._playerControls!.IsClickOnSettingsButton(mouseX, mouseY);
-
-                    if (!isClickOnSettingsButton)
-                    {
-                        // Convertir les coordonnées des contrôles vers les coordonnées du menu
-                        Point controlPoint = new Point(mouseX, mouseY);
-                        Point screenPoint = _form._playerControls.PointToScreen(controlPoint);
-                        Point menuPoint = _form._trackSettingsMenu.PointToClient(screenPoint);
-
-                        // Si le clic est en dehors du menu, le fermer
-                        if (!_form._trackSettingsMenu.ClientRectangle.Contains(menuPoint))
-                        {
-                            _form._trackSettingsMenu.Hide();
-                        }
-                    }
-                }
-            }
-        }
-
         private void UpdateLayout()
         {
             _videoView!.SetBounds(0, 0, this.ClientSize.Width, this.ClientSize.Height);
 
             int controlsHeight = _playerControls!.GetControlsHeight();
-            _playerControls.SetBounds(0, this.ClientSize.Height - controlsHeight, this.ClientSize.Width, controlsHeight);
-            _playerControls.BringToFront();
 
-            int settingsX = _playerControls.GetSettingX();
-            _trackSettingsMenu!.SetPosition(settingsX, this.ClientSize.Height - controlsHeight);
+            if (_isFullscreen)
+            {
+                // En mode plein écran, largeur fixe centrée
+                int controlsX = (this.ClientSize.Width - FULLSCREEN_CONTROLS_WIDTH) / 2;
+                _playerControls.SetBounds(controlsX, this.ClientSize.Height - controlsHeight, FULLSCREEN_CONTROLS_WIDTH, controlsHeight);
+                _trackSettingsMenu!.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true);
+            }
+            else
+            {
+                // En mode normal, pleine largeur
+                _playerControls.SetBounds(0, this.ClientSize.Height - controlsHeight, this.ClientSize.Width, controlsHeight);
+
+                int settingsX = _playerControls.GetSettingX();
+                _trackSettingsMenu!.SetPosition(settingsX, this.ClientSize.Height - controlsHeight, false);
+            }
+
+            _playerControls.BringToFront();
             _trackSettingsMenu.BringToFront();
         }
 
@@ -283,6 +343,10 @@ namespace ChocoPlayer
 
         private void Form1_FormClosing(object? sender, FormClosingEventArgs e)
         {
+            _mouseDetectionTimer?.Stop();
+            _mouseDetectionTimer?.Dispose();
+            _hideControlsTimer?.Stop();
+            _hideControlsTimer?.Dispose();
             _playerControls?.StopTimer();
             _mediaPlayer?.Stop();
             _mediaPlayer?.Dispose();
@@ -351,12 +415,8 @@ namespace ChocoPlayer
 
             public void OnSettingsClicked(int buttonX, int buttonY, int buttonSize)
             {
-                // MODIFIER CETTE MÉTHODE
                 _form.UpdateLayout();
-
-                // Activer le flag pour ignorer la prochaine tentative de fermeture
                 _form._ignoreNextMenuClose = true;
-
                 _form._trackSettingsMenu?.Toggle();
             }
         }
@@ -372,7 +432,6 @@ namespace ChocoPlayer
             switch (keyData)
             {
                 case Keys.Right:
-                    // Avancer la vidéo
                     _mediaPlayer.Time = Math.Min(
                         _mediaPlayer.Time + seekMs,
                         _mediaPlayer.Length
@@ -380,7 +439,6 @@ namespace ChocoPlayer
                     return true;
 
                 case Keys.Left:
-                    // Reculer la vidéo
                     _mediaPlayer.Time = Math.Max(
                         _mediaPlayer.Time - seekMs,
                         0
@@ -388,19 +446,16 @@ namespace ChocoPlayer
                     return true;
 
                 case Keys.Up:
-                    // Augmenter le volume
                     _mediaPlayer.Volume = Math.Min(_mediaPlayer.Volume + volumeStep, 100);
                     _playerControls?.SetVolume(_mediaPlayer.Volume);
                     return true;
 
                 case Keys.Down:
-                    // Diminuer le volume
                     _mediaPlayer.Volume = Math.Max(_mediaPlayer.Volume - volumeStep, 0);
                     _playerControls?.SetVolume(_mediaPlayer.Volume);
                     return true;
 
                 case Keys.Space:
-                    // Play/Pause avec la barre d'espace
                     if (_mediaPlayer.IsPlaying)
                     {
                         _mediaPlayer.Pause();
@@ -414,21 +469,19 @@ namespace ChocoPlayer
                     return true;
 
                 case Keys.F11:
-                    // Toggle fullscreen
                     ToggleFullscreen();
                     return true;
 
                 case Keys.Escape:
-                    // Sortir du fullscreen
                     if (_isFullscreen)
                     {
                         ToggleFullscreen();
+                        _trackSettingsMenu?.Hide();
                         return true;
                     }
                     break;
 
                 case Keys.M:
-                    // Mute/Unmute avec la touche M
                     _mediaPlayer.Mute = !_mediaPlayer.Mute;
                     _playerControls?.SetMuted(_mediaPlayer.Mute);
                     return true;
