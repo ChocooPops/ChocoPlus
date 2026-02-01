@@ -132,8 +132,40 @@ namespace ChocoPlayer
         private void InitializeVLC()
         {
             Core.Initialize();
+            string[] vlcArgs = new string[]
+                        {
+                // Interface et affichage
+                "--no-video-title-show",        // Ne pas afficher le titre
+                "--no-osd",                      // Désactiver l'affichage à l'écran
+                "--no-video-deco",               // Pas de décorations vidéo
+                
+                // Cache et buffering (réduit pour économiser la mémoire)
+                "--file-caching=1000",           // Cache fichiers locaux : 1s (au lieu de 2s)
+                "--network-caching=2000",        // Cache réseau : 2s (au lieu de 3s)
+                "--live-caching=500",            // Cache live : 0.5s (au lieu de 1s)
+                "--sout-mux-caching=1000",       // Cache mux : 1s (au lieu de 2s)
+                
+                // Optimisations mémoire
+                "--avcodec-hw=any",              // Accélération matérielle (économise CPU et RAM)
+                "--avcodec-threads=2",           // 2 threads au lieu de 4 (moins de mémoire)
+                "--no-plugins-cache",            // Ne pas mettre en cache les plugins
+                "--no-stats",                    // Pas de statistiques
+                "--no-sub-autodetect-file",      // Ne pas chercher de sous-titres automatiquement
+                
+                // Optimisations lecture
+                "--drop-late-frames",            // Supprimer les frames en retard
+                "--skip-frames",                 // Sauter les frames si nécessaire
+                
+                // Réduction mémoire supplémentaire
+                "--avcodec-skiploopfilter=2",    // Sauter filtre de boucle (2 = non-ref frames)
+                "--avcodec-skip-idct=0",         // Ne pas sauter IDCT (0 = jamais)
+                "--clock-jitter=0",              // Pas de jitter
+                
+                // Mode silencieux
+                "--quiet"                        // Pas de logs verbeux
+            };
 
-            _libVLC = new LibVLC();
+            _libVLC = new LibVLC(vlcArgs);
             _mediaPlayer = new MediaPlayer(_libVLC);
 
             _mediaPlayer.Playing += (sender, e) =>
