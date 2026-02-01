@@ -14,11 +14,9 @@ namespace ChocoPlayer
         private PlayerControls? _playerControls;
         private TrackSettingsMenu? _trackSettingsMenu;
         private bool _isFullscreen = false;
-        private bool _ignoreNextMenuClose = false;
 
         private const int FULLSCREEN_CONTROLS_WIDTH = 800;
 
-        private System.Windows.Forms.Timer? _hideControlsTimer;
         private const int HIDE_CONTROLS_DELAY = 3000;
         private bool _controlsVisible = true;
 
@@ -80,12 +78,14 @@ namespace ChocoPlayer
 
                 _wasMouseButtonDown = isMouseButtonDown;
 
+                bool isMouseInWindow = this.ClientRectangle.Contains(this.PointToClient(currentPosition));
+
                 if (currentPosition != _lastMousePosition)
                 {
                     _lastMousePosition = currentPosition;
                     _lastMouseMoveTime = DateTime.Now;
 
-                    if (this.ClientRectangle.Contains(this.PointToClient(currentPosition)))
+                    if (isMouseInWindow)
                     {
                         ShowControls();
                     }
@@ -101,6 +101,14 @@ namespace ChocoPlayer
                         }
                     }
                 }
+
+                if (!isMouseInWindow)
+                {
+                    if (_trackSettingsMenu == null || !_trackSettingsMenu.Visible)
+                    {
+                        HideControls();
+                    }
+                }
             };
             _mouseDetectionTimer.Start();
         }
@@ -112,48 +120,18 @@ namespace ChocoPlayer
                 _controlsVisible = true;
                 _playerControls!.Visible = true;
                 this.Cursor = Cursors.Default;
-                Console.WriteLine("Contrôles affichés");
             }
         }
 
         private void HideControls()
         {
-            Console.WriteLine("HideControls appelé");
             _controlsVisible = false;
             _playerControls!.Visible = false;
-            _hideControlsTimer?.Stop();
         }
 
         private void InitializeVLC()
         {
             Core.Initialize();
-
-            string[] vlcArgs = new string[]
-            {
-                "--no-video-title-show",
-                "--avcodec-hw=any",
-                "--file-caching=2000",
-                "--network-caching=3000",
-                "--live-caching=1000",
-                "--sout-mux-caching=2000",
-                "--clock-jitter=1000",
-                "--no-sub-autodetect-file",
-                "--no-video-deco",
-                "--drop-late-frames",
-                "--skip-frames",
-                "--avcodec-skiploopfilter=4",
-                "--avcodec-skip-idct=4",
-                "--avcodec-threads=4",
-                "--avcodec-fast",
-                "--no-plugins-cache",
-                "--no-stats",
-                "--no-osd",
-                "--quiet",
-                "--audio-resampler=soxr",
-                "--http-reconnect",
-                "--http-continuous",
-                "--adaptive-logic=highrate",
-            };
 
             _libVLC = new LibVLC();
             _mediaPlayer = new MediaPlayer(_libVLC);
@@ -247,17 +225,20 @@ namespace ChocoPlayer
         {
             try
             {
-                var media = new Media(_libVLC, path, FromType.FromLocation);
-
-                if (path.StartsWith("http://") || path.StartsWith("https://"))
+                if (_libVLC != null)
                 {
-                    media.AddOption(":http-reconnect");
-                    media.AddOption(":network-caching=3000");
-                }
+                    var media = new Media(_libVLC, path, FromType.FromLocation);
 
-                _mediaPlayer!.Media = media;
-                _mediaPlayer.Play();
-                _playerControls!.SetPlaying(true);
+                    if (path.StartsWith("http://") || path.StartsWith("https://"))
+                    {
+                        media.AddOption(":http-reconnect");
+                        media.AddOption(":network-caching=3000");
+                    }
+
+                    _mediaPlayer!.Media = media;
+                    _mediaPlayer.Play();
+                    _playerControls!.SetPlaying(true);
+                }
             }
             catch (Exception ex)
             {
@@ -345,8 +326,6 @@ namespace ChocoPlayer
         {
             _mouseDetectionTimer?.Stop();
             _mouseDetectionTimer?.Dispose();
-            _hideControlsTimer?.Stop();
-            _hideControlsTimer?.Dispose();
             _playerControls?.StopTimer();
             _mediaPlayer?.Stop();
             _mediaPlayer?.Dispose();
@@ -416,7 +395,6 @@ namespace ChocoPlayer
             public void OnSettingsClicked(int buttonX, int buttonY, int buttonSize)
             {
                 _form.UpdateLayout();
-                _form._ignoreNextMenuClose = true;
                 _form._trackSettingsMenu?.Toggle();
             }
         }

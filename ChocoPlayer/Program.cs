@@ -19,7 +19,7 @@ static class Program
             }
             catch (Exception ex)
             {
-                //MessageBox.Show($"Impossible de parser le JSON : {ex.Message}");
+                MessageBox.Show($"Impossible de parser le JSON : {ex.Message}");
             }
         }
 

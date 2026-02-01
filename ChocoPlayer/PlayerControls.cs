@@ -99,8 +99,8 @@ namespace ChocoPlayer
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Erreur lors du chargement des icônes: {ex.Message}");
-                //Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                Console.WriteLine($"Erreur lors du chargement des icônes: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
             }
         }
 
@@ -113,7 +113,7 @@ namespace ChocoPlayer
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"Erreur lors du chargement de {pngPath}: {ex.Message}");
+                Console.WriteLine($"Erreur lors du chargement de {pngPath}: {ex.Message}");
                 return null;
             }
         }
