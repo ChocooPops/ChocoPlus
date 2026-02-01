@@ -61,6 +61,10 @@ export class EditNewsVideoRunningService {
         })
         this.editNewsVideoRunningSubject.next(news);
       }),
+      catchError((error: any) => {
+        this.editNewsVideoRunningSubject.next([]);
+        return of();
+      })
     )
   }
 
@@ -82,6 +86,7 @@ export class EditNewsVideoRunningService {
         this.editNewsVideoRunningSubject.next(news);
       }),
       catchError((error) => {
+        this.editNewsVideoRunningSubject.next([]);
         return of();
       })
     )
@@ -89,7 +94,7 @@ export class EditNewsVideoRunningService {
 
   public addMediaIntoNews(media: MediaModel): void {
     const news: NewsVideoRunningModel[] = this.editNewsVideoRunningSubject.value;
-    const exists = news.some(item => item.media.id === media.id && item.media.mediaType === media.mediaType);
+    const exists = news.some(item => item.media.id === media.id);
     if (!exists) {
       news.push({
         id: this.getId(),

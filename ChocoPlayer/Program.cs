@@ -23,13 +23,15 @@ static class Program
             }
         }
 
-        Application.Run(new Form1(
+        Application.Run(new ChocoPlayer(
                     videoInfo?.Title ?? "",
                     videoInfo?.Url ?? "",
                     videoInfo?.Width ?? 1920,
                     videoInfo?.Height ?? 1080,
                     videoInfo?.PositionX ?? 0,
-                    videoInfo?.PositionY ?? 0
+                    videoInfo?.PositionY ?? 0,
+                    videoInfo?.IsMaximized ?? false,
+                    videoInfo?.IsFullScreen ?? false
                 ));
     }
 }

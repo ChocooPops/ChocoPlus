@@ -7,7 +7,7 @@
         <div class="container-poster" (click)="start.onClick()">
             <div class="container-tmp-poster">
                 <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
-                    [idSeason]="episode.seasonId" [idEpisode]="episode.id"></app-start-button>
+                    [episodeId]="episode.id" [episodeName]="episode.name"></app-start-button>
             </div>
             <img [src]="episodePoster[idx]">
         </div>

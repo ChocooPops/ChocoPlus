@@ -7,7 +7,7 @@ using DarkTitleBar;
 
 namespace ChocoPlayer
 {
-    public class Form1 : Form
+    public class ChocoPlayer : Form
     {
         private LibVLC? _libVLC;
         private MediaPlayer? _mediaPlayer;
@@ -18,7 +18,7 @@ namespace ChocoPlayer
 
         private const int FULLSCREEN_CONTROLS_WIDTH = 800;
 
-        private const int HIDE_CONTROLS_DELAY = 3000;
+        private const int HIDE_CONTROLS_DELAY = 2000;
         private bool _controlsVisible = true;
 
         private System.Windows.Forms.Timer? _mouseDetectionTimer;
@@ -26,11 +26,11 @@ namespace ChocoPlayer
         private DateTime _lastMouseMoveTime;
         private bool _wasMouseButtonDown = false;
 
-        public Form1(string title, string videoPath, int width, int height, int positionX, int positionY)
+        public ChocoPlayer(string title, string videoPath, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen)
         {
 
             InitializeVLC();
-            SetupUI(title, width, height, positionX, positionY);
+            SetupUI(title, width, height, positionX, positionY, isMaximized, isFullScreen);
 
             this.FormClosing += Form1_FormClosing;
             this.Resize += Form1_Resize;
@@ -49,7 +49,7 @@ namespace ChocoPlayer
             _lastMouseMoveTime = DateTime.Now;
 
             _mouseDetectionTimer = new System.Windows.Forms.Timer();
-            _mouseDetectionTimer.Interval = 100;
+            _mouseDetectionTimer.Interval = 50;
             _mouseDetectionTimer.Tick += (s, e) =>
             {
                 Point currentPosition = Cursor.Position;
@@ -162,6 +162,8 @@ namespace ChocoPlayer
                 "--avcodec-skip-idct=0",         // Ne pas sauter IDCT (0 = jamais)
                 "--clock-jitter=0",              // Pas de jitter
                 
+                "--audio-resampler=soxr",       // Rééchantillonnage audio
+
                 // Mode silencieux
                 "--quiet"                        // Pas de logs verbeux
             };
@@ -188,18 +190,33 @@ namespace ChocoPlayer
             Player.SetMediaPlayer(_mediaPlayer);
         }
 
-        private void SetupUI(string title, int width, int height, int positionX, int positionY)
+        private void SetupUI(string title, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen)
         {
+            this.TopMost = true;
             this.Text = "ChocoPlayer" + " - " + title;
-            this.StartPosition = FormStartPosition.Manual;
-            this.Location = new Point(positionX, positionY);
-            this.ClientSize = new Size(width, height);
             this.BackColor = Color.Black;
+            this.Icon = CreateCustomIcon();
+            this.KeyPreview = true;
 
             DarkTitleBarManager.ApplyDarkTitleBar(this.Handle);
 
-            this.Icon = CreateCustomIcon();
-            this.KeyPreview = true;
+            if (isFullScreen)
+            {
+                this.FormBorderStyle = FormBorderStyle.None;
+                this.WindowState = FormWindowState.Maximized;
+                _isFullscreen = true;
+            }
+            else if (isMaximized)
+            {
+                this.StartPosition = FormStartPosition.Manual;
+                this.WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                this.StartPosition = FormStartPosition.Manual;
+                this.Location = new Point(positionX, positionY);
+                this.ClientSize = new Size(width, height);
+            }
 
             _videoView = new VideoView
             {
@@ -364,20 +381,20 @@ namespace ChocoPlayer
 
         private class ProgressListener : PlayerControls.IProgressChangeListener
         {
-            private Form1 _form;
+            private ChocoPlayer _chocoPlayer;
 
-            public ProgressListener(Form1 form)
+            public ProgressListener(ChocoPlayer form)
             {
-                _form = form;
+                _chocoPlayer = form;
             }
 
             public void OnProgressChanged(float progress)
             {
-                if (_form._mediaPlayer != null)
+                if (_chocoPlayer._mediaPlayer != null)
                 {
-                    long totalTime = _form._mediaPlayer.Length;
+                    long totalTime = _chocoPlayer._mediaPlayer.Length;
                     long newTime = (long)(progress * totalTime);
-                    _form._mediaPlayer.Time = newTime;
+                    _chocoPlayer._mediaPlayer.Time = newTime;
                 }
             }
 
@@ -387,45 +404,45 @@ namespace ChocoPlayer
 
             public void OnPlayPauseClicked(bool isPlaying)
             {
-                if (_form._mediaPlayer != null)
+                if (_chocoPlayer._mediaPlayer != null)
                 {
                     if (isPlaying)
                     {
-                        _form._mediaPlayer.Play();
+                        _chocoPlayer._mediaPlayer.Play();
                     }
                     else
                     {
-                        _form._mediaPlayer.Pause();
+                        _chocoPlayer._mediaPlayer.Pause();
                     }
                 }
             }
 
             public void OnVolumeClicked()
             {
-                if (_form._mediaPlayer != null)
+                if (_chocoPlayer._mediaPlayer != null)
                 {
-                    _form._playerControls?.SetMuted(!_form._mediaPlayer.Mute);
-                    _form._mediaPlayer.Mute = !_form._mediaPlayer.Mute;
+                    _chocoPlayer._playerControls?.SetMuted(!_chocoPlayer._mediaPlayer.Mute);
+                    _chocoPlayer._mediaPlayer.Mute = !_chocoPlayer._mediaPlayer.Mute;
                 }
             }
 
             public void OnVolumeChanged(int volume)
             {
-                if (_form._mediaPlayer != null)
+                if (_chocoPlayer._mediaPlayer != null)
                 {
-                    _form._mediaPlayer.Volume = volume;
+                    _chocoPlayer._mediaPlayer.Volume = volume;
                 }
             }
 
             public void OnFullscreenClicked()
             {
-                _form.ToggleFullscreen();
+                _chocoPlayer.ToggleFullscreen();
             }
 
             public void OnSettingsClicked(int buttonX, int buttonY, int buttonSize)
             {
-                _form.UpdateLayout();
-                _form._trackSettingsMenu?.Toggle();
+                _chocoPlayer.UpdateLayout();
+                _chocoPlayer._trackSettingsMenu?.Toggle();
             }
         }
 
@@ -526,26 +543,26 @@ namespace ChocoPlayer
 
         private class TrackListener : TrackSettingsMenu.ITrackSelectionListener
         {
-            private Form1 _form;
+            private ChocoPlayer _chocoPlayer;
 
-            public TrackListener(Form1 form)
+            public TrackListener(ChocoPlayer form)
             {
-                _form = form;
+                _chocoPlayer = form;
             }
 
             public void OnAudioTrackSelected(int trackId)
             {
-                if (_form._mediaPlayer != null)
+                if (_chocoPlayer._mediaPlayer != null)
                 {
-                    _form._mediaPlayer.SetAudioTrack(trackId);
+                    _chocoPlayer._mediaPlayer.SetAudioTrack(trackId);
                 }
             }
 
             public void OnSubtitleTrackSelected(int trackId)
             {
-                if (_form._mediaPlayer != null)
+                if (_chocoPlayer._mediaPlayer != null)
                 {
-                    _form._mediaPlayer.SetSpu(trackId);
+                    _chocoPlayer._mediaPlayer.SetSpu(trackId);
                 }
             }
         }

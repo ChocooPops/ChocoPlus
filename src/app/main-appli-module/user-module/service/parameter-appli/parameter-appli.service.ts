@@ -429,8 +429,8 @@ export class ParameterAppliService {
       },
       {
         id: this.getId(),
-        name: "600px",
-        value: ScalePoster.SCALE_600h,
+        name: "900px",
+        value: ScalePoster.SCALE_900h,
         state: false,
       },
       {
@@ -458,8 +458,8 @@ export class ParameterAppliService {
       },
       {
         id: this.getId(),
-        name: "600px",
-        value: ScalePoster.SCALE_600w,
+        name: "900px",
+        value: ScalePoster.SCALE_900w,
         state: false,
       },
       {

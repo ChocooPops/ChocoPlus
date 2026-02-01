@@ -184,6 +184,8 @@ ipcMain.handle('launch-java-app', async (event, dataObject) => {
     const bounds = mainWindow.getBounds();
     dataObject.PositionX = bounds.x;
     dataObject.PositionY = bounds.y;
+    dataObject.IsMaximized = mainWindow.isMaximized();
+    dataObject.IsFullScreen = mainWindow.isFullScreen();
 
     const csharpAppPath = path.join(
       __dirname,

@@ -18,8 +18,8 @@ export class StartButtonComponent {
   @Input() typeButton: boolean = false;
   @Input() typeDisplaying: boolean = false;
   @Input() media!: MediaModel;
-  @Input() idSeason !: number;
-  @Input() idEpisode !: number;
+  @Input() episodeId !: number;
+  @Input() episodeName !: string;
 
   constructor(private router: Router,
     private streamService: StreamService,
@@ -38,7 +38,8 @@ export class StartButtonComponent {
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       chocoPlayer.Url = this.streamService.getUrlStreamMovie(this.media.id);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
-      chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.idEpisode);
+      chocoPlayer.Title = `${chocoPlayer.Title} - ${this.episodeName}`;
+      chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.media.id, this.episodeId ?? -1);
     }
 
     await this.streamService.launchJavaAppToMovie(chocoPlayer);

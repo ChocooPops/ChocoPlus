@@ -8,5 +8,7 @@ namespace ChocoPlayer
         public int Width { get; set; }
         public int PositionX { get; set; }
         public int PositionY { get; set; }
+        public bool IsMaximized { get; set; }
+        public bool IsFullScreen { get; set; }
     }
 }

@@ -34,27 +34,16 @@ export class VideoRunningPresentationComponent {
   description: string | undefined = undefined;
   countMax: number = 300;
 
-  private boundTimeUpdate!: () => void;
-  private startVideo: number = 0;
-  private endVideo: number = 0;
-
   observer !: IntersectionObserver;
   private isVisible = false;
 
   constructor(private readonly compressedPosterService: CompressedPosterService,
-    private readonly streamService: StreamService,
-    private readonly verifTimerShowService: VerifTimerShowService
+    private readonly streamService: StreamService
   ) { }
 
   ngOnInit(): void {
     this.srcLogo = this.compressedPosterService.getLogoForMediaPresentationTopHead(this.newsMedia.media);
     this.srcBackground = this.compressedPosterService.getBackgroundForNewsVideoRunning(this.newsMedia);
-    this.startVideo = this.verifTimerShowService.convertTimerInSecond(this.newsMedia.startShow);
-    this.endVideo = this.verifTimerShowService.convertTimerInSecond(this.newsMedia.endShow);
-
-    if (this.startVideo > this.endVideo) {
-      this.endVideo = this.startVideo + 60;
-    }
 
     if (this.newsMedia.media.description) {
       this.description = this.couperParagraphe(this.newsMedia.media.description, this.countMax);
@@ -86,7 +75,6 @@ export class VideoRunningPresentationComponent {
 
   onLoadedMetadata = () => {
     const video = this.videoRef.nativeElement;
-    video.currentTime = this.startVideo;
     video.addEventListener('canplay', this.onCanPlay);
     video.removeEventListener('loadedmetadata', this.onLoadedMetadata);
     if (!this.isVisible) {
@@ -100,17 +88,14 @@ export class VideoRunningPresentationComponent {
     this.isVideoLoaded = true;
   };
 
-  timeUpdate = () => {
-    const video = this.videoRef.nativeElement;
-    if (video.currentTime > this.endVideo) {
-      this.stopStreamingVideo();
-    }
-  }
-
   volumeUpdate = () => {
     const video = this.videoRef.nativeElement;
     this.currentVolume = video.volume;
   }
+
+  onVideoEnded = (): void => {
+    this.stopStreamingVideo();
+  };
 
   ngOnDestroy(): void {
     this.stopStreamingVideo();
@@ -119,12 +104,11 @@ export class VideoRunningPresentationComponent {
   startStreamingVideo(): void {
     const video = this.videoRef.nativeElement;
     if (video) {
-      this.boundTimeUpdate = this.timeUpdate.bind(this);
       video.volume = this.currentVolume;
       video.addEventListener('loadedmetadata', this.onLoadedMetadata);
-      video.addEventListener('timeupdate', this.boundTimeUpdate);
       video.addEventListener('volumechange', this.volumeUpdate);
-      video.src = "";
+      video.addEventListener('ended', this.onVideoEnded);
+      video.src = this.streamService.getUrlStreamNews(this.newsMedia.id);
     }
   }
 
@@ -133,8 +117,8 @@ export class VideoRunningPresentationComponent {
     if (video) {
       video.removeEventListener('loadedmetadata', this.onLoadedMetadata);
       video.removeEventListener('canplay', this.onCanPlay);
-      video.removeEventListener('timeupdate', this.boundTimeUpdate);
       video.removeEventListener('volumechange', this.volumeUpdate);
+      video.removeEventListener('ended', this.onVideoEnded);
       video.src = '';
     }
     this.isVideoLoaded = false;

@@ -13,6 +13,7 @@ export class StreamService {
   private readonly apiUrlStream: string = `${environment.apiUrlStream}`;
   private readonly urlGetStreamMovie: string = 'stream-movie';
   private readonly urlGetStreamEpisode: string = 'stream-episode';
+  private readonly urlGetStreamNewsVideoRunning: string = 'stream-news';
   private readonly paramToken: string = 'token';
 
   constructor(private readonly authService: AuthService) { }
@@ -22,9 +23,14 @@ export class StreamService {
     return `${this.apiUrlStream}/${this.urlGetStreamMovie}/${movieId}?${this.paramToken}=${token}`;
   }
 
-  public getUrlStreamEpisode(episodeId: number): string {
+  public getUrlStreamEpisode(seasonId: number, episodeId: number): string {
     const token: string = this.authService.getToken() ?? '';
-    return `${this.apiUrlStream}/${this.urlGetStreamEpisode}/${episodeId}?${this.paramToken}=${token}`;
+    return `${this.apiUrlStream}/${this.urlGetStreamEpisode}/${seasonId}/${episodeId}?${this.paramToken}=${token}`;
+  }
+
+  public getUrlStreamNews(newsId: number): string {
+    const token: string = this.authService.getToken() ?? '';
+    return `${this.apiUrlStream}/${this.urlGetStreamNewsVideoRunning}/${newsId}?${this.paramToken}=${token}`;
   }
 
   public async launchJavaAppToMovie(chocoPlayer: ChocoPlayerModel): Promise<void> {
