@@ -38,7 +38,7 @@ export class StartButtonComponent {
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       chocoPlayer.Url = this.streamService.getUrlStreamMovie(this.media.id);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
-      chocoPlayer.Title = `${chocoPlayer.Title} - ${this.episodeName}`;
+      if (this.episodeName) chocoPlayer.Title = `${chocoPlayer.Title} - ${this.episodeName}`;
       chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.media.id, this.episodeId ?? -1);
     }
 

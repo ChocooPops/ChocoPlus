@@ -41,7 +41,7 @@ function createWindow() {
   );
 
   // Ouvrir les outils de développement si nécessaire
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   // Suppression de la barre de menu
   mainWindow.setMenu(null);

@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+
 using LibVLCSharp.Shared;
 using LibVLCSharp.WinForms;
 using DarkTitleBar;
@@ -213,9 +215,20 @@ namespace ChocoPlayer
             }
             else
             {
-                this.StartPosition = FormStartPosition.Manual;
-                this.Location = new Point(positionX, positionY);
-                this.ClientSize = new Size(width, height);
+                using (Graphics g = this.CreateGraphics())
+                {
+                    float scaleFactorX = g.DpiX / 96f; // 96 DPI = 100%
+                    float scaleFactorY = g.DpiY / 96f;
+
+                    int scaledX = (int)(positionX * scaleFactorX);
+                    int scaledY = (int)(positionY * scaleFactorY);
+                    int scaledWidth = (int)(width * scaleFactorX);
+                    int scaledHeight = (int)(height * scaleFactorY);
+
+                    this.StartPosition = FormStartPosition.Manual;
+                    this.Location = new Point(scaledX, scaledY);
+                    this.Size = new Size(scaledWidth, scaledHeight);
+                }
             }
 
             _videoView = new VideoView
