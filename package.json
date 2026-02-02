@@ -34,7 +34,16 @@
       "createStartMenuShortcut": true,
       "allowToChangeInstallationDirectory": true,
       "shortcutName": "ChocoPlus"
-    }
+    },
+    "extraResources": [
+      {
+        "from": "resources/ChocoPlayer",
+        "to": "ChocoPlayer",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
   },
   "dependencies": {
     "@angular/animations": "^18.2.0",

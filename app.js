@@ -188,10 +188,19 @@ ipcMain.handle('launch-java-app', async (event, dataObject) => {
     dataObject.IsFullScreen = mainWindow.isFullScreen();
     dataObject.Token = await keytar.getPassword(SERVICE, ACCOUNT);
 
-    const csharpAppPath = path.join(
-      __dirname,
-      'ChocoPlayer/bin/Debug/net9.0-windows/ChocoPlayer.exe'
-    );
+    let csharpAppPath = '';
+
+    if (app.isPackaged) {
+      csharpAppPath = path.join(
+        __dirname,
+        'resources', 'ChocoPlayer', 'ChocoPlayer.exe'
+      );
+    } else {
+      csharpAppPath = path.join(
+        __dirname,
+        'ChocoPlayer', 'bin', 'Debug', 'net9.0-windows', 'ChocoPlayer.exe'
+      );
+    }
 
     const jsonString = JSON.stringify(dataObject);
 
