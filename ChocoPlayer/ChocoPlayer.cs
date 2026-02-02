@@ -22,6 +22,7 @@ namespace ChocoPlayer
         private ApiService? _apiService;
         private int _mediaId;
         private bool _isFullscreen = false;
+        private bool _hasSeasons = false;
 
         private Dictionary<int, List<SeasonsMenu.EpisodeItem>> _episodesCache = new Dictionary<int, List<SeasonsMenu.EpisodeItem>>();
 
@@ -287,17 +288,24 @@ namespace ChocoPlayer
             this.Controls.Add(_trackSettingsMenu);
             _trackSettingsMenu.BringToFront();
 
-            _seasonsMenu = new SeasonsMenu();
-            _seasonsMenu.SetListener(new SeasonListener(this));
-            this.Controls.Add(_seasonsMenu);
-            _seasonsMenu.BringToFront();
+            _hasSeasons = seasons != null && seasons.Count > 0;
 
-            if (seasons != null && seasons.Count > 0)
+            if (_hasSeasons)
             {
-                var seasonItems = seasons.Select(s => new SeasonsMenu.SeasonItem(s.Id, s.Name)).ToList();
-                _seasonsMenu.LoadSeasons(seasonItems);
-                LoadEpisodesForSeason(seasons[0].Id);
+                _seasonsMenu = new SeasonsMenu();
+                _seasonsMenu.SetListener(new SeasonListener(this));
+                this.Controls.Add(_seasonsMenu);
+                _seasonsMenu.BringToFront();
+
+                if (seasons != null)
+                {
+                    var seasonItems = seasons.Select(s => new SeasonsMenu.SeasonItem(s.Id, s.Name)).ToList();
+                    _seasonsMenu.LoadSeasons(seasonItems);
+                    LoadEpisodesForSeason(seasons[0].Id);
+                }
             }
+
+            _playerControls.SetHasSeasons(_hasSeasons);
 
             UpdateLayout();
         }
@@ -313,20 +321,32 @@ namespace ChocoPlayer
                 int controlsX = (this.ClientSize.Width - FULLSCREEN_CONTROLS_WIDTH) / 2;
                 _playerControls.SetBounds(controlsX, this.ClientSize.Height - controlsHeight, FULLSCREEN_CONTROLS_WIDTH, controlsHeight);
                 _trackSettingsMenu!.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true);
-                _seasonsMenu!.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true);
+
+                if (_hasSeasons && _seasonsMenu != null)
+                {
+                    _seasonsMenu.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true);
+                }
             }
             else
             {
                 _playerControls.SetBounds(0, this.ClientSize.Height - controlsHeight, this.ClientSize.Width, controlsHeight);
                 int settingsX = _playerControls.GetSettingX();
                 _trackSettingsMenu!.SetPosition(settingsX, this.ClientSize.Height - controlsHeight, false);
-                int seasonsX = _playerControls.GetSeasonsButtonX();
-                _seasonsMenu!.SetPosition(seasonsX, this.ClientSize.Height - controlsHeight, false);
+
+                if (_hasSeasons && _seasonsMenu != null)
+                {
+                    int seasonsX = _playerControls.GetSeasonsButtonX();
+                    _seasonsMenu.SetPosition(seasonsX, this.ClientSize.Height - controlsHeight, false);
+                }
             }
 
             _playerControls.BringToFront();
             _trackSettingsMenu.BringToFront();
-            _seasonsMenu.BringToFront();
+
+            if (_hasSeasons && _seasonsMenu != null)
+            {
+                _seasonsMenu.BringToFront();
+            }
         }
 
         private void ChocoPlayer_Resize(object? sender, EventArgs e)

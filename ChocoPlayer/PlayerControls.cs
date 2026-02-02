@@ -61,6 +61,7 @@ namespace ChocoPlayer
         private Bitmap? _fullscreenIcon;
         private Bitmap? _fullscreenExitIcon;
         private bool _isFullscreen = false;
+        private bool _hasSeasons = false;
 
         public PlayerControls()
         {
@@ -218,6 +219,9 @@ namespace ChocoPlayer
 
         public bool IsClickOnSeasonsButton(int mouseX, int mouseY)
         {
+            if (!_hasSeasons)
+                return false;
+
             return IsOverButton(mouseX, mouseY, _seasonsButtonX);
         }
 
@@ -295,7 +299,7 @@ namespace ChocoPlayer
             {
                 _listener?.OnSettingsClicked(_settingsButtonX, _buttonsY, _buttonSize);
             }
-            else if (IsOverButton(mouseX, mouseY, _seasonsButtonX))
+            else if (_hasSeasons && IsOverButton(mouseX, mouseY, _seasonsButtonX))
             {
                 _listener?.OnSeasonsClicked(_seasonsButtonX, _buttonsY, _buttonSize);
             }
@@ -439,7 +443,11 @@ namespace ChocoPlayer
 
             _fullscreenButtonX = width - _rightMargin - _buttonSize;
             _settingsButtonX = _fullscreenButtonX - _buttonSize - _buttonSpacing + 5;
-            _seasonsButtonX = _settingsButtonX - _buttonSize - _buttonSpacing + 5;
+
+            if (_hasSeasons)
+            {
+                _seasonsButtonX = _settingsButtonX - _buttonSize - _buttonSpacing + 5;
+            }
 
             DrawIconButton(g2d, _playButtonX, _buttonsY, _isPlaying ? _pauseIcon : _playIcon, _isPlaying ? "⏸" : "▶");
             DrawIconButton(g2d, _backwardButtonX, _buttonsY, _backwardIcon, "⏮");
@@ -448,7 +456,10 @@ namespace ChocoPlayer
                     (_isMuted || _volumeProgress == 0) ? _volumeMuteIcon : _volumeIcon,
                     (_isMuted || _volumeProgress == 0) ? "🔇" : "🔊");
 
-            DrawIconButton(g2d, _seasonsButtonX, _buttonsY, _seasonsIcon, "📺");
+            if (_hasSeasons)
+            {
+                DrawIconButton(g2d, _seasonsButtonX, _buttonsY, _seasonsIcon, "📺");
+            }
 
             DrawIconButton(g2d, _settingsButtonX, _buttonsY, _settingsIcon, "⚙");
             DrawIconButton(g2d, _fullscreenButtonX, _buttonsY, _isFullscreen ? _fullscreenExitIcon : _fullscreenIcon, _isFullscreen ? "⊡" : "⛶");
@@ -457,6 +468,12 @@ namespace ChocoPlayer
         public void SetFullscreen(bool isFullscreen)
         {
             _isFullscreen = isFullscreen;
+            RefreshImmediate();
+        }
+
+        public void SetHasSeasons(bool hasSeasons)
+        {
+            _hasSeasons = hasSeasons;
             RefreshImmediate();
         }
 
