@@ -194,41 +194,51 @@ namespace ChocoPlayer
 
         private void SetupUI(string title, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen)
         {
-            this.TopMost = true;
-            this.Text = "ChocoPlayer" + " - " + title;
-            this.BackColor = Color.Black;
-            this.Icon = CreateCustomIcon();
-            this.KeyPreview = true;
+            TopMost = true;
+            Text = "ChocoPlayer - " + title;
+            BackColor = Color.Black;
+            Icon = CreateCustomIcon();
+            KeyPreview = true;
 
             DarkTitleBarManager.ApplyDarkTitleBar(this.Handle);
 
+            float scaleX = 1f;
+            float scaleY = 1f;
+
+            using (Graphics g = CreateGraphics())
+            {
+                scaleX = g.DpiX / 96f;
+                scaleY = g.DpiY / 96f;
+            }
+
+            MinimumSize = new Size(
+                (int)(620 * scaleX),
+                (int)(580 * scaleY)
+            );
+
+            StartPosition = FormStartPosition.Manual;
+
             if (isFullScreen)
             {
-                this.FormBorderStyle = FormBorderStyle.None;
-                this.WindowState = FormWindowState.Maximized;
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
                 _isFullscreen = true;
             }
             else if (isMaximized)
             {
-                this.StartPosition = FormStartPosition.Manual;
-                this.WindowState = FormWindowState.Maximized;
+                WindowState = FormWindowState.Maximized;
             }
             else
             {
-                using (Graphics g = this.CreateGraphics())
-                {
-                    float scaleFactorX = g.DpiX / 96f; // 96 DPI = 100%
-                    float scaleFactorY = g.DpiY / 96f;
+                Location = new Point(
+                    (int)(positionX * scaleX),
+                    (int)(positionY * scaleY)
+                );
 
-                    int scaledX = (int)(positionX * scaleFactorX);
-                    int scaledY = (int)(positionY * scaleFactorY);
-                    int scaledWidth = (int)(width * scaleFactorX);
-                    int scaledHeight = (int)(height * scaleFactorY);
-
-                    this.StartPosition = FormStartPosition.Manual;
-                    this.Location = new Point(scaledX, scaledY);
-                    this.Size = new Size(scaledWidth, scaledHeight);
-                }
+                Size = new Size(
+                    (int)(width * scaleX),
+                    (int)(height * scaleY)
+                );
             }
 
             _videoView = new VideoView
@@ -236,15 +246,15 @@ namespace ChocoPlayer
                 MediaPlayer = _mediaPlayer,
                 BackColor = Color.Black
             };
-            this.Controls.Add(_videoView);
+            Controls.Add(_videoView);
 
             _playerControls = new PlayerControls();
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
-            this.Controls.Add(_playerControls);
+            Controls.Add(_playerControls);
 
             _trackSettingsMenu = new TrackSettingsMenu();
             _trackSettingsMenu.SetListener(new TrackListener(this));
-            this.Controls.Add(_trackSettingsMenu);
+            Controls.Add(_trackSettingsMenu);
             _trackSettingsMenu.BringToFront();
 
             UpdateLayout();
@@ -258,16 +268,13 @@ namespace ChocoPlayer
 
             if (_isFullscreen)
             {
-                // En mode plein écran, largeur fixe centrée
                 int controlsX = (this.ClientSize.Width - FULLSCREEN_CONTROLS_WIDTH) / 2;
                 _playerControls.SetBounds(controlsX, this.ClientSize.Height - controlsHeight, FULLSCREEN_CONTROLS_WIDTH, controlsHeight);
                 _trackSettingsMenu!.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true);
             }
             else
             {
-                // En mode normal, pleine largeur
                 _playerControls.SetBounds(0, this.ClientSize.Height - controlsHeight, this.ClientSize.Width, controlsHeight);
-
                 int settingsX = _playerControls.GetSettingX();
                 _trackSettingsMenu!.SetPosition(settingsX, this.ClientSize.Height - controlsHeight, false);
             }

@@ -49,7 +49,7 @@ namespace ChocoPlayer
             this.Visible = !this.Visible;
             if (this.Visible)
             {
-                this.Invalidate();
+                RefreshImmediate();
             }
         }
 
@@ -105,7 +105,7 @@ namespace ChocoPlayer
 
             if (previousHoveredId != _hoveredItemId)
             {
-                this.Invalidate();
+                RefreshImmediate();
             }
         }
 
@@ -115,7 +115,7 @@ namespace ChocoPlayer
             {
                 _hoveredItemId = -999;
                 this.Cursor = Cursors.Default;
-                this.Invalidate();
+                RefreshImmediate();
             }
         }
 
@@ -130,6 +130,7 @@ namespace ChocoPlayer
                     e.Y >= item.Y && e.Y <= item.Y + item.Height)
                 {
                     _listener?.OnAudioTrackSelected(item.TrackId);
+                    RefreshImmediate();
                     return;
                 }
             }
@@ -140,9 +141,16 @@ namespace ChocoPlayer
                     e.Y >= item.Y && e.Y <= item.Y + item.Height)
                 {
                     _listener?.OnSubtitleTrackSelected(item.TrackId);
+                    RefreshImmediate();
                     return;
                 }
             }
+        }
+
+        private void RefreshImmediate()
+        {
+            this.Invalidate();
+            this.Update();
         }
 
         protected override void OnPaint(PaintEventArgs e)

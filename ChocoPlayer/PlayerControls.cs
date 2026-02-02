@@ -62,6 +62,8 @@ namespace ChocoPlayer
             this.DoubleBuffered = true;
             LoadIcons();
 
+            CalculateTimeTextWidth();
+
             _updateTimer = new System.Windows.Forms.Timer();
             _updateTimer.Interval = 50;
             _updateTimer.Tick += (s, e) =>
@@ -76,6 +78,7 @@ namespace ChocoPlayer
             this.MouseDown += PlayerControls_MouseDown;
             this.MouseUp += PlayerControls_MouseUp;
             this.MouseMove += PlayerControls_MouseMove;
+            this.Resize += (s, e) => RefreshImmediate();
         }
 
         private void LoadIcons()
@@ -256,19 +259,20 @@ namespace ChocoPlayer
             {
                 _isPlaying = !_isPlaying;
                 _listener?.OnPlayPauseClicked(_isPlaying);
-                this.Invalidate();
+                RefreshImmediate();
             }
             else if (IsOverButton(mouseX, mouseY, _volumeButtonX))
             {
                 _listener?.OnVolumeClicked();
             }
-            else if (IsOverButton(mouseX, mouseY, _settingsButtonX))
-            {
-                _listener?.OnSettingsClicked(_settingsButtonX, _buttonsY, _buttonSize);
-            }
             else if (IsOverButton(mouseX, mouseY, _fullscreenButtonX))
             {
                 _listener?.OnFullscreenClicked();
+            }
+            else if (IsOverButton(mouseX, mouseY, _settingsButtonX))
+            {
+                int buttonY = _buttonsY;
+                _listener?.OnSettingsClicked(_settingsButtonX, buttonY, _buttonSize);
             }
         }
 
@@ -276,84 +280,84 @@ namespace ChocoPlayer
         {
             int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
             int lineWidth = lineEnd - _leftMargin;
-            int clampedX = Math.Max(_leftMargin, Math.Min(mouseX, lineEnd));
-            _progress = (float)(clampedX - _leftMargin) / lineWidth;
 
-            long totalTime = Player.GetTotalTime();
-            long newElapsedTime = (long)(_progress * totalTime);
-            _timeText = FormatTime(newElapsedTime) + " / " + FormatTime(totalTime);
+            if (lineWidth <= 0)
+                return;
 
-            this.Invalidate();
+            float newProgress = (float)(mouseX - _leftMargin) / lineWidth;
+            _progress = Math.Max(0.0f, Math.Min(1.0f, newProgress));
             _listener?.OnProgressChanging(_progress);
+
+            RefreshImmediate();
         }
 
         private void UpdateVolume(int mouseX)
         {
-            int clampedX = Math.Max(_volumeBarX, Math.Min(mouseX, _volumeBarX + _volumeBarWidth));
-            _volumeProgress = (float)(clampedX - _volumeBarX) / _volumeBarWidth;
+            if (_volumeBarWidth <= 0)
+                return;
 
-            _listener?.OnVolumeChanged((int)(_volumeProgress * 100));
-            this.Invalidate();
+            float newProgress = (float)(mouseX - _volumeBarX) / _volumeBarWidth;
+            _volumeProgress = Math.Max(0.0f, Math.Min(1.0f, newProgress));
+
+            int volume = (int)(_volumeProgress * 100);
+            _listener?.OnVolumeChanged(volume);
+
+            RefreshImmediate();
         }
 
         private void UpdateProgressFromPlayer()
         {
             long totalTime = Player.GetTotalTime();
-            long elapsedTime = Player.GetElapsedTime();
-
             if (totalTime > 0)
             {
-                _progress = (float)elapsedTime / totalTime;
-                _timeText = FormatTime(elapsedTime) + " / " + FormatTime(totalTime);
+                long elapsed = Player.GetElapsedTime();
+                float newProgress = (float)elapsed / totalTime;
+
+                if (Math.Abs(newProgress - _progress) > 0.001f)
+                {
+                    _progress = newProgress;
+                    RefreshImmediate();
+                }
+
+                _timeText = FormatTime(elapsed) + " / " + FormatTime(totalTime);
+                CalculateTimeTextWidth();
             }
-            else
+        }
+
+        private void CalculateTimeTextWidth()
+        {
+            using (Graphics g = this.CreateGraphics())
+            using (Font font = new Font("Arial", 10, FontStyle.Bold))
             {
-                _progress = 0.0f;
-                _timeText = "00:00:00 / 00:00:00";
+                SizeF size = g.MeasureString(_timeText, font);
+                _timeTextWidth = (int)size.Width;
             }
+        }
 
-            int currentVolume = Player.GetVolume();
-            if (currentVolume >= 0)
-            {
-                _volumeProgress = currentVolume / 100f;
-            }
-
-            _isMuted = Player.IsMuted();
-
+        private void RefreshImmediate()
+        {
             this.Invalidate();
+            this.Update();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-
             Graphics g2d = e.Graphics;
-            g2d.SmoothingMode = SmoothingMode.AntiAlias;
-            g2d.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            g2d.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            int width = this.Width;
-            int height = this.Height;
-
-            int lineY = height / 2 - 15;
-
-            using (Font font = new Font("Arial", 10, FontStyle.Regular))
-            {
-                SizeF textSize = g2d.MeasureString(_timeText, font);
-                _timeTextWidth = (int)textSize.Width;
-                int textHeight = (int)textSize.Height;
-
-                float textX = width - _rightMargin - _timeTextWidth;
-
-                float textY = lineY - (textHeight / 2f);
-
-                using (SolidBrush brush = new SolidBrush(Color.White))
-                {
-                    g2d.DrawString(_timeText, font, brush, new PointF(textX, textY));
-                }
-            }
-
-            int lineEnd = width - _rightMargin - _timeTextWidth - _timeTextGap;
+            int lineY = this.Height / 2 - 15;
+            int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
             int lineWidth = lineEnd - _leftMargin;
+            int progressX = _leftMargin + (int)(_progress * lineWidth);
+
+            using (Font font = new Font("Arial", 10, FontStyle.Bold))
+            using (SolidBrush brush = new SolidBrush(Color.White))
+            {
+                g2d.DrawString(_timeText, font, brush,
+                    this.Width - _rightMargin - _timeTextWidth,
+                    lineY - 7);
+            }
 
             using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), _lineHeight))
             {
@@ -362,7 +366,6 @@ namespace ChocoPlayer
                 g2d.DrawLine(pen, _leftMargin, lineY, lineEnd, lineY);
             }
 
-            int progressX = _leftMargin + (int)(_progress * lineWidth);
             using (Pen pen = new Pen(_colorYellow, _lineHeight))
             {
                 pen.StartCap = LineCap.Round;
@@ -415,7 +418,7 @@ namespace ChocoPlayer
         public void SetFullscreen(bool isFullscreen)
         {
             _isFullscreen = isFullscreen;
-            this.Invalidate();
+            RefreshImmediate();
         }
 
         private void DrawIconButton(Graphics g2d, int x, int y, Bitmap? icon, string fallbackText)
@@ -500,7 +503,7 @@ namespace ChocoPlayer
         public void SetPlaying(bool playing)
         {
             _isPlaying = playing;
-            this.Invalidate();
+            RefreshImmediate();
         }
 
         public void SetProgressChangeListener(IProgressChangeListener listener)
@@ -528,13 +531,13 @@ namespace ChocoPlayer
         public void SetMuted(bool isMuted)
         {
             _isMuted = isMuted;
-            this.Invalidate();
+            RefreshImmediate();
         }
 
         public void SetVolume(int volume)
         {
             _volumeProgress = volume / 100f;
-            this.Invalidate();
+            RefreshImmediate();
         }
 
         public interface IProgressChangeListener
