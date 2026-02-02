@@ -28,7 +28,7 @@ namespace ChocoPlayer
         private bool _isMuted = false;
 
         private int _buttonSize = 30;
-        private int _buttonSpacing = 15;
+        private int _buttonSpacing = 18;
         private int _buttonMarginBottom = 10;
         private int _buttonsY;
 
@@ -37,6 +37,8 @@ namespace ChocoPlayer
         private int _volumePointRadius = 6;
 
         private int _playButtonX;
+        private int _backwardButtonX;
+        private int _forwardButtonX;
         private int _volumeButtonX;
         private int _volumeBarX;
         private int _settingsButtonX;
@@ -49,6 +51,8 @@ namespace ChocoPlayer
 
         private Bitmap? _playIcon;
         private Bitmap? _pauseIcon;
+        private Bitmap? _backwardIcon;
+        private Bitmap? _forwardIcon;
         private Bitmap? _volumeIcon;
         private Bitmap? _volumeMuteIcon;
         private Bitmap? _settingsIcon;
@@ -94,6 +98,8 @@ namespace ChocoPlayer
 
                 _playIcon = LoadPngIcon(Path.Combine(iconsPath, "play.png"));
                 _pauseIcon = LoadPngIcon(Path.Combine(iconsPath, "pause.png"));
+                _backwardIcon = LoadPngIcon(Path.Combine(iconsPath, "backward.png"));
+                _forwardIcon = LoadPngIcon(Path.Combine(iconsPath, "forward.png"));
                 _volumeIcon = LoadPngIcon(Path.Combine(iconsPath, "volume.png"));
                 _volumeMuteIcon = LoadPngIcon(Path.Combine(iconsPath, "volume-mute.png"));
                 _settingsIcon = LoadPngIcon(Path.Combine(iconsPath, "settings.png"));
@@ -240,6 +246,8 @@ namespace ChocoPlayer
         private bool IsOverAnyButton(int mouseX, int mouseY)
         {
             return IsOverButton(mouseX, mouseY, _playButtonX) ||
+                   IsOverButton(mouseX, mouseY, _backwardButtonX) ||
+                   IsOverButton(mouseX, mouseY, _forwardButtonX) ||
                    IsOverButton(mouseX, mouseY, _volumeButtonX) ||
                    IsOverButton(mouseX, mouseY, _settingsButtonX) ||
                    IsOverButton(mouseX, mouseY, _fullscreenButtonX);
@@ -260,6 +268,14 @@ namespace ChocoPlayer
                 _isPlaying = !_isPlaying;
                 _listener?.OnPlayPauseClicked(_isPlaying);
                 RefreshImmediate();
+            }
+            else if (IsOverButton(mouseX, mouseY, _backwardButtonX))
+            {
+                _listener?.OnBackwardClicked();
+            }
+            else if (IsOverButton(mouseX, mouseY, _forwardButtonX))
+            {
+                _listener?.OnForwardClicked();
             }
             else if (IsOverButton(mouseX, mouseY, _volumeButtonX))
             {
@@ -327,7 +343,7 @@ namespace ChocoPlayer
         private void CalculateTimeTextWidth()
         {
             using (Graphics g = this.CreateGraphics())
-            using (Font font = new Font("Arial", 10, FontStyle.Bold))
+            using (Font font = new Font("Arial", 9, FontStyle.Bold))
             {
                 SizeF size = g.MeasureString(_timeText, font);
                 _timeTextWidth = (int)size.Width;
@@ -351,12 +367,12 @@ namespace ChocoPlayer
             int lineWidth = lineEnd - _leftMargin;
             int progressX = _leftMargin + (int)(_progress * lineWidth);
 
-            using (Font font = new Font("Arial", 10, FontStyle.Bold))
+            using (Font font = new Font("Arial", 9, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
             {
                 g2d.DrawString(_timeText, font, brush,
                     this.Width - _rightMargin - _timeTextWidth,
-                    lineY - 7);
+                    lineY - 10);
             }
 
             using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), _lineHeight))
@@ -402,12 +418,16 @@ namespace ChocoPlayer
             _buttonsY = height - _buttonSize - _buttonMarginBottom;
 
             _playButtonX = _leftMargin;
-            _volumeButtonX = _playButtonX + _buttonSize + _buttonSpacing;
+            _backwardButtonX = _playButtonX + _buttonSize + _buttonSpacing;
+            _forwardButtonX = _backwardButtonX + _buttonSize + _buttonSpacing - 10;
+            _volumeButtonX = _forwardButtonX + _buttonSize + _buttonSpacing;
             _volumeBarX = _volumeButtonX + _buttonSize + _buttonSpacing;
             _fullscreenButtonX = width - _rightMargin - _buttonSize;
-            _settingsButtonX = _fullscreenButtonX - _buttonSize - _buttonSpacing;
+            _settingsButtonX = _fullscreenButtonX - _buttonSize - _buttonSpacing + 5;
 
             DrawIconButton(g2d, _playButtonX, _buttonsY, _isPlaying ? _pauseIcon : _playIcon, _isPlaying ? "⏸" : "▶");
+            DrawIconButton(g2d, _backwardButtonX, _buttonsY, _backwardIcon, "⏮");
+            DrawIconButton(g2d, _forwardButtonX, _buttonsY, _forwardIcon, "⏭");
             DrawIconButton(g2d, _volumeButtonX, _buttonsY,
                     (_isMuted || _volumeProgress == 0) ? _volumeMuteIcon : _volumeIcon,
                     (_isMuted || _volumeProgress == 0) ? "🔇" : "🔊");
@@ -503,7 +523,7 @@ namespace ChocoPlayer
         public void SetPlaying(bool playing)
         {
             _isPlaying = playing;
-            RefreshImmediate();
+            RefreshImmediate(); // ✅ CORRECTION: Rafraîchissement immédiat
         }
 
         public void SetProgressChangeListener(IProgressChangeListener listener)
@@ -545,6 +565,8 @@ namespace ChocoPlayer
             void OnProgressChanged(float progress);
             void OnProgressChanging(float progress);
             void OnPlayPauseClicked(bool isPlaying);
+            void OnBackwardClicked();
+            void OnForwardClicked();
             void OnVolumeClicked();
             void OnVolumeChanged(int volume);
             void OnFullscreenClicked();
@@ -557,6 +579,8 @@ namespace ChocoPlayer
             {
                 _playIcon?.Dispose();
                 _pauseIcon?.Dispose();
+                _backwardIcon?.Dispose();
+                _forwardIcon?.Dispose();
                 _volumeIcon?.Dispose();
                 _volumeMuteIcon?.Dispose();
                 _settingsIcon?.Dispose();

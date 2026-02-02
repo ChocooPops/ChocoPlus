@@ -194,11 +194,11 @@ namespace ChocoPlayer
 
         private void SetupUI(string title, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen)
         {
-            TopMost = true;
-            Text = "ChocoPlayer - " + title;
-            BackColor = Color.Black;
-            Icon = CreateCustomIcon();
-            KeyPreview = true;
+            this.TopMost = true;
+            this.Text = "ChocoPlayer" + " - " + title;
+            this.BackColor = Color.Black;
+            this.Icon = CreateCustomIcon();
+            this.KeyPreview = true;
 
             DarkTitleBarManager.ApplyDarkTitleBar(this.Handle);
 
@@ -246,15 +246,15 @@ namespace ChocoPlayer
                 MediaPlayer = _mediaPlayer,
                 BackColor = Color.Black
             };
-            Controls.Add(_videoView);
+            this.Controls.Add(_videoView);
 
             _playerControls = new PlayerControls();
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
-            Controls.Add(_playerControls);
+            this.Controls.Add(_playerControls);
 
             _trackSettingsMenu = new TrackSettingsMenu();
             _trackSettingsMenu.SetListener(new TrackListener(this));
-            Controls.Add(_trackSettingsMenu);
+            this.Controls.Add(_trackSettingsMenu);
             _trackSettingsMenu.BringToFront();
 
             UpdateLayout();
@@ -268,13 +268,16 @@ namespace ChocoPlayer
 
             if (_isFullscreen)
             {
+                // En mode plein écran, largeur fixe centrée
                 int controlsX = (this.ClientSize.Width - FULLSCREEN_CONTROLS_WIDTH) / 2;
                 _playerControls.SetBounds(controlsX, this.ClientSize.Height - controlsHeight, FULLSCREEN_CONTROLS_WIDTH, controlsHeight);
                 _trackSettingsMenu!.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true);
             }
             else
             {
+                // En mode normal, pleine largeur
                 _playerControls.SetBounds(0, this.ClientSize.Height - controlsHeight, this.ClientSize.Width, controlsHeight);
+
                 int settingsX = _playerControls.GetSettingX();
                 _trackSettingsMenu!.SetPosition(settingsX, this.ClientSize.Height - controlsHeight, false);
             }
@@ -434,6 +437,30 @@ namespace ChocoPlayer
                     {
                         _chocoPlayer._mediaPlayer.Pause();
                     }
+                }
+            }
+
+            public void OnBackwardClicked()
+            {
+                if (_chocoPlayer._mediaPlayer != null)
+                {
+                    const int seekMs = 10_000;
+                    _chocoPlayer._mediaPlayer.Time = Math.Max(
+                        _chocoPlayer._mediaPlayer.Time - seekMs,
+                        0
+                    );
+                }
+            }
+
+            public void OnForwardClicked()
+            {
+                if (_chocoPlayer._mediaPlayer != null)
+                {
+                    const int seekMs = 10_000;
+                    _chocoPlayer._mediaPlayer.Time = Math.Min(
+                        _chocoPlayer._mediaPlayer.Time + seekMs,
+                        _chocoPlayer._mediaPlayer.Length
+                    );
                 }
             }
 
