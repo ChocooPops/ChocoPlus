@@ -25,6 +25,7 @@ export class MenuBarComponent {
   isScrolled !: boolean;
   subscription: Subscription = new Subscription();
   activateTransition !: boolean;
+  activateTransitionFromMediaPage !: boolean;
   class: string = 'not-visible-under-menu';
 
   private resizeSubscription!: Subscription;
@@ -47,6 +48,12 @@ export class MenuBarComponent {
     this.subscription.add(
       this.menuTabService.getActivateTransition().subscribe((state: boolean) => {
         this.activateTransition = state;
+      })
+    )
+
+    this.subscription.add(
+      this.menuTabService.getActivateTransitionFromMediaPage().subscribe((state: boolean) => {
+        this.activateTransitionFromMediaPage = state;
       })
     )
 

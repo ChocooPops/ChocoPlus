@@ -14,7 +14,7 @@ import { MovieModel } from '../../../models/movie-model';
 import { SeriesModel } from '../../../models/series/series.interface';
 import { SeriesPageComponent } from '../series-page/series-page.component';
 import { SeasonModel } from '../../../models/series/season.interface';
-
+import { MenuTabService } from '../../../../menu-module/service/menu-tab/menu-tab.service';
 @Component({
   selector: 'app-media-page',
   standalone: true,
@@ -48,8 +48,11 @@ export class MediaPageComponent {
 
   isHover: boolean = false;
   displaying: boolean = false;
+  transitionMenuIsActivate: boolean = false;
 
-  constructor(private mediaSelectedService: MediaSelectedService) { }
+  constructor(private mediaSelectedService: MediaSelectedService,
+    private MenuTabService: MenuTabService
+  ) { }
 
   mouseEnter(): void {
     this.isHover = true;
@@ -73,6 +76,17 @@ export class MediaPageComponent {
           this.seasons = (this.media as SeriesModel).seasons;
         } else {
           this.seasons = [];
+        }
+        if (this.media) {
+          this.transitionMenuIsActivate = this.MenuTabService.setActivateTransitionValue();
+          if (this.transitionMenuIsActivate) {
+            this.MenuTabService.setActivateTransitionFromMediaPage(false);
+          }
+        } else {
+          if (this.transitionMenuIsActivate) {
+            this.MenuTabService.setActivateTransitionFromMediaPage(true);
+          }
+          this.transitionMenuIsActivate = false;
         }
       })
     )

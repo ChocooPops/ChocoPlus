@@ -1,6 +1,16 @@
-<div class="menu" [ngClass]="{'menu-visible' : isScrolled && activateTransition, 'menu-transparent' : !isScrolled && activateTransition,
-    'enable-transition' : activateTransition, 'disable-transition' : !activateTransition
-}">
+<div class="menu" [ngClass]="{
+    'menu-visible':
+      !activateTransitionFromMediaPage ||
+      (isScrolled && activateTransition),
+
+    'menu-transparent':
+      activateTransitionFromMediaPage &&
+      !isScrolled &&
+      activateTransition,
+
+    'enable-transition': activateTransition,
+    'disable-transition': !activateTransition
+  }">
     <div class="section">
         <img src="icon/choco.svg">
     </div>

@@ -65,6 +65,9 @@ export class MenuTabService {
   private activateTransitionSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   private activateTransition$: Observable<boolean> = this.activateTransitionSubject.asObservable();
 
+  private activateTransitionFromMediaPageSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  private activateTransitionFromMediaPage$: Observable<boolean> = this.activateTransitionFromMediaPageSubject.asObservable();
+
   public getAllMenuTab(): MenuTabModel[] {
     return this.menuTabs;
   }
@@ -73,10 +76,24 @@ export class MenuTabService {
     return this.activateTransition$;
   }
 
+  public getActivateTransitionFromMediaPage(): Observable<boolean> {
+    return this.activateTransitionFromMediaPage$;
+  }
+
   public setActivateTransition(state: boolean): void {
     if (state !== this.activateTransitionSubject.value) {
       this.activateTransitionSubject.next(state);
     }
+  }
+
+  public setActivateTransitionFromMediaPage(state: boolean): void {
+    if (state !== this.activateTransitionFromMediaPageSubject.value) {
+      this.activateTransitionFromMediaPageSubject.next(state);
+    }
+  }
+
+  public setActivateTransitionValue(): boolean {
+    return this.activateTransitionSubject.value;
   }
 
   public getMenuTab(): MenuTabModel {
@@ -93,5 +110,5 @@ export class MenuTabService {
       !tabs.some(item2 => item2.id === item.id)
     );
   }
-  
+
 }

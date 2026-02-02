@@ -421,7 +421,7 @@ namespace ChocoPlayer
             using (SolidBrush brush = new SolidBrush(Color.White))
             {
                 int textX = this.Width - _rightMargin - _timeTextWidth;
-                int textY = lineY - 10;
+                int textY = lineY - 13;
                 g2d.DrawString(_timeText, font, brush, textX, textY);
             }
 
