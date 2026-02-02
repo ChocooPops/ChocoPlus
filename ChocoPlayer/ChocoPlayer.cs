@@ -211,6 +211,8 @@ namespace ChocoPlayer
 
             _libVLC = new LibVLC(vlcArgs);
             _mediaPlayer = new MediaPlayer(_libVLC);
+            _mediaPlayer.Volume = 50;
+            _mediaPlayer.Mute = false;
 
             _mediaPlayer.Playing += (sender, e) =>
             {

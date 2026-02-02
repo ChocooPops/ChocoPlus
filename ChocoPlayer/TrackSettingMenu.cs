@@ -17,7 +17,6 @@ namespace ChocoPlayer
         private const int COLUMN_SPACING = 20;
         private const int ITEM_HEIGHT = 40;
         private const int ITEM_SPACING = 8;
-        private const int BORDER_RADIUS = 12;
 
         private ITrackSelectionListener? _listener;
         private Color _accentColor = Color.FromArgb(255, 211, 1);

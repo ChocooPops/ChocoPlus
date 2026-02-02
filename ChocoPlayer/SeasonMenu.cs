@@ -22,6 +22,7 @@ namespace ChocoPlayer
         private const int EPISODE_HEIGHT = 140;
         private const int EPISODE_SPACING = 15;
         private const int SEASON_ITEM_HEIGHT = 55;
+        private const int BORDER_WIDTH = 2;
 
         private ISeasonSelectionListener? _listener;
         private Color _accentColor = Color.FromArgb(255, 211, 1);
@@ -318,6 +319,12 @@ namespace ChocoPlayer
                     DrawScrollbar(g2d);
                 }
             }
+
+            using (Pen borderPen = new Pen(Color.FromArgb(100, 100, 100), BORDER_WIDTH))
+            {
+                g2d.DrawRectangle(borderPen, BORDER_WIDTH / 2, BORDER_WIDTH / 2,
+                    this.Width - BORDER_WIDTH, this.Height - BORDER_WIDTH);
+            }
         }
 
         private void DrawHeader(Graphics g2d)
@@ -497,9 +504,10 @@ namespace ChocoPlayer
 
             _episodesRect = new Rectangle(PADDING, HEADER_HEIGHT + PADDING, this.Width - PADDING * 2, this.Height - HEADER_HEIGHT - PADDING * 2);
 
+            Region originalClip = g2d.Clip.Clone();
+
             Rectangle clipRect = new Rectangle(_episodesRect.X, _episodesRect.Y, _episodesRect.Width, _episodesRect.Height);
-            Region oldClip = g2d.Clip;
-            g2d.SetClip(clipRect);
+            g2d.SetClip(clipRect, CombineMode.Intersect);
 
             for (int i = 0; i < _episodes.Count; i++)
             {
@@ -511,7 +519,8 @@ namespace ChocoPlayer
                 DrawEpisodeItem(g2d, _episodes[i], episodeY, i);
             }
 
-            g2d.Clip = oldClip;
+            g2d.Clip = originalClip;
+            originalClip.Dispose();
         }
 
         private void DrawEpisodeItem(Graphics g2d, EpisodeItem episode, int y, int index)
@@ -641,10 +650,11 @@ namespace ChocoPlayer
             {
                 using (GraphicsPath path = GetRoundedRectanglePath(x, y, width, height, 8))
                 {
-                    Region oldClip = g2d.Clip;
-                    g2d.SetClip(path, CombineMode.Replace);
+                    Region currentClip = g2d.Clip.Clone();
+                    g2d.SetClip(path, CombineMode.Intersect);
                     g2d.DrawImage(_imageCache[imageUrl], x, y, width, height);
-                    g2d.Clip = oldClip;
+                    g2d.Clip = currentClip;
+                    currentClip.Dispose();
                 }
                 return;
             }
