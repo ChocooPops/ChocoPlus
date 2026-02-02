@@ -21,6 +21,7 @@ namespace ChocoPlayer
         private SeasonsMenu? _seasonsMenu;
         private ApiService? _apiService;
         private int _mediaId;
+        private int _currentEpisodeId = 0;
         private bool _isFullscreen = false;
         private bool _hasSeasons = false;
 
@@ -54,6 +55,12 @@ namespace ChocoPlayer
             }
 
             InitializeHideControlsTimer();
+        }
+
+        public void SetCurrentEpisode(int episodeId)
+        {
+            _currentEpisodeId = episodeId;
+            _seasonsMenu?.SetCurrentPlayingEpisode(episodeId);
         }
 
         private void InitializeHideControlsTimer()
@@ -458,13 +465,16 @@ namespace ChocoPlayer
 
         private void ChocoPlayer_FormClosing(object? sender, FormClosingEventArgs e)
         {
-            _mouseDetectionTimer?.Stop();
-            _mouseDetectionTimer?.Dispose();
-            _playerControls?.StopTimer();
-            _mediaPlayer?.Stop();
-            _mediaPlayer?.Dispose();
-            _libVLC?.Dispose();
-            _apiService?.Dispose();
+            Task.Run(() =>
+            {
+                _mouseDetectionTimer?.Stop();
+                _mouseDetectionTimer?.Dispose();
+                _playerControls?.StopTimer();
+                _mediaPlayer?.Stop();
+                _mediaPlayer?.Dispose();
+                _libVLC?.Dispose();
+                _apiService?.Dispose();
+            });
         }
 
         private async void LoadEpisodesForSeason(int seasonId)
@@ -489,6 +499,7 @@ namespace ChocoPlayer
             {
                 var cachedEpisodes = _episodesCache[seasonId];
                 _seasonsMenu?.SetEpisodes(cachedEpisodes);
+                _seasonsMenu?.SetCurrentPlayingEpisode(_currentEpisodeId);
                 return;
             }
 
@@ -500,14 +511,17 @@ namespace ChocoPlayer
 
                     var episodeItems = episodes.Select(e => new SeasonsMenu.EpisodeItem(
                         e.Id,
+                        e.EpisodeNumber,
                         e.Name,
                         e.Description,
                         FormatDuration(e.Time),
-                        _apiService.GetStreamUrl(seasonId, e.Id)
+                        _apiService.GetStreamUrl(seasonId, e.Id),
+                        e.SrcPoster
                     )).ToList();
 
                     _episodesCache[seasonId] = episodeItems;
                     _seasonsMenu?.SetEpisodes(episodeItems);
+                    _seasonsMenu?.SetCurrentPlayingEpisode(_currentEpisodeId);
                 }
                 else
                 {
@@ -528,13 +542,29 @@ namespace ChocoPlayer
 
         private string FormatDuration(long milliseconds)
         {
-            long totalSeconds = milliseconds / 1000;
+            long totalSeconds = milliseconds / 10_000_000;
             TimeSpan time = TimeSpan.FromSeconds(totalSeconds);
             if (time.Hours > 0)
             {
                 return $"{time.Hours}h {time.Minutes}min";
             }
             return $"{time.Minutes}min";
+        }
+
+        private void SetTitlePart(int partIndex, string newText)
+        {
+            if (string.IsNullOrEmpty(this.Text))
+            {
+                this.Text = newText;
+                return;
+            }
+            List<string> parts = this.Text.Split(new string[] { " - " }, StringSplitOptions.None).ToList();
+            while (parts.Count <= partIndex)
+            {
+                parts.Add(string.Empty);
+            }
+            parts[partIndex] = newText;
+            this.Text = string.Join(" - ", parts);
         }
 
         private class ProgressListener : PlayerControls.IProgressChangeListener
@@ -781,7 +811,7 @@ namespace ChocoPlayer
                 _chocoPlayer.LoadEpisodesForSeason(seasonId);
             }
 
-            public void OnEpisodeSelected(int seasonIndex, int episodeId, string episodePath)
+            public void OnEpisodeSelected(int seasonIndex, int episodeId, string episodePath, string episodeName)
             {
                 if (_chocoPlayer._libVLC != null && !string.IsNullOrEmpty(episodePath))
                 {
@@ -800,21 +830,11 @@ namespace ChocoPlayer
                         }
 
                         _chocoPlayer._mediaPlayer!.Media = newMedia;
-
-                        if (oldMedia != null)
-                        {
-                            try
-                            {
-                                oldMedia.Dispose();
-                                Console.WriteLine("[SeasonListener] ✓ Ancien Media disposé");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"[SeasonListener] ⚠️ Erreur lors du dispose de l'ancien Media: {ex.Message}");
-                            }
-                        }
                         _chocoPlayer._mediaPlayer.Play();
                         _chocoPlayer._playerControls?.SetPlaying(true);
+                        _chocoPlayer.SetTitlePart(2, episodeName);
+                        _chocoPlayer._currentEpisodeId = episodeId;
+                        _chocoPlayer._seasonsMenu?.SetCurrentPlayingEpisode(episodeId);
                     }
                     catch (Exception ex)
                     {
