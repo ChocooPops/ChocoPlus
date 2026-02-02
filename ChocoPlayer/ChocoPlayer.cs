@@ -783,21 +783,36 @@ namespace ChocoPlayer
 
             public void OnEpisodeSelected(int seasonIndex, int episodeId, string episodePath)
             {
-                _chocoPlayer._mediaPlayer?.Stop();
-
                 if (_chocoPlayer._libVLC != null && !string.IsNullOrEmpty(episodePath))
                 {
                     try
                     {
-                        var media = new Media(_chocoPlayer._libVLC, episodePath, FromType.FromLocation);
+                        var oldMedia = _chocoPlayer._mediaPlayer?.Media;
+
+                        _chocoPlayer._mediaPlayer?.Stop();
+
+                        var newMedia = new Media(_chocoPlayer._libVLC, episodePath, FromType.FromLocation);
 
                         if (episodePath.StartsWith("http://") || episodePath.StartsWith("https://"))
                         {
-                            media.AddOption(":http-reconnect");
-                            media.AddOption(":network-caching=3000");
+                            newMedia.AddOption(":http-reconnect");
+                            newMedia.AddOption(":network-caching=3000");
                         }
 
-                        _chocoPlayer._mediaPlayer!.Media = media;
+                        _chocoPlayer._mediaPlayer!.Media = newMedia;
+
+                        if (oldMedia != null)
+                        {
+                            try
+                            {
+                                oldMedia.Dispose();
+                                Console.WriteLine("[SeasonListener] ✓ Ancien Media disposé");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"[SeasonListener] ⚠️ Erreur lors du dispose de l'ancien Media: {ex.Message}");
+                            }
+                        }
                         _chocoPlayer._mediaPlayer.Play();
                         _chocoPlayer._playerControls?.SetPlaying(true);
                     }
@@ -811,7 +826,6 @@ namespace ChocoPlayer
                         );
                     }
                 }
-
                 _chocoPlayer._seasonsMenu?.Hide();
             }
         }

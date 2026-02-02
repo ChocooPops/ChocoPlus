@@ -235,7 +235,7 @@ namespace ChocoPlayer
         private bool IsOverLine(int mouseX, int mouseY, int lineY, int lineEnd)
         {
             return mouseX >= _leftMargin && mouseX <= lineEnd &&
-                   mouseY >= lineY - 10 && mouseY <= lineY + 10;
+                   mouseY >= lineY - 25 && mouseY <= lineY;
         }
 
         private bool IsOverVolumeLine(int mouseX, int mouseY)
