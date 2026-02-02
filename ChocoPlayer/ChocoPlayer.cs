@@ -24,6 +24,7 @@ namespace ChocoPlayer
         private int _currentEpisodeId = 0;
         private bool _isFullscreen = false;
         private bool _hasSeasons = false;
+        private string _episodeFormat = "300w";
 
         private Dictionary<int, List<SeasonsMenu.EpisodeItem>> _episodesCache = new Dictionary<int, List<SeasonsMenu.EpisodeItem>>();
 
@@ -474,6 +475,7 @@ namespace ChocoPlayer
                 _mediaPlayer?.Dispose();
                 _libVLC?.Dispose();
                 _apiService?.Dispose();
+                _seasonsMenu?.ClearEpisodes();
             });
         }
 
@@ -516,7 +518,7 @@ namespace ChocoPlayer
                         e.Description,
                         FormatDuration(e.Time),
                         _apiService.GetStreamUrl(seasonId, e.Id),
-                        e.SrcPoster
+                        InsertIntoUrlBeforeFilename(e.SrcPoster, _episodeFormat)
                     )).ToList();
 
                     _episodesCache[seasonId] = episodeItems;
@@ -538,6 +540,22 @@ namespace ChocoPlayer
                 );
                 _seasonsMenu?.ClearEpisodes();
             }
+        }
+
+        public string InsertIntoUrlBeforeFilename(string url, string insert)
+        {
+            var urlParts = url.Split('/').ToList();
+
+            if (urlParts.Count < 2)
+                return url;
+
+            var fileName = urlParts.Last();
+            urlParts.RemoveAt(urlParts.Count - 1);
+
+            urlParts.Add(insert.ToString());
+            urlParts.Add(fileName);
+
+            return string.Join("/", urlParts);
         }
 
         private string FormatDuration(long milliseconds)

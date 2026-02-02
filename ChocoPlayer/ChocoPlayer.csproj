@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="LibVLCSharp" Version="3.9.5" />
     <PackageReference Include="LibVLCSharp.WinForms" Version="3.9.5" />
+    <PackageReference Include="SkiaSharp" Version="3.119.1" />
     <PackageReference Include="Svg" Version="3.4.7" />
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
   </ItemGroup>

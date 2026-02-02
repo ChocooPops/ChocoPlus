@@ -5,6 +5,8 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SkiaSharp;
+using System.Runtime.InteropServices;
 
 namespace ChocoPlayer
 {
@@ -13,12 +15,12 @@ namespace ChocoPlayer
         private List<SeasonItem> _seasons = new List<SeasonItem>();
         private List<EpisodeItem> _episodes = new List<EpisodeItem>();
 
-        private const int MENU_WIDTH = 800;
-        private const int MENU_HEIGHT = 600;
+        private const int MENU_WIDTH = 850;
+        private const int MENU_HEIGHT = 650;
         private const int PADDING = 20;
         private const int HEADER_HEIGHT = 60;
-        private const int EPISODE_HEIGHT = 100;
-        private const int EPISODE_SPACING = 10;
+        private const int EPISODE_HEIGHT = 140;
+        private const int EPISODE_SPACING = 15;
         private const int SEASON_ITEM_HEIGHT = 55;
 
         private ISeasonSelectionListener? _listener;
@@ -34,7 +36,7 @@ namespace ChocoPlayer
         private int _currentPlayingEpisodeId = -1;
 
         private static readonly HttpClient _httpClient = new HttpClient();
-        private Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+        private Dictionary<string, Bitmap> _imageCache = new Dictionary<string, Bitmap>();
 
         private Rectangle _headerRect;
         private Rectangle _dropdownRect;
@@ -247,6 +249,7 @@ namespace ChocoPlayer
             if (_headerRect.Contains(e.Location))
             {
                 _isDropdownOpen = !_isDropdownOpen;
+                _hoveredSeasonIndex = -1;
                 RefreshImmediate();
                 return;
             }
@@ -260,14 +263,7 @@ namespace ChocoPlayer
                 {
                     _currentSeasonIndex = itemIndex;
                     _isDropdownOpen = false;
-                    _dropdownScrollOffset = 0;
-
-                    ClearEpisodes();
-
-                    int seasonId = _seasons[itemIndex].Id;
-                    Console.WriteLine($"[SeasonsMenu] Clic saison: index={itemIndex}, ID={seasonId}");
-                    _listener?.OnSeasonSelected(seasonId);
-
+                    _listener?.OnSeasonSelected(_seasons[_currentSeasonIndex].Id);
                     RefreshImmediate();
                 }
                 return;
@@ -280,17 +276,15 @@ namespace ChocoPlayer
 
                 if (itemIndex >= 0 && itemIndex < _episodes.Count)
                 {
-                    _listener?.OnEpisodeSelected(_currentSeasonIndex, _episodes[itemIndex].Id, _episodes[itemIndex].Path, _episodes[itemIndex].Title);
-                    RefreshImmediate();
+                    var episode = _episodes[itemIndex];
+                    _listener?.OnEpisodeSelected(_currentSeasonIndex, episode.Id, episode.Path, episode.Title);
                 }
-                return;
             }
         }
 
         private void RefreshImmediate()
         {
             this.Invalidate();
-            this.Update();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -300,33 +294,29 @@ namespace ChocoPlayer
             if (!this.Visible)
                 return;
 
-            Console.WriteLine($"[SeasonsMenu.OnPaint] _isDropdownOpen={_isDropdownOpen}, _episodes.Count={_episodes.Count}");
-
             Graphics g2d = e.Graphics;
             g2d.SmoothingMode = SmoothingMode.AntiAlias;
-            g2d.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            g2d.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            using (SolidBrush brush = new SolidBrush(_backgroundColor))
+            using (SolidBrush bgBrush = new SolidBrush(_backgroundColor))
             {
-                g2d.FillRectangle(brush, 0, 0, this.Width, this.Height);
+                g2d.FillRoundedRectangle(bgBrush, 0, 0, this.Width, this.Height, 12);
             }
 
             DrawHeader(g2d);
 
             if (_isDropdownOpen)
             {
-                Console.WriteLine($"[SeasonsMenu.OnPaint] Affichage du dropdown");
                 DrawDropdown(g2d);
             }
             else
             {
-                Console.WriteLine($"[SeasonsMenu.OnPaint] Affichage des épisodes");
                 DrawEpisodes(g2d);
-            }
 
-            using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), 2))
-            {
-                g2d.DrawRectangle(pen, 1, 1, this.Width - 2, this.Height - 2);
+                if (_maxScrollOffset > 0)
+                {
+                    DrawScrollbar(g2d);
+                }
             }
         }
 
@@ -336,7 +326,33 @@ namespace ChocoPlayer
 
             using (SolidBrush brush = new SolidBrush(_headerColor))
             {
-                g2d.FillRectangle(brush, _headerRect);
+                GraphicsPath path = new GraphicsPath();
+                float radius = 12;
+                float diameter = radius * 2;
+
+                RectangleF arc = new RectangleF(_headerRect.X, _headerRect.Y, diameter, diameter);
+                path.AddArc(arc, 180, 90);
+
+                arc.X = _headerRect.X + _headerRect.Width - diameter;
+                path.AddArc(arc, 270, 90);
+
+                path.AddLine(_headerRect.Right, _headerRect.Y + radius, _headerRect.Right, _headerRect.Bottom);
+                path.AddLine(_headerRect.Right, _headerRect.Bottom, _headerRect.X, _headerRect.Bottom);
+                path.AddLine(_headerRect.X, _headerRect.Bottom, _headerRect.X, _headerRect.Y + radius);
+
+                path.CloseFigure();
+
+                g2d.FillPath(brush, path);
+            }
+
+            string headerText = _seasons.Count > 0 && _currentSeasonIndex < _seasons.Count
+                ? _seasons[_currentSeasonIndex].Name
+                : "Sélectionner une saison";
+
+            using (Font font = new Font("Segoe UI", 13, FontStyle.Bold))
+            using (SolidBrush brush = new SolidBrush(Color.White))
+            {
+                g2d.DrawString(headerText, font, brush, PADDING, (_headerRect.Height - font.Height) / 2);
             }
 
             int arrowSize = 15;
@@ -344,18 +360,6 @@ namespace ChocoPlayer
             int arrowY = HEADER_HEIGHT / 2;
 
             DrawArrow(g2d, arrowX, arrowY, arrowSize, _isDropdownOpen);
-
-            if (_currentSeasonIndex >= 0 && _currentSeasonIndex < _seasons.Count)
-            {
-                using (Font font = new Font("Segoe UI", 14, FontStyle.Bold))
-                using (SolidBrush brush = new SolidBrush(Color.White))
-                {
-                    string seasonText = _seasons[_currentSeasonIndex].Name;
-                    SizeF textSize = g2d.MeasureString(seasonText, font);
-                    int textY = (HEADER_HEIGHT - (int)textSize.Height) / 2;
-                    g2d.DrawString(seasonText, font, brush, PADDING, textY);
-                }
-            }
         }
 
         private void DrawArrow(Graphics g2d, int x, int y, int size, bool isOpen)
@@ -394,157 +398,163 @@ namespace ChocoPlayer
         private void DrawDropdown(Graphics g2d)
         {
             int maxDropdownHeight = MENU_HEIGHT - HEADER_HEIGHT - 10;
-            int totalSeasonsHeight = _seasons.Count * SEASON_ITEM_HEIGHT;
-            int dropdownHeight = Math.Min(totalSeasonsHeight, maxDropdownHeight);
+            int dropdownHeight = Math.Min(_seasons.Count * SEASON_ITEM_HEIGHT, maxDropdownHeight);
 
-            _dropdownRect = new Rectangle(0, HEADER_HEIGHT + 5, this.Width, dropdownHeight);
+            _dropdownRect = new Rectangle(PADDING, HEADER_HEIGHT + 5, this.Width - PADDING * 2, dropdownHeight);
 
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(20, 20, 20)))
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(40, 40, 40)))
             {
-                g2d.FillRectangle(brush, 0, HEADER_HEIGHT, this.Width, 5);
+                g2d.FillRoundedRectangle(brush, _dropdownRect.X, _dropdownRect.Y, _dropdownRect.Width, _dropdownRect.Height, 8);
             }
 
-            using (SolidBrush brush = new SolidBrush(_headerColor))
-            {
-                g2d.FillRectangle(brush, _dropdownRect);
-            }
-
-            g2d.SetClip(_dropdownRect);
-
-            int currentY = HEADER_HEIGHT + 5 - _dropdownScrollOffset;
+            Rectangle clipRect = new Rectangle(_dropdownRect.X, _dropdownRect.Y, _dropdownRect.Width, _dropdownRect.Height);
+            Region oldClip = g2d.Clip;
+            g2d.SetClip(clipRect);
 
             for (int i = 0; i < _seasons.Count; i++)
             {
-                Rectangle itemRect = new Rectangle(
-                    0,
-                    currentY,
-                    this.Width,
-                    SEASON_ITEM_HEIGHT
-                );
+                int itemY = _dropdownRect.Y + i * SEASON_ITEM_HEIGHT - _dropdownScrollOffset;
 
-                if (itemRect.Bottom > HEADER_HEIGHT + 5 && itemRect.Top < HEADER_HEIGHT + 5 + dropdownHeight)
+                if (itemY + SEASON_ITEM_HEIGHT < _dropdownRect.Y || itemY > _dropdownRect.Bottom)
+                    continue;
+
+                bool isSelected = (i == _currentSeasonIndex);
+                bool isHovered = (i == _hoveredSeasonIndex);
+
+                Rectangle itemRect = new Rectangle(_dropdownRect.X + 5, itemY + 2, _dropdownRect.Width - 10, SEASON_ITEM_HEIGHT - 4);
+
+                if (isSelected || isHovered)
                 {
-                    bool isHovered = i == _hoveredSeasonIndex;
-
-                    if (isHovered)
+                    Color bgColor = isSelected ? Color.FromArgb(60, 60, 60) : _itemHoverColor;
+                    using (SolidBrush brush = new SolidBrush(bgColor))
                     {
-                        using (SolidBrush brush = new SolidBrush(_itemHoverColor))
-                        {
-                            g2d.FillRectangle(brush, itemRect);
-                        }
-                    }
-
-                    using (Font font = new Font("Segoe UI", 13, FontStyle.Bold))
-                    using (SolidBrush brush = new SolidBrush(Color.White))
-                    {
-                        SizeF textSize = g2d.MeasureString(_seasons[i].Name, font);
-                        int textY = itemRect.Y + (itemRect.Height - (int)textSize.Height) / 2;
-                        g2d.DrawString(_seasons[i].Name, font, brush, PADDING, textY);
+                        g2d.FillRoundedRectangle(brush, itemRect.X, itemRect.Y, itemRect.Width, itemRect.Height, 6);
                     }
                 }
 
-                currentY += SEASON_ITEM_HEIGHT;
+                Color textColor = isSelected ? _accentColor : Color.White;
+                using (Font font = new Font("Segoe UI", 11, isSelected ? FontStyle.Bold : FontStyle.Regular))
+                using (SolidBrush brush = new SolidBrush(textColor))
+                {
+                    g2d.DrawString(_seasons[i].Name, font, brush, itemRect.X + 15, itemRect.Y + (itemRect.Height - font.Height) / 2);
+                }
+
+                if (isSelected)
+                {
+                    int checkSize = 12;
+                    int checkX = itemRect.Right - checkSize - 15;
+                    int checkY = itemRect.Y + (itemRect.Height - checkSize) / 2;
+
+                    using (Pen pen = new Pen(_accentColor, 2))
+                    {
+                        g2d.DrawLine(pen, checkX, checkY + checkSize / 2, checkX + checkSize / 3, checkY + checkSize);
+                        g2d.DrawLine(pen, checkX + checkSize / 3, checkY + checkSize, checkX + checkSize, checkY);
+                    }
+                }
             }
 
-            g2d.ResetClip();
+            g2d.Clip = oldClip;
 
             if (_maxDropdownScrollOffset > 0)
             {
-                DrawDropdownScrollbar(g2d, dropdownHeight);
-            }
-        }
+                int scrollbarWidth = 3;
+                int scrollbarX = _dropdownRect.Right - scrollbarWidth - 3;
+                int scrollbarY = _dropdownRect.Y + 3;
+                int scrollbarHeight = _dropdownRect.Height - 6;
 
-        private void DrawDropdownScrollbar(Graphics g2d, int dropdownHeight)
-        {
-            int scrollbarWidth = 4;
-            int scrollbarX = this.Width - scrollbarWidth - 5;
-            int scrollbarY = HEADER_HEIGHT + 5;
-            int scrollbarHeight = dropdownHeight;
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 60, 60)))
+                {
+                    g2d.FillRectangle(brush, scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight);
+                }
 
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(48, 48, 48)))
-            {
-                g2d.FillRectangle(brush, scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight);
-            }
+                float scrollRatio = (float)_dropdownScrollOffset / _maxDropdownScrollOffset;
+                int handleHeight = Math.Max(15, (int)(scrollbarHeight * 0.3f));
+                int handleY = scrollbarY + (int)((scrollbarHeight - handleHeight) * scrollRatio);
 
-            float scrollRatio = (float)_dropdownScrollOffset / _maxDropdownScrollOffset;
-            int handleHeight = Math.Max(20, (int)(scrollbarHeight * 0.3f));
-            int handleY = scrollbarY + (int)((scrollbarHeight - handleHeight) * scrollRatio);
-
-            using (SolidBrush brush = new SolidBrush(_accentColor))
-            {
-                g2d.FillRectangle(brush, scrollbarX, handleY, scrollbarWidth, handleHeight);
+                using (SolidBrush brush = new SolidBrush(_accentColor))
+                {
+                    g2d.FillRectangle(brush, scrollbarX, handleY, scrollbarWidth, handleHeight);
+                }
             }
         }
 
         private void DrawEpisodes(Graphics g2d)
         {
-            _episodesRect = new Rectangle(
-                0,
-                HEADER_HEIGHT + PADDING,
-                this.Width,
-                this.Height - HEADER_HEIGHT - PADDING
-            );
+            if (_episodes.Count == 0)
+            {
+                using (Font font = new Font("Segoe UI", 12))
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(150, 150, 150)))
+                {
+                    StringFormat sf = new StringFormat();
+                    sf.Alignment = StringAlignment.Center;
+                    sf.LineAlignment = StringAlignment.Center;
 
-            g2d.SetClip(_episodesRect);
+                    Rectangle textRect = new Rectangle(0, HEADER_HEIGHT, this.Width, this.Height - HEADER_HEIGHT);
+                    g2d.DrawString("Aucun épisode disponible", font, brush, textRect, sf);
+                }
+                return;
+            }
 
-            int currentY = HEADER_HEIGHT + PADDING - _scrollOffset;
+            _episodesRect = new Rectangle(PADDING, HEADER_HEIGHT + PADDING, this.Width - PADDING * 2, this.Height - HEADER_HEIGHT - PADDING * 2);
+
+            Rectangle clipRect = new Rectangle(_episodesRect.X, _episodesRect.Y, _episodesRect.Width, _episodesRect.Height);
+            Region oldClip = g2d.Clip;
+            g2d.SetClip(clipRect);
 
             for (int i = 0; i < _episodes.Count; i++)
             {
-                var episode = _episodes[i];
-                bool isHovered = i == _hoveredEpisodeIndex;
+                int episodeY = _episodesRect.Y + i * (EPISODE_HEIGHT + EPISODE_SPACING) - _scrollOffset;
 
-                Rectangle episodeRect = new Rectangle(
-                    PADDING,
-                    currentY,
-                    this.Width - PADDING * 2,
-                    EPISODE_HEIGHT
-                );
+                if (episodeY + EPISODE_HEIGHT < _episodesRect.Y || episodeY > _episodesRect.Bottom)
+                    continue;
 
-                if (episodeRect.Bottom > HEADER_HEIGHT && episodeRect.Top < this.Height)
-                {
-                    DrawEpisode(g2d, episode, episodeRect, isHovered);
-                }
-
-                currentY += EPISODE_HEIGHT + EPISODE_SPACING;
+                DrawEpisodeItem(g2d, _episodes[i], episodeY, i);
             }
 
-            g2d.ResetClip();
-
-            if (_maxScrollOffset > 0)
-            {
-                DrawScrollbar(g2d);
-            }
+            g2d.Clip = oldClip;
         }
 
-        private void DrawEpisode(Graphics g2d, EpisodeItem episode, Rectangle rect, bool isHovered)
+        private void DrawEpisodeItem(Graphics g2d, EpisodeItem episode, int y, int index)
         {
+            bool isHovered = (index == _hoveredEpisodeIndex);
             bool isCurrentlyPlaying = (episode.Id == _currentPlayingEpisodeId);
 
-            Color bgColor = isHovered ? _itemHoverColor : Color.FromArgb(40, 40, 40);
+            Rectangle rect = new Rectangle(_episodesRect.X, y, _episodesRect.Width, EPISODE_HEIGHT);
+
+            if (isHovered || isCurrentlyPlaying)
+            {
+                using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(30, 0, 0, 0)))
+                {
+                    g2d.FillRoundedRectangle(shadowBrush, rect.X + 2, rect.Y + 2, rect.Width, rect.Height, 10);
+                }
+            }
+
+            Color bgColor = isCurrentlyPlaying ? Color.FromArgb(50, 50, 50) :
+                           isHovered ? _itemHoverColor : Color.FromArgb(40, 40, 40);
+
             using (SolidBrush brush = new SolidBrush(bgColor))
             {
-                g2d.FillRoundedRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height, 8);
+                g2d.FillRoundedRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height, 10);
             }
 
             if (isCurrentlyPlaying)
             {
                 using (Pen pen = new Pen(_accentColor, 3))
                 {
-                    g2d.DrawRoundedRectangle(pen, rect.X + 2, rect.Y + 2, rect.Width - 4, rect.Height - 4, 8);
+                    g2d.DrawRoundedRectangle(pen, rect.X + 2, rect.Y + 2, rect.Width - 4, rect.Height - 4, 10);
                 }
             }
             else if (isHovered)
             {
                 using (Pen pen = new Pen(_accentColor, 2))
                 {
-                    g2d.DrawRoundedRectangle(pen, rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2, 8);
+                    g2d.DrawRoundedRectangle(pen, rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2, 10);
                 }
             }
 
-            int imageWidth = 140;
-            int imageHeight = 80;
-            int imageX = rect.X + 10;
+            int imageWidth = 200;
+            int imageHeight = 112;
+            int imageX = rect.X + 15;
             int imageY = rect.Y + (rect.Height - imageHeight) / 2;
 
             if (!string.IsNullOrEmpty(episode.ImageUrl))
@@ -555,23 +565,32 @@ namespace ChocoPlayer
             {
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 60, 60)))
                 {
-                    g2d.FillRectangle(brush, imageX, imageY, imageWidth, imageHeight);
+                    g2d.FillRoundedRectangle(brush, imageX, imageY, imageWidth, imageHeight, 8);
+                }
+
+                using (Font iconFont = new Font("Segoe UI", 24))
+                using (SolidBrush iconBrush = new SolidBrush(Color.FromArgb(100, 100, 100)))
+                {
+                    StringFormat sf = new StringFormat();
+                    sf.Alignment = StringAlignment.Center;
+                    sf.LineAlignment = StringAlignment.Center;
+                    g2d.DrawString("🎬", iconFont, iconBrush, new Rectangle(imageX, imageY, imageWidth, imageHeight), sf);
                 }
             }
 
-            int contentX = imageX + imageWidth + 15;
-            int contentY = rect.Y + 15;
-            int contentWidth = rect.Width - (contentX - rect.X) - 15;
+            int contentX = imageX + imageWidth + 20;
+            int contentY = rect.Y + 18;
+            int contentWidth = rect.Width - (contentX - rect.X) - 20;
 
-            using (Font font = new Font("Segoe UI", 10, FontStyle.Bold))
+            using (Font font = new Font("Segoe UI", 8, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(_accentColor))
             {
-                g2d.DrawString($"Épisode {episode.EpisodeNumber}", font, brush, contentX, contentY);
+                g2d.DrawString($"ÉPISODE {episode.EpisodeNumber}", font, brush, contentX, contentY);
             }
 
-            contentY += 25;
+            contentY += 30;
 
-            using (Font font = new Font("Segoe UI", 11, FontStyle.Bold))
+            using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
             {
                 string title = episode.Title;
@@ -586,7 +605,23 @@ namespace ChocoPlayer
                 g2d.DrawString(title, font, brush, contentX, contentY);
             }
 
-            contentY += 25;
+            contentY += 30;
+
+            using (Font font = new Font("Segoe UI", 9))
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(160, 160, 160)))
+            {
+                string description = ""; //episode.Description ?? "";
+                if (g2d.MeasureString(description, font).Width > contentWidth)
+                {
+                    while (g2d.MeasureString(description + "...", font).Width > contentWidth && description.Length > 20)
+                    {
+                        description = description.Substring(0, description.Length - 1);
+                    }
+                    description += "...";
+                }
+                g2d.DrawString(description, font, brush, contentX, contentY);
+            }
+            contentY += 22;
 
             using (Font font = new Font("Segoe UI", 9))
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(180, 180, 180)))
@@ -594,7 +629,7 @@ namespace ChocoPlayer
                 string durationText = $"⏱ {episode.Duration}";
                 if (isCurrentlyPlaying)
                 {
-                    durationText += "  ▶ En lecture";
+                    durationText += "  •  ▶ En lecture";
                 }
                 g2d.DrawString(durationText, font, brush, contentX, contentY);
             }
@@ -604,7 +639,13 @@ namespace ChocoPlayer
         {
             if (_imageCache.ContainsKey(imageUrl))
             {
-                g2d.DrawImage(_imageCache[imageUrl], x, y, width, height);
+                using (GraphicsPath path = GetRoundedRectanglePath(x, y, width, height, 8))
+                {
+                    Region oldClip = g2d.Clip;
+                    g2d.SetClip(path, CombineMode.Replace);
+                    g2d.DrawImage(_imageCache[imageUrl], x, y, width, height);
+                    g2d.Clip = oldClip;
+                }
                 return;
             }
 
@@ -613,26 +654,45 @@ namespace ChocoPlayer
                 try
                 {
                     byte[] imageBytes = await _httpClient.GetByteArrayAsync(imageUrl);
-                    using (var ms = new System.IO.MemoryStream(imageBytes))
+
+                    using (var skBitmap = SKBitmap.Decode(imageBytes))
                     {
-                        Image img = Image.FromStream(ms);
+                        if (skBitmap == null)
+                        {
+                            Console.WriteLine($"Impossible de décoder l'image: {imageUrl}");
+                            return;
+                        }
+
+                        Bitmap bitmap = SKBitmapToBitmap(skBitmap);
 
                         if (!_imageCache.ContainsKey(imageUrl))
                         {
-                            _imageCache[imageUrl] = img;
+                            _imageCache[imageUrl] = bitmap;
+                        }
+                        else
+                        {
+                            bitmap.Dispose();
                         }
 
-                        this.Invoke((Action)(() => RefreshImmediate()));
+                        try
+                        {
+                            this.Invoke((Action)(() => RefreshImmediate()));
+                        }
+                        catch
+                        {
+                            // Window might be closed
+                        }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.WriteLine($"ERREUR chargement image {imageUrl}: {ex.Message}");
                 }
             });
 
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 60, 60)))
             {
-                g2d.FillRectangle(brush, x, y, width, height);
+                g2d.FillRoundedRectangle(brush, x, y, width, height, 8);
             }
             using (Font font = new Font("Segoe UI", 9))
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(120, 120, 120)))
@@ -642,6 +702,48 @@ namespace ChocoPlayer
                 sf.LineAlignment = StringAlignment.Center;
                 g2d.DrawString("Chargement...", font, brush, new Rectangle(x, y, width, height), sf);
             }
+        }
+
+        private Bitmap SKBitmapToBitmap(SKBitmap skBitmap)
+        {
+            Bitmap bitmap = new Bitmap(skBitmap.Width, skBitmap.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            var bitmapData = bitmap.LockBits(
+                new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.WriteOnly,
+                bitmap.PixelFormat);
+
+            IntPtr pixelPtr = skBitmap.GetPixels();
+
+            int bytes = bitmapData.Stride * bitmap.Height;
+            byte[] rgbValues = new byte[bytes];
+            Marshal.Copy(pixelPtr, rgbValues, 0, bytes);
+            Marshal.Copy(rgbValues, 0, bitmapData.Scan0, bytes);
+
+            bitmap.UnlockBits(bitmapData);
+
+            return bitmap;
+        }
+
+        private GraphicsPath GetRoundedRectanglePath(float x, float y, float width, float height, float radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            float diameter = radius * 2;
+
+            RectangleF arc = new RectangleF(x, y, diameter, diameter);
+            path.AddArc(arc, 180, 90);
+
+            arc.X = x + width - diameter;
+            path.AddArc(arc, 270, 90);
+
+            arc.Y = y + height - diameter;
+            path.AddArc(arc, 0, 90);
+
+            arc.X = x;
+            path.AddArc(arc, 90, 90);
+
+            path.CloseFigure();
+            return path;
         }
 
         private void DrawScrollbar(Graphics g2d)
@@ -707,7 +809,6 @@ namespace ChocoPlayer
         }
     }
 
-    // Extensions pour dessiner des rectangles arrondis
     public static class GraphicsExtensionss
     {
         public static void FillRoundedRectangle(this Graphics g, Brush brush, float x, float y, float width, float height, float radius)
