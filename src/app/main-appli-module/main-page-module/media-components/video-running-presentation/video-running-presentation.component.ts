@@ -6,10 +6,11 @@ import { MylistButtonComponent } from '../../../media-module/components/button/m
 import { VolumeButtonComponent } from '../../../media-module/components/button/volume-button/volume-button.component';
 import { RestreamButtonComponent } from '../../../media-module/components/button/restream-button/restream-button.component';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
-import { VerifTimerShowService } from '../../../common-module/services/verif-timer/verif-timer-show.service';
 import { CutoffButtonComponent } from '../../../media-module/components/button/cutoff-button/cutoff-button.component';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
 import { StreamService } from '../../../video-playing-module/services/stream/stream.service';
+import { SeasonModel } from '../../../media-module/models/series/season.interface';
+import { SeriesModel } from '../../../media-module/models/series/series.interface';
 
 @Component({
   selector: 'app-video-running-presentation',
@@ -33,6 +34,7 @@ export class VideoRunningPresentationComponent {
   srcBackground !: string | undefined;
   description: string | undefined = undefined;
   countMax: number = 300;
+  seasons: SeasonModel[] | undefined = undefined;
 
   observer !: IntersectionObserver;
   private isVisible = false;
@@ -44,6 +46,7 @@ export class VideoRunningPresentationComponent {
   ngOnInit(): void {
     this.srcLogo = this.compressedPosterService.getLogoForMediaPresentationTopHead(this.newsMedia.media);
     this.srcBackground = this.compressedPosterService.getBackgroundForNewsVideoRunning(this.newsMedia);
+    this.seasons = (this.newsMedia.media as SeriesModel).seasons;
 
     if (this.newsMedia.media.description) {
       this.description = this.couperParagraphe(this.newsMedia.media.description, this.countMax);

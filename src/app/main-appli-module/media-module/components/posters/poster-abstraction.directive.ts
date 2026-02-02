@@ -12,6 +12,7 @@ import { MediaModel } from '../../models/media.interface';
 import { MovieModel } from '../../models/movie-model';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { SeriesModel } from '../../models/series/series.interface';
+import { SeasonModel } from '../../models/series/season.interface';
 
 @Directive()
 export class PosterAbstraction {
@@ -39,6 +40,7 @@ export class PosterAbstraction {
     duration !: string;
     quality !: string;
     nbSeason !: string;
+    seasons !: SeasonModel[];
 
     constructor(protected mediaSelectedService: MediaSelectedService,
         protected displayOrderService: DisplayOrderService,
@@ -59,6 +61,7 @@ export class PosterAbstraction {
             this.quality = (this.media as MovieModel).quality || 'any quality';
         } else if (this.media.mediaType === MediaTypeModel.SERIES) {
             const nb: number = (this.media as SeriesModel).seasons.length;
+            this.seasons = (this.media as SeriesModel).seasons;
             if (nb > 1) {
                 this.nbSeason = `${nb} Saisons`;
             } else {

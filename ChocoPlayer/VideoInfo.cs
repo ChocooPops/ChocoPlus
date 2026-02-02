@@ -2,6 +2,8 @@ namespace ChocoPlayer
 {
     public class VideoInfo
     {
+        public string? Token { get; set; }
+        public int? MediaId { get; set; }
         public string? Title { get; set; }
         public string? Url { get; set; }
         public int Height { get; set; }
@@ -10,5 +12,7 @@ namespace ChocoPlayer
         public int PositionY { get; set; }
         public bool IsMaximized { get; set; }
         public bool IsFullScreen { get; set; }
+        public List<Season>? SeasonMenu { get; set; }
+
     }
 }

@@ -29,7 +29,7 @@ namespace ChocoPlayer
 
         private int _buttonSize = 30;
         private int _buttonSpacing = 18;
-        private int _buttonMarginBottom = 10;
+        private int _buttonMarginBottom = 15;
         private int _buttonsY;
 
         private int _volumeBarWidth = 110;
@@ -41,6 +41,7 @@ namespace ChocoPlayer
         private int _forwardButtonX;
         private int _volumeButtonX;
         private int _volumeBarX;
+        private int _seasonsButtonX;
         private int _settingsButtonX;
         private int _fullscreenButtonX;
 
@@ -55,6 +56,7 @@ namespace ChocoPlayer
         private Bitmap? _forwardIcon;
         private Bitmap? _volumeIcon;
         private Bitmap? _volumeMuteIcon;
+        private Bitmap? _seasonsIcon;
         private Bitmap? _settingsIcon;
         private Bitmap? _fullscreenIcon;
         private Bitmap? _fullscreenExitIcon;
@@ -102,6 +104,7 @@ namespace ChocoPlayer
                 _forwardIcon = LoadPngIcon(Path.Combine(iconsPath, "forward.png"));
                 _volumeIcon = LoadPngIcon(Path.Combine(iconsPath, "volume.png"));
                 _volumeMuteIcon = LoadPngIcon(Path.Combine(iconsPath, "volume-mute.png"));
+                _seasonsIcon = LoadPngIcon(Path.Combine(iconsPath, "seasons.png"));
                 _settingsIcon = LoadPngIcon(Path.Combine(iconsPath, "settings.png"));
                 _fullscreenIcon = LoadPngIcon(Path.Combine(iconsPath, "fullscreen.png"));
                 _fullscreenExitIcon = LoadPngIcon(Path.Combine(iconsPath, "fullscreen-exit.png"));
@@ -135,6 +138,8 @@ namespace ChocoPlayer
         public int GetControlsHeight() => CONTROLS_HEIGHT;
 
         public int GetSettingX() => _settingsButtonX + _buttonSize;
+
+        public int GetSeasonsButtonX() => _seasonsButtonX + _buttonSize;
 
         private void PlayerControls_MouseDown(object? sender, MouseEventArgs e)
         {
@@ -211,6 +216,11 @@ namespace ChocoPlayer
             return IsOverButton(mouseX, mouseY, _settingsButtonX);
         }
 
+        public bool IsClickOnSeasonsButton(int mouseX, int mouseY)
+        {
+            return IsOverButton(mouseX, mouseY, _seasonsButtonX);
+        }
+
         private bool IsOverPoint(int mouseX, int mouseY, int pointX, int pointY)
         {
             int dx = mouseX - pointX;
@@ -220,27 +230,30 @@ namespace ChocoPlayer
 
         private bool IsOverLine(int mouseX, int mouseY, int lineY, int lineEnd)
         {
-            return mouseX >= _leftMargin &&
-                   mouseX <= lineEnd &&
-                   Math.Abs(mouseY - lineY) <= _lineHeight + 5;
-        }
-
-        private bool IsOverVolumePoint(int mouseX, int mouseY)
-        {
-            int volumeProgressX = _volumeBarX + (int)(_volumeProgress * _volumeBarWidth);
-            int volumeY = _buttonsY + _buttonSize / 2;
-
-            int dx = mouseX - volumeProgressX;
-            int dy = mouseY - volumeY;
-            return Math.Sqrt(dx * dx + dy * dy) <= _volumePointRadius + 5;
+            return mouseX >= _leftMargin && mouseX <= lineEnd &&
+                   mouseY >= lineY - 10 && mouseY <= lineY + 10;
         }
 
         private bool IsOverVolumeLine(int mouseX, int mouseY)
         {
             int volumeY = _buttonsY + _buttonSize / 2;
-            return mouseX >= _volumeBarX &&
-                   mouseX <= _volumeBarX + _volumeBarWidth &&
-                   Math.Abs(mouseY - volumeY) <= _volumeBarHeight + 5;
+            return mouseX >= _volumeBarX && mouseX <= _volumeBarX + _volumeBarWidth &&
+                   mouseY >= volumeY - 10 && mouseY <= volumeY + 10;
+        }
+
+        private bool IsOverVolumePoint(int mouseX, int mouseY)
+        {
+            int volumeY = _buttonsY + _buttonSize / 2;
+            int volumeProgressX = _volumeBarX + (int)(_volumeProgress * _volumeBarWidth);
+            int dx = mouseX - volumeProgressX;
+            int dy = mouseY - volumeY;
+            return Math.Sqrt(dx * dx + dy * dy) <= _volumePointRadius + 5;
+        }
+
+        private bool IsOverButton(int mouseX, int mouseY, int buttonX)
+        {
+            return mouseX >= buttonX && mouseX <= buttonX + _buttonSize &&
+                   mouseY >= _buttonsY && mouseY <= _buttonsY + _buttonSize;
         }
 
         private bool IsOverAnyButton(int mouseX, int mouseY)
@@ -249,16 +262,9 @@ namespace ChocoPlayer
                    IsOverButton(mouseX, mouseY, _backwardButtonX) ||
                    IsOverButton(mouseX, mouseY, _forwardButtonX) ||
                    IsOverButton(mouseX, mouseY, _volumeButtonX) ||
+                   IsOverButton(mouseX, mouseY, _seasonsButtonX) ||
                    IsOverButton(mouseX, mouseY, _settingsButtonX) ||
                    IsOverButton(mouseX, mouseY, _fullscreenButtonX);
-        }
-
-        private bool IsOverButton(int mouseX, int mouseY, int buttonX)
-        {
-            return mouseX >= buttonX &&
-                   mouseX <= buttonX + _buttonSize &&
-                   mouseY >= _buttonsY &&
-                   mouseY <= _buttonsY + _buttonSize;
         }
 
         private void HandleButtonClick(int mouseX, int mouseY)
@@ -287,8 +293,11 @@ namespace ChocoPlayer
             }
             else if (IsOverButton(mouseX, mouseY, _settingsButtonX))
             {
-                int buttonY = _buttonsY;
-                _listener?.OnSettingsClicked(_settingsButtonX, buttonY, _buttonSize);
+                _listener?.OnSettingsClicked(_settingsButtonX, _buttonsY, _buttonSize);
+            }
+            else if (IsOverButton(mouseX, mouseY, _seasonsButtonX))
+            {
+                _listener?.OnSeasonsClicked(_seasonsButtonX, _buttonsY, _buttonSize);
             }
         }
 
@@ -297,56 +306,60 @@ namespace ChocoPlayer
             int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
             int lineWidth = lineEnd - _leftMargin;
 
-            if (lineWidth <= 0)
-                return;
+            if (mouseX < _leftMargin)
+                _progress = 0.0f;
+            else if (mouseX > lineEnd)
+                _progress = 1.0f;
+            else
+                _progress = (float)(mouseX - _leftMargin) / lineWidth;
 
-            float newProgress = (float)(mouseX - _leftMargin) / lineWidth;
-            _progress = Math.Max(0.0f, Math.Min(1.0f, newProgress));
             _listener?.OnProgressChanging(_progress);
-
+            UpdateTimeText();
             RefreshImmediate();
         }
 
         private void UpdateVolume(int mouseX)
         {
-            if (_volumeBarWidth <= 0)
-                return;
-
-            float newProgress = (float)(mouseX - _volumeBarX) / _volumeBarWidth;
-            _volumeProgress = Math.Max(0.0f, Math.Min(1.0f, newProgress));
+            if (mouseX < _volumeBarX)
+                _volumeProgress = 0.0f;
+            else if (mouseX > _volumeBarX + _volumeBarWidth)
+                _volumeProgress = 1.0f;
+            else
+                _volumeProgress = (float)(mouseX - _volumeBarX) / _volumeBarWidth;
 
             int volume = (int)(_volumeProgress * 100);
             _listener?.OnVolumeChanged(volume);
-
             RefreshImmediate();
         }
 
         private void UpdateProgressFromPlayer()
         {
             long totalTime = Player.GetTotalTime();
+            long currentTime = Player.GetElapsedTime();
+
             if (totalTime > 0)
             {
-                long elapsed = Player.GetElapsedTime();
-                float newProgress = (float)elapsed / totalTime;
-
-                if (Math.Abs(newProgress - _progress) > 0.001f)
-                {
-                    _progress = newProgress;
-                    RefreshImmediate();
-                }
-
-                _timeText = FormatTime(elapsed) + " / " + FormatTime(totalTime);
-                CalculateTimeTextWidth();
+                _progress = (float)currentTime / totalTime;
             }
+
+            UpdateTimeText();
+            RefreshImmediate();
+        }
+
+        private void UpdateTimeText()
+        {
+            long totalTime = Player.GetTotalTime();
+            long currentTime = (long)(_progress * totalTime);
+
+            _timeText = $"{FormatTime(currentTime)} / {FormatTime(totalTime)}";
         }
 
         private void CalculateTimeTextWidth()
         {
-            using (Graphics g = this.CreateGraphics())
-            using (Font font = new Font("Arial", 9, FontStyle.Bold))
+            using (Graphics g = CreateGraphics())
+            using (Font font = new Font("Segoe UI", 9))
             {
-                SizeF size = g.MeasureString(_timeText, font);
-                _timeTextWidth = (int)size.Width;
+                _timeTextWidth = (int)g.MeasureString("00:00:00 / 00:00:00", font).Width;
             }
         }
 
@@ -359,21 +372,13 @@ namespace ChocoPlayer
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            Graphics g2d = e.Graphics;
-            g2d.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            int lineY = this.Height / 2 - 15;
+            Graphics g2d = e.Graphics;
+            g2d.SmoothingMode = SmoothingMode.AntiAlias;
+
+            int lineY = this.Height / 2 - 25;
             int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
             int lineWidth = lineEnd - _leftMargin;
-            int progressX = _leftMargin + (int)(_progress * lineWidth);
-
-            using (Font font = new Font("Arial", 9, FontStyle.Bold))
-            using (SolidBrush brush = new SolidBrush(Color.White))
-            {
-                g2d.DrawString(_timeText, font, brush,
-                    this.Width - _rightMargin - _timeTextWidth,
-                    lineY - 10);
-            }
 
             using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), _lineHeight))
             {
@@ -382,6 +387,7 @@ namespace ChocoPlayer
                 g2d.DrawLine(pen, _leftMargin, lineY, lineEnd, lineY);
             }
 
+            int progressX = _leftMargin + (int)(_progress * lineWidth);
             using (Pen pen = new Pen(_colorYellow, _lineHeight))
             {
                 pen.StartCap = LineCap.Round;
@@ -407,6 +413,14 @@ namespace ChocoPlayer
                     _pointRadius * 2);
             }
 
+            using (Font font = new Font("Segoe UI", 9))
+            using (SolidBrush brush = new SolidBrush(Color.White))
+            {
+                int textX = this.Width - _rightMargin - _timeTextWidth;
+                int textY = lineY - 10;
+                g2d.DrawString(_timeText, font, brush, textX, textY);
+            }
+
             DrawButtons(g2d);
             DrawVolumeBar(g2d);
         }
@@ -422,8 +436,10 @@ namespace ChocoPlayer
             _forwardButtonX = _backwardButtonX + _buttonSize + _buttonSpacing - 10;
             _volumeButtonX = _forwardButtonX + _buttonSize + _buttonSpacing;
             _volumeBarX = _volumeButtonX + _buttonSize + _buttonSpacing;
+
             _fullscreenButtonX = width - _rightMargin - _buttonSize;
             _settingsButtonX = _fullscreenButtonX - _buttonSize - _buttonSpacing + 5;
+            _seasonsButtonX = _settingsButtonX - _buttonSize - _buttonSpacing + 5;
 
             DrawIconButton(g2d, _playButtonX, _buttonsY, _isPlaying ? _pauseIcon : _playIcon, _isPlaying ? "⏸" : "▶");
             DrawIconButton(g2d, _backwardButtonX, _buttonsY, _backwardIcon, "⏮");
@@ -431,6 +447,9 @@ namespace ChocoPlayer
             DrawIconButton(g2d, _volumeButtonX, _buttonsY,
                     (_isMuted || _volumeProgress == 0) ? _volumeMuteIcon : _volumeIcon,
                     (_isMuted || _volumeProgress == 0) ? "🔇" : "🔊");
+
+            DrawIconButton(g2d, _seasonsButtonX, _buttonsY, _seasonsIcon, "📺");
+
             DrawIconButton(g2d, _settingsButtonX, _buttonsY, _settingsIcon, "⚙");
             DrawIconButton(g2d, _fullscreenButtonX, _buttonsY, _isFullscreen ? _fullscreenExitIcon : _fullscreenIcon, _isFullscreen ? "⊡" : "⛶");
         }
@@ -523,7 +542,7 @@ namespace ChocoPlayer
         public void SetPlaying(bool playing)
         {
             _isPlaying = playing;
-            RefreshImmediate(); // ✅ CORRECTION: Rafraîchissement immédiat
+            RefreshImmediate();
         }
 
         public void SetProgressChangeListener(IProgressChangeListener listener)
@@ -571,6 +590,7 @@ namespace ChocoPlayer
             void OnVolumeChanged(int volume);
             void OnFullscreenClicked();
             void OnSettingsClicked(int buttonX, int buttonY, int buttonSize);
+            void OnSeasonsClicked(int buttonX, int buttonY, int buttonSize);
         }
 
         protected override void Dispose(bool disposing)
@@ -583,6 +603,7 @@ namespace ChocoPlayer
                 _forwardIcon?.Dispose();
                 _volumeIcon?.Dispose();
                 _volumeMuteIcon?.Dispose();
+                _seasonsIcon?.Dispose();
                 _settingsIcon?.Dispose();
                 _fullscreenIcon?.Dispose();
                 _fullscreenExitIcon?.Dispose();

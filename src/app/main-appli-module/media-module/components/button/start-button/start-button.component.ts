@@ -5,6 +5,7 @@ import { MediaModel } from '../../../models/media.interface';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { StreamService } from '../../../../video-playing-module/services/stream/stream.service';
 import { ChocoPlayerModel } from '../../../../video-playing-module/models/choco-player.interface';
+import { SeasonModel } from '../../../models/series/season.interface';
 
 @Component({
   selector: 'app-start-button',
@@ -20,6 +21,7 @@ export class StartButtonComponent {
   @Input() media!: MediaModel;
   @Input() episodeId !: number;
   @Input() episodeName !: string;
+  @Input() seasons !: SeasonModel[] | undefined;
 
   constructor(private router: Router,
     private streamService: StreamService,
@@ -30,18 +32,26 @@ export class StartButtonComponent {
 
   public async onClick(): Promise<void> {
     const chocoPlayer: ChocoPlayerModel = {
+      MediaId: this.media.id,
       Title: this.media.title,
       Url: '',
       Height: window.innerHeight,
-      Width: window.innerWidth
+      Width: window.innerWidth,
+      SeasonMenu: []
     }
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       chocoPlayer.Url = this.streamService.getUrlStreamMovie(this.media.id);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       if (this.episodeName) chocoPlayer.Title = `${chocoPlayer.Title} - ${this.episodeName}`;
       chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.media.id, this.episodeId ?? -1);
+      chocoPlayer.SeasonMenu = this.seasons ? this.seasons.map((season: SeasonModel) => ({
+        Id: season.id,
+        SeriesId: season.seriesId,
+        Name: season.name,
+        SeasonNumber: season.seasonNumber
+      })) : [];
     }
-
+    console.log(chocoPlayer);
     await this.streamService.launchJavaAppToMovie(chocoPlayer);
 
     // if (this.media.mediaType === MediaTypeModel.MOVIE) {

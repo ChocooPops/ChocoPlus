@@ -13,6 +13,7 @@ import { MediaTypeModel } from '../../../models/media-type.enum';
 import { MovieModel } from '../../../models/movie-model';
 import { SeriesModel } from '../../../models/series/series.interface';
 import { SeriesPageComponent } from '../series-page/series-page.component';
+import { SeasonModel } from '../../../models/series/season.interface';
 
 @Component({
   selector: 'app-media-page',
@@ -36,6 +37,7 @@ export class MediaPageComponent {
   }
 
   media: MediaModel | undefined = undefined;
+  seasons: SeasonModel[] | undefined = undefined;
   MediaType = MediaTypeModel;
 
   refreshment: number = 490;
@@ -68,6 +70,9 @@ export class MediaPageComponent {
         }
         if (this.media?.mediaType === MediaTypeModel.SERIES) {
           this.onLoadPoster();
+          this.seasons = (this.media as SeriesModel).seasons;
+        } else {
+          this.seasons = [];
         }
       })
     )

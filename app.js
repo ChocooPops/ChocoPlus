@@ -186,6 +186,7 @@ ipcMain.handle('launch-java-app', async (event, dataObject) => {
     dataObject.PositionY = bounds.y;
     dataObject.IsMaximized = mainWindow.isMaximized();
     dataObject.IsFullScreen = mainWindow.isFullScreen();
+    dataObject.Token = await keytar.getPassword(SERVICE, ACCOUNT);
 
     const csharpAppPath = path.join(
       __dirname,

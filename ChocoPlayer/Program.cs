@@ -1,4 +1,5 @@
 using System.Text.Json;
+
 namespace ChocoPlayer;
 
 static class Program
@@ -11,11 +12,17 @@ static class Program
         string? json = args.Length > 0 ? args[0] : null;
         VideoInfo? videoInfo = null;
 
-        if (!string.IsNullOrEmpty(json))
+        if (!string.IsNullOrWhiteSpace(json))
         {
             try
             {
-                videoInfo = JsonSerializer.Deserialize<VideoInfo>(json);
+                videoInfo = JsonSerializer.Deserialize<VideoInfo>(
+                    json,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    }
+                );
             }
             catch (Exception ex)
             {
@@ -24,14 +31,17 @@ static class Program
         }
 
         Application.Run(new ChocoPlayer(
-                    videoInfo?.Title ?? "",
-                    videoInfo?.Url ?? "",
-                    videoInfo?.Width ?? 1920,
-                    videoInfo?.Height ?? 1080,
-                    videoInfo?.PositionX ?? 0,
-                    videoInfo?.PositionY ?? 0,
-                    videoInfo?.IsMaximized ?? false,
-                    videoInfo?.IsFullScreen ?? false
-                ));
+            videoInfo?.MediaId ?? 0,
+            videoInfo?.Token ?? "",
+            videoInfo?.Title ?? "",
+            videoInfo?.Url ?? "",
+            videoInfo?.Width ?? 1920,
+            videoInfo?.Height ?? 1080,
+            videoInfo?.PositionX ?? 0,
+            videoInfo?.PositionY ?? 0,
+            videoInfo?.IsMaximized ?? false,
+            videoInfo?.IsFullScreen ?? false,
+            videoInfo?.SeasonMenu ?? []
+        ));
     }
 }

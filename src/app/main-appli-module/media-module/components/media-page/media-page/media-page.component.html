@@ -7,7 +7,7 @@
             <app-media-background [media]="media" (newEmitLoader)="loadingDisplaying()"></app-media-background>
             <div class="container-all-button">
                 <div class="container-groupe-button">
-                    <app-start-button [media]="media"></app-start-button>
+                    <app-start-button [media]="media" [seasons]="seasons"></app-start-button>
                 </div>
                 <div class="container-groupe-button-other">
                     <app-mylist-button [media]="media" [isInList]="media.isInList"></app-mylist-button>
