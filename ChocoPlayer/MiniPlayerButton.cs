@@ -10,7 +10,7 @@ namespace ChocoPlayer
     public class MiniPlayerButton : Panel
     {
         private const int BUTTON_SIZE = 30;
-        private const int BUTTON_MARGIN = 8;
+        private const int BUTTON_MARGIN = 12;
         private const int TITLE_BAR_HEIGHT = 40;
 
         private Bitmap? _miniPlayerIcon;
@@ -122,6 +122,7 @@ namespace ChocoPlayer
                 int x = windowWidth - BUTTON_SIZE - BUTTON_MARGIN - 2;
                 int y = 10;
 
+                this.Dock = DockStyle.None;
                 this.SetBounds(x, y, BUTTON_SIZE + 1, BUTTON_SIZE + 1);
                 _toggleButtonRect = new Rectangle(0, 0, BUTTON_SIZE, BUTTON_SIZE);
             }
@@ -153,12 +154,12 @@ namespace ChocoPlayer
             {
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(180, 40, 40, 40)))
                 {
-                    g.FillRectangle(brush, _toggleButtonRect.X, _toggleButtonRect.Y, _toggleButtonRect.Width, _toggleButtonRect.Height);
+                    g.FillRoundedRectangle(brush, _toggleButtonRect.X, _toggleButtonRect.Y, _toggleButtonRect.Width, _toggleButtonRect.Height, 8);
                 }
 
                 using (Pen borderPen = new Pen(Color.FromArgb(200, 150, 150, 150), 2))
                 {
-                    g.DrawRectangle(borderPen, _toggleButtonRect.X, _toggleButtonRect.Y, _toggleButtonRect.Width, _toggleButtonRect.Height);
+                    g.DrawRoundedRectangle(borderPen, _toggleButtonRect.X, _toggleButtonRect.Y, _toggleButtonRect.Width, _toggleButtonRect.Height, 8);
                 }
 
                 DrawIconOrText(g, _toggleButtonRect, _miniPlayerIcon, "⊟");
@@ -266,7 +267,6 @@ namespace ChocoPlayer
             }
             else if (_isMiniMode)
             {
-                // Update cursor for resize zones
                 int hitTest = GetResizeHitTest(e.Location);
                 UpdateCursorForHitTest(hitTest);
             }
@@ -320,9 +320,24 @@ namespace ChocoPlayer
 
         public void SetMiniMode(bool isMiniMode)
         {
-            _isMiniMode = isMiniMode;
-            this.Invalidate();
+            if (_isMiniMode != isMiniMode)
+            {
+                _isMiniMode = isMiniMode;
+
+                if (this.Parent != null)
+                {
+                    Form? form = this.FindForm();
+                    if (form != null)
+                    {
+                        SetPosition(form.ClientSize.Width);
+                    }
+                }
+
+                this.Invalidate();
+            }
         }
+
+        public bool IsMiniMode() => _isMiniMode;
 
         public void SetMiniPlayerListener(IMiniPlayerListener listener)
         {
@@ -339,6 +354,7 @@ namespace ChocoPlayer
         public void ApplyMiniMode(Form form)
         {
             StoreOriginalWindowState(form);
+
             float scaleX = 1f;
             float scaleY = 1f;
             using (Graphics g = form.CreateGraphics())
@@ -352,7 +368,7 @@ namespace ChocoPlayer
 
             int miniWidth = (int)(500 * scaleX);
             int miniHeight = (int)(281 * scaleY);
-            int margin = (int)(20 * scaleX);
+            int margin = (int)(10 * scaleX);
             int posX = workingArea.Right - miniWidth - margin;
             int posY = workingArea.Bottom - miniHeight - margin;
 
@@ -362,14 +378,18 @@ namespace ChocoPlayer
             }
 
             form.FormBorderStyle = FormBorderStyle.None;
+
             form.SetBounds(posX, posY, miniWidth, miniHeight);
+
             form.TopMost = true;
         }
 
         public void RestoreOriginalMode(Form form)
         {
             form.TopMost = false;
+
             form.FormBorderStyle = _originalBorderStyle;
+
             if (_originalWindowState == FormWindowState.Maximized)
             {
                 form.WindowState = FormWindowState.Maximized;

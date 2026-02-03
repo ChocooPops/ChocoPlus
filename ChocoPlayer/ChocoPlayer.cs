@@ -39,8 +39,10 @@ namespace ChocoPlayer
         private Point _lastMousePosition;
         private DateTime _lastMouseMoveTime;
         private bool _wasMouseButtonDown = false;
+
         private bool _isMiniMode = false;
         private const int RESIZE_BORDER = 8;
+
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HTLEFT = 10;
         private const int HTRIGHT = 11;
@@ -251,28 +253,8 @@ namespace ChocoPlayer
             Player.SetMediaPlayer(_mediaPlayer);
         }
 
-        public void EnableMinimumSize()
-        {
-            using (Graphics g = CreateGraphics())
-            {
-                float scaleX = g.DpiX / 96f;
-                float scaleY = g.DpiY / 96f;
-
-                MinimumSize = new Size(
-                    (int)(620 * scaleX),
-                    (int)(580 * scaleY)
-                );
-            }
-        }
-
-        public void DisableMinimumSize()
-        {
-            MinimumSize = new Size(178, 100);
-        }
-
         private void SetupUI(string title, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, List<Season>? seasons)
         {
-            this.TopMost = true;
             this.Text = "ChocoPlayer" + " - " + title;
             this.BackColor = Color.Black;
             this.Icon = CreateCustomIcon();
@@ -323,6 +305,7 @@ namespace ChocoPlayer
             };
             this.Controls.Add(_videoView);
 
+            // Add mouse events to VideoView for resizing in mini mode
             _videoView.MouseDown += VideoView_MouseDown;
             _videoView.MouseMove += VideoView_MouseMove;
 
@@ -409,6 +392,25 @@ namespace ChocoPlayer
             UpdateLayout();
         }
 
+        public void EnableMinimumSize()
+        {
+            using (Graphics g = CreateGraphics())
+            {
+                float scaleX = g.DpiX / 96f;
+                float scaleY = g.DpiY / 96f;
+
+                MinimumSize = new Size(
+                    (int)(620 * scaleX),
+                    (int)(580 * scaleY)
+                );
+            }
+        }
+
+        public void DisableMinimumSize()
+        {
+            MinimumSize = new Size(178, 100);
+        }
+
         private void OpenFile(string path)
         {
             try
@@ -436,6 +438,11 @@ namespace ChocoPlayer
 
         private void ToggleFullscreen()
         {
+            if (_isMiniMode)
+            {
+                ExitMiniMode();
+            }
+
             if (_isFullscreen)
             {
                 this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -455,6 +462,29 @@ namespace ChocoPlayer
             }
             _playerControls?.SetFullscreen(_isFullscreen);
             UpdateLayout();
+        }
+
+        private void ExitMiniMode()
+        {
+            if (_isMiniMode)
+            {
+                _isMiniMode = false;
+                _miniPlayerButton?.RestoreOriginalMode(this);
+                _miniPlayerButton?.SetMiniMode(false);
+                UpdateLayout();
+            }
+        }
+
+        private void ExitFullscreen()
+        {
+            if (_isFullscreen)
+            {
+                this.FormBorderStyle = FormBorderStyle.Sizable;
+                this.WindowState = FormWindowState.Normal;
+                _isFullscreen = false;
+                _playerControls?.SetFullscreen(false);
+                UpdateLayout();
+            }
         }
 
         private Icon CreateCustomIcon()
@@ -626,6 +656,7 @@ namespace ChocoPlayer
             }
         }
 
+        // VideoView resize handlers for mini mode
         private void VideoView_MouseDown(object? sender, MouseEventArgs e)
         {
             if (!_isMiniMode || e.Button != MouseButtons.Left)
@@ -986,20 +1017,21 @@ namespace ChocoPlayer
 
             public void OnMiniModeToggled(bool isMiniMode)
             {
-                _chocoPlayer._isMiniMode = isMiniMode;
-
                 if (isMiniMode)
                 {
+                    _chocoPlayer.TopMost = true;
                     _chocoPlayer.DisableMinimumSize();
+                    _chocoPlayer.ExitFullscreen();
+                    _chocoPlayer._isMiniMode = true;
                     _chocoPlayer._miniPlayerButton?.ApplyMiniMode(_chocoPlayer);
-
                 }
                 else
                 {
+                    _chocoPlayer.TopMost = false;
                     _chocoPlayer.EnableMinimumSize();
+                    _chocoPlayer._isMiniMode = false;
                     _chocoPlayer._miniPlayerButton?.RestoreOriginalMode(_chocoPlayer);
                 }
-
                 _chocoPlayer.UpdateLayout();
             }
         }
