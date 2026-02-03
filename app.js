@@ -189,12 +189,8 @@ ipcMain.handle('launch-java-app', async (event, dataObject) => {
     dataObject.Token = await keytar.getPassword(SERVICE, ACCOUNT);
 
     let csharpAppPath = '';
-
     if (app.isPackaged) {
-      csharpAppPath = path.join(
-        __dirname,
-        'resources', 'ChocoPlayer', 'ChocoPlayer.exe'
-      );
+      csharpAppPath = path.join(process.resourcesPath, 'ChocoPlayer', 'ChocoPlayer.exe');
     } else {
       csharpAppPath = path.join(
         __dirname,
