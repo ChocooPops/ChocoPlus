@@ -20,6 +20,8 @@ namespace ChocoPlayer
         private TrackSettingsMenu? _trackSettingsMenu;
         private SeasonsMenu? _seasonsMenu;
         private ApiService? _apiService;
+        private MiniPlayerButton? _miniPlayerButton;
+
         private int _mediaId;
         private int _currentEpisodeId = 0;
         private bool _isFullscreen = false;
@@ -37,6 +39,20 @@ namespace ChocoPlayer
         private Point _lastMousePosition;
         private DateTime _lastMouseMoveTime;
         private bool _wasMouseButtonDown = false;
+        private bool _isMiniMode = false;
+        private const int RESIZE_BORDER = 8;
+        private const int WM_NCLBUTTONDOWN = 0xA1;
+        private const int HTLEFT = 10;
+        private const int HTRIGHT = 11;
+        private const int HTBOTTOM = 15;
+        private const int HTBOTTOMLEFT = 16;
+        private const int HTBOTTOMRIGHT = 17;
+
+        [DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
         public ChocoPlayer(int mediaId, string token, string title, string videoPath, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, List<Season>? seasons)
         {
@@ -161,6 +177,7 @@ namespace ChocoPlayer
             {
                 _controlsVisible = true;
                 _playerControls!.Visible = true;
+                _miniPlayerButton!.Visible = true;
                 this.Cursor = Cursors.Default;
             }
         }
@@ -169,6 +186,7 @@ namespace ChocoPlayer
         {
             _controlsVisible = false;
             _playerControls!.Visible = false;
+            _miniPlayerButton!.Visible = false;
         }
 
         private void InitializeVLC()
@@ -233,6 +251,25 @@ namespace ChocoPlayer
             Player.SetMediaPlayer(_mediaPlayer);
         }
 
+        public void EnableMinimumSize()
+        {
+            using (Graphics g = CreateGraphics())
+            {
+                float scaleX = g.DpiX / 96f;
+                float scaleY = g.DpiY / 96f;
+
+                MinimumSize = new Size(
+                    (int)(620 * scaleX),
+                    (int)(580 * scaleY)
+                );
+            }
+        }
+
+        public void DisableMinimumSize()
+        {
+            MinimumSize = new Size(178, 100);
+        }
+
         private void SetupUI(string title, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, List<Season>? seasons)
         {
             this.TopMost = true;
@@ -246,16 +283,13 @@ namespace ChocoPlayer
             float scaleX = 1f;
             float scaleY = 1f;
 
+            EnableMinimumSize();
+
             using (Graphics g = CreateGraphics())
             {
                 scaleX = g.DpiX / 96f;
                 scaleY = g.DpiY / 96f;
             }
-
-            MinimumSize = new Size(
-                (int)(620 * scaleX),
-                (int)(580 * scaleY)
-            );
 
             StartPosition = FormStartPosition.Manual;
 
@@ -289,6 +323,9 @@ namespace ChocoPlayer
             };
             this.Controls.Add(_videoView);
 
+            _videoView.MouseDown += VideoView_MouseDown;
+            _videoView.MouseMove += VideoView_MouseMove;
+
             _playerControls = new PlayerControls();
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
             this.Controls.Add(_playerControls);
@@ -297,6 +334,10 @@ namespace ChocoPlayer
             _trackSettingsMenu.SetListener(new TrackListener(this));
             this.Controls.Add(_trackSettingsMenu);
             _trackSettingsMenu.BringToFront();
+
+            _miniPlayerButton = new MiniPlayerButton();
+            _miniPlayerButton.SetMiniPlayerListener(new MiniPlayerListener(this));
+            this.Controls.Add(_miniPlayerButton);
 
             _hasSeasons = seasons != null && seasons.Count > 0;
 
@@ -322,7 +363,10 @@ namespace ChocoPlayer
 
         private void UpdateLayout()
         {
-            _videoView!.SetBounds(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            int titleBarHeight = _isMiniMode ? _miniPlayerButton!.GetTitleBarHeight() : 0;
+
+            _videoView!.SetBounds(0, titleBarHeight, this.ClientSize.Width, this.ClientSize.Height - titleBarHeight);
+            _miniPlayerButton?.SetPosition(this.ClientSize.Width);
 
             int controlsHeight = _playerControls!.GetControlsHeight();
 
@@ -351,6 +395,7 @@ namespace ChocoPlayer
             }
 
             _playerControls.BringToFront();
+            _miniPlayerButton?.BringToFront();
             _trackSettingsMenu.BringToFront();
 
             if (_hasSeasons && _seasonsMenu != null)
@@ -574,6 +619,77 @@ namespace ChocoPlayer
             }
             parts[partIndex] = newText;
             this.Text = string.Join(" - ", parts);
+
+            if (_isMiniMode)
+            {
+                _miniPlayerButton?.Invalidate();
+            }
+        }
+
+        private void VideoView_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (!_isMiniMode || e.Button != MouseButtons.Left)
+                return;
+
+            int hitTest = GetVideoViewResizeHitTest(e.Location);
+
+            if (hitTest != 0)
+            {
+                ReleaseCapture();
+                SendMessage(this.Handle, WM_NCLBUTTONDOWN, hitTest, 0);
+            }
+        }
+
+        private void VideoView_MouseMove(object? sender, MouseEventArgs e)
+        {
+            if (!_isMiniMode)
+                return;
+
+            int hitTest = GetVideoViewResizeHitTest(e.Location);
+            UpdateVideoViewCursor(hitTest);
+        }
+
+        private int GetVideoViewResizeHitTest(Point location)
+        {
+            Point formLocation = this.PointToClient(_videoView!.PointToScreen(location));
+
+            int x = formLocation.X;
+            int y = formLocation.Y;
+            int width = this.ClientSize.Width;
+            int height = this.ClientSize.Height;
+
+            bool left = x <= RESIZE_BORDER;
+            bool right = x >= width - RESIZE_BORDER;
+            bool bottom = y >= height - RESIZE_BORDER;
+
+            if (bottom && left) return HTBOTTOMLEFT;
+            if (bottom && right) return HTBOTTOMRIGHT;
+            if (bottom) return HTBOTTOM;
+            if (left) return HTLEFT;
+            if (right) return HTRIGHT;
+
+            return 0;
+        }
+
+        private void UpdateVideoViewCursor(int hitTest)
+        {
+            switch (hitTest)
+            {
+                case HTLEFT:
+                case HTRIGHT:
+                    _videoView!.Cursor = Cursors.SizeWE;
+                    break;
+                case HTBOTTOM:
+                    _videoView!.Cursor = Cursors.SizeNS;
+                    break;
+                case HTBOTTOMLEFT:
+                case HTBOTTOMRIGHT:
+                    _videoView!.Cursor = Cursors.SizeNWSE;
+                    break;
+                default:
+                    _videoView!.Cursor = Cursors.Default;
+                    break;
+            }
         }
 
         private class ProgressListener : PlayerControls.IProgressChangeListener
@@ -856,6 +972,35 @@ namespace ChocoPlayer
                     }
                 }
                 _chocoPlayer._seasonsMenu?.Hide();
+            }
+        }
+
+        private class MiniPlayerListener : MiniPlayerButton.IMiniPlayerListener
+        {
+            private ChocoPlayer _chocoPlayer;
+
+            public MiniPlayerListener(ChocoPlayer player)
+            {
+                _chocoPlayer = player;
+            }
+
+            public void OnMiniModeToggled(bool isMiniMode)
+            {
+                _chocoPlayer._isMiniMode = isMiniMode;
+
+                if (isMiniMode)
+                {
+                    _chocoPlayer.DisableMinimumSize();
+                    _chocoPlayer._miniPlayerButton?.ApplyMiniMode(_chocoPlayer);
+
+                }
+                else
+                {
+                    _chocoPlayer.EnableMinimumSize();
+                    _chocoPlayer._miniPlayerButton?.RestoreOriginalMode(_chocoPlayer);
+                }
+
+                _chocoPlayer.UpdateLayout();
             }
         }
     }
