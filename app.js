@@ -4,6 +4,7 @@ const url = require('url');
 const keytar = require('keytar');
 const { exec } = require('child_process');
 const { spawn } = require("child_process");
+const fs = require('fs');
 
 const SERVICE = 'my-app-auth';
 const ACCOUNT = 'refresh-token';
@@ -11,11 +12,61 @@ const ACCOUNT = 'refresh-token';
 let mainWindow;
 let csharpProcess = null;
 
-function createWindow() {
-  // Création de la fenêtre principale
-  mainWindow = new BrowserWindow({
+// Chemin du fichier de configuration
+const userDataPath = app.getPath('userData');
+const windowStateFile = path.join(userDataPath, 'window-state.json');
+
+// Fonction pour charger l'état de la fenêtre
+function loadWindowState() {
+  try {
+    if (fs.existsSync(windowStateFile)) {
+      const data = fs.readFileSync(windowStateFile, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement de l\'état de la fenêtre:', error);
+  }
+
+  // Valeurs par défaut
+  return {
     width: 1920,
     height: 1080,
+    x: undefined,
+    y: undefined,
+    isMaximized: false
+  };
+}
+
+// Fonction pour sauvegarder l'état de la fenêtre
+function saveWindowState() {
+  try {
+    if (!mainWindow) return;
+
+    const bounds = mainWindow.getBounds();
+    const state = {
+      width: bounds.width,
+      height: bounds.height,
+      x: bounds.x,
+      y: bounds.y,
+      isMaximized: mainWindow.isMaximized()
+    };
+
+    fs.writeFileSync(windowStateFile, JSON.stringify(state, null, 2));
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde de l\'état de la fenêtre:', error);
+  }
+}
+
+function createWindow() {
+  // Charger l'état précédent de la fenêtre
+  const windowState = loadWindowState();
+
+  // Création de la fenêtre principale avec les dimensions sauvegardées
+  mainWindow = new BrowserWindow({
+    width: windowState.width,
+    height: windowState.height,
+    x: windowState.x,
+    y: windowState.y,
     minHeight: 580,
     minWidth: 620,
     resizable: true,
@@ -30,6 +81,11 @@ function createWindow() {
     },
     icon: path.join(__dirname, 'dist/choco-plus/browser/icon.ico'),
   });
+
+  // Restaurer l'état maximisé si nécessaire
+  if (windowState.isMaximized) {
+    mainWindow.maximize();
+  }
 
   // Charger l'application Angular
   mainWindow.loadURL(
@@ -46,17 +102,25 @@ function createWindow() {
   // Suppression de la barre de menu
   mainWindow.setMenu(null);
 
-  // Gestion de la fermeture de la fenêtre
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-
+  // Sauvegarder l'état lors des changements
+  mainWindow.on('resize', saveWindowState);
+  mainWindow.on('move', saveWindowState);
   mainWindow.on('maximize', () => {
+    saveWindowState();
     mainWindow.webContents.send('window-maximized');
   });
-
   mainWindow.on('unmaximize', () => {
+    saveWindowState();
     mainWindow.webContents.send('window-unmaximized');
+  });
+
+  // Gestion de la fermeture de la fenêtre
+  mainWindow.on('close', () => {
+    saveWindowState();
+  });
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
   });
 }
 
