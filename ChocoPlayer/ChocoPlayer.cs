@@ -56,14 +56,14 @@ namespace ChocoPlayer
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
-        public ChocoPlayer(int mediaId, string token, string title, string videoPath, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, List<Season>? seasons)
+        public ChocoPlayer(int mediaId, string token, string title, string videoPath, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, int episodeId, int seasonIndex, List<Season>? seasons)
         {
             _mediaId = mediaId;
 
             _apiService = new ApiService(token);
 
             InitializeVLC();
-            SetupUI(title, width, height, positionX, positionY, isMaximized, isFullScreen, seasons);
+            SetupUI(title, width, height, positionX, positionY, isMaximized, isFullScreen, episodeId, seasonIndex, seasons);
 
             this.FormClosing += ChocoPlayer_FormClosing;
             this.Resize += ChocoPlayer_Resize;
@@ -74,12 +74,53 @@ namespace ChocoPlayer
             }
 
             InitializeHideControlsTimer();
+            RestoreMiniModeState();
         }
 
-        public void SetCurrentEpisode(int episodeId)
+        private void RestoreMiniModeState()
         {
-            _currentEpisodeId = episodeId;
-            _seasonsMenu?.SetCurrentPlayingEpisode(episodeId);
+            try
+            {
+                bool savedMiniMode = Properties.Settings.Default.IsMiniMode;
+
+                if (savedMiniMode)
+                {
+                    if (_miniPlayerButton != null)
+                    {
+                        _miniPlayerButton.SetMiniMode(true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erreur lors de la restauration du mode mini : {ex.Message}");
+            }
+        }
+
+        private void SaveMiniModeState()
+        {
+            try
+            {
+                Properties.Settings.Default.IsMiniMode = _isMiniMode;
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Erreur lors de la sauvegarde du mode mini : {ex.Message}");
+            }
+        }
+
+        private bool GetPropertiesIsMiniMode()
+        {
+            try
+            {
+                return Properties.Settings.Default.IsMiniMode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la sauvegarde du mode mini : {ex.Message}");
+                return false;
+            }
         }
 
         private void InitializeHideControlsTimer()
@@ -253,12 +294,13 @@ namespace ChocoPlayer
             Player.SetMediaPlayer(_mediaPlayer);
         }
 
-        private void SetupUI(string title, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, List<Season>? seasons)
+        private void SetupUI(string title, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, int episodeId, int seasonIndex, List<Season>? seasons)
         {
             this.Text = "ChocoPlayer" + " - " + title;
             this.BackColor = Color.Black;
             this.Icon = CreateCustomIcon();
             this.KeyPreview = true;
+            _currentEpisodeId = episodeId;
 
             DarkTitleBarManager.ApplyDarkTitleBar(this.Handle);
 
@@ -275,29 +317,6 @@ namespace ChocoPlayer
 
             StartPosition = FormStartPosition.Manual;
 
-            if (isFullScreen)
-            {
-                FormBorderStyle = FormBorderStyle.None;
-                WindowState = FormWindowState.Maximized;
-                _isFullscreen = true;
-            }
-            else if (isMaximized)
-            {
-                WindowState = FormWindowState.Maximized;
-            }
-            else
-            {
-                Location = new Point(
-                    (int)(positionX * scaleX),
-                    (int)(positionY * scaleY)
-                );
-
-                Size = new Size(
-                    (int)(width * scaleX),
-                    (int)(height * scaleY)
-                );
-            }
-
             _videoView = new VideoView
             {
                 MediaPlayer = _mediaPlayer,
@@ -305,7 +324,6 @@ namespace ChocoPlayer
             };
             this.Controls.Add(_videoView);
 
-            // Add mouse events to VideoView for resizing in mini mode
             _videoView.MouseDown += VideoView_MouseDown;
             _videoView.MouseMove += VideoView_MouseMove;
 
@@ -322,6 +340,42 @@ namespace ChocoPlayer
             _miniPlayerButton.SetMiniPlayerListener(new MiniPlayerListener(this));
             this.Controls.Add(_miniPlayerButton);
 
+            if (GetPropertiesIsMiniMode())
+            {
+                TopMost = true;
+                DisableMinimumSize();
+                ExitFullscreen();
+                _isMiniMode = true;
+                _miniPlayerButton?.ApplyMiniMode(this);
+                UpdateLayout();
+                SaveMiniModeState();
+            }
+            else
+            {
+                if (isFullScreen)
+                {
+                    FormBorderStyle = FormBorderStyle.None;
+                    WindowState = FormWindowState.Maximized;
+                    _isFullscreen = true;
+                }
+                else if (isMaximized)
+                {
+                    WindowState = FormWindowState.Maximized;
+                }
+                else
+                {
+                    Location = new Point(
+                        (int)(positionX * scaleX),
+                        (int)(positionY * scaleY)
+                    );
+
+                    Size = new Size(
+                        (int)(width * scaleX),
+                        (int)(height * scaleY)
+                    );
+                }
+            }
+
             _hasSeasons = seasons != null && seasons.Count > 0;
 
             if (_hasSeasons)
@@ -334,8 +388,16 @@ namespace ChocoPlayer
                 if (seasons != null)
                 {
                     var seasonItems = seasons.Select(s => new SeasonsMenu.SeasonItem(s.Id, s.Name)).ToList();
-                    _seasonsMenu.LoadSeasons(seasonItems);
-                    LoadEpisodesForSeason(seasons[0].Id);
+                    if (seasonIndex > 0)
+                    {
+                        _seasonsMenu.LoadSeasons(seasonItems, seasonIndex);
+                        LoadEpisodesForSeason(seasons[seasonIndex].Id);
+                    }
+                    else
+                    {
+                        _seasonsMenu.LoadSeasons(seasonItems, 0);
+                        LoadEpisodesForSeason(seasons[0].Id);
+                    }
                 }
             }
 
@@ -656,7 +718,6 @@ namespace ChocoPlayer
             }
         }
 
-        // VideoView resize handlers for mini mode
         private void VideoView_MouseDown(object? sender, MouseEventArgs e)
         {
             if (!_isMiniMode || e.Button != MouseButtons.Left)
@@ -1033,6 +1094,7 @@ namespace ChocoPlayer
                     _chocoPlayer._miniPlayerButton?.RestoreOriginalMode(_chocoPlayer);
                 }
                 _chocoPlayer.UpdateLayout();
+                _chocoPlayer.SaveMiniModeState();
             }
         }
     }

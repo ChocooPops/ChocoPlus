@@ -91,12 +91,12 @@ namespace ChocoPlayer
             RefreshImmediate();
         }
 
-        public void LoadSeasons(List<SeasonItem> seasons)
+        public void LoadSeasons(List<SeasonItem> seasons, int seasonIndex)
         {
             _seasons = seasons;
             if (_seasons.Count > 0)
             {
-                _currentSeasonIndex = 0;
+                _currentSeasonIndex = seasonIndex;
             }
             _dropdownScrollOffset = 0;
             CalculateMaxDropdownScroll();
@@ -124,18 +124,6 @@ namespace ChocoPlayer
             {
                 this.SetBounds(buttonX - MENU_WIDTH, buttonY - MENU_HEIGHT - 20, MENU_WIDTH, MENU_HEIGHT);
             }
-        }
-
-        public void SetSeasons(List<SeasonItem> seasons)
-        {
-            _seasons = seasons;
-            _dropdownScrollOffset = 0;
-            CalculateMaxDropdownScroll();
-            if (_seasons.Count > 0)
-            {
-                //LoadEpisodesForSeason(_currentSeasonIndex);
-            }
-            RefreshImmediate();
         }
 
         public void SetEpisodes(List<EpisodeItem> episodes)

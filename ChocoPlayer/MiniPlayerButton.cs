@@ -368,7 +368,7 @@ namespace ChocoPlayer
 
             int miniWidth = (int)(500 * scaleX);
             int miniHeight = (int)(281 * scaleY);
-            int margin = (int)(10 * scaleX);
+            int margin = (int)(20 * scaleX);
             int posX = workingArea.Right - miniWidth - margin;
             int posY = workingArea.Bottom - miniHeight - margin;
 

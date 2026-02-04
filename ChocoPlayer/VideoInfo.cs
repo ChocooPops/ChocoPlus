@@ -12,7 +12,8 @@ namespace ChocoPlayer
         public int PositionY { get; set; }
         public bool IsMaximized { get; set; }
         public bool IsFullScreen { get; set; }
+        public int EpisodeId { get; set; }
+        public int SeasonIndex { get; set; }
         public List<Season>? SeasonMenu { get; set; }
-
     }
 }

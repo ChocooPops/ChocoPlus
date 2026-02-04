@@ -37,12 +37,16 @@ export class StartButtonComponent {
       Url: '',
       Height: window.innerHeight,
       Width: window.innerWidth,
+      EpisodeId: -1,
+      SeasonIndex: -1,
       SeasonMenu: []
     }
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       chocoPlayer.Url = this.streamService.getUrlStreamMovie(this.media.id);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       if (this.episodeName) chocoPlayer.Title = `${chocoPlayer.Title} - ${this.episodeName}`;
+      chocoPlayer.EpisodeId = this.episodeId ?? -1;
+      if (this.seasons) chocoPlayer.SeasonIndex = this.getSeasonIndexFromEpisodeId(this.seasons, this.episodeId);
       chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.media.id, this.episodeId ?? -1);
       chocoPlayer.SeasonMenu = this.seasons ? this.seasons.map((season: SeasonModel) => ({
         Id: season.id,
@@ -51,7 +55,7 @@ export class StartButtonComponent {
         SeasonNumber: season.seasonNumber
       })) : [];
     }
-    console.log(chocoPlayer);
+
     await this.streamService.launchJavaAppToMovie(chocoPlayer);
 
     // if (this.media.mediaType === MediaTypeModel.MOVIE) {
@@ -64,5 +68,12 @@ export class StartButtonComponent {
     //   }
     // }
   }
+
+  private getSeasonIndexFromEpisodeId(seasons: SeasonModel[], episodeId: number): number {
+    return seasons.findIndex(season =>
+      season.episodes.some(ep => ep.id === episodeId)
+    )
+  }
+
 
 }
