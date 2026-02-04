@@ -39,6 +39,7 @@ namespace ChocoPlayer
         private Point _lastMousePosition;
         private DateTime _lastMouseMoveTime;
         private bool _wasMouseButtonDown = false;
+        private bool _isDraggingOrResizingFromTitleBar = false;
 
         private bool _isMiniMode = false;
         private const int RESIZE_BORDER = 8;
@@ -135,6 +136,28 @@ namespace ChocoPlayer
                 Point currentPosition = Cursor.Position;
 
                 bool isMouseButtonDown = (Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left;
+                bool isOverTitleBar = IsMouseOverMiniPlayerTitleBar(currentPosition);
+
+                if (isMouseButtonDown && !_wasMouseButtonDown && isOverTitleBar)
+                {
+                    _isDraggingOrResizingFromTitleBar = true;
+
+                    if (_playerControls != null && _playerControls.Visible)
+                    {
+                        _playerControls.Visible = false;
+                        _controlsVisible = false;
+                    }
+
+                    if (_miniPlayerButton != null)
+                    {
+                        _miniPlayerButton.ShowButtons();
+                    }
+                }
+
+                if (!isMouseButtonDown && _wasMouseButtonDown && _isDraggingOrResizingFromTitleBar)
+                {
+                    _isDraggingOrResizingFromTitleBar = false;
+                }
 
                 if (isMouseButtonDown && !_wasMouseButtonDown)
                 {
@@ -184,20 +207,78 @@ namespace ChocoPlayer
                     _lastMousePosition = currentPosition;
                     _lastMouseMoveTime = DateTime.Now;
 
-                    if (isMouseInWindow)
+                    if (_isDraggingOrResizingFromTitleBar)
                     {
-                        ShowControls();
+                        if (_playerControls != null)
+                        {
+                            _playerControls.Visible = false;
+                            _controlsVisible = false;
+                        }
+
+                        if (_miniPlayerButton != null)
+                        {
+                            _miniPlayerButton.ShowButtons();
+                        }
+                    }
+                    else if (isMouseInWindow)
+                    {
+                        if (isOverTitleBar)
+                        {
+                            if (_playerControls != null && _playerControls.Visible)
+                            {
+                                _playerControls.Visible = false;
+                                _controlsVisible = false;
+                            }
+
+                            if (_miniPlayerButton != null)
+                            {
+                                _miniPlayerButton.ShowButtons();
+                            }
+                        }
+                        else
+                        {
+                            ShowControls();
+                        }
                     }
                 }
                 else
                 {
-                    TimeSpan timeSinceLastMove = DateTime.Now - _lastMouseMoveTime;
-                    if (timeSinceLastMove.TotalMilliseconds >= HIDE_CONTROLS_DELAY)
+                    if (_isDraggingOrResizingFromTitleBar)
                     {
-                        if ((_trackSettingsMenu == null || !_trackSettingsMenu.Visible) &&
-                            (_seasonsMenu == null || !_seasonsMenu.Visible))
+                        if (_playerControls != null && _playerControls.Visible)
                         {
-                            HideControls();
+                            _playerControls.Visible = false;
+                            _controlsVisible = false;
+                        }
+
+                        if (_miniPlayerButton != null)
+                        {
+                            _miniPlayerButton.ShowButtons();
+                        }
+                    }
+                    else if (isMouseInWindow && isOverTitleBar)
+                    {
+                        if (_playerControls != null && _playerControls.Visible)
+                        {
+                            _playerControls.Visible = false;
+                            _controlsVisible = false;
+                        }
+
+                        if (_miniPlayerButton != null)
+                        {
+                            _miniPlayerButton.ShowButtons();
+                        }
+                    }
+                    else
+                    {
+                        TimeSpan timeSinceLastMove = DateTime.Now - _lastMouseMoveTime;
+                        if (timeSinceLastMove.TotalMilliseconds >= HIDE_CONTROLS_DELAY)
+                        {
+                            if ((_trackSettingsMenu == null || !_trackSettingsMenu.Visible) &&
+                                (_seasonsMenu == null || !_seasonsMenu.Visible))
+                            {
+                                HideControls();
+                            }
                         }
                     }
                 }
@@ -214,6 +295,21 @@ namespace ChocoPlayer
             _mouseDetectionTimer.Start();
         }
 
+        private bool IsMouseOverMiniPlayerTitleBar(Point screenPosition)
+        {
+            if (!_isMiniMode || _miniPlayerButton == null)
+                return false;
+
+            Point formPoint = this.PointToClient(screenPosition);
+
+            int titleBarHeight = _miniPlayerButton.GetTitleBarHeight();
+
+            return formPoint.X >= 0 &&
+                   formPoint.X <= this.ClientSize.Width &&
+                   formPoint.Y >= 0 &&
+                   formPoint.Y <= titleBarHeight;
+        }
+
         private void ShowControls()
         {
             if (!_controlsVisible)
@@ -221,6 +317,12 @@ namespace ChocoPlayer
                 _controlsVisible = true;
                 _playerControls!.Visible = true;
                 _miniPlayerButton!.Visible = true;
+
+                if (_isMiniMode && _miniPlayerButton != null)
+                {
+                    _miniPlayerButton.ShowButtons();
+                }
+
                 this.Cursor = Cursors.Default;
             }
         }
@@ -229,7 +331,18 @@ namespace ChocoPlayer
         {
             _controlsVisible = false;
             _playerControls!.Visible = false;
-            _miniPlayerButton!.Visible = false;
+
+            if (!_isMiniMode)
+            {
+                _miniPlayerButton!.Visible = false;
+            }
+            else
+            {
+                if (_miniPlayerButton != null)
+                {
+                    _miniPlayerButton.HideButtons();
+                }
+            }
         }
 
         private void InitializeVLC()
@@ -470,7 +583,7 @@ namespace ChocoPlayer
 
         public void DisableMinimumSize()
         {
-            MinimumSize = new Size(178, 100);
+            MinimumSize = new Size(356, 200);
         }
 
         private void OpenFile(string path)

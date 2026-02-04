@@ -12,6 +12,26 @@ const ACCOUNT = 'refresh-token';
 let mainWindow;
 let csharpProcess = null;
 
+// Vérifier qu'une seule instance de l'application est ouverte
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  // Une instance existe déjà, quitter cette instance
+  app.quit();
+} else {
+  // C'est la première instance, écouter les tentatives de lancement
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Quelqu'un a essayé de lancer une deuxième instance
+    // Focuser sur la fenêtre existante
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
+      mainWindow.focus();
+    }
+  });
+}
+
 // Chemin du fichier de configuration
 const userDataPath = app.getPath('userData');
 const windowStateFile = path.join(userDataPath, 'window-state.json');

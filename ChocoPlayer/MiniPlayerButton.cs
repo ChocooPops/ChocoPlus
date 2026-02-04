@@ -19,6 +19,7 @@ namespace ChocoPlayer
 
         private bool _isMiniMode = false;
         private IMiniPlayerListener? _listener;
+        private bool _buttonsVisible = true;
 
         private Rectangle _toggleButtonRect;
         private Rectangle _closeButtonRect;
@@ -147,8 +148,11 @@ namespace ChocoPlayer
                     g.DrawLine(borderPen, 0, this.Height - 1, this.Width, this.Height - 1);
                 }
 
-                DrawButton(g, _toggleButtonRect, _restoreIcon, "⊞");
-                DrawButton(g, _closeButtonRect, _closeIcon, "✕");
+                if (_buttonsVisible)
+                {
+                    DrawButton(g, _toggleButtonRect, _restoreIcon, "⊞");
+                    DrawButton(g, _closeButtonRect, _closeIcon, "✕");
+                }
             }
             else
             {
@@ -276,6 +280,24 @@ namespace ChocoPlayer
             }
         }
 
+        public void ShowButtons()
+        {
+            if (!_buttonsVisible)
+            {
+                _buttonsVisible = true;
+                this.Invalidate();
+            }
+        }
+
+        public void HideButtons()
+        {
+            if (_buttonsVisible)
+            {
+                _buttonsVisible = false;
+                this.Invalidate();
+            }
+        }
+
         private void UpdateCursorForHitTest(int hitTest)
         {
             switch (hitTest)
@@ -353,7 +375,10 @@ namespace ChocoPlayer
 
         public void ApplyMiniMode(Form form)
         {
-            StoreOriginalWindowState(form);
+            if (!_isMiniMode)
+            {
+                StoreOriginalWindowState(form);
+            }
 
             float scaleX = 1f;
             float scaleY = 1f;
