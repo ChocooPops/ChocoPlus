@@ -27,16 +27,15 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - Une interface moderne développée avec **Angular 18** et **Material Design**
 - Un système de backend sécurisé avec authentification par tokens JWT
 - Un lecteur vidéo natif haute performance développé en **C# .NET 9** utilisant **LibVLC**
-- Une base de données relationnelle complexe avec système de licences, sélections et catalogues
+- Une base de données relationnelle complexe avec système de licences, sélections et categories
 
 ### Caractéristiques distinctives
 
 - **Architecture hybride** : Interface Electron/Angular + Lecteur natif C#/WinForms
-- **Système de licences** : Organisation du contenu par licences (ex: Marvel, Disney, HBO)
 - **Sélections dynamiques** : Création de collections thématiques de films/séries
-- **Streaming HLS** : Support du streaming adaptatif avec hls.js
+- **Streaming HLS** : Support du streaming adaptatif avec hls.js (Fonctionnalité obsolète)
 - **Authentification sécurisée** : Stockage sécurisé des tokens avec Keytar
-- **Graphiques interactifs** : Visualisation des statistiques avec D3.js
+- **Graphiques interactifs** : Visualisation d'un graphe avec D3.js
 
 ## ✨ Fonctionnalités principales
 
@@ -47,14 +46,14 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - **Gestion des rôles** : ADMIN, USER, FAMILY, NOT_ACTIVATE, SUSPENDED
 
 ### Navigation et catalogue
-- **Page Accueil** : Actualités avec News en vedette
-- **Page Films** : Catalogue complet avec vidéo tournante (NewsVideoRunning)
-- **Page Séries** : Organisation par saisons et épisodes avec vidéo tournante
-- **Page Recherche** : Moteur de recherche avancé par titre, catégorie, acteur
+- **Page Accueil** : Actualités avec News en vedette et sélections de films ou séries à la une = catalogue de film par réalisateur
+- **Page Films** : Catalogue aléatoire avec vidéo tournante (NewsVideoRunning)
+- **Page Séries** : Catalogue de série aléatoire, avec organisation par saisons et épisodes avec vidéo tournante
+- **Page Recherche** : Moteur de recherche avancé par titre + affichage des plus grandes licenses de studio ou de saga
 - **Page Édition** (Admin uniquement) : Gestion complète des médias, licences, sélections
 
 ### Système de contenu
-- **Licences** : Regroupement de contenu par licence (ex: MCU, Star Wars)
+- **Licences** : Regroupement de contenu par licence (ex: MCU, Star Wars, Quentin Tarantino)
   - Chaque licence contient des **sélections** ordonnées
   - Peut avoir son propre logo, icône et fond d'écran
 - **Sélections** : Collections thématiques de films/séries
@@ -236,7 +235,7 @@ News_Video_Running (Vidéos tournantes Films/Séries)
        - Déclenche l'envoi automatique d'un email de confirmation
      - **Suspendre** : Passage en SUSPENDED (blocage de l'accès)
    - Mise à jour en temps réel via API REST avec notification email
-
+   
 ## 🔧 Prérequis
 
 ### Logiciels requis
@@ -244,7 +243,6 @@ News_Video_Running (Vidéos tournantes Films/Séries)
 - **Node.js** : 18.x ou supérieur
 - **npm** : 9.x ou supérieur
 - **.NET SDK** : 9.0 ou supérieur
-- **VLC Media Player** : 3.x (installé sur le système Windows)
 - **Visual Studio 2022** ou **VS Code** avec extension C#
 - **MariaDB/MySQL** : 10.x ou supérieur
 
@@ -277,13 +275,6 @@ cd ..
 
 Cela créera l'exécutable dans : `ChocoPlayer/bin/Debug/net9.0-windows/ChocoPlayer.exe`
 
-### 4. Configuration de la base de données
-
-```bash
-# Importer le schéma SQL
-mysql -u root -p < db.sql
-```
-
 ## ⚙️ Configuration
 
 ### Variables d'environnement
@@ -293,8 +284,7 @@ Créer un fichier `src/environments/environment.ts` :
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'https://votre-api.com',
-  // Autres configurations
+  apiUrl: 'https//localhost:3000',
 };
 ```
 
@@ -311,10 +301,8 @@ L'application nécessite une API REST pour :
 ### Lancer l'application en mode développement
 
 ```bash
-# Terminal 1 : Compiler Angular en mode watch
 npm run watch
 
-# Terminal 2 : Lancer Electron
 npm run electron:dev
 ```
 
@@ -367,7 +355,7 @@ Cette étape est **cruciale** : Electron Builder inclura automatiquement le doss
 #### 3. Créer l'exécutable Electron
 
 ```bash
-npm run dist
+npx electron-builder --win
 ```
 
 L'installateur NSIS sera créé dans `dist/`.
