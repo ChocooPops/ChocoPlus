@@ -705,6 +705,16 @@ namespace ChocoPlayer
             return icon;
         }
 
+        public void RefreshIcon()
+        {
+            if(this.Icon != null)
+            {
+                Icon currentIcon = this.Icon;
+                this.Icon = null;
+                this.Icon = currentIcon;   
+            }
+        }
+
         private void ChocoPlayer_FormClosing(object? sender, FormClosingEventArgs e)
         {
             Task.Run(() =>
@@ -1205,6 +1215,7 @@ namespace ChocoPlayer
                     _chocoPlayer.EnableMinimumSize();
                     _chocoPlayer._isMiniMode = false;
                     _chocoPlayer._miniPlayerButton?.RestoreOriginalMode(_chocoPlayer);
+                    _chocoPlayer.RefreshIcon();
                 }
                 _chocoPlayer.UpdateLayout();
                 _chocoPlayer.SaveMiniModeState();
