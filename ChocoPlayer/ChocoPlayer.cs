@@ -616,6 +616,7 @@ namespace ChocoPlayer
             if (_isMiniMode)
             {
                 ExitMiniMode();
+                RefreshIcon();
             }
 
             if (_isFullscreen)
@@ -707,11 +708,11 @@ namespace ChocoPlayer
 
         public void RefreshIcon()
         {
-            if(this.Icon != null)
+            if (this.Icon != null)
             {
                 Icon currentIcon = this.Icon;
                 this.Icon = null;
-                this.Icon = currentIcon;   
+                this.Icon = currentIcon;
             }
         }
 
