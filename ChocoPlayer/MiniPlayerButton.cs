@@ -375,11 +375,8 @@ namespace ChocoPlayer
 
         public void ApplyMiniMode(Form form)
         {
-            if (!_isMiniMode)
-            {
-                StoreOriginalWindowState(form);
-            }
-
+            StoreOriginalWindowState(form);
+            
             float scaleX = 1f;
             float scaleY = 1f;
             using (Graphics g = form.CreateGraphics())
