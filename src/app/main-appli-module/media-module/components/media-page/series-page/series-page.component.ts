@@ -41,7 +41,7 @@ export class SeriesPageComponent {
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
 
-  seasons: { id: number, srcPoster: string | undefined, name: string, isClicked: boolean }[] = [];
+  seasons: { id: number, srcPoster: string | undefined, name: string, isClicked: boolean, seasonNumber : number }[] = [];
   seasonsLoading: number[] = [];
   seasonsPosterTmp: number[] = [];
 
@@ -130,7 +130,8 @@ export class SeriesPageComponent {
         id: season.id,
         srcPoster: this.compressedPosterService.getSeasonPoster(season),
         name: season.name,
-        isClicked: season.isClicked
+        isClicked: season.isClicked,
+        seasonNumber : season.seasonNumber
       });
     });
     const iteration: number = 5 - this.seasons.length;

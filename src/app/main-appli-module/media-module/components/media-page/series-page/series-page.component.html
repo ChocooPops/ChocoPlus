@@ -46,6 +46,9 @@
                     <img [src]="srcSucces">
                 </div>
                 }
+                <div class="container-num-season">
+                    <p>{{ season.seasonNumber}}</p>
+                </div>
                 <div class="container-tmp-poster"></div>
                 @if(season.srcPoster) {
                 <img class="poster" [src]="season.srcPoster" (error)="onErrorPosterSeason(idx)">

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserModel } from '../../../user-module/dto/user.model';
 import { UserService } from '../../../user-module/service/user/user.service';
-import { Subscription, take } from 'rxjs';
+import { firstValueFrom, Subscription, take } from 'rxjs';
 import { RoleModel } from '../../../../common-module/models/role.enum';
 import { NgClass } from '@angular/common';
 import { MediaModel } from '../../../media-module/models/media.interface';
@@ -13,6 +13,9 @@ import { AuthService } from '../../../../launch-module/services/auth/auth.servic
 import { MovieService } from '../../../media-module/services/movie/movie.service';
 import { SeriesService } from '../../../media-module/services/series/series.service';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
+import { StreamService } from '../../../video-playing-module/services/stream/stream.service';
+import { ChocoPlayerModel } from '../../../video-playing-module/models/choco-player.interface';
+import { SeasonModel } from '../../../media-module/models/series/season.interface';
 
 @Component({
   selector: 'app-user-tab',
@@ -41,7 +44,8 @@ export class UserTabComponent {
     private electronService: ElectronService,
     private userParametersService: UserParametersService,
     private authService: AuthService,
-    private seriesService: SeriesService
+    private seriesService: SeriesService,
+    private streamService: StreamService
   ) {
     this.userMenu = this.userParametersService.getAllUserTabMenu();
   }
@@ -68,20 +72,55 @@ export class UserTabComponent {
     this.classArrow = 'arrow-not-clicked';
   }
 
-  onClickRandomMovie(): void {
-    this.movieService.fetchRandomMovie().pipe(take(1)).subscribe((movie: MediaModel | undefined) => {
-      if (movie) {
-        this.router.navigate(['/main-app/read-video', movie.mediaType, movie.id]);
-      }
-    })
+  async onClickRandomMovie(): Promise<void> {
+    const movie = await firstValueFrom(
+      this.movieService.fetchRandomMovie().pipe(take(1))
+    );
+
+    if (!movie) return;
+
+    const chocoPlayer: ChocoPlayerModel = {
+      MediaId: movie.id,
+      Title: movie.title,
+      Url: this.streamService.getUrlStreamMovie(movie.id),
+      Height: window.innerHeight,
+      Width: window.innerWidth,
+      EpisodeId: -1,
+      SeasonIndex: -1,
+      SeasonMenu: []
+    };
+
+    await this.streamService.launchJavaAppToMovie(chocoPlayer);
+    //this.router.navigate(['/main-app/read-video', movie.mediaType, movie.id]);
   }
 
-  onClickRandomSeries(): void {
-    this.seriesService.fetchRandomSeries().pipe(take(1)).subscribe((series: SeriesModel | undefined) => {
-      if (series) {
-        this.router.navigate(['/main-app/read-video', series.mediaType, series.id, -1, -1]);
-      }
-    })
+  async onClickRandomSeries(): Promise<void> {
+    const series = await firstValueFrom(
+      this.seriesService.fetchRandomSeries().pipe(take(1))
+    );
+
+    if (!series) return;
+
+    const chocoPlayer: ChocoPlayerModel = {
+      MediaId: series.id,
+      Title: series.title,
+      Url: this.streamService.getUrlStreamEpisode(series.id, -1),
+      Height: window.innerHeight,
+      Width: window.innerWidth,
+      EpisodeId: -1,
+      SeasonIndex: -1,
+      SeasonMenu: series.seasons
+        ? series.seasons.map(season => ({
+            Id: season.id,
+            SeriesId: season.seriesId,
+            Name: season.name,
+            SeasonNumber: season.seasonNumber
+          }))
+        : []
+    };
+
+    await this.streamService.launchJavaAppToMovie(chocoPlayer);
+    //this.router.navigate(['/main-app/read-video', series.mediaType, series.id, -1, -1]);
   }
 
   async onClickReset(): Promise<void> {
