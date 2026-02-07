@@ -2,6 +2,7 @@ export enum MediaTypeModel {
     MEDIA = "MEDIA",
     MOVIE = "MOVIE",
     SERIES = "SERIES",
+    EPISODE = "EPISODE",
     SELECTION = "SELECTION",
     LICENSE = "LICENSE",
     CATEGORY = "CATEGORY",

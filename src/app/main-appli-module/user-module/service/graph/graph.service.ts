@@ -23,6 +23,7 @@ export class GraphService {
 
   private readonly apiUrlMedia: string = `${environment.apiUrlMedia}`;
   private readonly urlNullPoster: string = 'null-poster';
+  private readonly urlMediaPathDontExist : string = 'path-dont-exist';
 
   private readonly apiUrlMovie: string = `${environment.apiUrlMovie}`;
   private readonly urlNodesMovie: string = 'nodes';
@@ -44,6 +45,7 @@ export class GraphService {
 
   private readonly colorBlackMovie: string = '#000000';
   private readonly colorWhiteSeries: string = '#D9D9D9';
+  private readonly colorPinkEpisode:string = '#D85795';
   private readonly colorYellowCategory: string = '#FFD812';
   private readonly colorPurpleJellyfinMovie: string = '#A95DC3';
   private readonly colorOrangeJellyfinSeries: string = '#FF8B1F';
@@ -64,9 +66,9 @@ export class GraphService {
   private graphMissMetadataTmdb: GraphModel | undefined = undefined;
   private graphMovieNotSaved: GraphModel | undefined = undefined;
   private graphJellyfinDontWorked: GraphModel | undefined = undefined;
-  private graphJellyfinDoublonId: GraphModel | undefined = undefined;
   private graphMovieWithNullPoster: GraphModel | undefined = undefined;
   private graphLessSimilarTitlesMovies: GraphModel | undefined = undefined;
+  private graphMediaPathDontExist: GraphModel | undefined = undefined;
 
   private oldSaveGraphe: GraphModel = this.initOldSaveGraph();
 
@@ -106,6 +108,12 @@ export class GraphService {
       name: 'Not yet similar titles',
       state: false,
       value: () => this.generateGraphLessSimilarTitlesMovies()
+    },
+    {
+      id: 7,
+      name: "Media with path don't exists",
+      state: false,
+      value: () => this.generateGraphMediaPathDontExist()
     },
   ]
 
@@ -463,6 +471,26 @@ export class GraphService {
       this.createNewLegend('Series', this.colorWhiteSeries, this.graphLessSimilarTitlesMovies.nodes.filter((item) => item.color === this.colorWhiteSeries).length),
     ]);
     this.updateGraphSubject(this.graphLessSimilarTitlesMovies);
+  }
+
+  private async generateGraphMediaPathDontExist(): Promise<void> {
+    if (!this.graphMediaPathDontExist) {
+      const url: string = `${this.apiUrlMedia}/${this.urlMediaPathDontExist}`;
+      const data: any = await firstValueFrom(this.http.get(url)) as any[];
+
+      const movies = this.createNewGraph(data.movies, [], this.colorBlackMovie, 6, MediaTypeModel.MOVIE);
+      const series = this.createNewGraph(data.series, [], this.colorPinkEpisode, 6, MediaTypeModel.EPISODE);
+
+      this.graphMediaPathDontExist = {
+        links: [...movies.links, ...series.links],
+        nodes: [...movies.nodes, ...series.nodes]
+      }
+    }
+    this.legendsSubject.next([
+      this.createNewLegend('Film', this.colorBlackMovie, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorBlackMovie).length),
+      this.createNewLegend('Episode', this.colorWhiteSeries, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorWhiteSeries).length),
+    ]);
+    this.updateGraphSubject(this.graphMediaPathDontExist);
   }
 
   public getGraphFromNodeClicked(id: number, mediaType: MediaTypeModel): GraphNode[] | undefined {
