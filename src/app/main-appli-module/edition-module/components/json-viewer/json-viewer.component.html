@@ -1,0 +1,33 @@
+<div class="json-viewer">
+    <div class="json-toolbar">
+        <button (click)="expandAll()" [disabled]="loading">Tout développer</button>
+        <button (click)="collapseAll()" [disabled]="loading">Tout replier</button>
+        <button (click)="expandToLevel(1)" [disabled]="loading">Niveau 1</button>
+        <button (click)="expandToLevel(2)" [disabled]="loading">Niveau 2</button>
+        <button (click)="expandToLevel(3)" [disabled]="loading">Niveau 3</button>
+        <span class="json-info">
+            {{ visibleNodes.length }} lignes visibles / {{ totalNodes }} total
+        </span>
+    </div>
+
+    <cdk-virtual-scroll-viewport itemSize="20" class="json-container" *ngIf="!loading">
+        <div *cdkVirtualFor="let node of visibleNodes; trackBy: trackByIndex" class="json-line"
+            [style.padding-left.px]="node.level * 20">
+            <span *ngIf="node.isExpandable" class="toggle" (click)="toggleNode(node)">
+                {{ node.isExpanded ? '▼' : '▶' }}
+            </span>
+            <span *ngIf="!node.isExpandable" class="toggle-spacer"></span>
+
+            <span class="key" [title]="node.path">{{ node.key }}</span>
+            <span class="colon">: </span>
+
+            <span [ngClass]="'value-' + node.type">
+                {{ node.preview }}
+            </span>
+        </div>
+    </cdk-virtual-scroll-viewport>
+
+    <div *ngIf="loading" class="loading">
+        Chargement du JSON...
+    </div>
+</div>

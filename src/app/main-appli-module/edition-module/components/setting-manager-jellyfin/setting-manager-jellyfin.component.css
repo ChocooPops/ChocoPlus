@@ -35,7 +35,7 @@
     }
 }
 
-.container-result {
+app-json-viewer {
     width: 100%;
     min-height: 15px;
     max-height: calc(100vh - 370px);
@@ -48,7 +48,7 @@
     box-sizing: border-box;
 }
 
-.container-result::-webkit-scrollbar {
+app-json-viewer::-webkit-scrollbar {
     height: 2px;
     width: 2px;
 }

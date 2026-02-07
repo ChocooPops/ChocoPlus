@@ -69,11 +69,3 @@ img {
     --grey-dark: #535353;
     --white-dark: #E6E6E6;
 }
-
-.ngx-json-viewer .segment-key {
-    color: #99b3ff !important;
-}
-
-.ngx-json-viewer .segment-value {
-    color: #ffe252 !important;
-}

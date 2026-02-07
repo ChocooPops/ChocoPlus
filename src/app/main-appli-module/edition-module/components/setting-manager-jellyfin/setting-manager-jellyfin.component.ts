@@ -5,11 +5,12 @@ import { ManagerJellyfinService } from '../../services/manager-jellyfin/manager-
 import { take } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { JsonViewerComponent } from '../json-viewer/json-viewer.component';
 
 @Component({
   selector: 'app-setting-manager-jellyfin',
   standalone: true,
-  imports: [PopupComponent, NgxJsonViewerModule],
+  imports: [PopupComponent, NgxJsonViewerModule, JsonViewerComponent],
   templateUrl: './setting-manager-jellyfin.component.html',
   styleUrls: ['./setting-manager-jellyfin.component.css', '../../styles/edition.css']
 })
@@ -58,8 +59,8 @@ export class SettingManagerJellyfinComponent extends UnauthorizedError {
   }
 
   private endTask(data: any): void {
-    this.object = data;
     this.popup.setDisplayPopup(false);
+    this.object = data;
   }
 
   private fetchResetJallyfinItemsMovie(): void {
