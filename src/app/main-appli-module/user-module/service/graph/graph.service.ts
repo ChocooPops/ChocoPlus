@@ -488,7 +488,7 @@ export class GraphService {
     }
     this.legendsSubject.next([
       this.createNewLegend('Film', this.colorBlackMovie, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorBlackMovie).length),
-      this.createNewLegend('Episode', this.colorWhiteSeries, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorWhiteSeries).length),
+      this.createNewLegend('Episode', this.colorPinkEpisode, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorPinkEpisode).length),
     ]);
     this.updateGraphSubject(this.graphMediaPathDontExist);
   }

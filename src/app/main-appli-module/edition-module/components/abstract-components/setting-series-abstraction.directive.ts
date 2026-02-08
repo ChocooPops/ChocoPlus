@@ -271,11 +271,11 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
         }
     }
 
-    protected onClickButtonJellyfin(): void {
+    protected onClickButtonJellyfin(modifyMetaData: boolean): void {
         if (this.editSeries.jellyfinId && this.editSeries.jellyfinId.trim() !== '') {
             this.buttonSearchJellyfin.changeLoadingActivate(true);
             this.unsubscribeSearchSeries();
-            this.subscriptionSearch = this.tmdbOperationService.fetchSearchSeriesInfoByJellyfin(this.editSeries.jellyfinId, this.editSeries.id, this.editSeries).pipe(take(1), finalize(() => {
+            this.subscriptionSearch = this.tmdbOperationService.fetchSearchSeriesInfoByJellyfin(this.editSeries.jellyfinId, this.editSeries.id, this.editSeries, this.editSeasons, modifyMetaData).pipe(take(1), finalize(() => {
                 this.buttonSearchJellyfin.changeLoadingActivate(false);
             })).subscribe({
                 next: (data: EditSeriesModel) => {

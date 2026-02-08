@@ -94,7 +94,7 @@ export class TmdbOperationService {
     )
   }
 
-  public fetchSearchSeriesInfoByJellyfin(title: string, id: number, edit: EditSeriesModel): Observable<EditSeriesModel> {
+  public fetchSearchSeriesInfoByJellyfin(title: string, id: number, edit: EditSeriesModel, editSeasons: EditSeasonModel[], modifyMetaData: boolean): Observable<EditSeriesModel> {
     return this.http.get<any>(`${this.apiUrlAi}/${this.apiUrlSearchSeriesJellyfin}/${title}`).pipe(
       map((data: EditSeriesModel) => {
         const editSeries: EditSeriesModel = data;
@@ -107,6 +107,57 @@ export class TmdbOperationService {
         editSeries.startShow = edit.startShow;
         editSeries.endShow = edit.endShow;
         editSeries.id = id;
+
+        if(modifyMetaData) {
+          if (edit.posters.length > 0 && edit.posters[0].srcPoster) {
+            editSeries.posters = edit.posters;
+          }
+          if (edit.horizontalPoster.length && edit.horizontalPoster[0].srcPoster) {
+            editSeries.horizontalPoster = edit.horizontalPoster;
+          }
+          if (edit.logo) {
+            editSeries.logo = edit.logo;
+          }
+          if (edit.backgroundImage) {
+            editSeries.backgroundImage = edit.backgroundImage;
+          }
+
+          const allEpisodes: EditEpisodeModel[] = [];
+          editSeasons.forEach((season: EditSeasonModel) => {
+            allEpisodes.push(...season.episodes);
+          });
+
+          editSeries.seasons.forEach((season: EditSeasonModel, seasonIndex: number) => {
+            const seasonTmp : EditSeasonModel | undefined = editSeasons.find((item : EditSeasonModel) => item.jellyfinId === season.jellyfinId);
+            if (seasonTmp) {
+              editSeries.seasons[seasonIndex].id = seasonTmp.id;
+              if(seasonTmp.name && seasonTmp.name.trim() !== '') {
+                editSeries.seasons[seasonIndex].name = seasonTmp.name;
+              }
+              if(seasonTmp.srcPoster) {
+                editSeries.seasons[seasonIndex].srcPoster = seasonTmp.srcPoster;
+              }
+            }
+            season.episodes.forEach((episode : EditEpisodeModel, episodeIndex: number) => {
+              const episodeTmp : EditEpisodeModel | undefined = allEpisodes.find((item : EditEpisodeModel) => item.jellyfinId === episode.jellyfinId);
+              if (episodeTmp) {
+               editSeries.seasons[seasonIndex].episodes[episodeIndex].id = episodeTmp.id;
+                if (episodeTmp.name && episodeTmp.name.trim() !== '') {
+                  editSeries.seasons[seasonIndex].episodes[episodeIndex].name = episodeTmp.name;
+                }
+                if (episodeTmp.srcPoster) {
+                  editSeries.seasons[seasonIndex].episodes[episodeIndex].srcPoster = episodeTmp.srcPoster;
+                }
+                if (episodeTmp.description && episodeTmp.description.trim() !== '') {
+                  editSeries.seasons[seasonIndex].episodes[episodeIndex].description = episodeTmp.description;
+                }
+                if (episodeTmp.date) {
+                  editSeries.seasons[seasonIndex].episodes[episodeIndex].date = new Date(episodeTmp.date);
+                }
+              }
+            });
+          });
+        }
         return editSeries;
       })
     )

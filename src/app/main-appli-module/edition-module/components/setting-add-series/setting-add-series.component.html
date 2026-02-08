@@ -35,8 +35,8 @@
         <div class="container-flex">
             <app-input-text-edition [text]="editSeries.jellyfinId" [placeHolder]="placeHolderJellyfinId"
                 (onInputChange)="onInputJellyfinId($event)"
-                (keydown.enter)="onClickButtonJellyfin()"></app-input-text-edition>
-            <app-ai-button (clickEmit)="onClickButtonJellyfin()" #buttonSearchJellyfin></app-ai-button>
+                (keydown.enter)="onClickButtonJellyfin(false)"></app-input-text-edition>
+            <app-ai-button (clickEmit)="onClickButtonJellyfin(false)" #buttonSearchJellyfin></app-ai-button>
         </div>
     </div>
 
