@@ -48,3 +48,6 @@ ChocoPlayer/[Oo]bj/
 #.env
 .env
 .env.local
+
+#resources
+resources/ChocoPlayer
