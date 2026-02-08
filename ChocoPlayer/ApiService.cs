@@ -10,11 +10,12 @@ namespace ChocoPlayer
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "http://localhost:3000";
+        private readonly string _baseUrl;
         private readonly string _token;
 
-        public ApiService(string token)
+        public ApiService(string baseUrl, string token)
         {
+            _baseUrl = baseUrl;
             _token = token;
             _httpClient = new HttpClient
             {

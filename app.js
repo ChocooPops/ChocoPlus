@@ -276,6 +276,7 @@ ipcMain.handle('launch-java-app', async (event, dataObject) => {
     await stopCSharpProcess(true);
 
     const bounds = mainWindow.getBounds();
+    dataObject.BaseUrl = process.env.API_URL;
     dataObject.PositionX = bounds.x;
     dataObject.PositionY = bounds.y;
     dataObject.IsMaximized = mainWindow.isMaximized();
