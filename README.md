@@ -3,7 +3,7 @@
 [![Electron](https://img.shields.io/badge/Electron-33.4.11-blue.svg)](https://www.electronjs.org/)
 [![Angular](https://img.shields.io/badge/Angular-18.2.0-red.svg)](https://angular.io/)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
-[![License](https://img.shields.io/badge/License-Open source-yellow.svg)]()
+[![License](https://img.shields.io/badge/License-Open_Source-yellow.svg)]()
 
 **ChocoPlus** est une application desktop multimédia sophistiquée pour cinéphiles, développée avec Electron et Angular. Elle offre une expérience de navigation et de visionnage de films et séries avec un lecteur vidéo intégré haute performance basé sur VLC.
 
