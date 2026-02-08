@@ -3,7 +3,7 @@
 [![Electron](https://img.shields.io/badge/Electron-33.4.11-blue.svg)](https://www.electronjs.org/)
 [![Angular](https://img.shields.io/badge/Angular-18.2.0-red.svg)](https://angular.io/)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
-[![License](https://img.shields.io/badge/License-Private-yellow.svg)]()
+[![License](https://img.shields.io/badge/License-Open source-yellow.svg)]()
 
 **ChocoPlus** est une application desktop multimédia sophistiquée pour cinéphiles, développée avec Electron et Angular. Elle offre une expérience de navigation et de visionnage de films et séries avec un lecteur vidéo intégré haute performance basé sur VLC.
 
@@ -277,10 +277,73 @@ Cela créera l'exécutable dans : `ChocoPlayer/bin/Debug/net9.0-windows/ChocoPla
 
 ## ⚙️ Configuration
 
+### Fichier .env
+
+ChocoPlus utilise un fichier `.env` pour gérer les variables d'environnement sensibles et la configuration de l'API. Ce fichier doit être créé à la racine du projet.
+
+#### Création du fichier .env
+
+Créez un fichier `.env` à la racine avec le contenu suivant :
+```env
+# URL de l'API backend
+API_URL=http://localhost:3000
+
+# Clés de sécurité pour l'authentification API
+HEADER_SECRET_API=SF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQNPmergSF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQNPmerg
+HEADER_NAME_FIELD_SECRET_API=X-API-Secret-Key-Choco-Plus
+```
+
+#### Variables disponibles
+
+| Variable | Description | Exemple |
+|----------|-------------|---------|
+| `API_URL` | URL de base de l'API REST backend | `http://localhost:3000` ou `https://api.chocoplus.com` |
+| `HEADER_SECRET_API` | Clé secrète pour l'authentification des requêtes API | Chaîne aléatoire sécurisée |
+| `HEADER_NAME_FIELD_SECRET_API` | Nom du header HTTP contenant la clé secrète | `X-API-Secret-Key-Choco-Plus` |
+
+#### Fonctionnement
+
+Les variables d'environnement sont chargées au démarrage de l'application via le processus principal d'Electron et transmises de manière sécurisée à l'interface Angular :
+
+1. **Main Process** (app.js) : Charge le `.env` avec `dotenv` et transmet les variables via `additionalArguments`
+2. **Preload Script** (preload.js) : Récupère les arguments et les expose via `contextBridge`
+3. **Angular** (environment.ts) : Accède aux variables de manière synchrone via `window.electron`
+```typescript
+// Exemple d'utilisation dans environment.ts
+const apiUrl: string = window.electron?.apiUrl || 'http://localhost:3000';
+const headerSecret: string = window.electron?.headerSecret || 'default-secret';
+const headerName: string = window.electron?.headerName || 'X-API-Secret-Key';
+```
+
+#### Sécurité
+
+⚠️ **Important** : 
+- Le fichier `.env` est inclus dans `.gitignore` et ne doit **jamais** être commité
+- Pour la production, le fichier `.env` est copié dans les ressources de l'application packagée
+- Les utilisateurs finaux peuvent modifier le `.env` à côté de l'exécutable pour pointer vers leur propre instance d'API
+- Les clés secrètes doivent être régénérées pour chaque environnement (dev, staging, production)
+
+#### Configuration pour le build
+
+Lors de la création de l'exécutable, le fichier `.env` est automatiquement inclus grâce à la configuration `electron-builder` dans `package.json` :
+```json
+"extraResources": [
+  {
+    "from": ".env",
+    "to": ".env"
+  }
+]
+```
+
+L'application packagée recherchera le `.env` dans cet ordre de priorité :
+1. À côté de l'exécutable (pour les utilisateurs finaux)
+2. Dans le dossier `resources` de l'application
+3. Utilisation des valeurs par défaut si aucun fichier n'est trouvé
+
 ### Variables d'environnement
 
 ```typescript
-const apiUrl: string = 'http://localhost:3000';
+const apiUrl: string = '';
 
 export const environment = {
     apiUrlAuth: apiUrl + '',
@@ -396,6 +459,10 @@ Le fichier `package.json` contient la configuration complète :
       "from": "resources/ChocoPlayer",
       "to": "ChocoPlayer",
       "filter": ["**/*"]
+    },
+    {
+      "from": ".env",
+      "to": ".env"
     }
   ],
   "win": {
@@ -449,7 +516,6 @@ ChocoPlus/
 ├── package.json                 # Configuration npm/Electron
 ├── tsconfig.json                # Configuration TypeScript
 ├── angular.json                 # Configuration Angular CLI
-├── db.sql                       # Schéma de base de données
 ├── icon.ico                     # Icône de l'application
 └── README.md                    # Ce fichier
 ```
@@ -466,9 +532,7 @@ ChocoPlus/
 | Angular CDK | 17.0.0 | Component Dev Kit |
 | TypeScript | 5.5.2 | Langage de programmation |
 | RxJS | 7.8.0 | Programmation réactive |
-| HLS.js | 1.6.7 | Streaming adaptatif HLS |
 | D3.js | 7.9.0 | Visualisation de données |
-| ngx-json-viewer | 3.2.1 | Visualisation JSON |
 
 ### Backend Integration
 
@@ -524,17 +588,17 @@ Lors du lancement de ChocoPlayer, Electron transmet :
 ### Streaming vidéo
 
 Les vidéos sont servies via :
-- **Streaming HLS** pour la navigation (hls.js)
 - **Chemins locaux/réseau** pour le lecteur natif (VLC)
 - Support des sous-titres multi-langues (SRT, VTT)
+- L'audio et les sous-titres choisis sont sauvegardés pour une meilleure expérience utilisateur
 
 ## 🤝 Contribution
 
-Ce projet est privé. Pour toute question ou contribution, contactez l'administrateur.
+Ce projet est Open source. Pour toute question ou contribution, contactez l'administrateur.
 
 ## 📄 License
 
-Projet privé - Tous droits réservés
+Projet Open source - Tous droits réservés
 
 ---
 

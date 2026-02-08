@@ -5,7 +5,11 @@ const keytar = require('keytar');
 const { exec } = require('child_process');
 const { spawn } = require("child_process");
 const fs = require('fs');
-require('dotenv').config();
+
+const envPath = app.isPackaged 
+  ? path.join(process.resourcesPath, '.env')
+  : path.join(__dirname, '.env');
+require('dotenv').config({ path: envPath });
 
 const SERVICE = 'my-app-auth';
 const ACCOUNT = 'refresh-token';
@@ -123,7 +127,7 @@ function createWindow() {
   );
 
   // Ouvrir les outils de développement si nécessaire
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   // Suppression de la barre de menu
   mainWindow.setMenu(null);
