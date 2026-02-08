@@ -51,6 +51,11 @@ namespace ChocoPlayer
         private const int HTBOTTOMLEFT = 16;
         private const int HTBOTTOMRIGHT = 17;
 
+        private string _audioLanguageSelected = "";
+        private string _subtitleLanguageSelected = "";
+
+        private TrackListener? _trackListener;
+
         [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
 
@@ -62,6 +67,9 @@ namespace ChocoPlayer
             _mediaId = mediaId;
 
             _apiService = new ApiService(token);
+
+            _audioLanguageSelected = Properties.Settings.Default.PreferredAudioLanguage;
+            _subtitleLanguageSelected = Properties.Settings.Default.PreferredSubtitleLanguage;
 
             InitializeVLC();
             SetupUI(title, width, height, positionX, positionY, isMaximized, isFullScreen, episodeId, seasonIndex, seasons);
@@ -345,6 +353,182 @@ namespace ChocoPlayer
             }
         }
 
+        private string GetAudioTrackLanguage(int trackId)
+        {
+            if (_mediaPlayer == null || trackId == -1)
+                return "";
+
+            var audioTracks = _mediaPlayer.AudioTrackDescription;
+            if (audioTracks != null)
+            {
+                var track = audioTracks.FirstOrDefault(t => t.Id == trackId);
+                if (track.Id == trackId && track.Id != 0)
+                {
+                    return track.Name ?? "";
+                }
+            }
+            return "";
+        }
+
+        private string GetSubtitleTrackLanguage(int trackId)
+        {
+            if (_mediaPlayer == null || trackId == -1)
+                return "";
+
+            var subtitleTracks = _mediaPlayer.SpuDescription;
+            if (subtitleTracks != null)
+            {
+                var track = subtitleTracks.FirstOrDefault(t => t.Id == trackId);
+                if (track.Id == trackId && track.Id != 0)
+                {
+                    return track.Name ?? "";
+                }
+            }
+            return "";
+        }
+
+        private int LevenshteinDistance(string source, string target)
+        {
+            if (string.IsNullOrEmpty(source))
+            {
+                return string.IsNullOrEmpty(target) ? 0 : target.Length;
+            }
+
+            if (string.IsNullOrEmpty(target))
+            {
+                return source.Length;
+            }
+
+            int sourceLength = source.Length;
+            int targetLength = target.Length;
+
+            var distance = new int[sourceLength + 1, targetLength + 1];
+
+            for (int i = 0; i <= sourceLength; i++)
+            {
+                distance[i, 0] = i;
+            }
+
+            for (int j = 0; j <= targetLength; j++)
+            {
+                distance[0, j] = j;
+            }
+
+            for (int i = 1; i <= sourceLength; i++)
+            {
+                for (int j = 1; j <= targetLength; j++)
+                {
+                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
+
+                    distance[i, j] = Math.Min(
+                        Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1),
+                        distance[i - 1, j - 1] + cost
+                    );
+                }
+            }
+
+            return distance[sourceLength, targetLength];
+        }
+
+        private int FindAudioTrackByLanguage(string language)
+        {
+            if (_mediaPlayer == null || string.IsNullOrEmpty(language))
+                return -1;
+
+            var audioTracks = _mediaPlayer.AudioTrackDescription;
+            if (audioTracks == null || audioTracks.Length == 0)
+                return -1;
+
+            int bestMatchId = -1;
+            int smallestDistance = int.MaxValue;
+
+            foreach (var track in audioTracks)
+            {
+                if (track.Name != null)
+                {
+                    string trackNameLower = track.Name.ToLower();
+                    string languageLower = language.ToLower();
+
+                    if (trackNameLower == languageLower || trackNameLower.Contains(languageLower))
+                    {
+                        return track.Id;
+                    }
+
+                    int distance = LevenshteinDistance(trackNameLower, languageLower);
+
+                    if (distance < smallestDistance)
+                    {
+                        smallestDistance = distance;
+                        bestMatchId = track.Id;
+                    }
+                }
+            }
+
+            if (bestMatchId != -1 && smallestDistance <= language.Length / 2)
+            {
+                return bestMatchId;
+            }
+
+            return -1;
+        }
+
+        private int FindSubtitleTrackByLanguage(string language)
+        {
+            if (_mediaPlayer == null || string.IsNullOrEmpty(language))
+                return -1;
+
+            var subtitleTracks = _mediaPlayer.SpuDescription;
+            if (subtitleTracks == null || subtitleTracks.Length == 0)
+                return -1;
+
+            int bestMatchId = -1;
+            int smallestDistance = int.MaxValue;
+
+            foreach (var track in subtitleTracks)
+            {
+                if (track.Name != null)
+                {
+                    string trackNameLower = track.Name.ToLower();
+                    string languageLower = language.ToLower();
+
+                    if (trackNameLower == languageLower || trackNameLower.Contains(languageLower))
+                    {
+                        return track.Id;
+                    }
+
+                    int distance = LevenshteinDistance(trackNameLower, languageLower);
+
+                    if (distance < smallestDistance)
+                    {
+                        smallestDistance = distance;
+                        bestMatchId = track.Id;
+                    }
+                }
+            }
+
+            if (bestMatchId != -1 && smallestDistance <= language.Length / 2)
+            {
+                return bestMatchId;
+            }
+
+            return -1;
+        }
+
+        public void SetAudioIndexSelected(int index)
+        {
+            _audioLanguageSelected = GetAudioTrackLanguage(index);
+            Properties.Settings.Default.PreferredAudioLanguage = _audioLanguageSelected;
+            Properties.Settings.Default.Save();
+        }
+
+        public void SetSubtitleIndexSelected(int index)
+        {
+            _subtitleLanguageSelected = GetSubtitleTrackLanguage(index);
+
+            Properties.Settings.Default.PreferredSubtitleLanguage = _subtitleLanguageSelected;
+            Properties.Settings.Default.Save();
+        }
+
         private void InitializeVLC()
         {
             Core.Initialize();
@@ -388,19 +572,20 @@ namespace ChocoPlayer
             _mediaPlayer.Volume = 50;
             _mediaPlayer.Mute = false;
 
-            _mediaPlayer.Playing += (sender, e) =>
-            {
-                Console.WriteLine("Lecture en cours...");
-            };
+            /*
+                _mediaPlayer.Playing += (sender, e) =>
+                {
+                    Console.WriteLine("Lecture en cours...");
+                };
 
-            _mediaPlayer.Buffering += (sender, e) =>
-            {
-                Console.WriteLine($"Buffering: {e.Cache}%");
-            };
+                _mediaPlayer.Buffering += (sender, e) =>
+                {
+                    Console.WriteLine($"Buffering: {e.Cache}%");
+                };
+            */
 
             _mediaPlayer.EncounteredError += (sender, e) =>
             {
-                Console.WriteLine("Erreur de lecture!");
                 MessageBox.Show("Erreur lors de la lecture du stream", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             };
 
@@ -445,7 +630,8 @@ namespace ChocoPlayer
             this.Controls.Add(_playerControls);
 
             _trackSettingsMenu = new TrackSettingsMenu();
-            _trackSettingsMenu.SetListener(new TrackListener(this));
+            _trackListener = new TrackListener(this);
+            _trackSettingsMenu.SetListener(_trackListener);
             this.Controls.Add(_trackSettingsMenu);
             _trackSettingsMenu.BringToFront();
 
@@ -601,6 +787,19 @@ namespace ChocoPlayer
                     }
 
                     _mediaPlayer!.Media = media;
+
+                    EventHandler<EventArgs>? playingHandler = null;
+                    playingHandler = (s, e) =>
+                    {
+                        RestorePreferredTracks();
+
+                        if (_mediaPlayer != null)
+                        {
+                            _mediaPlayer.Playing -= playingHandler;
+                        }
+                    };
+
+                    _mediaPlayer.Playing += playingHandler;
                     _mediaPlayer.Play();
                     _playerControls!.SetPlaying(true);
                 }
@@ -608,6 +807,30 @@ namespace ChocoPlayer
             catch (Exception ex)
             {
                 MessageBox.Show($"Impossible de lire le média: {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void RestorePreferredTracks()
+        {
+            if (_trackListener == null)
+                return;
+
+            if (!string.IsNullOrEmpty(_audioLanguageSelected))
+            {
+                int audioTrackId = FindAudioTrackByLanguage(_audioLanguageSelected);
+                if (audioTrackId != -1)
+                {
+                    _trackListener.OnAudioTrackSelected(audioTrackId);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(_subtitleLanguageSelected))
+            {
+                int subtitleTrackId = FindSubtitleTrackByLanguage(_subtitleLanguageSelected);
+                if (subtitleTrackId != -1)
+                {
+                    _trackListener.OnSubtitleTrackSelected(subtitleTrackId);
+                }
             }
         }
 
@@ -1126,6 +1349,7 @@ namespace ChocoPlayer
                 if (_chocoPlayer._mediaPlayer != null)
                 {
                     _chocoPlayer._mediaPlayer.SetAudioTrack(trackId);
+                    _chocoPlayer.SetAudioIndexSelected(trackId);
                 }
             }
 
@@ -1134,6 +1358,7 @@ namespace ChocoPlayer
                 if (_chocoPlayer._mediaPlayer != null)
                 {
                     _chocoPlayer._mediaPlayer.SetSpu(trackId);
+                    _chocoPlayer.SetSubtitleIndexSelected(trackId);
                 }
             }
         }
@@ -1171,6 +1396,19 @@ namespace ChocoPlayer
                         }
 
                         _chocoPlayer._mediaPlayer!.Media = newMedia;
+
+                        EventHandler<EventArgs>? playingHandler = null;
+                        playingHandler = (s, e) =>
+                        {
+                            _chocoPlayer.RestorePreferredTracks();
+
+                            if (_chocoPlayer._mediaPlayer != null)
+                            {
+                                _chocoPlayer._mediaPlayer.Playing -= playingHandler;
+                            }
+                        };
+
+                        _chocoPlayer._mediaPlayer.Playing += playingHandler;
                         _chocoPlayer._mediaPlayer.Play();
                         _chocoPlayer._playerControls?.SetPlaying(true);
                         _chocoPlayer.SetTitlePart(2, episodeName);
