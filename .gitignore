@@ -44,3 +44,7 @@ Thumbs.db
 #ChocoPlayer
 ChocoPlayer/[Bb]in/
 ChocoPlayer/[Oo]bj/
+
+#.env
+.env
+.env.local

@@ -1051,12 +1051,17 @@ namespace ChocoPlayer
                 this.Text = newText;
                 return;
             }
+
             List<string> parts = this.Text.Split(new string[] { " - " }, StringSplitOptions.None).ToList();
+
             while (parts.Count <= partIndex)
             {
                 parts.Add(string.Empty);
             }
-            parts[partIndex] = newText;
+
+            parts = parts.Take(partIndex).ToList();
+            parts.Add(newText);
+
             this.Text = string.Join(" - ", parts);
 
             if (_isMiniMode)

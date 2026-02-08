@@ -4,13 +4,12 @@ import { UnauthorizedError } from '../abstract-components/unauthorized-error-abs
 import { ManagerJellyfinService } from '../../services/manager-jellyfin/manager-jellyfin.service';
 import { take } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { JsonViewerComponent } from '../json-viewer/json-viewer.component';
 
 @Component({
   selector: 'app-setting-manager-jellyfin',
   standalone: true,
-  imports: [PopupComponent, NgxJsonViewerModule, JsonViewerComponent],
+  imports: [PopupComponent, JsonViewerComponent],
   templateUrl: './setting-manager-jellyfin.component.html',
   styleUrls: ['./setting-manager-jellyfin.component.css', '../../styles/edition.css']
 })

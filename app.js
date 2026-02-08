@@ -5,6 +5,7 @@ const keytar = require('keytar');
 const { exec } = require('child_process');
 const { spawn } = require("child_process");
 const fs = require('fs');
+require('dotenv').config();
 
 const SERVICE = 'my-app-auth';
 const ACCOUNT = 'refresh-token';
@@ -98,6 +99,11 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true, // Isolation du contexte pour la sécurité
       enableRemoteModule: false,
+      additionalArguments: [
+        `--api-url=${process.env.API_URL || 'http://localhost:3000'}`,
+        `--header-secret=${process.env.HEADER_SECRET_API}`,
+        `--header-name=${process.env.HEADER_NAME_FIELD_SECRET_API}`
+      ]    
     },
     icon: path.join(__dirname, 'dist/choco-plus/browser/icon.ico'),
   });
@@ -117,7 +123,7 @@ function createWindow() {
   );
 
   // Ouvrir les outils de développement si nécessaire
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   // Suppression de la barre de menu
   mainWindow.setMenu(null);
