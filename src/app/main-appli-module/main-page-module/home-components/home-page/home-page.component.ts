@@ -15,6 +15,8 @@ import { NewsService } from '../../../news-module/services/news/news.service';
 import { NewsModel } from '../../../news-module/models/news.interface';
 import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-tmp.component';
 import { NewsListComponent } from '../../../news-module/components/news-list/news-list.component';
+import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
+import { PageModel } from '../../../../launch-module/models/page.enum';
 
 @Component({
   selector: 'app-home-page',
@@ -39,8 +41,10 @@ export class HomePageComponent {
     private formatPosterService: FormatPosterService,
     private menuTabService: MenuTabService,
     private imagePreloaderService: ImagePreloaderService,
+    private loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(false);
+    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_HOME);
   }
 
   ngOnInit(): void {

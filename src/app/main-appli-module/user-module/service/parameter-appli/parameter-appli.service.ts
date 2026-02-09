@@ -5,6 +5,8 @@ import { ParamaterAppliModel } from '../../dto/parameter-appli.interface';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
+import { PageModel } from '../../../../launch-module/models/page.enum';
+import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,8 @@ import { CompressedPosterService } from '../../../common-module/services/compres
 export class ParameterAppliService {
 
   constructor(private formatPosterService: FormatPosterService,
-    private compressedPosterService: CompressedPosterService
+    private compressedPosterService: CompressedPosterService,
+    private loadOpeningPageService: LoadOpeningPageService
   ) { }
 
   private id: number = 0;
@@ -140,6 +143,64 @@ export class ParameterAppliService {
     }
   ]
 
+  private radioButtonOtherOption: ParamaterAppliModel[] = [
+    {
+      id: this.getId(),
+      name: "Page de démarrage",
+      radioButton: [
+        {
+          id: this.getId(),
+          name: "Page d'accueil",
+          value: PageModel.PAGE_HOME,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "Page de recherche",
+          value: PageModel.PAGE_RESEARCH,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "Page des films",
+          value: PageModel.PAGE_MOVIE,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "Page des séries",
+          value: PageModel.PAGE_SERIES,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "Page mylist",
+          value: PageModel.PAGE_MYLIST,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "Page d'édition",
+          value: PageModel.PAGE_EDITION,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "Page de l'utilisateur",
+          value: PageModel.PAGE_USER,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "Dernière page visitée",
+          value: PageModel.DEFAULT_PAGE,
+          state: false
+        },
+      ],
+      call: null
+    }
+  ]
+
   public initRadioButton(): void {
     //INIT RADIO BUTTON FOR MOVIE POSTER;
     const callBackMoviePosterScale: any[] = [
@@ -236,6 +297,17 @@ export class ParameterAppliService {
         }
       }
     }
+
+    //INIT OPENING PAGE BUTTON;
+    const callBackOpeningPage: any[] = [
+      (page : PageModel) => this.loadOpeningPageService.setOpeningPage(page)
+    ];
+    this.radioButtonOtherOption[0].call = callBackOpeningPage[0];
+    for (let i: number = 0; i < this.radioButtonOtherOption[0].radioButton.length; i++) {
+      if (this.radioButtonOtherOption[0].radioButton[i].value && this.radioButtonOtherOption[0].radioButton[i].value === this.loadOpeningPageService.getOpeningPage()) {
+        this.radioButtonOtherOption[0].radioButton[i].state = true;
+      }
+    }
   }
 
   public getRadioButtonForPosterFilm(): ParamaterAppliModel[] {
@@ -248,6 +320,10 @@ export class ParameterAppliService {
 
   public getRadioButtonForFormatPoster(): ParamaterAppliModel[] {
     return this.radioButtonFormatPoster;
+  }
+
+  public getRadioButtonOtherOption(): ParamaterAppliModel[] {
+    return this.radioButtonOtherOption;
   }
 
   private getId(): number {
@@ -505,6 +581,20 @@ export class ParameterAppliService {
       this.radioButtonFormatPoster[indexParam].radioButton.forEach((button: SimpleModel) => {
         if (button.id === idRadioButton) {
           this.radioButtonFormatPoster[indexParam].call(button.value);
+          button.state = true;
+        } else {
+          button.state = false;
+        }
+      })
+    }
+  }
+
+  onChangeEmitToOpeningPage(idParam: number, idRadioButton: number): void {
+    const indexParam: number = this.radioButtonOtherOption.findIndex((item: ParamaterAppliModel) => item.id === idParam);
+    if (indexParam >= 0) {
+      this.radioButtonOtherOption[indexParam].radioButton.forEach((button: SimpleModel) => {
+        if (button.id === idRadioButton) {
+          this.radioButtonOtherOption[indexParam].call(button.value);
           button.state = true;
         } else {
           button.state = false;

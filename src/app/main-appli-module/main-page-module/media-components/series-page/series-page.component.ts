@@ -14,6 +14,8 @@ import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.s
 import { SelectionModel } from '../../../media-module/models/selection.interface';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
 import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
+import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
+import { PageModel } from '../../../../launch-module/models/page.enum';
 
 @Component({
   selector: 'app-series-page',
@@ -37,9 +39,11 @@ export class SeriesPageComponent {
     private imagePreloaderService: ImagePreloaderService,
     private formatPosterService: FormatPosterService,
     private menuTabService: MenuTabService,
-    private newsVideoRunningService: NewsVideoRunningService
+    private newsVideoRunningService: NewsVideoRunningService,
+    private loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(true);
+    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_SERIES);
   }
 
   ngOnInit(): void {

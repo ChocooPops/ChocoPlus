@@ -10,6 +10,8 @@ import { ImagePreloaderService } from '../../../../common-module/services/image-
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
+import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
+import { PageModel } from '../../../../launch-module/models/page.enum';
 
 @Component({
   selector: 'app-my-list-page',
@@ -36,9 +38,11 @@ export class MyListPageComponent {
     private mediaSelectedService: MediaSelectedService,
     private formatPosterService: FormatPosterService,
     private imagePreloaderService: ImagePreloaderService,
-    private menuTabService: MenuTabService
+    private menuTabService: MenuTabService,
+    private loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(false);
+    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_MYLIST);
   }
 
   ngOnInit(): void {

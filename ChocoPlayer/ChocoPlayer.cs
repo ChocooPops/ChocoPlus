@@ -614,6 +614,14 @@ namespace ChocoPlayer
             }
 
             StartPosition = FormStartPosition.Manual;
+            Size = new Size(
+                (int)(width * scaleX),
+                (int)(height * scaleY)
+            );
+            Location = new Point(
+                (int)(positionX * scaleX),
+                (int)(positionY * scaleY)
+            );
 
             _videoView = new VideoView
             {
@@ -660,18 +668,6 @@ namespace ChocoPlayer
                 else if (isMaximized)
                 {
                     WindowState = FormWindowState.Maximized;
-                }
-                else
-                {
-                    Location = new Point(
-                        (int)(positionX * scaleX),
-                        (int)(positionY * scaleY)
-                    );
-
-                    Size = new Size(
-                        (int)(width * scaleX),
-                        (int)(height * scaleY)
-                    );
                 }
             }
 

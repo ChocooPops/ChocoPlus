@@ -4,6 +4,8 @@ import { EditionParametersComponent } from './components/edition-parameters/edit
 import { RouterOutlet } from '@angular/router';
 import { ScrollEventService } from '../common-module/services/scroll-event/scroll-event.service';
 import { MenuTabService } from '../menu-module/service/menu-tab/menu-tab.service';
+import { LoadOpeningPageService } from '../../launch-module/services/load-opening-page/load-opening-page.service';
+import { PageModel } from '../../launch-module/models/page.enum';
 
 @Component({
   selector: 'app-edition-page',
@@ -17,9 +19,11 @@ export class EditionPageComponent {
   isResizing = false;
 
   constructor(private scrollEventService: ScrollEventService,
-    private menuTabService: MenuTabService
+    private menuTabService: MenuTabService,
+    private loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(false);
+    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_EDITION);
   }
 
   ngOnInit(): void {

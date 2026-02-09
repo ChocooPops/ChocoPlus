@@ -15,12 +15,14 @@ export class ParameterAppliComponent {
   radioButtonPosterFilm: ParamaterAppliModel[] = [];
   radioButtonPosterLicense: ParamaterAppliModel[] = [];
   radioButtonPosterFormat: ParamaterAppliModel[] = [];
+  radioButtonOtherOption: ParamaterAppliModel[] = [];
 
   constructor(private parameterAppliService: ParameterAppliService) {
     this.parameterAppliService.initRadioButton();
     this.radioButtonPosterFilm = this.parameterAppliService.getRadioButtonForPosterFilm();
     this.radioButtonPosterLicense = this.parameterAppliService.getRadioButtonForPosterLicense();
     this.radioButtonPosterFormat = this.parameterAppliService.getRadioButtonForFormatPoster();
+    this.radioButtonOtherOption = this.parameterAppliService.getRadioButtonOtherOption();
   }
 
   onChangePosterFilm(idParam: number, idRadioButton: number): void {
@@ -33,6 +35,10 @@ export class ParameterAppliComponent {
 
   onChangePosterFormat(idParam: number, idRadioButton: number): void {
     this.parameterAppliService.onChangeEmitToPosterFormat(idParam, idRadioButton);
+  }
+
+  onChangeOpeningPage(idParam: number, idRadioButton: number): void {
+    this.parameterAppliService.onChangeEmitToOpeningPage(idParam, idRadioButton);
   }
 
 }

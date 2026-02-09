@@ -39,4 +39,17 @@
         }
     </div>
 
+    <div class="container-zone-concerned">
+        <div class="title">
+            <p> Autres options </p>
+        </div>
+        @for(param of radioButtonOtherOption; track param.id) {
+        <div class="container-param">
+            <p class="title-param"> {{ param.name }} </p>
+            <app-input-radio-button [radioButton]="param.radioButton"
+                (changeEmit)="onChangeOpeningPage(param.id, $event)"></app-input-radio-button>
+        </div>
+        }
+    </div>
+
 </div>

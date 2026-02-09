@@ -14,6 +14,8 @@ import { VideoRunningPresentationLoadingComponent } from '../video-running-prese
 import { SelectionsListComponent } from '../../../media-module/components/selections/selections-list/selections-list.component';
 import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
+import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
+import { PageModel } from '../../../../launch-module/models/page.enum';
 
 @Component({
   selector: 'app-movie-page',
@@ -37,9 +39,11 @@ export class MoviePageComponent {
     private imagePreloaderService: ImagePreloaderService,
     private formatPosterService: FormatPosterService,
     private menuTabService: MenuTabService,
-    private newsVideoRunningService: NewsVideoRunningService
+    private newsVideoRunningService: NewsVideoRunningService,
+    private loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(true);
+    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_MOVIE);
   }
 
   ngOnInit(): void {

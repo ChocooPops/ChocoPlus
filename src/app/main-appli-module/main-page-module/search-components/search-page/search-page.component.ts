@@ -14,6 +14,8 @@ import { MediaPageComponent } from '../../../media-module/components/media-page/
 import { MediaService } from '../../../media-module/services/media/media.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
+import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
+import { PageModel } from '../../../../launch-module/models/page.enum';
 
 @Component({
   selector: 'app-search-page',
@@ -46,9 +48,11 @@ export class SearchPageComponent {
     private formatPosterService: FormatPosterService,
     private menuTabService: MenuTabService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(false);
+    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_RESEARCH);
   }
 
   private addActionParam(keyword: string) {
