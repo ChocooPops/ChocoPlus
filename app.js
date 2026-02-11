@@ -270,9 +270,14 @@ ipcMain.handle('secureStore:deleteRefreshToken', async () =>
   keytar.deletePassword(SERVICE, ACCOUNT)
 );
 
-
-ipcMain.handle('launch-java-app', async (event, dataObject) => {
+ipcMain.handle('launch-choco-player', async (event, dataObject) => {
   try {
+    // Vérifier si un processus est déjà en cours d'exécution
+    if (csharpProcess && !csharpProcess.killed) {
+      //console.log('ChocoPlayer est déjà en cours d\'exécution');
+      return 'C# Player déjà en cours';
+    }
+
     await stopCSharpProcess(true);
 
     const bounds = mainWindow.getBounds();

@@ -34,7 +34,7 @@ export class StreamService {
   }
 
   public async launchJavaAppToMovie(chocoPlayer: ChocoPlayerModel): Promise<void> {
-    await window.electron.invoke('launch-java-app', chocoPlayer);
+    await window.electron.invoke('launch-choco-player', chocoPlayer);
   }
 
 }
