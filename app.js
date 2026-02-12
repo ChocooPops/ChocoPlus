@@ -275,10 +275,9 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     // Vérifier si un processus est déjà en cours d'exécution
     if (csharpProcess && !csharpProcess.killed) {
       //console.log('ChocoPlayer est déjà en cours d\'exécution');
-      return 'C# Player déjà en cours';
+      await stopCSharpProcess(true);
     }
 
-    await stopCSharpProcess(true);
 
     const bounds = mainWindow.getBounds();
     dataObject.BaseUrl = process.env.API_URL;

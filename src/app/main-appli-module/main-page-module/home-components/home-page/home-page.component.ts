@@ -29,7 +29,7 @@ export class HomePageComponent {
 
   private abortController = new AbortController();
   mediaSelected: MediaModel | undefined = undefined;
-  selections: SelectionModel[] = [];
+  selections: SelectionModel[] | undefined = undefined;
   format !: FormatPosterModel;
   news: NewsModel[] | undefined = undefined;
   private loadNewFormat: boolean = false;
