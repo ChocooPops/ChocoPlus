@@ -278,7 +278,6 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
       await stopCSharpProcess(true);
     }
 
-
     const bounds = mainWindow.getBounds();
     dataObject.BaseUrl = process.env.API_URL;
     dataObject.PositionX = bounds.x;
@@ -286,6 +285,8 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     dataObject.IsMaximized = mainWindow.isMaximized();
     dataObject.IsFullScreen = mainWindow.isFullScreen();
     dataObject.Token = await keytar.getPassword(SERVICE, ACCOUNT);
+
+    console.log(dataObject)
 
     let csharpAppPath = '';
     if (app.isPackaged) {
@@ -309,7 +310,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     );
 
     csharpProcess.stdout.on('data', (data) => {
-      console.log(`C# stdout: ${data}`);
+      //console.log(`C# stdout: ${data}`);
     });
 
     csharpProcess.stderr.on('data', (data) => {

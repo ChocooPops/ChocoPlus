@@ -833,12 +833,11 @@ namespace ChocoPlayer
 
         private void ApplyWatchProgress()
         {
-            if (_mediaPlayer != null && _watchProgress > 0 && _watchProgress <= 100)
+            if (_mediaPlayer != null && _watchProgress > 0 && _watchProgress < 100)
             {
                 long totalTime = _mediaPlayer.Length;
                 if (totalTime > 0)
                 {
-                    // Utiliser Position (0.0 à 1.0) au lieu de Time pour plus de fiabilité
                     float position = _watchProgress / 100f;
                     _mediaPlayer.Position = position;
                 }
