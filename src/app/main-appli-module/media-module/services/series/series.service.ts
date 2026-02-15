@@ -73,6 +73,7 @@ export class SeriesService {
       name: item.name ? item.name : `Episode ${item.episodeNumber}`,
       date: item.date ? new Date(item.date) : new Date(),
       time: item.time ? item.time : 0,
+      watchProgress: item.watchProgress ?? 0,
       quality: item.quality ? item.quality : 'any quality',
       srcPoster: item.srcPoster ? item.srcPoster : undefined
     }))

@@ -39,6 +39,9 @@ export class MovieService {
           typeZoomX: undefined,
           typeZoomY: false,
           isInList: false,
+          time: 0,
+          quality: 'any quality',
+          watchProgress: 0,
           mediaType: MediaTypeModel.MOVIE
         }
         return of(movie);
@@ -56,6 +59,7 @@ export class MovieService {
       startShow: this.verifTimerShowService.getGoodFormat(movie.startShow) || '00:20:00',
       endShow: this.verifTimerShowService.getGoodFormat(movie.endShow) || '00:21:30',
       time: movie.time ? parseInt(movie.time) : 0,
+      watchProgress: movie.watchProgress ?? 0,
       quality: movie.quality || "any quality",
       date: new Date(movie.date) || undefined,
       directors: movie.directors || [],

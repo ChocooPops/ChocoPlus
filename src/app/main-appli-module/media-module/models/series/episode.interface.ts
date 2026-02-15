@@ -7,6 +7,7 @@ export interface EpisodeModel {
     description: string,
     date: Date,
     time: number,
+    watchProgress: number,
     quality: string,
     srcPoster: string | undefined,
 }

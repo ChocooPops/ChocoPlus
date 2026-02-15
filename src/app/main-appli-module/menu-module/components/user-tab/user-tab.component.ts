@@ -4,7 +4,6 @@ import { UserService } from '../../../user-module/service/user/user.service';
 import { firstValueFrom, Subscription, take } from 'rxjs';
 import { RoleModel } from '../../../../common-module/models/role.enum';
 import { NgClass } from '@angular/common';
-import { MediaModel } from '../../../media-module/models/media.interface';
 import { Router } from '@angular/router';
 import { ElectronService } from '../../../../common-module/services/electron/electron.service';
 import { UserParametersService } from '../../../user-module/service/user-parameters/user-parameters.service';
@@ -12,10 +11,8 @@ import { MenuTabModel } from '../../model/menu-tab.interface';
 import { AuthService } from '../../../../launch-module/services/auth/auth.service';
 import { MovieService } from '../../../media-module/services/movie/movie.service';
 import { SeriesService } from '../../../media-module/services/series/series.service';
-import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { StreamService } from '../../../video-playing-module/services/stream/stream.service';
 import { ChocoPlayerModel } from '../../../video-playing-module/models/choco-player.interface';
-import { SeasonModel } from '../../../media-module/models/series/season.interface';
 
 @Component({
   selector: 'app-user-tab',
@@ -87,6 +84,7 @@ export class UserTabComponent {
       Width: window.innerWidth,
       EpisodeId: -1,
       SeasonIndex: -1,
+      watchProgress: 0,
       SeasonMenu: []
     };
 
@@ -109,6 +107,7 @@ export class UserTabComponent {
       Width: window.innerWidth,
       EpisodeId: -1,
       SeasonIndex: -1,
+      watchProgress: 0,
       SeasonMenu: series.seasons
         ? series.seasons.map(season => ({
             Id: season.id,
