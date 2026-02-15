@@ -53,6 +53,8 @@ namespace ChocoPlayer
 
         private string _audioLanguageSelected = "";
         private string _subtitleLanguageSelected = "";
+        private float _watchProgress = 0f;
+        private bool _watchProgressApplied = false;
 
         private TrackListener? _trackListener;
 
@@ -62,12 +64,13 @@ namespace ChocoPlayer
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
-        public ChocoPlayer(int mediaId, string baseUrl, string token, string title, string videoPath, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, int episodeId, int seasonIndex, List<Season>? seasons)
+        public ChocoPlayer(int mediaId, string baseUrl, string token, string title, string videoPath, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, int episodeId, int seasonIndex, List<Season>? seasons, float watchProgress)
         {
             _mediaId = mediaId;
+            _watchProgress = watchProgress;
 
             _apiService = new ApiService(baseUrl, token);
-
+            Console.WriteLine(watchProgress);
             _audioLanguageSelected = Properties.Settings.Default.PreferredAudioLanguage;
             _subtitleLanguageSelected = Properties.Settings.Default.PreferredSubtitleLanguage;
 
@@ -774,6 +777,8 @@ namespace ChocoPlayer
             {
                 if (_libVLC != null)
                 {
+                    _watchProgressApplied = false;
+
                     var media = new Media(_libVLC, path, FromType.FromLocation);
 
                     if (path.StartsWith("http://") || path.StartsWith("https://"))
@@ -795,7 +800,27 @@ namespace ChocoPlayer
                         }
                     };
 
+                    EventHandler<MediaPlayerPositionChangedEventArgs>? positionHandler = null;
+                    positionHandler = (s, e) =>
+                    {
+                        if (!_watchProgressApplied && _mediaPlayer != null && _mediaPlayer.Length > 0)
+                        {
+                            _watchProgressApplied = true;
+
+                            this.BeginInvoke(new Action(() =>
+                            {
+                                ApplyWatchProgress();
+                            }));
+
+                            if (_mediaPlayer != null)
+                            {
+                                _mediaPlayer.PositionChanged -= positionHandler;
+                            }
+                        }
+                    };
+
                     _mediaPlayer.Playing += playingHandler;
+                    _mediaPlayer.PositionChanged += positionHandler;
                     _mediaPlayer.Play();
                     _playerControls!.SetPlaying(true);
                 }
@@ -803,6 +828,20 @@ namespace ChocoPlayer
             catch (Exception ex)
             {
                 MessageBox.Show($"Impossible de lire le média: {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ApplyWatchProgress()
+        {
+            if (_mediaPlayer != null && _watchProgress > 0 && _watchProgress <= 100)
+            {
+                long totalTime = _mediaPlayer.Length;
+                if (totalTime > 0)
+                {
+                    // Utiliser Position (0.0 à 1.0) au lieu de Time pour plus de fiabilité
+                    float position = _watchProgress / 100f;
+                    _mediaPlayer.Position = position;
+                }
             }
         }
 
@@ -1387,7 +1426,8 @@ namespace ChocoPlayer
                         var oldMedia = _chocoPlayer._mediaPlayer?.Media;
 
                         _chocoPlayer._mediaPlayer?.Stop();
-
+                        _chocoPlayer._watchProgressApplied = false;
+                        
                         var newMedia = new Media(_chocoPlayer._libVLC, episodePath, FromType.FromLocation);
 
                         if (episodePath.StartsWith("http://") || episodePath.StartsWith("https://"))

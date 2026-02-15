@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { Router } from '@angular/router';
+//import { Router } from '@angular/router';
 import { MediaModel } from '../../../models/media.interface';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { StreamService } from '../../../../video-playing-module/services/stream/stream.service';
@@ -8,6 +8,8 @@ import { ChocoPlayerModel } from '../../../../video-playing-module/models/choco-
 import { SeasonModel } from '../../../models/series/season.interface';
 import { MovieModel } from '../../../models/movie-model';
 import { EpisodeModel } from '../../../models/series/episode.interface';
+import { SeriesService } from '../../../services/series/series.service';
+import { firstValueFrom, take } from 'rxjs';
 
 @Component({
   selector: 'app-start-button',
@@ -24,42 +26,40 @@ export class StartButtonComponent {
   @Input() episode !: EpisodeModel;
   @Input() seasons !: SeasonModel[] | undefined;
 
-  constructor(private router: Router,
+  constructor(//private router: Router,
     private streamService: StreamService,
+    private seriesService: SeriesService
   ) { }
 
   srcStartButton: string = "icon/start.svg";
   srcStartIcon: string = 'icon/start-icon.svg';
 
   public async onClick(): Promise<void> {
-    const chocoPlayer: ChocoPlayerModel = {
+    let chocoPlayer: ChocoPlayerModel = {
       MediaId: this.media.id,
       Title: this.media.title,
       Url: '',
       Height: window.innerHeight,
       Width: window.innerWidth,
-      watchProgress: 0,
+      WatchProgress: 0,
       EpisodeId: -1,
       SeasonIndex: -1,
       SeasonMenu: []
     }
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
-      chocoPlayer.watchProgress = (this.media as MovieModel).watchProgress;
+      chocoPlayer.WatchProgress = (this.media as MovieModel).watchProgress;
       chocoPlayer.Url = this.streamService.getUrlStreamMovie(this.media.id);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
-      if (this.episode.name) chocoPlayer.Title = `${chocoPlayer.Title} - ${this.episode.name}`;
-      chocoPlayer.EpisodeId = this.episode.id ?? -1;
-      if (this.seasons) chocoPlayer.SeasonIndex = this.getSeasonIndexFromEpisodeId(this.seasons, this.episode.id);
-      chocoPlayer.watchProgress = this.episode.watchProgress;
-      chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.media.id, this.episode.id ?? -1);
-      chocoPlayer.SeasonMenu = this.seasons ? this.seasons.map((season: SeasonModel) => ({
-        Id: season.id,
-        SeriesId: season.seriesId,
-        Name: season.name,
-        SeasonNumber: season.seasonNumber
-      })) : [];
+      if (this.episode && this.episode.id > 0) {
+        chocoPlayer = this.setChocoPlayerForSeries(this.episode, chocoPlayer);
+      } else {
+        const episode: EpisodeModel = await firstValueFrom(
+          this.seriesService.fetchLastWatchedEpisode(this.media.id).pipe(take(1))
+        );
+        chocoPlayer = this.setChocoPlayerForSeries(episode, chocoPlayer);
+      }
     }
-
+    
     await this.streamService.launchJavaAppToMovie(chocoPlayer);
 
     // if (this.media.mediaType === MediaTypeModel.MOVIE) {
@@ -73,11 +73,23 @@ export class StartButtonComponent {
     // }
   }
 
-  private getSeasonIndexFromEpisodeId(seasons: SeasonModel[], episodeId: number): number {
-    return seasons.findIndex(season =>
-      season.episodes.some(ep => ep.id === episodeId)
-    )
+  private setChocoPlayerForSeries(episode: EpisodeModel, chocoPlayer: ChocoPlayerModel): ChocoPlayerModel {
+    chocoPlayer.EpisodeId = episode.id;
+    chocoPlayer.Title = `${chocoPlayer.Title} - ${episode.name}`;
+    if (this.seasons) chocoPlayer.SeasonIndex = this.getSeasonIndexFromEpisodeId(this.seasons, episode.seasonId);
+    chocoPlayer.WatchProgress = episode.watchProgress;
+      chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.media.id, episode.id ?? -1);
+      chocoPlayer.SeasonMenu = this.seasons ? this.seasons.map((season: SeasonModel) => ({
+        Id: season.id,
+        SeriesId: season.seriesId,
+        Name: season.name,
+        SeasonNumber: season.seasonNumber
+    })) : [];
+    return chocoPlayer;
   }
 
+  private getSeasonIndexFromEpisodeId(seasons: SeasonModel[], seasonId: number): number {
+    return seasons.findIndex((season) => season.id === seasonId);
+  }
 
 }

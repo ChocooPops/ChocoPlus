@@ -4,7 +4,7 @@ import { UserService } from '../../../user-module/service/user/user.service';
 import { firstValueFrom, Subscription, take } from 'rxjs';
 import { RoleModel } from '../../../../common-module/models/role.enum';
 import { NgClass } from '@angular/common';
-import { Router } from '@angular/router';
+//import { Router } from '@angular/router';
 import { ElectronService } from '../../../../common-module/services/electron/electron.service';
 import { UserParametersService } from '../../../user-module/service/user-parameters/user-parameters.service';
 import { MenuTabModel } from '../../model/menu-tab.interface';
@@ -13,6 +13,8 @@ import { MovieService } from '../../../media-module/services/movie/movie.service
 import { SeriesService } from '../../../media-module/services/series/series.service';
 import { StreamService } from '../../../video-playing-module/services/stream/stream.service';
 import { ChocoPlayerModel } from '../../../video-playing-module/models/choco-player.interface';
+import { SeriesModel } from '../../../media-module/models/series/series.interface';
+import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 
 @Component({
   selector: 'app-user-tab',
@@ -37,7 +39,7 @@ export class UserTabComponent {
 
   constructor(private userService: UserService,
     private movieService: MovieService,
-    private router: Router,
+    //private router: Router,
     private electronService: ElectronService,
     private userParametersService: UserParametersService,
     private authService: AuthService,
@@ -84,7 +86,7 @@ export class UserTabComponent {
       Width: window.innerWidth,
       EpisodeId: -1,
       SeasonIndex: -1,
-      watchProgress: 0,
+      WatchProgress: 0,
       SeasonMenu: []
     };
 
@@ -93,21 +95,25 @@ export class UserTabComponent {
   }
 
   async onClickRandomSeries(): Promise<void> {
-    const series = await firstValueFrom(
+    const series: SeriesModel | undefined = await firstValueFrom(
       this.seriesService.fetchRandomSeries().pipe(take(1))
     );
 
     if (!series) return;
 
+    const episode: EpisodeModel = await firstValueFrom(
+      this.seriesService.fetchFirstEpisode(series.id).pipe(take(1))
+    )
+
     const chocoPlayer: ChocoPlayerModel = {
       MediaId: series.id,
-      Title: series.title,
-      Url: this.streamService.getUrlStreamEpisode(series.id, -1),
+      Title: `${series.title} - ${episode.name}`,
+      Url: this.streamService.getUrlStreamEpisode(series.id, episode.id),
       Height: window.innerHeight,
       Width: window.innerWidth,
-      EpisodeId: -1,
-      SeasonIndex: -1,
-      watchProgress: 0,
+      EpisodeId: episode.id,
+      SeasonIndex: 0,
+      WatchProgress: 0,
       SeasonMenu: series.seasons
         ? series.seasons.map(season => ({
             Id: season.id,

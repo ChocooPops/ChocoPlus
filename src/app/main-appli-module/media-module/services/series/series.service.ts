@@ -17,6 +17,8 @@ export class SeriesService {
   private readonly urlResearchSeries: string = 'research';
   private readonly urlEpisodes: string = 'episodes';
   private readonly urlRandomSeries: string = 'random-series';
+  private readonly urlFirstEpisode: string = 'first-episode';
+  private readonly urlLastEpisodeWatched: string = 'last-episode-watched';
   private _userService?: UserService;
 
   constructor(private http: HttpClient,
@@ -134,6 +136,22 @@ export class SeriesService {
       }),
       catchError((error) => {
         return of(undefined);
+      })
+    )
+  }
+
+  public fetchFirstEpisode(seriesId: number): Observable<EpisodeModel> {
+    return this.http.get<any>(`${this.apiUrlSeries}/${this.urlFirstEpisode}/${seriesId}`).pipe(
+      map((data: any) => {
+        return data;
+      })
+    )
+  }
+
+  public fetchLastWatchedEpisode(seriesId: number): Observable<EpisodeModel> {
+    return this.http.get<any>(`${this.apiUrlSeries}/${this.urlLastEpisodeWatched}/${seriesId}`).pipe(
+      map((data: any) => {
+        return data;
       })
     )
   }

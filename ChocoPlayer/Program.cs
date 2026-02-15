@@ -44,7 +44,8 @@ static class Program
             videoInfo?.IsFullScreen ?? false,
             videoInfo?.EpisodeId ?? -1,
             videoInfo?.SeasonIndex ?? -1,
-            videoInfo?.SeasonMenu ?? []
+            videoInfo?.SeasonMenu ?? [],
+            videoInfo?.WatchProgress ?? 0
         ));
     }
 }

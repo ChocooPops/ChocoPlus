@@ -309,7 +309,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     );
 
     csharpProcess.stdout.on('data', (data) => {
-      //console.log(`C# stdout: ${data}`);
+      console.log(`C# stdout: ${data}`);
     });
 
     csharpProcess.stderr.on('data', (data) => {

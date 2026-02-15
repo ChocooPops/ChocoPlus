@@ -4,7 +4,7 @@ export interface ChocoPlayerModel {
     Url: string,
     Height: number,
     Width: number,
-    watchProgress: number,
+    WatchProgress: number,
     EpisodeId: number;
     SeasonIndex: number;
     SeasonMenu: any[]
