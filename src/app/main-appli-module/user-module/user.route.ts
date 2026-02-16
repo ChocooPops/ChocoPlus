@@ -1,7 +1,7 @@
 import { Routes } from "@angular/router";
 import { InDevelopmentPageComponent } from "../../common-module/components/in-development-page/in-development-page.component";
 import { SettingNotFoundComponent } from "../../common-module/components/setting-not-found/setting-not-found.component";
-import { UserHistoricComponent } from "./components/user-historic/user-historic.component";
+import { UserHistoricComponent } from "./components/user-historic-page/user-historic/user-historic.component";
 import { UserEditProfilComponent } from "./components/user-edit-profil/user-edit-profil.component";
 import { UserSupportComponent } from "./components/user-support/user-support.component";
 import { UsersManageComponent } from "./components/users-manage-page/users-manage/users-manage.component";

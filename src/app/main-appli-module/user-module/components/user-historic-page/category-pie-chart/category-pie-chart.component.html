@@ -1,0 +1,61 @@
+<div class="category-pie-chart-container">
+  <div class="header">
+    <h2>Catégories Préférées</h2>
+    <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
+      <span>{{ loading ? '⏳' : '🔄' }}</span>
+    </button>
+  </div>
+
+  <div class="mode-selector">
+    <div class="mode-label">
+      <span class="label-text">Mode de calcul</span>
+      <span class="mode-description">{{ getCurrentModeDescription() }}</span>
+    </div>
+
+    <div class="mode-buttons">
+      <button *ngFor="let mode of modeOptions" class="mode-btn" [class.active]="selectedMode === mode.value"
+        [disabled]="loading" (click)="onModeChange(mode.value)">
+        <span class="mode-icon">{{ mode.icon }}</span>
+        <span class="mode-label">{{ mode.label }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-summary" [style.display]="!loading && !error && categoryData ? 'flex' : 'none'">
+    <div class="stat-item">
+      <span class="stat-label">Total</span>
+      <span class="stat-value">{{ categoryData?.totalWatched || 0 }}</span>
+    </div>
+    <div class="stat-item" [style.display]="selectedMode === 'weighted' ? 'block' : 'none'">
+      <span class="stat-label">Mode</span>
+      <span class="stat-value">Pondéré</span>
+    </div>
+    <div class="stat-item" [style.display]="selectedMode === 'by-time' ? 'block' : 'none'">
+      <span class="stat-label">Mode</span>
+      <span class="stat-value">Temps</span>
+    </div>
+  </div>
+
+  <div class="loading" [style.display]="loading ? 'flex' : 'none'">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+
+  <div class="error" [style.display]="error && !loading ? 'flex' : 'none'">
+    <p>{{ error }}</p>
+    <button (click)="loadData()">Réessayer</button>
+  </div>
+
+  <div class="content" [style.display]="!loading && !error && categoryData ? 'block' : 'none'">
+    <div #chartContainer class="chart-container"></div>
+  </div>
+
+  <div class="empty"
+    [style.display]="!loading && !error && (categoryData?.categories?.length === 0) ? 'block' : 'none'">
+    <p>Aucune donnée de visionnage disponible</p>
+  </div>
+
+  <div class="height-tmp">
+      <p>s</p>
+  </div>
+</div>

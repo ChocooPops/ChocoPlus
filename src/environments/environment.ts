@@ -21,6 +21,7 @@ export const environment = {
     apiSupport: apiUrl + '/support',
     apiNews: apiUrl + '/news',
     apiUrlNewsVideoRunning: apiUrl + '/news-video-running',
+    apiUrlStatUser: apiUrl + '/stat-user',
     access_token: 'access_token',
     HEADER_SECRET_API: headerSecret,
     HEADER_NAME_FIELD_SECRET_API: headerName

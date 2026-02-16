@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { UserModel } from '../../../dto/user.model';
 import { NgClass } from '@angular/common';
-import { UserHistoricComponent } from '../../user-historic/user-historic.component';
+import { UserHistoricComponent } from '../../user-historic-page/user-historic/user-historic.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
