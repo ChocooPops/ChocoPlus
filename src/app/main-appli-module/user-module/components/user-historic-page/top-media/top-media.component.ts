@@ -1,27 +1,45 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
 import { UserHistoricService } from '../../../service/user-historic/user-historic.service';
 import { TopMedia } from '../../../dto/user-historic/top-media.interface';
 import { TopMediaResponse } from '../../../dto/user-historic/top-media-response.interface';
+import { MediaTypeFilter } from '../../../dto/user-historic/media-type-filter.type';
+import { FilterOption } from '../../../dto/user-historic/filter-option.interface';
+import { ScalePoster } from '../../../../common-module/models/scale-poster.enum';
+import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 
 @Component({
   standalone: true,
   selector: 'app-top-media',
   templateUrl: './top-media.component.html',
   styleUrls: ['./top-media.component.scss'],
-  imports: [NgIf, NgFor]
+  imports: []
 })
 export class TopMediaComponent implements OnInit {
 
   @Input() userId!: number;
 
+  selectedMediaType: MediaTypeFilter = 'all';
+
+  filterOptions: FilterOption[] = [
+    { value: 'all', label: 'Tout', icon: '🎬' },
+    { value: 'MOVIE', label: 'Films', icon: '🎥' },
+    { value: 'SERIES', label: 'Séries', icon: '📺' }
+  ];
+
   topMediaData: TopMediaResponse | null = null;
   loading: boolean = true;
   error: string | null = null;
 
-  constructor(private userHistoricService: UserHistoricService) {}
+  constructor(private userHistoricService: UserHistoricService,
+    private compressedPosterService: CompressedPosterService
+  ) {}
 
   ngOnInit(): void {
+    this.loadData();
+  }
+
+  onFilterChange(mediaType: MediaTypeFilter): void {
+    this.selectedMediaType = mediaType;
     this.loadData();
   }
 
@@ -29,7 +47,7 @@ export class TopMediaComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.userHistoricService.getUserTopMedia(this.userId).subscribe({
+    this.userHistoricService.getUserTopMedia(this.userId, this.selectedMediaType).subscribe({
       next: (data) => {
         this.topMediaData = data;
         this.loading = false;
@@ -43,9 +61,9 @@ export class TopMediaComponent implements OnInit {
 
   getPosterUrl(media: TopMedia): string {
     if (media.posterName) {
-      return `${media.posterName}`;
+      return `${this.compressedPosterService.insertIntoUrlBeforeFilename(media.posterName, ScalePoster.SCALE_600h)}`;
     }
-    return '/assets/placeholder-poster.png';
+    return '';
   }
 
   getMediaIcon(mediaType: string): string {
@@ -60,14 +78,13 @@ export class TopMediaComponent implements OnInit {
   }
 
   getRankColor(rank: number): string {
-    if (rank === 1) return '#FFD700'; // Or
-    if (rank === 2) return '#C0C0C0'; // Argent
-    if (rank === 3) return '#CD7F32'; // Bronze
-    return '#FFD81F'; // Jaune par défaut
+    if (rank === 1) return '#FFD700';
+    if (rank === 2) return '#C0C0C0';
+    if (rank === 3) return '#CD7F32';
+    return '#FFD81F';
   }
 
   refresh(): void {
     this.loadData();
   }
-
 }

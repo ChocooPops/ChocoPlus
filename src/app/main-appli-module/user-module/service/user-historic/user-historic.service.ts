@@ -10,6 +10,7 @@ import { PeriodType } from '../../dto/user-historic/period.type';
 import { ContentType } from '../../dto/user-historic/content.type';
 import { WatchingStatsResponse } from '../../dto/user-historic/watching-stats-response.interface';
 import { TopMediaResponse } from '../../dto/user-historic/top-media-response.interface';
+import { MediaTypeFilter } from '../../dto/user-historic/media-type-filter.type';
 
 @Injectable({
   providedIn: 'root',
@@ -124,10 +125,14 @@ export class UserHistoricService {
     );
   }
 
-  public getUserTopMedia(userId: number): Observable<TopMediaResponse> {
+  getUserTopMedia(
+    userId: number,
+    mediaType: MediaTypeFilter = 'all',
+  ): Observable<TopMediaResponse> {
+    const params = new HttpParams().set('mediaType', mediaType);
     return this.http
       .get<TopMediaResponse>(
-        `${this.apiUrlStatUser}/users/${userId ?? -1}/top-media`,
+        `${this.apiUrlStatUser}/users/${userId ?? -1}/top-media`, { params },
       )
       .pipe(
         map((data: TopMediaResponse) => {
@@ -135,5 +140,4 @@ export class UserHistoricService {
         }),
       );
   }
-  
 }

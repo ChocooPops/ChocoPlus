@@ -5,7 +5,12 @@ import { PeriodType } from '../../../dto/user-historic/period.type';
 import { ContentType } from '../../../dto/user-historic/content.type';
 import { DataPoint } from '../../../dto/user-historic/data-point.interface';
 import { WatchingStatsResponse } from '../../../dto/user-historic/watching-stats-response.interface';
-import { FilterOption } from '../../../dto/user-historic/filter-option.interface';
+
+interface FilterOption {
+  value: PeriodType | ContentType;
+  label: string;
+  icon: string;
+}
 
 @Component({
   standalone: true,
@@ -15,9 +20,8 @@ import { FilterOption } from '../../../dto/user-historic/filter-option.interface
   imports: []
 })
 export class WatchingChartComponent {
-  
   @ViewChild('chartContainer', { static: false }) chartContainer!: ElementRef;
-  @Input() userId!: number;
+  @Input() userId: number = 70000;
 
   selectedPeriod: PeriodType = 'month';
   selectedContent: ContentType = 'all';
@@ -86,6 +90,7 @@ export class WatchingChartComponent {
           }
         },
         error: (err) => {
+          console.error('Error loading watching stats:', err);
           this.error = 'Erreur lors du chargement des données';
           this.loading = false;
         }
@@ -234,5 +239,4 @@ export class WatchingChartComponent {
   refresh(): void {
     this.loadData();
   }
-
 }

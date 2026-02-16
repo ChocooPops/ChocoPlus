@@ -1,9 +1,19 @@
 <div class="top-media-container">
     <div class="header">
-        <h2>Top 10 des Médias</h2>
+        <h2>Top 10 du contenu le plus regardé</h2>
         <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
             <span>{{ loading ? '⏳' : '🔄' }}</span>
         </button>
+    </div>
+
+    <div class="filters">
+        @for(option of filterOptions; track option) {
+        <button class="filter-btn" [class.active]="selectedMediaType === option.value" [disabled]="loading"
+            (click)="onFilterChange(option.value)">
+            <span class="filter-icon">{{ option.icon }}</span>
+            <span class="filter-label">{{ option.label }}</span>
+        </button>
+        }
     </div>
 
     <div class="loading" [style.display]="loading ? 'flex' : 'none'">
@@ -17,7 +27,8 @@
     </div>
 
     <div class="media-list" [style.display]="!loading && !error && topMediaData ? 'flex' : 'none'">
-        <div *ngFor="let media of topMediaData?.topMedia" class="media-item" [class]="getRankClass(media.rank)">
+        @for(media of topMediaData?.topMedia; track media) {
+        <div class="media-item" [class]="getRankClass(media.rank)">
 
             <div class="rank-badge" [style.background]="getRankColor(media.rank)">
                 <span class="rank-number">{{ media.rank }}</span>
@@ -46,15 +57,18 @@
                 </div>
 
                 <div class="media-meta">
-                    <span *ngIf="media.quality" class="quality-badge">{{ media.quality }}</span>
+                    @if(media.quality) {
+                    <span class="quality-badge">{{ media.quality }}</span>
+                    }
                     <span class="date">{{ media.date }}</span>
                 </div>
             </div>
         </div>
+        }
     </div>
 
-    <div class="empty" [style.display]="!loading && !error && (topMediaData?.topMedia?.length === 0) ? 'flex' : 'none'">
+    <div class="empty"
+        [style.display]="!loading && !error && ((topMediaData?.topMedia ?? []).length === 0) ? 'flex' : 'none'">
         <p>Aucun média visionné</p>
     </div>
-
 </div>

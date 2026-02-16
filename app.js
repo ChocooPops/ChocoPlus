@@ -286,8 +286,6 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     dataObject.IsFullScreen = mainWindow.isFullScreen();
     dataObject.Token = await keytar.getPassword(SERVICE, ACCOUNT);
 
-    console.log(dataObject)
-
     let csharpAppPath = '';
     if (app.isPackaged) {
       csharpAppPath = path.join(process.resourcesPath, 'ChocoPlayer', 'ChocoPlayer.exe');

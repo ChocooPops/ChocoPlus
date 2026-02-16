@@ -1,8 +1,7 @@
-import { PeriodType } from "./period.type";
-import { ContentType } from "./content.type";
+import { MediaTypeFilter } from "./media-type-filter.type";
 
 export interface FilterOption {
-  value: PeriodType | ContentType;
+  value: MediaTypeFilter;
   label: string;
   icon: string;
 }

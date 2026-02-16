@@ -12,26 +12,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #ffd81f;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #FFD81F;
+    flex-shrink: 0;
 
     h2 {
       margin: 0;
-      font-size: 18px;
+      font-size: clamp(14px, 4vw, 18px);
       font-weight: 700;
-      color: #ffd81f;
+      color: #FFD81F;
     }
 
     .refresh-btn {
       padding: 6px 12px;
-      background: #ffd81f;
+      background: #FFD81F;
       color: #141414;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
       transition: all 0.3s;
+      flex-shrink: 0;
 
       &:hover:not(:disabled) {
         transform: translateY(-2px);
@@ -44,38 +46,98 @@
     }
   }
 
+  .filters {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #141414;
+    border-radius: 8px;
+    flex-shrink: 0;
+
+    .filter-btn {
+      flex: 1;
+      padding: 8px 10px;
+      background: #1a1a1a;
+      border: 2px solid #333;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 0;
+
+      .filter-icon {
+        font-size: clamp(14px, 3vw, 18px);
+        flex-shrink: 0;
+      }
+
+      .filter-label {
+        font-size: clamp(11px, 2.5vw, 13px);
+        font-weight: 500;
+        color: #ccc;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &:hover:not(:disabled) {
+        border-color: #FFD81F;
+        transform: translateY(-2px);
+      }
+
+      &.active {
+        background: #FFD81F;
+        border-color: #FFD81F;
+
+        .filter-label {
+          color: #141414;
+          font-weight: 700;
+        }
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+  }
+
   .media-list {
     display: flex;
-    gap: 15px;
+    gap: clamp(10px, 2vw, 15px);
     overflow-x: auto;
     overflow-y: hidden;
     padding: 10px 5px 15px 5px;
+    flex: 1;
+    min-height: 0;
 
     &::-webkit-scrollbar {
-      height: 4px;
-      width: 4px;
+      height: 6px;
     }
 
     &::-webkit-scrollbar-track {
       background: #141414;
-      border-radius: 4px;
+      border-radius: 3px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #ffd81f;
-      border-radius: 4px;
+      background: #FFD81F;
+      border-radius: 3px;
 
       &:hover {
-        background: #ffc107;
+        background: #FFC107;
       }
     }
 
     .media-item {
       position: relative;
       flex-shrink: 0;
-      width: 160px;
+      width: clamp(120px, 20vw, 160px);
       background: #141414;
-      border-radius: 10px;
+      border-radius: 8px;
       overflow: hidden;
       transition: all 0.3s;
       cursor: pointer;
@@ -91,10 +153,10 @@
 
       .rank-badge {
         position: absolute;
-        top: 10px;
-        left: 10px;
-        width: 32px;
-        height: 32px;
+        top: 8px;
+        left: 8px;
+        width: clamp(26px, 5vw, 32px);
+        height: clamp(26px, 5vw, 32px);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -103,7 +165,7 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 
         .rank-number {
-          font-size: 16px;
+          font-size: clamp(13px, 2.5vw, 16px);
           font-weight: 700;
           color: #141414;
         }
@@ -112,11 +174,15 @@
       .media-poster {
         position: relative;
         width: 100%;
-        height: 240px;
+        height: 0;
+        padding-bottom: 150%;
         overflow: hidden;
         background: #1a1a1a;
 
         .poster-image {
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
           object-fit: cover;
@@ -125,26 +191,26 @@
 
         .type-badge {
           position: absolute;
-          bottom: 10px;
-          right: 10px;
-          font-size: 20px;
+          bottom: 8px;
+          right: 8px;
+          font-size: clamp(16px, 3vw, 20px);
           background: rgba(20, 20, 20, 0.8);
-          padding: 4px 8px;
+          padding: 3px 6px;
           border-radius: 6px;
           backdrop-filter: blur(4px);
         }
       }
 
       .media-info {
-        padding: 12px;
+        padding: 10px;
 
         .media-title {
-          margin: 0 0 8px 0;
-          font-size: 13px;
+          margin: 0 0 6px 0;
+          font-size: clamp(11px, 2.5vw, 13px);
           font-weight: 600;
           color: #ffffff;
           line-height: 1.3;
-          height: 35px;
+          height: clamp(28px, 6vw, 35px);
           overflow: hidden;
           text-overflow: ellipsis;
           display: -webkit-box;
@@ -154,21 +220,21 @@
 
         .media-stats {
           display: flex;
-          gap: 12px;
-          margin-bottom: 8px;
+          gap: 10px;
+          margin-bottom: 6px;
 
           .stat-item {
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 11px;
+            gap: 3px;
+            font-size: clamp(10px, 2vw, 11px);
 
             .stat-icon {
-              font-size: 12px;
+              font-size: clamp(10px, 2vw, 12px);
             }
 
             .stat-value {
-              color: #ffd81f;
+              color: #FFD81F;
               font-weight: 600;
             }
           }
@@ -177,54 +243,55 @@
         .media-meta {
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 10px;
+          gap: 6px;
+          font-size: clamp(9px, 1.8vw, 10px);
           color: #999;
 
           .quality-badge {
-            padding: 2px 6px;
-            background: #ffd81f;
+            padding: 2px 5px;
+            background: #FFD81F;
             color: #141414;
-            border-radius: 4px;
+            border-radius: 3px;
             font-weight: 600;
-            font-size: 9px;
+            font-size: clamp(8px, 1.5vw, 9px);
           }
 
           .date {
             color: #666;
+            white-space: nowrap;
           }
         }
       }
 
       &.rank-gold {
-        border: 2px solid #ffd700;
+        border: 2px solid #FFD700;
 
         .rank-badge {
-          background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+          background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
         }
       }
 
       &.rank-silver {
-        border: 2px solid #c0c0c0;
+        border: 2px solid #C0C0C0;
 
         .rank-badge {
-          background: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%);
+          background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
         }
       }
 
       &.rank-bronze {
-        border: 2px solid #cd7f32;
+        border: 2px solid #CD7F32;
 
         .rank-badge {
-          background: linear-gradient(135deg, #cd7f32 0%, #b8732d 100%);
+          background: linear-gradient(135deg, #CD7F32 0%, #B8732D 100%);
         }
       }
 
       &.rank-default {
-        border: 2px solid #ffd81f;
+        border: 2px solid #FFD81F;
 
         .rank-badge {
-          background: linear-gradient(135deg, #ffd81f 0%, #ffc107 100%);
+          background: linear-gradient(135deg, #FFD81F 0%, #FFC107 100%);
         }
       }
     }
@@ -239,17 +306,17 @@
 
     .spinner {
       border: 3px solid #2a2a2a;
-      border-top: 3px solid #ffd81f;
+      border-top: 3px solid #FFD81F;
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      width: clamp(25px, 5vw, 30px);
+      height: clamp(25px, 5vw, 30px);
       animation: spin 1s linear infinite;
       margin-bottom: 10px;
     }
 
     p {
       color: #999;
-      font-size: 12px;
+      font-size: clamp(11px, 2vw, 12px);
     }
   }
 
@@ -259,12 +326,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 15px;
 
     p {
       margin-bottom: 10px;
       color: #ff6666;
-      font-size: 12px;
+      font-size: clamp(11px, 2vw, 12px);
+      text-align: center;
     }
 
     button {
@@ -274,7 +342,7 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: clamp(11px, 2vw, 12px);
 
       &:hover {
         background: #ff6666;
@@ -287,44 +355,90 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px;
+    padding: 20px;
 
     p {
-      font-size: 14px;
+      font-size: clamp(12px, 2.5vw, 14px);
       color: #666;
+      text-align: center;
     }
   }
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .top-media-container {
     padding: 10px;
 
-    .header h2 {
-      font-size: 16px;
+    .header {
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .refresh-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+      }
     }
 
-    .media-list .media-item {
-      width: 140px;
+    .filters {
+      padding: 8px;
+      gap: 4px;
 
-      .media-poster {
-        height: 210px;
-      }
+      .filter-btn {
+        padding: 6px 8px;
+        flex-direction: column;
+        gap: 2px;
 
-      .rank-badge {
-        width: 28px;
-        height: 28px;
-
-        .rank-number {
-          font-size: 14px;
+        .filter-label {
+          font-size: 10px;
         }
       }
+    }
+
+    .media-list {
+      gap: 8px;
+
+      .media-item {
+        width: 110px;
+
+        .rank-badge {
+          width: 24px;
+          height: 24px;
+
+          .rank-number {
+            font-size: 12px;
+          }
+        }
+
+        .media-info {
+          padding: 8px;
+
+          .media-title {
+            font-size: 11px;
+            height: 28px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .top-media-container {
+    .media-list .media-item {
+      width: 140px;
+    }
+  }
+}
+
+@media (min-width: 1025px) {
+  .top-media-container {
+    .media-list .media-item {
+      width: 160px;
     }
   }
 }
