@@ -13,11 +13,13 @@
     </div>
 
     <div class="mode-buttons">
-      <button *ngFor="let mode of modeOptions" class="mode-btn" [class.active]="selectedMode === mode.value"
+      @for(mode of modeOptions; track mode) {
+      <button class="mode-btn" [class.active]="selectedMode === mode.value"
         [disabled]="loading" (click)="onModeChange(mode.value)">
         <span class="mode-icon">{{ mode.icon }}</span>
         <span class="mode-label">{{ mode.label }}</span>
       </button>
+      }
     </div>
   </div>
 
@@ -56,6 +58,6 @@
   </div>
 
   <div class="height-tmp">
-      <p>s</p>
+    <p>s</p>
   </div>
 </div>

@@ -1,21 +1,18 @@
 import { Component, ElementRef, ViewChild, Input } from '@angular/core';
 import * as d3 from 'd3';
-import { UserHistoricService, CategoryStats, UserCategoryPreferences, CategoryByTime, CalculationMode } from '../../../service/user-historic/user-historic.service';
-import { NgFor } from '@angular/common';
-
-interface ModeOption {
-  value: CalculationMode;
-  label: string;
-  description: string;
-  icon: string;
-}
+import { UserHistoricService } from '../../../service/user-historic/user-historic.service';
+import { CategoryStats } from '../../../dto/user-historic/category-stats.interface';
+import { UserCategoryPreferences } from '../../../dto/user-historic/user-category-preferences.interface';
+import { CategoryByTime } from '../../../dto/user-historic/category-by-time';
+import { CalculationMode } from '../../../dto/user-historic/calculate-mode.type';
+import { ModeOption } from '../../../dto/user-historic/mode-option.interface';
 
 @Component({
   standalone: true,
   selector: 'app-category-pie-chart',
   templateUrl: './category-pie-chart.component.html',
   styleUrls: ['./category-pie-chart.component.scss'],
-  imports: [NgFor]
+  imports: []
 })
 export class CategoryPieChartComponent {
 

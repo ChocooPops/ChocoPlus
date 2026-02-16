@@ -2,32 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { WatchTimeStats } from '../../dto/watch-time-stats.interface';
-
-export interface CategoryStats {
-  categoryId: number;
-  categoryName: string;
-  count: number;
-  percentage: number;
-}
-
-export interface UserCategoryPreferences {
-  userId: number;
-  totalWatched: number;
-  categories: CategoryStats[];
-}
-
-export interface CategoryByTime {
-  categoryId: number;
-  categoryName: string;
-  count: number;
-  total_time_seconds: number;
-  total_time_minutes: number;
-  total_time_hours: number;
-  percentage: number;
-}
-
-export type CalculationMode = 'simple' | 'weighted' | 'by-time';
+import { WatchTimeStats } from '../../dto/user-historic/watch-time-stats.interface';
+import { UserCategoryPreferences } from '../../dto/user-historic/user-category-preferences.interface';
+import { CategoryByTime } from '../../dto/user-historic/category-by-time';
+import { CalculationMode } from '../../dto/user-historic/calculate-mode.type';
 
 @Injectable({
   providedIn: 'root',

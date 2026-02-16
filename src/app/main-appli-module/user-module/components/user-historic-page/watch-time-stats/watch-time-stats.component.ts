@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { WatchTimeStats } from '../../../dto/watch-time-stats.interface';
+import { WatchTimeStats } from '../../../dto/user-historic/watch-time-stats.interface';
 import { UserHistoricService } from '../../../service/user-historic/user-historic.service';
 
 @Component({
