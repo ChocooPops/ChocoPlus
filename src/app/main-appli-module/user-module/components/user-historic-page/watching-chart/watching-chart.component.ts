@@ -15,8 +15,9 @@ import { FilterOption } from '../../../dto/user-historic/filter-option.interface
   imports: []
 })
 export class WatchingChartComponent {
+  
   @ViewChild('chartContainer', { static: false }) chartContainer!: ElementRef;
-  @Input() userId: number = 70000;
+  @Input() userId!: number;
 
   selectedPeriod: PeriodType = 'month';
   selectedContent: ContentType = 'all';

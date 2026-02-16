@@ -1,0 +1,60 @@
+<div class="top-media-container">
+    <div class="header">
+        <h2>Top 10 des Médias</h2>
+        <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
+            <span>{{ loading ? '⏳' : '🔄' }}</span>
+        </button>
+    </div>
+
+    <div class="loading" [style.display]="loading ? 'flex' : 'none'">
+        <div class="spinner"></div>
+        <p>Chargement...</p>
+    </div>
+
+    <div class="error" [style.display]="error && !loading ? 'flex' : 'none'">
+        <p>{{ error }}</p>
+        <button (click)="loadData()">Réessayer</button>
+    </div>
+
+    <div class="media-list" [style.display]="!loading && !error && topMediaData ? 'flex' : 'none'">
+        <div *ngFor="let media of topMediaData?.topMedia" class="media-item" [class]="getRankClass(media.rank)">
+
+            <div class="rank-badge" [style.background]="getRankColor(media.rank)">
+                <span class="rank-number">{{ media.rank }}</span>
+            </div>
+
+            <div class="media-poster">
+                <img [src]="getPosterUrl(media)" [alt]="media.title" class="poster-image">
+
+                <div class="type-badge">
+                    {{ getMediaIcon(media.mediaType) }}
+                </div>
+            </div>
+
+            <div class="media-info">
+                <h3 class="media-title">{{ media.title }}</h3>
+
+                <div class="media-stats">
+                    <span class="stat-item">
+                        <span class="stat-icon">👁️</span>
+                        <span class="stat-value">{{ media.watchCount }}</span>
+                    </span>
+                    <span class="stat-item">
+                        <span class="stat-icon">📊</span>
+                        <span class="stat-value">{{ media.avgProgress.toFixed(0) }}%</span>
+                    </span>
+                </div>
+
+                <div class="media-meta">
+                    <span *ngIf="media.quality" class="quality-badge">{{ media.quality }}</span>
+                    <span class="date">{{ media.date }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty" [style.display]="!loading && !error && (topMediaData?.topMedia?.length === 0) ? 'flex' : 'none'">
+        <p>Aucun média visionné</p>
+    </div>
+
+</div>

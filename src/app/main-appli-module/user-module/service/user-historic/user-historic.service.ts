@@ -9,12 +9,12 @@ import { CalculationMode } from '../../dto/user-historic/calculate-mode.type';
 import { PeriodType } from '../../dto/user-historic/period.type';
 import { ContentType } from '../../dto/user-historic/content.type';
 import { WatchingStatsResponse } from '../../dto/user-historic/watching-stats-response.interface';
+import { TopMediaResponse } from '../../dto/user-historic/top-media-response.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserHistoricService {
-
   private readonly apiUrlStatUser: string = `${environment.apiUrlStatUser}`;
 
   constructor(private http: HttpClient) {}
@@ -107,7 +107,7 @@ export class UserHistoricService {
       );
   }
 
-  getUserWatchingHistory(
+  public getUserWatchingHistory(
     userId: number,
     startDate: string,
     periodType: PeriodType = 'month',
@@ -119,8 +119,21 @@ export class UserHistoricService {
       .set('contentType', contentType);
 
     return this.http.get<WatchingStatsResponse>(
-      `${this.apiUrlStatUser}/users/${userId}/watching-history`,
+      `${this.apiUrlStatUser}/users/${userId ?? -1}/watching-history`,
       { params },
     );
   }
+
+  public getUserTopMedia(userId: number): Observable<TopMediaResponse> {
+    return this.http
+      .get<TopMediaResponse>(
+        `${this.apiUrlStatUser}/users/${userId ?? -1}/top-media`,
+      )
+      .pipe(
+        map((data: TopMediaResponse) => {
+          return data;
+        }),
+      );
+  }
+  
 }
