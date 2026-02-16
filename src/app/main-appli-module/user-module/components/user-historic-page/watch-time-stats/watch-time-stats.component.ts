@@ -64,7 +64,6 @@ export class WatchTimeStatsComponent implements OnInit {
   }
 
   refresh(): void {
-    this.userHistoricService.resetUserWatchTime();
     this.loadStats();
   }
 }

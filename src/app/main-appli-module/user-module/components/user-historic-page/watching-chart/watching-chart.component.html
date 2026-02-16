@@ -1,0 +1,63 @@
+<div class="watching-chart-container">
+
+  <div class="header">
+    <h2>Statistiques de Visionnage</h2>
+    <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
+      <span>{{ loading ? '⏳' : '🔄' }}</span>
+    </button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label>Date de début</label>
+      <input type="date" [value]="startDate" (change)="onStartDateChange($event)" [disabled]="loading"
+        class="date-input">
+    </div>
+
+    <div class="filter-group">
+      <label>Période</label>
+      <div class="filter-buttons">
+        @for(option of periodOptions; track option) {
+        <button class="filter-btn" [class.active]="selectedPeriod === option.value" [disabled]="loading"
+          (click)="onPeriodChange(option.value)">
+          <span class="btn-icon">{{ option.icon }}</span>
+          <span class="btn-label">{{ option.label }}</span>
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label>Type</label>
+      <div class="filter-buttons">
+        @for(option of contentOptions; track option) {
+        <button class="filter-btn"
+          [class.active]="selectedContent === option.value" [disabled]="loading"
+          (click)="onContentChange(option.value)">
+          <span class="btn-icon">{{ option.icon }}</span>
+          <span class="btn-label">{{ option.label }}</span>
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="loading" [style.display]="loading ? 'flex' : 'none'">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+
+  <div class="error" [style.display]="error && !loading ? 'flex' : 'none'">
+    <p>{{ error }}</p>
+    <button (click)="loadData()">Réessayer</button>
+  </div>
+
+  <div class="chart-wrapper" [style.display]="!loading && !error && stats && stats.data.length > 0 ? 'block' : 'none'">
+    <div #chartContainer class="chart-container"></div>
+    <div class="height-tmp"></div>
+  </div>
+
+  <div class="empty" [style.display]="!loading && !error && stats && stats.data.length === 0 ? 'flex' : 'none'">
+    <p>Aucune donnée pour cette période</p>
+  </div>
+</div>

@@ -362,7 +362,6 @@ export class CategoryPieChartComponent {
   }
 
   refresh(): void {
-    this.userHistoricService.resetAllPreferredCategories();
     this.loadData();
   }
 

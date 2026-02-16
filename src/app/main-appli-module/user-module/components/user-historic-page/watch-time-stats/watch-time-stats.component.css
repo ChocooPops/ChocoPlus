@@ -20,11 +20,11 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #FFD81F;
+    background: #ffd81f;
     border-radius: 3px;
 
     &:hover {
-      background: #FFC107;
+      background: #ffc107;
     }
   }
 
@@ -34,18 +34,18 @@
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #FFD81F;
+    border-bottom: 2px solid #ffd81f;
 
     h2 {
       margin: 0;
       font-size: 18px;
       font-weight: 700;
-      color: #FFD81F;
+      color: #ffd81f;
     }
 
     .refresh-btn {
       padding: 6px 12px;
-      background: #FFD81F;
+      background: #ffd81f;
       color: #141414;
       border: none;
       border-radius: 6px;
@@ -111,7 +111,7 @@
         .card-value {
           font-size: 22px;
           font-weight: 700;
-          color: #FFD81F;
+          color: #ffd81f;
           margin-bottom: 3px;
           line-height: 1;
         }
@@ -126,15 +126,15 @@
       }
 
       &.total-card {
-        border-left-color: #FFD81F;
+        border-left-color: #ffd81f;
       }
 
       &.movie-card {
-        border-left-color: #FF9800;
+        border-left-color: #ff9800;
       }
 
       &.series-card {
-        border-left-color: #2196F3;
+        border-left-color: #2196f3;
       }
     }
   }
@@ -148,7 +148,7 @@
 
     .spinner {
       border: 3px solid #2a2a2a;
-      border-top: 3px solid #FFD81F;
+      border-top: 3px solid #ffd81f;
       border-radius: 50%;
       width: 30px;
       height: 30px;
@@ -193,7 +193,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
