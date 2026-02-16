@@ -14,19 +14,19 @@
     align-items: center;
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 2px solid #FFD81F;
+    border-bottom: 2px solid #ffd81f;
     flex-shrink: 0;
 
     h2 {
       margin: 0;
       font-size: clamp(14px, 4vw, 18px);
       font-weight: 700;
-      color: #FFD81F;
+      color: #ffd81f;
     }
 
     .refresh-btn {
       padding: 6px 12px;
-      background: #FFD81F;
+      background: #ffd81f;
       color: #141414;
       border: none;
       border-radius: 6px;
@@ -84,13 +84,13 @@
       }
 
       &:hover:not(:disabled) {
-        border-color: #FFD81F;
+        border-color: #ffd81f;
         transform: translateY(-2px);
       }
 
       &.active {
-        background: #FFD81F;
-        border-color: #FFD81F;
+        background: #ffd81f;
+        border-color: #ffd81f;
 
         .filter-label {
           color: #141414;
@@ -113,6 +113,20 @@
     padding: 10px 5px 15px 5px;
     flex: 1;
     min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #ffd81f #141414;
+    cursor: grab;
+    user-select: none;
+
+    &.dragging {
+      cursor: grabbing;
+      scroll-behavior: auto;
+
+      * {
+        user-select: none;
+        pointer-events: none;
+      }
+    }
 
     &::-webkit-scrollbar {
       height: 6px;
@@ -124,11 +138,11 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #FFD81F;
+      background: #ffd81f;
       border-radius: 3px;
 
       &:hover {
-        background: #FFC107;
+        background: #ffc107;
       }
     }
 
@@ -234,7 +248,7 @@
             }
 
             .stat-value {
-              color: #FFD81F;
+              color: #ffd81f;
               font-weight: 600;
             }
           }
@@ -249,7 +263,7 @@
 
           .quality-badge {
             padding: 2px 5px;
-            background: #FFD81F;
+            background: #ffd81f;
             color: #141414;
             border-radius: 3px;
             font-weight: 600;
@@ -264,34 +278,34 @@
       }
 
       &.rank-gold {
-        border: 2px solid #FFD700;
+        border: 2px solid #ffd700;
 
         .rank-badge {
-          background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+          background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
         }
       }
 
       &.rank-silver {
-        border: 2px solid #C0C0C0;
+        border: 2px solid #c0c0c0;
 
         .rank-badge {
-          background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+          background: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%);
         }
       }
 
       &.rank-bronze {
-        border: 2px solid #CD7F32;
+        border: 2px solid #cd7f32;
 
         .rank-badge {
-          background: linear-gradient(135deg, #CD7F32 0%, #B8732D 100%);
+          background: linear-gradient(135deg, #cd7f32 0%, #b8732d 100%);
         }
       }
 
       &.rank-default {
-        border: 2px solid #FFD81F;
+        border: 2px solid #ffd81f;
 
         .rank-badge {
-          background: linear-gradient(135deg, #FFD81F 0%, #FFC107 100%);
+          background: linear-gradient(135deg, #ffd81f 0%, #ffc107 100%);
         }
       }
     }
@@ -306,7 +320,7 @@
 
     .spinner {
       border: 3px solid #2a2a2a;
-      border-top: 3px solid #FFD81F;
+      border-top: 3px solid #ffd81f;
       border-radius: 50%;
       width: clamp(25px, 5vw, 30px);
       height: clamp(25px, 5vw, 30px);
@@ -366,7 +380,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 480px) {

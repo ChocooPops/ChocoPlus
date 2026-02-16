@@ -7,7 +7,7 @@
     </div>
 
     <div class="filters">
-        @for(option of filterOptions; track option) {
+        @for (option of filterOptions; track option) {
         <button class="filter-btn" [class.active]="selectedMediaType === option.value" [disabled]="loading"
             (click)="onFilterChange(option.value)">
             <span class="filter-icon">{{ option.icon }}</span>
@@ -16,18 +16,23 @@
         }
     </div>
 
-    <div class="loading" [style.display]="loading ? 'flex' : 'none'">
+    @if(loading) {
+    <div class="loading">
         <div class="spinner"></div>
         <p>Chargement...</p>
     </div>
+    }
 
-    <div class="error" [style.display]="error && !loading ? 'flex' : 'none'">
+    @if (error && !loading) {
+    <div class="error">
         <p>{{ error }}</p>
         <button (click)="loadData()">Réessayer</button>
     </div>
+    }
 
-    <div class="media-list" [style.display]="!loading && !error && topMediaData ? 'flex' : 'none'">
-        @for(media of topMediaData?.topMedia; track media) {
+    @if(!loading && !error && topMediaData) {
+    <div #mediaList class="media-list">
+        @for (media of topMediaData.topMedia; track media) {
         <div class="media-item" [class]="getRankClass(media.rank)">
 
             <div class="rank-badge" [style.background]="getRankColor(media.rank)">
@@ -35,7 +40,7 @@
             </div>
 
             <div class="media-poster">
-                <img [src]="getPosterUrl(media)" [alt]="media.title" class="poster-image">
+                <img [src]="getPosterUrl(media)" [alt]="media.title" class="poster-image" draggable="false">
 
                 <div class="type-badge">
                     {{ getMediaIcon(media.mediaType) }}
@@ -66,6 +71,7 @@
         </div>
         }
     </div>
+    }
 
     <div class="empty"
         [style.display]="!loading && !error && ((topMediaData?.topMedia ?? []).length === 0) ? 'flex' : 'none'">
