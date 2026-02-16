@@ -13,4 +13,6 @@
     width: 100%;
     border-radius: 5px;
     background-color: #232323;
+        overflow: hidden;
+
 }

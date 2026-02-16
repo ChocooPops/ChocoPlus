@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { WatchTimeStats } from '../../dto/watch-time-stats.interface';
 
 export interface CategoryStats {
   categoryId: number;
@@ -32,11 +33,12 @@ export type CalculationMode = 'simple' | 'weighted' | 'by-time';
   providedIn: 'root',
 })
 export class UserHistoricService {
-
   private readonly apiUrlStatUser: string = `${environment.apiUrlStatUser}`;
   private preferredCategories: UserCategoryPreferences | undefined = undefined;
-  private preferredCategoriesWeighted: UserCategoryPreferences | undefined = undefined;
+  private preferredCategoriesWeighted: UserCategoryPreferences | undefined =
+    undefined;
   private preferredCategoriesByTime: CategoryByTime[] | undefined = undefined;
+  private userWatchTime: WatchTimeStats | undefined;
 
   constructor(private http: HttpClient) {}
 
@@ -135,6 +137,27 @@ export class UserHistoricService {
     this.preferredCategories = undefined;
     this.preferredCategoriesByTime = undefined;
     this.preferredCategoriesWeighted = undefined;
+  }
+
+  public getUserWatchTime(userId: number): Observable<WatchTimeStats> {
+    if (this.userWatchTime) {
+      return of(this.userWatchTime);
+    } else {
+      return this.http
+        .get<WatchTimeStats>(
+          `${this.apiUrlStatUser}/users/${userId ?? -1}/watch-time`,
+        )
+        .pipe(
+          map((data: WatchTimeStats) => {
+            this.userWatchTime = data;
+            return this.userWatchTime;
+          }),
+        );
+    }
+  }
+
+  public resetUserWatchTime(): void {
+    this.userWatchTime = undefined;
   }
 
 }
