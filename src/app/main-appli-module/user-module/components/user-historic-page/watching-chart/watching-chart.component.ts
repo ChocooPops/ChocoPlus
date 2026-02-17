@@ -107,7 +107,7 @@ export class WatchingChartComponent {
     d3.select(this.chartContainer.nativeElement).selectAll('*').remove();
 
     const containerWidth = this.chartContainer.nativeElement.clientWidth;
-    const width = containerWidth - 60;
+    const width = containerWidth - 60 - 60;
     const height = 400;
     const margin = { top: 20, right: 30, bottom: 60, left: 60 };
 

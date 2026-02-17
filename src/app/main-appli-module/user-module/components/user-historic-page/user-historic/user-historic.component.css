@@ -1,11 +1,12 @@
 .container {
   display: grid;
-  grid-template-columns: calc(70% - 12.5px) calc(30% - 12.5px);
-  grid-template-rows: calc(35% - 12.5px) calc(65% - 12.5px);
+  grid-template-columns: 70fr 30fr;
+  grid-template-rows: 35fr 65fr;
   gap: 25px;
   height: 100%;
   width: 100%;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .container-info {
