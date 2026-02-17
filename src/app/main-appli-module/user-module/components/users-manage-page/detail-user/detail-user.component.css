@@ -63,10 +63,6 @@ p {
     border-radius: 0px 0px 3px 3px;
 }
 
-.container-detail {
-    flex: 1;
-}
-
 .container-info {
     height: 100%;
     width: 100%;
@@ -117,13 +113,19 @@ p {
     overflow: hidden;
 }
 
-.container-detail {
-    height: 100%;
+.container-details {
+    height: 150%;
     width: 100%;
     overflow: hidden;
     padding-inline: 20px;
     padding-block: 10px;
     box-sizing: border-box;
+}
+
+.container-detail {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
 }
 
 .container-info::-webkit-scrollbar {

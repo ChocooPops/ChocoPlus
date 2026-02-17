@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CategoryPieChartComponent } from '../category-pie-chart/category-pie-chart.component';
 import { WatchTimeStatsComponent } from '../watch-time-stats/watch-time-stats.component';
 import { WatchingChartComponent } from '../watching-chart/watching-chart.component';
@@ -12,5 +12,7 @@ import { TopMediaComponent } from '../top-media/top-media.component';
   styleUrl: './user-historic.component.css'
 })
 export class UserHistoricComponent {
+  
+  @Input() userId!: number;
 
 }

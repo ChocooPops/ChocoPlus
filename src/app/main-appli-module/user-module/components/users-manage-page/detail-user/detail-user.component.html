@@ -11,10 +11,10 @@
         </div>
     </div>
 
-    <div class="container-detail">
+    <div class="container-details">
         @if(detailType) {
         <div class="container-detail">
-            <app-user-historic></app-user-historic>
+            <app-user-historic [userId]="user.id"></app-user-historic>
         </div>
         }@else {
         <div class="container-info">

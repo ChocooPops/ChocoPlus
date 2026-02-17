@@ -100,3 +100,21 @@ p {
         color: var(--white-dark);
     }
 }
+
+@media (max-width: 1000px) {
+    .container-user-params {
+        height: auto;
+    }
+
+    .container-info-user {
+        height: auto;
+    }
+
+    .container-params {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
+        width: 100%;
+        margin-top: 40px;
+    }
+}

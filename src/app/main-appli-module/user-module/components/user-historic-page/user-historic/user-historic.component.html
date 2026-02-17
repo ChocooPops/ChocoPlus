@@ -1,14 +1,14 @@
 <div class="container">
     <div class="container-info">
-        <app-top-media></app-top-media>
+        <app-top-media [userId]="userId"></app-top-media>
     </div>
     <div class="container-info">
-        <app-watch-time-stats></app-watch-time-stats>
+        <app-watch-time-stats [userId]="userId"></app-watch-time-stats>
     </div>
     <div class="container-info">
-        <app-watching-chart></app-watching-chart>
+        <app-watching-chart [userId]="userId"></app-watching-chart>
     </div>
     <div class="container-info">
-        <app-category-pie-chart [limit]="10"> </app-category-pie-chart>
+        <app-category-pie-chart [userId]="userId" [limit]="10"> </app-category-pie-chart>
     </div>
 </div>

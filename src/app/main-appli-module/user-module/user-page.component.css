@@ -24,3 +24,18 @@
     width: 100%;
     position: relative;
 }
+
+@media (max-width: 1000px) {
+    .container-user {
+        grid-template: auto 1fr / 1fr;
+        height: auto;
+        position: relative;
+        top: 0;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .container-router-outlet {
+        height: auto;
+    }
+}

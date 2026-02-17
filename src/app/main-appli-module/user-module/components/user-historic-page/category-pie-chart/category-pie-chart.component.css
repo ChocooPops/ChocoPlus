@@ -111,13 +111,13 @@
         }
 
         &:hover:not(:disabled) {
-          border-color: #808080;
+          border-color: #9b9b9b;
           transform: translateY(-2px);
         }
 
         &.active {
-          background: #808080;
-          border-color: #808080;
+          background: #9b9b9b;
+          border-color: #9b9b9b;
 
           .mode-label {
             color: #141414;

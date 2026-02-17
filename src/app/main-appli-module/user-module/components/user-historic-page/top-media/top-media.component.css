@@ -6,7 +6,13 @@
   padding: 15px;
   background: transparent;
   color: #ffffff;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
 
   .header {
     display: flex;
@@ -93,13 +99,13 @@
       }
 
       &:hover:not(:disabled) {
-        border-color: #808080;
+        border-color: #9b9b9b;
         transform: translateY(-2px);
       }
 
       &.active {
-        background: #808080;
-        border-color: #808080;
+        background: #9b9b9b;
+        border-color: #9b9b9b;
 
         .filter-label {
           color: #141414;
@@ -124,6 +130,8 @@
     min-height: 0;
     cursor: grab;
     user-select: none;
+    flex-shrink: 0;
+    min-height: 180px;
 
     &.dragging {
       cursor: grabbing;
@@ -296,10 +304,10 @@
       }
 
       &.rank-default {
-        border: 2px solid #E6E6E6;
+        border: 2px solid #FFE257;
 
         .rank-badge {
-          background: linear-gradient(135deg, #E6E6E6 0%, #E6E6E6 100%);
+          background: linear-gradient(135deg, #FFE257 0%, #FFE257 100%);
         }
       }
     }
