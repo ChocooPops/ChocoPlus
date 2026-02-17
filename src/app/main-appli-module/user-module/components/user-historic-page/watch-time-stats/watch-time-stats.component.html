@@ -2,7 +2,11 @@
     <div class="header">
         <h2>Temps de Visionnage</h2>
         <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
-            <span>{{ loading ? '⏳' : '🔄' }}</span>
+            @if(loading) {
+            <img [src]="srcLoading">
+            }@else {
+            <img [src]="srcReset">
+            }
         </button>
     </div>
 

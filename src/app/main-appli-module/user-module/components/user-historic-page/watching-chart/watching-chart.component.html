@@ -3,7 +3,11 @@
   <div class="header">
     <h2>Statistiques de Visionnage</h2>
     <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
-      <span>{{ loading ? '⏳' : '🔄' }}</span>
+      @if(loading) {
+      <img [src]="srcLoading">
+      }@else {
+      <img [src]="srcReset">
+      }
     </button>
   </div>
 
@@ -31,8 +35,7 @@
       <label>Type</label>
       <div class="filter-buttons">
         @for(option of contentOptions; track option) {
-        <button class="filter-btn"
-          [class.active]="selectedContent === option.value" [disabled]="loading"
+        <button class="filter-btn" [class.active]="selectedContent === option.value" [disabled]="loading"
           (click)="onContentChange(option.value)">
           <span class="btn-icon">{{ option.icon }}</span>
           <span class="btn-label">{{ option.label }}</span>

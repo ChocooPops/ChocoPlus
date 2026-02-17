@@ -14,26 +14,30 @@
     align-items: center;
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 2px solid #ffd81f;
+    border-bottom: 2px solid var(--white-dark);
     flex-shrink: 0;
 
     h2 {
       margin: 0;
       font-size: clamp(14px, 4vw, 18px);
       font-weight: 700;
-      color: #ffd81f;
+      color: var(--white-dark);
     }
 
     .refresh-btn {
-      padding: 6px 12px;
-      background: #ffd81f;
+      padding: 8px 16px;
+      background: var(--grey);
       color: #141414;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 600;
       transition: all 0.3s;
-      flex-shrink: 0;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       &:hover:not(:disabled) {
         transform: translateY(-2px);
@@ -42,6 +46,11 @@
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+      }
+
+      img {
+        height: 16px;
+        width: 16px;
       }
     }
   }
@@ -84,13 +93,13 @@
       }
 
       &:hover:not(:disabled) {
-        border-color: #ffd81f;
+        border-color: #808080;
         transform: translateY(-2px);
       }
 
       &.active {
-        background: #ffd81f;
-        border-color: #ffd81f;
+        background: #808080;
+        border-color: #808080;
 
         .filter-label {
           color: #141414;
@@ -113,8 +122,6 @@
     padding: 10px 5px 15px 5px;
     flex: 1;
     min-height: 0;
-    scrollbar-width: thin;
-    scrollbar-color: #ffd81f #141414;
     cursor: grab;
     user-select: none;
 
@@ -129,21 +136,8 @@
     }
 
     &::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: #141414;
-      border-radius: 3px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: #ffd81f;
-      border-radius: 3px;
-
-      &:hover {
-        background: #ffc107;
-      }
+      height: 3px;
+      width: 3px;
     }
 
     .media-item {
@@ -286,10 +280,10 @@
       }
 
       &.rank-silver {
-        border: 2px solid #c0c0c0;
+        border: 2px solid #a3a3a3;
 
         .rank-badge {
-          background: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%);
+          background: linear-gradient(135deg, #a3a3a3 0%, #a3a3a3 100%);
         }
       }
 
@@ -302,10 +296,10 @@
       }
 
       &.rank-default {
-        border: 2px solid #ffd81f;
+        border: 2px solid #E6E6E6;
 
         .rank-badge {
-          background: linear-gradient(135deg, #ffd81f 0%, #ffc107 100%);
+          background: linear-gradient(135deg, #E6E6E6 0%, #E6E6E6 100%);
         }
       }
     }

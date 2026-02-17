@@ -7,15 +7,16 @@ import { UserHistoricService } from '../../../service/user-historic/user-histori
   selector: 'app-watch-time-stats',
   templateUrl: './watch-time-stats.component.html',
   styleUrls: ['./watch-time-stats.component.scss'],
-  imports: []
+  imports: [],
 })
 export class WatchTimeStatsComponent implements OnInit {
-
   @Input() userId!: number;
 
   stats: WatchTimeStats | null = null;
   loading: boolean = true;
   error: string | null = null;
+  srcReset: string = 'icon/modify.svg';
+  srcLoading: string = 'icon/sablier.svg';
 
   constructor(private userHistoricService: UserHistoricService) {}
 
@@ -35,13 +36,13 @@ export class WatchTimeStatsComponent implements OnInit {
       error: (err) => {
         this.error = 'Erreur lors du chargement des statistiques';
         this.loading = false;
-      }
+      },
     });
   }
 
   formatTime(hours: number, minutes: number, seconds: number): string {
     const parts: string[] = [];
-    
+
     if (hours > 0) {
       parts.push(`${hours}h`);
     }
@@ -51,7 +52,7 @@ export class WatchTimeStatsComponent implements OnInit {
     if (seconds > 0 && hours === 0) {
       parts.push(`${seconds}s`);
     }
-    
+
     return parts.join(' ') || '0min';
   }
 

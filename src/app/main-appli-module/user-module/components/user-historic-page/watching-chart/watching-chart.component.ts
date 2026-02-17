@@ -26,6 +26,8 @@ export class WatchingChartComponent {
   selectedPeriod: PeriodType = 'month';
   selectedContent: ContentType = 'all';
   startDate: string = '';
+  srcReset: string = 'icon/modify.svg';
+  srcLoading: string = 'icon/sablier.svg';
 
   periodOptions: FilterOption[] = [
     { value: 'day', label: 'Jour', icon: '📅' },

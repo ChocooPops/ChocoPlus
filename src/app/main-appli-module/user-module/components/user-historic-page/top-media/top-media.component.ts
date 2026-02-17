@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+} from '@angular/core';
 import { UserHistoricService } from '../../../service/user-historic/user-historic.service';
 import { TopMedia } from '../../../dto/user-historic/top-media.interface';
 import { TopMediaResponse } from '../../../dto/user-historic/top-media-response.interface';
@@ -12,10 +20,9 @@ import { CompressedPosterService } from '../../../../common-module/services/comp
   selector: 'app-top-media',
   templateUrl: './top-media.component.html',
   styleUrls: ['./top-media.component.scss'],
-  imports: []
+  imports: [],
 })
 export class TopMediaComponent implements OnInit, AfterViewInit, OnDestroy {
-
   @Input() userId!: number;
   @ViewChild('mediaList') mediaListRef!: ElementRef<HTMLDivElement>;
 
@@ -24,7 +31,7 @@ export class TopMediaComponent implements OnInit, AfterViewInit, OnDestroy {
   filterOptions: FilterOption[] = [
     { value: 'all', label: 'Tout', icon: '🎬' },
     { value: 'MOVIE', label: 'Films', icon: '🎥' },
-    { value: 'SERIES', label: 'Séries', icon: '📺' }
+    { value: 'SERIES', label: 'Séries', icon: '📺' },
   ];
 
   topMediaData: TopMediaResponse | null = null;
@@ -38,10 +45,12 @@ export class TopMediaComponent implements OnInit, AfterViewInit, OnDestroy {
   private mouseMoveHandler?: (e: MouseEvent) => void;
   private mouseUpHandler?: () => void;
   private mouseLeaveHandler?: () => void;
+  srcReset: string = 'icon/modify.svg';
+  srcLoading: string = 'icon/sablier.svg';
 
   constructor(
     private userHistoricService: UserHistoricService,
-    private compressedPosterService: CompressedPosterService
+    private compressedPosterService: CompressedPosterService,
   ) {}
 
   ngOnInit(): void {
@@ -130,21 +139,23 @@ export class TopMediaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
-    this.userHistoricService.getUserTopMedia(this.userId, this.selectedMediaType).subscribe({
-      next: (data) => {
-        this.topMediaData = data;
-        this.loading = false;
-        
-        setTimeout(() => {
-          this.removeDragScrollListeners();
-          this.setupDragScroll();
-        }, 100);
-      },
-      error: (err) => {
-        this.error = 'Erreur lors du chargement du top 10';
-        this.loading = false;
-      }
-    });
+    this.userHistoricService
+      .getUserTopMedia(this.userId, this.selectedMediaType)
+      .subscribe({
+        next: (data) => {
+          this.topMediaData = data;
+          this.loading = false;
+
+          setTimeout(() => {
+            this.removeDragScrollListeners();
+            this.setupDragScroll();
+          }, 100);
+        },
+        error: (err) => {
+          this.error = 'Erreur lors du chargement du top 10';
+          this.loading = false;
+        },
+      });
   }
 
   getPosterUrl(media: TopMedia): string {
@@ -167,9 +178,9 @@ export class TopMediaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getRankColor(rank: number): string {
     if (rank === 1) return '#FFD700';
-    if (rank === 2) return '#C0C0C0';
+    if (rank === 2) return '#a3a3a3';
     if (rank === 3) return '#CD7F32';
-    return '#FFD81F';
+    return '#E6E6E6';
   }
 
   refresh(): void {

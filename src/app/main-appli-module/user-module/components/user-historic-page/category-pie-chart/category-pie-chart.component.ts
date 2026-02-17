@@ -23,7 +23,9 @@ export class CategoryPieChartComponent {
   private svg: any;
   private margin = { top: 10, right: 10, bottom: 10, left: 10 };
   private radius: number = 0;
-  
+  srcReset: string = 'icon/modify.svg';
+  srcLoading: string = 'icon/sablier.svg';
+
   private customColors = [
     '#FFD81F', '#FFC107', '#FF9800', '#FF5722', '#E91E63',
     '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#00BCD4'

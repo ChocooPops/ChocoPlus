@@ -2,7 +2,11 @@
   <div class="header">
     <h2>Catégories Préférées</h2>
     <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
-      <span>{{ loading ? '⏳' : '🔄' }}</span>
+      @if(loading) {
+      <img [src]="srcLoading">
+      }@else {
+      <img [src]="srcReset">
+      }
     </button>
   </div>
 
@@ -14,8 +18,8 @@
 
     <div class="mode-buttons">
       @for(mode of modeOptions; track mode) {
-      <button class="mode-btn" [class.active]="selectedMode === mode.value"
-        [disabled]="loading" (click)="onModeChange(mode.value)">
+      <button class="mode-btn" [class.active]="selectedMode === mode.value" [disabled]="loading"
+        (click)="onModeChange(mode.value)">
         <span class="mode-icon">{{ mode.icon }}</span>
         <span class="mode-label">{{ mode.label }}</span>
       </button>
