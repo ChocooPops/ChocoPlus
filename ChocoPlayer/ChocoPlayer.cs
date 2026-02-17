@@ -16,6 +16,7 @@ namespace ChocoPlayer
         private LibVLC? _libVLC;
         private MediaPlayer? _mediaPlayer;
         private VideoView? _videoView;
+        private Panel? _clickOverlay;
         private PlayerControls? _playerControls;
         private TrackSettingsMenu? _trackSettingsMenu;
         private SeasonsMenu? _seasonsMenu;
@@ -633,8 +634,9 @@ namespace ChocoPlayer
             };
             this.Controls.Add(_videoView);
 
-            _videoView.MouseDown += VideoView_MouseDown;
-            _videoView.MouseMove += VideoView_MouseMove;
+            _clickOverlay = new TransparentPanel();
+            _clickOverlay.MouseDown += ClickOverlay_MouseDown;
+            this.Controls.Add(_clickOverlay);
 
             _playerControls = new PlayerControls();
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
@@ -704,14 +706,76 @@ namespace ChocoPlayer
             UpdateLayout();
         }
 
+        private void ClickOverlay_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left || _mediaPlayer == null)
+                return;
+
+            bool menuWasVisible = false;
+
+            if (_trackSettingsMenu != null && _trackSettingsMenu.Visible)
+            {
+                _trackSettingsMenu.Hide();
+                menuWasVisible = true;
+            }
+
+            if (_seasonsMenu != null && _seasonsMenu.Visible)
+            {
+                _seasonsMenu.Hide();
+                menuWasVisible = true;
+            }
+
+            if (menuWasVisible)
+                return;
+
+            if (_isMiniMode)
+            {
+                Point formLocation = this.PointToClient(_clickOverlay!.PointToScreen(e.Location));
+                int x = formLocation.X;
+                int y = formLocation.Y;
+                int w = this.ClientSize.Width;
+                int h = this.ClientSize.Height;
+
+                bool left = x <= RESIZE_BORDER;
+                bool right = x >= w - RESIZE_BORDER;
+                bool bottom = y >= h - RESIZE_BORDER;
+
+                int hitTest = 0;
+                if (bottom && left) hitTest = HTBOTTOMLEFT;
+                else if (bottom && right) hitTest = HTBOTTOMRIGHT;
+                else if (bottom) hitTest = HTBOTTOM;
+                else if (left) hitTest = HTLEFT;
+                else if (right) hitTest = HTRIGHT;
+
+                if (hitTest != 0)
+                {
+                    ReleaseCapture();
+                    SendMessage(this.Handle, WM_NCLBUTTONDOWN, hitTest, 0);
+                    return;
+                }
+            }
+
+            if (_mediaPlayer.IsPlaying)
+            {
+                _mediaPlayer.Pause();
+                _playerControls?.SetPlaying(false);
+            }
+            else
+            {
+                _mediaPlayer.Play();
+                _playerControls?.SetPlaying(true);
+            }
+        }
+
         private void UpdateLayout()
         {
             int titleBarHeight = _isMiniMode ? _miniPlayerButton!.GetTitleBarHeight() : 0;
+            int controlsHeight = _playerControls!.GetControlsHeight();
 
             _videoView!.SetBounds(0, titleBarHeight, this.ClientSize.Width, this.ClientSize.Height - titleBarHeight);
             _miniPlayerButton?.SetPosition(this.ClientSize.Width);
 
-            int controlsHeight = _playerControls!.GetControlsHeight();
+            _clickOverlay?.SetBounds(0, titleBarHeight, this.ClientSize.Width, this.ClientSize.Height - titleBarHeight - controlsHeight);
 
             if (_isFullscreen)
             {
@@ -737,6 +801,7 @@ namespace ChocoPlayer
                 }
             }
 
+            _clickOverlay?.BringToFront();
             _playerControls.BringToFront();
             _miniPlayerButton?.BringToFront();
             _trackSettingsMenu.BringToFront();
@@ -1104,72 +1169,6 @@ namespace ChocoPlayer
             }
         }
 
-        private void VideoView_MouseDown(object? sender, MouseEventArgs e)
-        {
-            if (!_isMiniMode || e.Button != MouseButtons.Left)
-                return;
-
-            int hitTest = GetVideoViewResizeHitTest(e.Location);
-
-            if (hitTest != 0)
-            {
-                ReleaseCapture();
-                SendMessage(this.Handle, WM_NCLBUTTONDOWN, hitTest, 0);
-            }
-        }
-
-        private void VideoView_MouseMove(object? sender, MouseEventArgs e)
-        {
-            if (!_isMiniMode)
-                return;
-
-            int hitTest = GetVideoViewResizeHitTest(e.Location);
-            UpdateVideoViewCursor(hitTest);
-        }
-
-        private int GetVideoViewResizeHitTest(Point location)
-        {
-            Point formLocation = this.PointToClient(_videoView!.PointToScreen(location));
-
-            int x = formLocation.X;
-            int y = formLocation.Y;
-            int width = this.ClientSize.Width;
-            int height = this.ClientSize.Height;
-
-            bool left = x <= RESIZE_BORDER;
-            bool right = x >= width - RESIZE_BORDER;
-            bool bottom = y >= height - RESIZE_BORDER;
-
-            if (bottom && left) return HTBOTTOMLEFT;
-            if (bottom && right) return HTBOTTOMRIGHT;
-            if (bottom) return HTBOTTOM;
-            if (left) return HTLEFT;
-            if (right) return HTRIGHT;
-
-            return 0;
-        }
-
-        private void UpdateVideoViewCursor(int hitTest)
-        {
-            switch (hitTest)
-            {
-                case HTLEFT:
-                case HTRIGHT:
-                    _videoView!.Cursor = Cursors.SizeWE;
-                    break;
-                case HTBOTTOM:
-                    _videoView!.Cursor = Cursors.SizeNS;
-                    break;
-                case HTBOTTOMLEFT:
-                case HTBOTTOMRIGHT:
-                    _videoView!.Cursor = Cursors.SizeNWSE;
-                    break;
-                default:
-                    _videoView!.Cursor = Cursors.Default;
-                    break;
-            }
-        }
-
         private class ProgressListener : PlayerControls.IProgressChangeListener
         {
             private ChocoPlayer _chocoPlayer;
@@ -1466,6 +1465,26 @@ namespace ChocoPlayer
                     }
                 }
                 _chocoPlayer._seasonsMenu?.Hide();
+            }
+        }
+
+        private class TransparentPanel : Panel
+        {
+            public TransparentPanel()
+            {
+                SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+                SetStyle(ControlStyles.Opaque, false);
+                BackColor = Color.Transparent;
+            }
+
+            protected override CreateParams CreateParams
+            {
+                get
+                {
+                    CreateParams cp = base.CreateParams;
+                    cp.ExStyle |= 0x20;
+                    return cp;
+                }
             }
         }
 
