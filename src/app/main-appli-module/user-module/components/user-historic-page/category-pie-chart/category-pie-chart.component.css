@@ -86,6 +86,7 @@
 
     .mode-buttons {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
 
       .mode-btn {
@@ -141,7 +142,7 @@
     padding: 12px;
     background: #141414;
     border-radius: 10px;
-
+    
     .stat-item {
       text-align: center;
 

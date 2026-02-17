@@ -17,6 +17,7 @@ export class DetailUserComponent {
   @Input() user !: UserModel;
   @Input() back !: string;
   detailType: boolean = false;
+  currentClass: 'height-user-historic' | 'height-user-perso' = 'height-user-perso';
 
   formGroup !: FormGroup;
   formControlFirstName: string = 'inputFirstName';
@@ -43,10 +44,12 @@ export class DetailUserComponent {
 
   displayInfoUser(): void {
     this.detailType = false;
+    this.currentClass = 'height-user-perso';
   }
 
   displayStats(): void {
     this.detailType = true;
+    this.currentClass = 'height-user-historic';
   }
 
 }
