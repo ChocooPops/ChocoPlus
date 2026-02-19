@@ -5,18 +5,28 @@ import { ChocoPlayerModel } from '../../models/choco-player.interface';
 
 declare const window: any;
 
+export interface ChocoPlayerStatus {
+  status: 'stopping' | 'stopped' | 'error';
+  code?: number;
+  message?: string;
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StreamService {
-
+  
   private readonly apiUrlStream: string = `${environment.apiUrlStream}`;
   private readonly urlGetStreamMovie: string = 'stream-movie';
   private readonly urlGetStreamEpisode: string = 'stream-episode';
   private readonly urlGetStreamNewsVideoRunning: string = 'stream-news';
   private readonly paramToken: string = 'token';
 
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {
+    window.electron.onChocoPlayerStatus((data: any) => {
+      console.log(data);
+    });
+  }
 
   public getUrlStreamMovie(movieId: number): string {
     const token: string = this.authService.getToken() ?? '';
@@ -33,7 +43,9 @@ export class StreamService {
     return `${this.apiUrlStream}/${this.urlGetStreamNewsVideoRunning}/${newsId}?${this.paramToken}=${token}`;
   }
 
-  public async launchJavaAppToMovie(chocoPlayer: ChocoPlayerModel): Promise<void> {
+  public async launchJavaAppToMovie(
+    chocoPlayer: ChocoPlayerModel,
+  ): Promise<void> {
     await window.electron.invoke('launch-choco-player', chocoPlayer);
   }
 

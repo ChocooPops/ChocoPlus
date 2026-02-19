@@ -16,6 +16,8 @@ contextBridge.exposeInMainWorld('electron', {
   getRefreshToken: () => ipcRenderer.invoke('secureStore:getRefreshToken'),
   deleteRefreshToken: () => ipcRenderer.invoke('secureStore:deleteRefreshToken'),
 
+  onChocoPlayerStatus: (callback) => ipcRenderer.on('choco-player-status', (_event, data) => callback(data)),
+  
   apiUrl: apiUrl,
   headerSecret: headerSecret,
   headerName: headerName

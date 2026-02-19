@@ -322,6 +322,15 @@ namespace ChocoPlayer
                    formPoint.Y <= titleBarHeight;
         }
 
+        private static readonly Cursor _hiddenCursor = CreateHiddenCursor();
+
+        private static Cursor CreateHiddenCursor()
+        {
+            Bitmap bmp = new Bitmap(1, 1);
+            bmp.SetPixel(0, 0, Color.Transparent);
+            return new Cursor(bmp.GetHicon());
+        }
+
         private void ShowControls()
         {
             if (!_controlsVisible)
@@ -336,6 +345,7 @@ namespace ChocoPlayer
                 }
 
                 this.Cursor = Cursors.Default;
+                _clickOverlay!.Cursor = Cursors.Default;
             }
         }
 
@@ -347,6 +357,7 @@ namespace ChocoPlayer
             if (!_isMiniMode)
             {
                 _miniPlayerButton!.Visible = false;
+                _clickOverlay!.Cursor = _hiddenCursor;
             }
             else
             {
@@ -903,7 +914,7 @@ namespace ChocoPlayer
                 long totalTime = _mediaPlayer.Length;
                 if (totalTime > 0)
                 {
-                    float position = _watchProgress / 100f;
+                    float position = (_watchProgress - 60) / 100f;
                     _mediaPlayer.Position = position;
                 }
             }
@@ -1425,7 +1436,7 @@ namespace ChocoPlayer
 
                         _chocoPlayer._mediaPlayer?.Stop();
                         _chocoPlayer._watchProgressApplied = false;
-                        
+
                         var newMedia = new Media(_chocoPlayer._libVLC, episodePath, FromType.FromLocation);
 
                         if (episodePath.StartsWith("http://") || episodePath.StartsWith("https://"))

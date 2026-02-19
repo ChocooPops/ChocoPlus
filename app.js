@@ -6,7 +6,7 @@ const { exec } = require('child_process');
 const { spawn } = require("child_process");
 const fs = require('fs');
 
-const envPath = app.isPackaged 
+const envPath = app.isPackaged
   ? path.join(process.resourcesPath, '.env')
   : path.join(__dirname, '.env');
 require('dotenv').config({ path: envPath });
@@ -16,6 +16,7 @@ const ACCOUNT = 'refresh-token';
 
 let mainWindow;
 let csharpProcess = null;
+let currentChocoPlayer = null;
 
 // Vérifier qu'une seule instance de l'application est ouverte
 const gotTheLock = app.requestSingleInstanceLock();
@@ -107,7 +108,7 @@ function createWindow() {
         `--api-url=${process.env.API_URL || 'http://localhost:3000'}`,
         `--header-secret=${process.env.HEADER_SECRET_API}`,
         `--header-name=${process.env.HEADER_NAME_FIELD_SECRET_API}`
-      ]    
+      ]
     },
     icon: path.join(__dirname, 'dist/choco-plus/browser/icon.ico'),
   });
@@ -272,12 +273,17 @@ ipcMain.handle('secureStore:deleteRefreshToken', async () =>
 
 ipcMain.handle('launch-choco-player', async (event, dataObject) => {
   try {
+
+    if (currentChocoPlayer?.MediaId === dataObject.MediaId && currentChocoPlayer?.EpisodeId === dataObject.EpisodeId) {
+      return null;
+    }
     // Vérifier si un processus est déjà en cours d'exécution
     if (csharpProcess && !csharpProcess.killed) {
       //console.log('ChocoPlayer est déjà en cours d\'exécution');
       await stopCSharpProcess(true);
     }
 
+    currentChocoPlayer = dataObject;
     const bounds = mainWindow.getBounds();
     dataObject.BaseUrl = process.env.API_URL;
     dataObject.PositionX = bounds.x;
@@ -317,6 +323,10 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
 
     csharpProcess.on('close', (code) => {
       //console.log(`C# process exited with code ${code}`);
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('choco-player-status', dataObject);
+      }
+      currentChocoPlayer = null;
       csharpProcess = null;
     });
 

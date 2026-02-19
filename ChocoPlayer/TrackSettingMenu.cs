@@ -262,7 +262,7 @@ namespace ChocoPlayer
                 new TrackInfo(-1, "Désactiver"),
                 startX, currentY, width, isDisabled, isHoveredDisable, false);
 
-            _subtitleItems.Add(new TrackItem(-1, startX, currentY - ITEM_HEIGHT, width, ITEM_HEIGHT));
+            //_subtitleItems.Add(new TrackItem(-1, startX, currentY - ITEM_HEIGHT, width, ITEM_HEIGHT));
             currentY += ITEM_SPACING;
 
             if (subtitleTracks.Count == 0 || subtitleTracks.Count == 1)

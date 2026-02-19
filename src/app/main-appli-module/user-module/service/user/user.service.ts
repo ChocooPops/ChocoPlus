@@ -11,7 +11,6 @@ import { LicenseService } from '../../../license-module/service/license/licence.
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { MovieService } from '../../../media-module/services/movie/movie.service';
 import { NewsService } from '../../../news-module/services/news/news.service';
-import { MediaIdTypeModel } from '../../../media-module/models/media-id-type.interface';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SeriesService } from '../../../media-module/services/series/series.service';
 import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
