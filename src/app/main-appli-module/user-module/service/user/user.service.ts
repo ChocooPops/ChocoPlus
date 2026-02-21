@@ -107,8 +107,11 @@ export class UserService {
 
   private changeAllMediaList(mediaId: number, state: boolean): void {
     this.newsVideoRunningService.changeMysList(mediaId, state);
-    this.selectionService.changeMyList(mediaId, state);
-    this.licenseService.changeMyList(mediaId, state);
+    this.selectionService.changeMyListIntoHomePage(mediaId, state);
+    this.selectionService.changeMyListIntoMoviePage(mediaId, state);
+    this.selectionService.changeMyListIntoSeriesPage(mediaId, state);
+    this.licenseService.changeMyListIntoLicenseHome(mediaId, state);
+    this.licenseService.changeMyListIntoLicenseResearch(mediaId, state);
     this.newsService.changeMyList(mediaId, state);
   }
 

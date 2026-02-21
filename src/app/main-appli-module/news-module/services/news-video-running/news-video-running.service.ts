@@ -8,6 +8,8 @@ import { NewsVideoRunningModel } from '../../models/news-video-running.interface
 import { catchError, map, Observable, of } from 'rxjs';
 import { MovieModel } from '../../../media-module/models/movie-model';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
+import { SeasonModel } from '../../../media-module/models/series/season.interface';
+import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -100,6 +102,25 @@ export class NewsVideoRunningService {
     }
     if (this.firstSeriesPresentation && this.firstSeriesPresentation.media.id === mediaId) {
       this.firstSeriesPresentation.media.isInList = state;
+    }
+  }
+
+  public changeWatchProgressIntoMovieNews(movieId: number, watchProgress: number): void {
+    if(this.firstMoviePresentation && this.firstMoviePresentation?.media.id === movieId) {
+      (this.firstMoviePresentation.media as MovieModel).watchProgress = watchProgress;
+    }
+  }
+
+  public changeWatchProgressIntoSeriesNews(seriesId: number, episodeId: number, watchProgress: number): void {
+    if(this.firstMoviePresentation && this.firstMoviePresentation?.media.id === seriesId) {
+      (this.firstMoviePresentation.media as SeriesModel).seasons.some((season: SeasonModel) => {
+        season.episodes.forEach((episode: EpisodeModel) => {
+          if (episode.id === episodeId) {
+            episode.watchProgress = watchProgress;
+            return;
+          }
+        });
+      });
     }
   }
 

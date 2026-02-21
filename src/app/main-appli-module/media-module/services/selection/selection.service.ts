@@ -8,6 +8,10 @@ import { SelectionType } from '../../models/selection-type.enum';
 import { MovieService } from '../movie/movie.service';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { SeriesService } from '../series/series.service';
+import { MovieModel } from '../../models/movie-model';
+import { SeriesModel } from '../../models/series/series.interface';
+import { SeasonModel } from '../../models/series/season.interface';
+import { EpisodeModel } from '../../models/series/episode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -153,7 +157,7 @@ export class SelectionService {
     )
   }
 
-  public changeMyList(mediaId: number, state: boolean): void {
+  public changeMyListIntoHomePage(mediaId: number, state: boolean): void {
     this.selectionOnHomePage.some((selection: SelectionModel) =>
       selection.mediaList.some((media: MediaModel) => {
         if (media.id === mediaId) {
@@ -162,6 +166,9 @@ export class SelectionService {
         }
       })
     );
+  }
+
+  public changeMyListIntoMoviePage(mediaId: number, state: boolean): void {
     this.selectionOnMoviePage.some((selection: SelectionModel) =>
       selection.mediaList.some((media: MediaModel) => {
         if (media.id === mediaId) {
@@ -170,6 +177,9 @@ export class SelectionService {
         }
       })
     );
+  }
+
+  public changeMyListIntoSeriesPage(mediaId: number, state: boolean): void {
     this.selectionOnSeriesPage.some((selection: SelectionModel) =>
       selection.mediaList.some((media: MediaModel) => {
         if (media.id === mediaId) {
@@ -178,6 +188,56 @@ export class SelectionService {
         }
       })
     );
+  }
+
+  public changeWatchProgressIntoHomeSelection(mediaId: number, episodeId: number, mediaType: MediaTypeModel, watchProgress: number): void {
+    this.selectionOnHomePage.some((selection: SelectionModel) => {
+      selection.mediaList.some((media: MediaModel) => {
+        if (media.id === mediaId) {
+          if (mediaType === MediaTypeModel.MOVIE) {
+            (media as MovieModel).watchProgress = watchProgress;
+            return;
+          } else if (mediaType === MediaTypeModel.SERIES) {
+            (media as SeriesModel).seasons.some((season: SeasonModel) => {
+                season.episodes.forEach((episode: EpisodeModel) => {
+                  if (episode.id === episodeId) {
+                    episode.watchProgress = watchProgress;
+                    return;
+                  }
+                });
+            });
+          }
+        }
+      });
+    });
+  }
+
+  public changeWatchProgressIntoMoviesSelection(mediaId: number, watchProgress: number): void {
+    this.selectionOnMoviePage.some((selection: SelectionModel) => {
+      selection.mediaList.some((media: MediaModel) => {
+        if (media.id === mediaId) {
+          (media as MovieModel).watchProgress = watchProgress;
+          return;
+        }
+      });
+    });
+  }
+
+  public changeWatchProgressIntoSeriesSelection(mediaId: number, episodeId: number, watchProgress: number): void {
+    this.selectionOnSeriesPage.some((selection: SelectionModel) => {
+      selection.mediaList.some((media: MediaModel) => {
+        if (media.id === mediaId) {
+          (media as SeriesModel).seasons.some((season: SeasonModel) => {
+            season.episodes.forEach((episode: EpisodeModel) => {
+              if (episode.id === episodeId) {
+                episode.watchProgress = watchProgress;
+                return;
+              }
+            });
+          });
+        }
+      });
+    });
   }
 
   public resetSelectionHome(): void {

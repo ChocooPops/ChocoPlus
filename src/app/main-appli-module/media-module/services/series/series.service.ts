@@ -19,6 +19,7 @@ export class SeriesService {
   private readonly urlRandomSeries: string = 'random-series';
   private readonly urlFirstEpisode: string = 'first-episode';
   private readonly urlLastEpisodeWatched: string = 'last-episode-watched';
+  private readonly urlWatchProgress: string = 'watchProgress';
   private _userService?: UserService;
 
   constructor(private http: HttpClient,
@@ -152,6 +153,14 @@ export class SeriesService {
     return this.http.get<any>(`${this.apiUrlSeries}/${this.urlLastEpisodeWatched}/${seriesId}`).pipe(
       map((data: any) => {
         return data;
+      })
+    )
+  }
+
+  public fetchGetWatchProgressForEpisode(episodeId: number): Observable<number> {
+    return this.http.get<any>(`${this.apiUrlSeries}/${this.urlWatchProgress}/${episodeId}`).pipe(
+      map((data: any) => {
+        return data.watchProgress;
       })
     )
   }

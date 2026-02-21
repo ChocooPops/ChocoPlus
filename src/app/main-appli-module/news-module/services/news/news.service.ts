@@ -9,6 +9,10 @@ import { MessageReturnedModel } from '../../../../common-module/models/message-r
 import { NewsWritedModel } from '../../models/news-writed.interface';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SeriesService } from '../../../media-module/services/series/series.service';
+import { MovieModel } from '../../../media-module/models/movie-model';
+import { SeriesModel } from '../../../media-module/models/series/series.interface';
+import { SeasonModel } from '../../../media-module/models/series/season.interface';
+import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -162,11 +166,31 @@ export class NewsService {
   }
 
   public changeMyList(mediaId: number, state: boolean): void {
-    this.news.forEach((item: NewsModel) => {
+    this.news.some((item: NewsModel) => {
       if (item.media.id === mediaId) {
         item.media.isInList = state;
         return;
       }
+    });
+  }
+
+  public changeWatchProgressIntoNews(mediaId: number, episodeId: number, mediaType: MediaTypeModel, watchProgress: number): void {
+    this.news.some((news: NewsModel) => {
+      if (news.media.id === mediaId) {
+        if (mediaType === MediaTypeModel.MOVIE) {
+          (news.media as MovieModel).watchProgress = watchProgress;
+          return;
+        } else if (mediaType === MediaTypeModel.SERIES) {
+          (news.media as SeriesModel).seasons.some((season: SeasonModel) => {
+            season.episodes.forEach((episode: EpisodeModel) => {
+              if (episode.id === episodeId) {
+                episode.watchProgress = watchProgress;
+                return;
+              }
+            });
+          });
+          }
+        }
     });
   }
 

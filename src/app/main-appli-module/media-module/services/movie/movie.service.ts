@@ -15,6 +15,7 @@ export class MovieService {
   private readonly apiUrlMovie = `${environment.apiUrlMovie}`;
   private readonly urlResearchMovie: string = 'research';
   private readonly urlRandomMovie: string = 'random-movie';
+  private readonly urlWatchProgress: string = 'watchProgress';
   private _userService?: UserService;
 
   constructor(private http: HttpClient,
@@ -103,6 +104,14 @@ export class MovieService {
       }),
       catchError((error) => {
         return of(undefined);
+      })
+    )
+  }
+
+  public fetchGetWatchProgressForMovie(movieId: number): Observable<number> {
+    return this.http.get<any>(`${this.apiUrlMovie}/${this.urlWatchProgress}/${movieId}`).pipe(
+      map((data: any) => {
+        return data.watchProgress;
       })
     )
   }

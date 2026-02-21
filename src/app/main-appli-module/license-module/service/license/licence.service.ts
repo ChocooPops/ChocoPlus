@@ -10,6 +10,10 @@ import { MovieService } from '../../../media-module/services/movie/movie.service
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SeriesService } from '../../../media-module/services/series/series.service';
+import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
+import { SeasonModel } from '../../../media-module/models/series/season.interface';
+import { MovieModel } from '../../../media-module/models/movie-model';
+import { SeriesModel } from '../../../media-module/models/series/series.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -214,7 +218,7 @@ export class LicenseService {
     this.licenseResearch = license;
   }
 
-  public changeMyList(mediaId: number, state: boolean): void {
+  public changeMyListIntoLicenseHome(mediaId: number, state: boolean): void {
     this.licenseHome.forEach((license: LicenseModel) => {
       license.selectionList?.forEach((selection: SelectionModel) => {
         selection.mediaList.forEach((media: MediaModel) => {
@@ -225,6 +229,9 @@ export class LicenseService {
         })
       })
     });
+  }
+
+  public changeMyListIntoLicenseResearch(mediaId: number, state: boolean): void {
     this.licenseResearch.forEach((license: LicenseModel) => {
       license.selectionList?.forEach((selection: SelectionModel) => {
         selection.mediaList.forEach((media: MediaModel) => {
@@ -236,4 +243,53 @@ export class LicenseService {
       })
     });
   }
+
+  public changeWatchProgressIntoHomeLicense(mediaId: number, episodeId: number, mediaType: MediaTypeModel, watchProgress: number): void {
+    this.licenseHome.some((licence: LicenseModel) => {
+      licence.selectionList.some((selection: SelectionModel) => {
+        selection.mediaList.some((media: MediaModel) => {
+          if (media.id === mediaId) {
+            if (mediaType === MediaTypeModel.MOVIE) {
+              (media as MovieModel).watchProgress = watchProgress;
+              return;
+            } else if (mediaType === MediaTypeModel.SERIES) {
+              (media as SeriesModel).seasons.some((season: SeasonModel) => {
+                season.episodes.forEach((episode: EpisodeModel) => {
+                  if (episode.id === episodeId) {
+                    episode.watchProgress = watchProgress;
+                    return;
+                  }
+                });
+              });
+            }
+          }
+        });
+      });
+    });
+  }
+
+  public changeWatchProgressIntoResearchSelection(mediaId: number, episodeId: number, mediaType: MediaTypeModel, watchProgress: number): void {
+    this.licenseResearch.some((licence: LicenseModel) => {
+      licence.selectionList.some((selection: SelectionModel) => {
+        selection.mediaList.some((media: MediaModel) => {
+          if (media.id === mediaId) {
+            if (mediaType === MediaTypeModel.MOVIE) {
+              (media as MovieModel).watchProgress = watchProgress;
+              return;
+            } else if (mediaType === MediaTypeModel.SERIES) {
+              (media as SeriesModel).seasons.some((season: SeasonModel) => {
+                season.episodes.forEach((episode: EpisodeModel) => {
+                  if (episode.id === episodeId) {
+                    episode.watchProgress = watchProgress;
+                    return;
+                  }
+                });
+              });
+            }
+          }
+        });
+      });
+    });
+  }
+
 }
