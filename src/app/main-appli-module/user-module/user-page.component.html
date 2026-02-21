@@ -1,10 +1,15 @@
 <div class="container">
     <app-menu-tmp></app-menu-tmp>
-    <div class="container-user">
+    <div class="container-user" #containerUser>
         <app-user-params></app-user-params>
         <div class="container-router-outlet">
             <router-outlet></router-outlet>
         </div>
+
+        <div
+            class="divider divider-vertical"
+            [style.left.px]="dividerLeftPx"
+            (mousedown)="onDividerMouseDown($event)"
+        ></div>
     </div>
 </div>
-

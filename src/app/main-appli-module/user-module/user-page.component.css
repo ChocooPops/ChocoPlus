@@ -11,7 +11,8 @@
     height: 100%;
     width: 100%;
     display: grid;
-    grid-template: 96% / 380px 1fr;
+    grid-template-columns: var(--user-params-width, 380px) 1fr;
+    grid-template-rows: 96%;
     gap: 35px;
     box-sizing: border-box;
     padding: 50px;
@@ -25,9 +26,46 @@
     position: relative;
 }
 
+.divider-vertical {
+    position: absolute;
+    top: 50px;
+    height: calc(96% - 95px);
+    width: 12px;
+    transform: translateX(-6px);
+    cursor: col-resize;
+    z-index: 10;
+    background: transparent;
+    transition: background 0.15s;
+}
+
+.divider-vertical:hover,
+.divider-vertical.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+}
+
+.divider-vertical::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 40px;
+    background: #555;
+    border-radius: 2px;
+    transition: background 0.15s;
+}
+
+.divider-vertical:hover::after,
+.divider-vertical.active::after {
+    background: #aaa;
+}
+
 @media (max-width: 1000px) {
     .container-user {
-        grid-template: auto 1fr / 1fr;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto 1fr;
         height: auto;
         position: relative;
         top: 0;
@@ -37,5 +75,9 @@
 
     .container-router-outlet {
         height: auto;
+    }
+
+    .divider-vertical {
+        display: none;
     }
 }
