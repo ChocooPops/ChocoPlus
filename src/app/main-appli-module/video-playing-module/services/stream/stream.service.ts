@@ -10,14 +10,9 @@ import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { LicenseService } from '../../../license-module/service/license/licence.service';
 import { NewsService } from '../../../news-module/services/news/news.service';
 import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
+import { UserService } from '../../../user-module/service/user/user.service';
 
 declare const window: any;
-
-export interface ChocoPlayerStatus {
-  status: 'stopping' | 'stopped' | 'error';
-  code?: number;
-  message?: string;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +31,8 @@ export class StreamService {
     private readonly selectionService: SelectionService,
     private readonly licenseService: LicenseService,
     private readonly newsService: NewsService,
-    private readonly newsVideoRunningService: NewsVideoRunningService
+    private readonly newsVideoRunningService: NewsVideoRunningService,
+    private readonly userService: UserService
   ) {
     window.electron.onChocoPlayerStatus((data: ChocoPlayerModel) => {
       this.setWatchProgressByMedia(data);
@@ -64,7 +60,7 @@ export class StreamService {
     await window.electron.invoke('launch-choco-player', chocoPlayer);
   }
 
-  private async setWatchProgressByMedia(chocoPlayer: ChocoPlayerModel): Promise<void> {
+  private setWatchProgressByMedia(chocoPlayer: ChocoPlayerModel): void {
     if (chocoPlayer.EpisodeId && chocoPlayer.EpisodeId > 0) {
       this.seriesService.fetchGetWatchProgressForEpisode(chocoPlayer.EpisodeId).pipe(take(1)).subscribe((watchProgress: number) => {
         this.selectionService.changeWatchProgressIntoHomeSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
@@ -73,6 +69,7 @@ export class StreamService {
         this.licenseService.changeWatchProgressIntoResearchSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
         this.newsService.changeWatchProgressIntoNews(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
         this.newsVideoRunningService.changeWatchProgressIntoSeriesNews(chocoPlayer.MediaId, chocoPlayer.EpisodeId, watchProgress);
+        this.userService.changeWatchProgressIntoMyList(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
       });
     } else if (chocoPlayer.MediaId && chocoPlayer.MediaId > 0) {
       this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((watchProgress: number) => {
@@ -82,6 +79,7 @@ export class StreamService {
         this.licenseService.changeWatchProgressIntoResearchSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
         this.newsService.changeWatchProgressIntoNews(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
         this.newsVideoRunningService.changeWatchProgressIntoMovieNews(chocoPlayer.MediaId, watchProgress);
+        this.userService.changeWatchProgressIntoMyList(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
       });
     }
   }

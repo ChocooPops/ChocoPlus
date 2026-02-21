@@ -392,7 +392,6 @@ export class VideoPlayingComponent {
   }
 
   onError(error: any): void {
-    console.log(error)
     this.displayError = true;
   }
 

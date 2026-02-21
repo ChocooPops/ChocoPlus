@@ -6,6 +6,7 @@ import { UserService } from '../../../user-module/service/user/user.service';
 import { VerifTimerShowService } from '../../../common-module/services/verif-timer/verif-timer-show.service';
 import { MovieModel } from '../../models/movie-model';
 import { MediaTypeModel } from '../../models/media-type.enum';
+import { ProgressStateMedia } from '../../models/progress-state-media.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,7 @@ export class MovieService {
           time: 0,
           quality: 'any quality',
           watchProgress: 0,
+          stateProgress: ProgressStateMedia.NOT_WATCHED,
           mediaType: MediaTypeModel.MOVIE
         }
         return of(movie);
@@ -61,6 +63,7 @@ export class MovieService {
       endShow: this.verifTimerShowService.getGoodFormat(movie.endShow) || '00:21:30',
       time: movie.time ? parseInt(movie.time) : 0,
       watchProgress: movie.watchProgress ?? 0,
+      stateProgress: movie.stateProgress ?? ProgressStateMedia.NOT_WATCHED,
       quality: movie.quality || "any quality",
       date: new Date(movie.date) || undefined,
       directors: movie.directors || [],

@@ -14,6 +14,7 @@ import { SelectionType } from '../../../models/selection-type.enum';
 import { ScalePoster } from '../../../../common-module/models/scale-poster.enum';
 import { NgClass } from '@angular/common';
 import { MediaSelectedService } from '../../../services/media-selected/media-selected.service';
+import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
 
 @Component({
   selector: 'app-movie-page',
@@ -43,6 +44,8 @@ export class MoviePageComponent {
   similarMediasLoading: number[] = [];
   subscriptionSimilarTitles !: Subscription;
 
+  ProgressState = ProgressStateMedia;
+  
   constructor(private verifTimerShowService: VerifTimerShowService,
     private imagePreloaderService: ImagePreloaderService,
     private compressedPosterService: CompressedPosterService,

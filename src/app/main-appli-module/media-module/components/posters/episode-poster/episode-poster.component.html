@@ -10,6 +10,11 @@
                     [episode]="episode" [seasons]="series.seasons"></app-start-button>
             </div>
             <img [src]="episodePoster[idx]">
+            @if(episode.stateProgress !== ProgressState.NOT_WATCHED) {
+            <div class="container-progress">
+                <div class="progress" [style.width.%]="episode.watchProgress"></div>
+            </div>
+            }
         </div>
         <div class="container-info">
             <p class="title"> {{ episode.name }} </p>

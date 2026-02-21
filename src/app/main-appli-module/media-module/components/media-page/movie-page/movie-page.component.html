@@ -27,7 +27,12 @@
             <p [ngClass]="'margin-bottom-text'"> <span>Genres :</span> {{ genre }} </p>
             <p [ngClass]="'margin-bottom-text'"> <span>Un film :</span> {{ keyWord }} </p>
         </div>
-        <div class="separation-bar"> </div>
+
+        <div class="separation-bar"> 
+            @if(movie.stateProgress !== ProgressState.NOT_WATCHED) {
+            <div class="progress" [style.width.%]="movie.watchProgress"></div>
+            }
+        </div>
 
         <div class="container-same-title">
             <p [ngClass]="'color-white-dark'">Titres similaires</p>

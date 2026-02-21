@@ -6,6 +6,7 @@ import { StartButtonComponent } from '../../button/start-button/start-button.com
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { SeriesModel } from '../../../models/series/series.interface';
+import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
 
 @Component({
   selector: 'app-episode-poster',
@@ -22,6 +23,7 @@ export class EpisodePosterComponent {
 
   episodePoster: any[] = [];
   type: MediaTypeModel = MediaTypeModel.SERIES;
+  ProgressState = ProgressStateMedia;
 
   constructor(private verifTimerShowService: VerifTimerShowService,
     private compressedPosterService: CompressedPosterService

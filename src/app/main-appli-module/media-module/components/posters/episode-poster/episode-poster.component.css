@@ -120,3 +120,16 @@
 p {
     margin: 0;
 }
+
+.container-progress {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background-color: transparent;
+}
+
+.progress {
+    height: 100%;
+    background-color: #FFD301;
+}

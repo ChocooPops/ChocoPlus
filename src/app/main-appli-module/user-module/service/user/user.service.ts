@@ -14,6 +14,10 @@ import { NewsService } from '../../../news-module/services/news/news.service';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SeriesService } from '../../../media-module/services/series/series.service';
 import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
+import { MovieModel } from '../../../media-module/models/movie-model';
+import { SeriesModel } from '../../../media-module/models/series/series.interface';
+import { SeasonModel } from '../../../media-module/models/series/season.interface';
+import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -117,6 +121,27 @@ export class UserService {
 
   public mediaIsIntoList(mediaId: number, mediaType: MediaTypeModel): boolean {
     return this.myListMedia.some((media: MediaModel) => mediaId === media.id && mediaType === media.mediaType);
+  }
+
+
+  public changeWatchProgressIntoMyList(mediaId: number, episodeId: number, mediaType: MediaTypeModel, watchProgress: number): void {
+    this.myListMedia.some((media: MediaModel) => {
+      if (media.id === mediaId) {
+        if (mediaType === MediaTypeModel.MOVIE) {
+          (media as MovieModel).watchProgress = watchProgress;
+          return;
+        } else if (mediaType === MediaTypeModel.SERIES) {
+          (media as SeriesModel).seasons.some((season: SeasonModel) => {
+            season.episodes.forEach((episode: EpisodeModel) => {
+              if (episode.id === episodeId) {
+                episode.watchProgress = watchProgress;
+                return;
+              }
+            });
+          });
+        }
+      }
+    });
   }
 
   private isChangeProfilPictureActivate: boolean = true;

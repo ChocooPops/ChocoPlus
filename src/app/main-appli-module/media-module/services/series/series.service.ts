@@ -7,6 +7,7 @@ import { MediaTypeModel } from '../../models/media-type.enum';
 import { catchError, Observable, of, map } from 'rxjs';
 import { EpisodeModel } from '../../models/series/episode.interface';
 import { SeasonModel } from '../../models/series/season.interface';
+import { ProgressStateMedia } from '../../models/progress-state-media.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -77,9 +78,10 @@ export class SeriesService {
       date: item.date ? new Date(item.date) : new Date(),
       time: item.time ? item.time : 0,
       watchProgress: item.watchProgress ?? 0,
+      stateProgress: item.stateProgress ?? ProgressStateMedia.NOT_WATCHED,
       quality: item.quality ? item.quality : 'any quality',
       srcPoster: item.srcPoster ? item.srcPoster : undefined
-    }))
+    }));
   }
 
   public fetchSeasonsById(id: number): Observable<SeriesModel> {
