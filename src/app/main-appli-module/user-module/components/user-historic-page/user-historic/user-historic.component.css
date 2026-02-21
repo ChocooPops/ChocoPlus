@@ -1,18 +1,87 @@
 .container {
   display: grid;
-  grid-template-columns: 70fr 30fr;
-  grid-template-rows: 35fr 65fr;
+  grid-template-columns: var(--col-split, 70fr) var(--col-split-right, 30fr);
+  grid-template-rows: var(--row-split, 35fr) var(--row-split-bottom, 65fr);
   gap: 25px;
   height: 100%;
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
+  position: relative;
 }
 
 .container-info {
   height: 100%;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 0;
   background-color: #232323;
   overflow: hidden;
+  box-sizing: border-box;
+}
+
+.divider {
+  position: absolute;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.divider:hover,
+.divider.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.divider-vertical {
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  transform: translateX(-4px);
+}
+
+.divider-horizontal {
+  left: 0;
+  right: 0;
+  height: 8px;
+  cursor: row-resize;
+  transform: translateY(-4px);
+}
+
+/* Visual handle indicator */
+.divider::after {
+  content: '';
+  position: absolute;
+  background: #555;
+  border-radius: 2px;
+  transition: background 0.15s;
+}
+
+.divider:hover::after,
+.divider.active::after {
+  background: #aaa;
+}
+
+.divider-vertical::after {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 40px;
+}
+
+.divider-horizontal::after {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 2px;
+}
+
+.container-info {
+  padding: 0;
+  border: none;
+}
+
+.container-info {
+  border-radius: 5px;
 }

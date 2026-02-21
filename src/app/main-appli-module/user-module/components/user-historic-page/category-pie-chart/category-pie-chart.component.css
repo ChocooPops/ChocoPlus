@@ -170,6 +170,7 @@
       background: #141414;
       border-radius: 10px;
       position: relative;
+      overflow: hidden;
 
       svg {
         max-width: 100%;

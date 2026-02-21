@@ -76,7 +76,6 @@ export class StreamService {
       });
     } else if (chocoPlayer.MediaId && chocoPlayer.MediaId > 0) {
       this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((watchProgress: number) => {
-        console.log(watchProgress);
         this.selectionService.changeWatchProgressIntoHomeSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
         this.selectionService.changeWatchProgressIntoMoviesSelection(chocoPlayer.MediaId, watchProgress);
         this.licenseService.changeWatchProgressIntoHomeLicense(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
