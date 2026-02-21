@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { UserHistoricService } from '../../../service/user-historic/user-historic.service';
 import { TopMedia } from '../../../dto/user-historic/top-media.interface';
 import { TopMediaResponse } from '../../../dto/user-historic/top-media-response.interface';
@@ -22,7 +14,7 @@ import { CompressedPosterService } from '../../../../common-module/services/comp
   styleUrls: ['./top-media.component.scss'],
   imports: [],
 })
-export class TopMediaComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TopMediaComponent {
   @Input() userId!: number;
   @ViewChild('mediaList') mediaListRef!: ElementRef<HTMLDivElement>;
 

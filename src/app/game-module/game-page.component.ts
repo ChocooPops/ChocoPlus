@@ -10,11 +10,12 @@ import { PlateformService } from './services/plateform/plateform.service';
 import { GoldService } from './services/gold/gold.service';
 import { CharacterService } from './services/character/character.service';
 import { ScoreComponent } from './components/score/score.component';
+import { MenuBarComponent } from './components/menu/menu-bar/menu-bar.component';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [StarsComponent, ScoreComponent, TreeComponent, GoldComponent, PlateformComponent, SkyComponent, CloudComponent, CharacterComponent],
+  imports: [StarsComponent, ScoreComponent, TreeComponent, GoldComponent, PlateformComponent, SkyComponent, CloudComponent, CharacterComponent, MenuBarComponent],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.css'
 })

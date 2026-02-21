@@ -57,7 +57,7 @@ export class SpriteObserver {
         }
     }
 
-    private getImageDimensions(src: string): Promise<DimensionModel> {
+    public getImageDimensions(src: string): Promise<DimensionModel> {
         return new Promise<DimensionModel>((resolve, reject) => {
             const img = new Image();
             img.onload = () => {
@@ -148,6 +148,9 @@ export class SpriteObserver {
     }
     public getOriginelDimension(): DimensionModel {
         return this.originelDimension;
+    }
+    public getSrcImage(): string {
+        return this.mainSpriteSubject.value.image;
     }
     public isLoad(): boolean {
         return this.isLoadSubject.value;

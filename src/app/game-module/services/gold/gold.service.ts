@@ -19,12 +19,14 @@ export class GoldService {
   private isActivate$: Observable<boolean> = this.isActivateSuject.asObservable();
 
   private subscription: Subscription = new Subscription();
+  private readonly GOLD_TOUCHED_GIF_DURATION_MS: number = 480;
 
   constructor(private scoreService: ScoreService) {
     this.gold = new SpriteObserver(this.srcGold, 0, 0, 120, 5);
     this.subscription.add(
       this.gold.getSpriteIsLoad().subscribe((data: boolean) => {
         if (data) {
+          this.gold.getImageDimensions(this.srcGoldTouched);
           this.changeIfGoldIsActivate(data);
           this.setMinWidthToAppear(this.gold.getWidthWindows());
           this.gold.setX(this.minWidthToAppear);
@@ -92,9 +94,12 @@ export class GoldService {
   }
 
   public checkCollisionWithOtherSprite(sprite: SpriteObserver): void {
-    if (this.isActivateSuject.value && this.gold.checkCollisionWithOtherSprite(sprite)) {
-      this.isActivateSuject.next(false);
+    if (this.gold.getSrcImage() !== this.srcGoldTouched && this.isActivateSuject.value && this.gold.checkCollisionWithOtherSprite(sprite)) {
+      this.gold.setImageSrc(this.srcGoldTouched)
       this.scoreService.incrementScore();
+      setTimeout(() => {
+        this.disableGold();
+      }, this.GOLD_TOUCHED_GIF_DURATION_MS);
     }
   }
 

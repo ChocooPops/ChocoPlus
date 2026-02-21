@@ -1,0 +1,15 @@
+<div class="container-menu-tab">
+    <div class="container-pp" (mouseenter)="onMouseEnter()"
+        (mouseleave)="onMouseLeave()">
+        <img [src]="srcDefaultPp">
+    </div>
+    <div class="container-arrow">
+        <div class="arrow-down" [ngClass]="classArrow"></div>
+    </div>
+    <div class="container-under-menu" [ngClass]="class" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        <div class="container-option" (click)="onClickConnection()">
+            <img [src]="srcConnection">
+            <p>Connexion</p>
+        </div>
+    </div>
+</div>

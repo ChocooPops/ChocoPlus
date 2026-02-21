@@ -63,6 +63,7 @@
 
   .filters {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 12px;
     padding: 10px;
@@ -82,7 +83,7 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      min-width: 0;
+      min-width: 35px;
 
       .filter-icon {
         font-size: clamp(14px, 3vw, 18px);

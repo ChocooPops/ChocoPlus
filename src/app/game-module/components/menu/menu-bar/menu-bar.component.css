@@ -1,0 +1,48 @@
+.menu {
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    color: transparent;
+    padding: 5px;
+    font-weight: bold;
+    z-index: 99999;
+    background: transparent;
+
+    img {
+        height: 40px;
+        object-fit: cover;
+        cursor: pointer;
+        opacity: 0;
+    }
+}
+
+.menu2 {
+    z-index: 99999;
+    padding: 5px;
+    padding-left: 50px;
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    font-weight: bold;
+
+    img {
+        height: 30px;
+        object-fit: cover;
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.container-other-tab {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 230px;
+}

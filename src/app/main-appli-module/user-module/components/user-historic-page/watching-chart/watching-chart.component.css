@@ -67,6 +67,7 @@
     padding: 15px;
     background: #141414;
     border-radius: 8px;
+    overflow: hidden;
 
     .filter-group {
       label {
