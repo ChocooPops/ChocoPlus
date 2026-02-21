@@ -71,7 +71,6 @@ namespace ChocoPlayer
             _watchProgress = watchProgress;
 
             _apiService = new ApiService(baseUrl, token);
-            Console.WriteLine(watchProgress);
             _audioLanguageSelected = Properties.Settings.Default.PreferredAudioLanguage;
             _subtitleLanguageSelected = Properties.Settings.Default.PreferredSubtitleLanguage;
 
@@ -914,8 +913,10 @@ namespace ChocoPlayer
                 long totalTime = _mediaPlayer.Length;
                 if (totalTime > 0)
                 {
-                    float position = (_watchProgress - 60) / 100f;
-                    _mediaPlayer.Position = position;
+                    float position = (_watchProgress) / 100f;
+                    long targetTime = (long)(position * totalTime);
+                    long adjustedTime = Math.Max(targetTime - 60_000, 0);
+                    _mediaPlayer.Time = adjustedTime;
                 }
             }
         }
