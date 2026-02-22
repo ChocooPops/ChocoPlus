@@ -1,8 +1,7 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, of, catchError } from 'rxjs';
-import { UserService } from '../../../user-module/service/user/user.service';
 import { VerifTimerShowService } from '../../../common-module/services/verif-timer/verif-timer-show.service';
 import { MovieModel } from '../../models/movie-model';
 import { MediaTypeModel } from '../../models/media-type.enum';
@@ -17,15 +16,9 @@ export class MovieService {
   private readonly urlResearchMovie: string = 'research';
   private readonly urlRandomMovie: string = 'random-movie';
   private readonly urlWatchProgress: string = 'watchProgress';
-  private _userService?: UserService;
 
   constructor(private http: HttpClient,
-    private verifTimerShowService: VerifTimerShowService,
-    private injector: Injector) { }
-
-  private get userService(): UserService {
-    return this._userService ??= this.injector.get(UserService);
-  }
+    private verifTimerShowService: VerifTimerShowService) { }
 
   public fetchMovieById(id: number): Observable<MovieModel> {
     return this.http.get<any>(`${this.apiUrlMovie}/${id}`).pipe(
@@ -40,7 +33,6 @@ export class MovieService {
           jellyfinId: 'undefined',
           typeZoomX: undefined,
           typeZoomY: false,
-          isInList: false,
           time: 0,
           quality: 'any quality',
           watchProgress: 0,
@@ -53,7 +45,6 @@ export class MovieService {
   }
 
   public createNewMovie(movie: any): MovieModel {
-    const isInMyList = this.userService.mediaIsIntoList(movie.id, MediaTypeModel.MOVIE);
     const movieTmp: MovieModel = {
       id: movie.id,
       title: movie.title,
@@ -79,7 +70,6 @@ export class MovieService {
       srcBackgroundImage: movie.srcBackgroundImage ? movie.srcBackgroundImage || undefined : undefined,
       typeZoomX: undefined,
       typeZoomY: false,
-      isInList: isInMyList,
       mediaType: MediaTypeModel.MOVIE
     }
     return movieTmp;

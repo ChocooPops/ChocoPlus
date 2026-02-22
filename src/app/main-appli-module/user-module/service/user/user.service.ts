@@ -1,23 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
-import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, Subject } from 'rxjs';
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { UserModel } from '../../dto/user.model';
 import { ProfilPictureModel } from '../../dto/profil-picture.interface';
 import { UpdateUserModel } from '../../dto/update-user.interface';
-import { LicenseService } from '../../../license-module/service/license/licence.service';
-import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { MovieService } from '../../../media-module/services/movie/movie.service';
-import { NewsService } from '../../../news-module/services/news/news.service';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SeriesService } from '../../../media-module/services/series/series.service';
-import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
-import { MovieModel } from '../../../media-module/models/movie-model';
-import { SeriesModel } from '../../../media-module/models/series/series.interface';
-import { SeasonModel } from '../../../media-module/models/series/season.interface';
-import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -30,19 +22,22 @@ export class UserService {
   private readonly urlToggleIntoMyList: string = 'toggle-into-my-list';
   private readonly urlUpdateProfilPicture: string = 'profil-picture';
   private readonly urlUpdateUserByUser: string = 'update-user-by-user';
+  
   private myListMedia: MediaModel[] = [];
+  private myListChangedSubject = new Subject<number>();
+  private myListChanged$ = this.myListChangedSubject.asObservable();
 
   public currentUserSubject: BehaviorSubject<UserModel | undefined> = new BehaviorSubject<UserModel | undefined>(undefined);
   public currentUser$: Observable<UserModel | undefined> = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient,
     private movieService: MovieService,
-    private seriesService: SeriesService,
-    private selectionService: SelectionService,
-    private licenseService: LicenseService,
-    private newsService: NewsService,
-    private newsVideoRunningService: NewsVideoRunningService
+    private seriesService: SeriesService
   ) { }
+
+  public getMyListChanged(): Observable<number> {
+    return this.myListChanged$;
+  }
 
   public getCurrentUserValue(): UserModel | undefined {
     return this.currentUserSubject.value;
@@ -81,9 +76,6 @@ export class UserService {
               medias.push(this.seriesService.createNewSeries(media));
             }
           });
-          medias.forEach(media => {
-            media.isInList = true;
-          });
           this.myListMedia = medias;
           return this.myListMedia;
         })
@@ -96,31 +88,19 @@ export class UserService {
       map((data: MessageReturnedModel) => {
         if (data && data.id >= 0) {
           if (data.state) {
-            media.isInList = true;
             this.myListMedia.push(media);
-            this.changeAllMediaList(media.id, true);
           } else {
-            this.myListMedia = this.myListMedia.filter((media: MediaModel) => media.id !== media.id);
-            this.changeAllMediaList(media.id, false);
+            this.myListMedia = this.myListMedia.filter((m: MediaModel) => m.id !== media.id);
           }
+          this.myListChangedSubject.next(media.id);
         }
         return data;
       })
     )
   }
 
-  private changeAllMediaList(mediaId: number, state: boolean): void {
-    this.newsVideoRunningService.changeMysList(mediaId, state);
-    this.selectionService.changeMyListIntoHomePage(mediaId, state);
-    this.selectionService.changeMyListIntoMoviePage(mediaId, state);
-    this.selectionService.changeMyListIntoSeriesPage(mediaId, state);
-    this.licenseService.changeMyListIntoLicenseHome(mediaId, state);
-    this.licenseService.changeMyListIntoLicenseResearch(mediaId, state);
-    this.newsService.changeMyList(mediaId, state);
-  }
-
-  public mediaIsIntoList(mediaId: number, mediaType: MediaTypeModel): boolean {
-    return this.myListMedia.some((media: MediaModel) => mediaId === media.id && mediaType === media.mediaType);
+  public mediaIsIntoList(mediaId: number): boolean {
+    return this.myListMedia.some((media: MediaModel) => mediaId === media.id);
   }
 
   private isChangeProfilPictureActivate: boolean = true;

@@ -9,10 +9,6 @@ import { MessageReturnedModel } from '../../../../common-module/models/message-r
 import { NewsWritedModel } from '../../models/news-writed.interface';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SeriesService } from '../../../media-module/services/series/series.service';
-import { MovieModel } from '../../../media-module/models/movie-model';
-import { SeriesModel } from '../../../media-module/models/series/series.interface';
-import { SeasonModel } from '../../../media-module/models/series/season.interface';
-import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -163,15 +159,6 @@ export class NewsService {
       updated.splice(newIndex, 0, moved);
       this.newsEditSubject.next(updated);
     }
-  }
-
-  public changeMyList(mediaId: number, state: boolean): void {
-    this.news.some((item: NewsModel) => {
-      if (item.media.id === mediaId) {
-        item.media.isInList = state;
-        return;
-      }
-    });
   }
 
 }

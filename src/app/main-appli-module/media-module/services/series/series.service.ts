@@ -1,8 +1,7 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { SeriesModel } from '../../models/series/series.interface';
-import { UserService } from '../../../user-module/service/user/user.service';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { catchError, Observable, of, map } from 'rxjs';
 import { EpisodeModel } from '../../models/series/episode.interface';
@@ -21,18 +20,10 @@ export class SeriesService {
   private readonly urlFirstEpisode: string = 'first-episode';
   private readonly urlLastEpisodeWatched: string = 'last-episode-watched';
   private readonly urlWatchProgress: string = 'watchProgress';
-  private _userService?: UserService;
 
-  constructor(private http: HttpClient,
-    private injector: Injector
-  ) { }
-
-  private get userService(): UserService {
-    return this._userService ??= this.injector.get(UserService);
-  }
+  constructor(private http: HttpClient) { }
 
   public createNewSeries(series: any): SeriesModel {
-    const isInMyList = this.userService.mediaIsIntoList(series.id, MediaTypeModel.SERIES);
     const seriesTmp: SeriesModel = {
       id: series.id,
       title: series.title,
@@ -54,7 +45,6 @@ export class SeriesService {
       srcBackgroundImage: series.srcBackgroundImage ? series.srcBackgroundImage : undefined,
       typeZoomX: undefined,
       typeZoomY: false,
-      isInList: isInMyList,
       mediaType: MediaTypeModel.SERIES,
       seasons: series.seasons && series.seasons.length > 0 ? this.createNewSeasons(series.seasons) : []
     }
@@ -97,7 +87,6 @@ export class SeriesService {
           jellyfinId: 'undefined',
           typeZoomX: undefined,
           typeZoomY: false,
-          isInList: false,
           mediaType: MediaTypeModel.SERIES,
           seasons: []
         }

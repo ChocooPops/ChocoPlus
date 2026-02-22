@@ -8,8 +8,6 @@ import { NewsVideoRunningModel } from '../../models/news-video-running.interface
 import { catchError, map, Observable, of } from 'rxjs';
 import { MovieModel } from '../../../media-module/models/movie-model';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
-import { SeasonModel } from '../../../media-module/models/series/season.interface';
-import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +40,6 @@ export class NewsVideoRunningService {
         jellyfinId: 'undefined',
         typeZoomX: false,
         typeZoomY: false,
-        isInList: false,
         mediaType: mediaType
       }
     }
@@ -93,15 +90,6 @@ export class NewsVideoRunningService {
       )
     } else {
       return of(this.firstSeriesPresentation);
-    }
-  }
-
-  public changeMysList(mediaId: number, state: boolean): void {
-    if (this.firstMoviePresentation && this.firstMoviePresentation.media.id === mediaId) {
-      this.firstMoviePresentation.media.isInList = state;
-    }
-    if (this.firstSeriesPresentation && this.firstSeriesPresentation.media.id === mediaId) {
-      this.firstSeriesPresentation.media.isInList = state;
     }
   }
 

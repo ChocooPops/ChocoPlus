@@ -8,10 +8,6 @@ import { SelectionType } from '../../models/selection-type.enum';
 import { MovieService } from '../movie/movie.service';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { SeriesService } from '../series/series.service';
-import { MovieModel } from '../../models/movie-model';
-import { SeriesModel } from '../../models/series/series.interface';
-import { SeasonModel } from '../../models/series/season.interface';
-import { EpisodeModel } from '../../models/series/episode.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -155,39 +151,6 @@ export class SelectionService {
         return of(mediaSelection);
       })
     )
-  }
-
-  public changeMyListIntoHomePage(mediaId: number, state: boolean): void {
-    this.selectionOnHomePage.some((selection: SelectionModel) =>
-      selection.mediaList.some((media: MediaModel) => {
-        if (media.id === mediaId) {
-          media.isInList = state;
-          return;
-        }
-      })
-    );
-  }
-
-  public changeMyListIntoMoviePage(mediaId: number, state: boolean): void {
-    this.selectionOnMoviePage.some((selection: SelectionModel) =>
-      selection.mediaList.some((media: MediaModel) => {
-        if (media.id === mediaId) {
-          media.isInList = state;
-          return;
-        }
-      })
-    );
-  }
-
-  public changeMyListIntoSeriesPage(mediaId: number, state: boolean): void {
-    this.selectionOnSeriesPage.some((selection: SelectionModel) =>
-      selection.mediaList.some((media: MediaModel) => {
-        if (media.id === mediaId) {
-          media.isInList = state;
-          return;
-        }
-      })
-    );
   }
 
   public resetSelectionHome(): void {

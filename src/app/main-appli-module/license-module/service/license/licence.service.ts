@@ -10,10 +10,6 @@ import { MovieService } from '../../../media-module/services/movie/movie.service
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SeriesService } from '../../../media-module/services/series/series.service';
-import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
-import { SeasonModel } from '../../../media-module/models/series/season.interface';
-import { MovieModel } from '../../../media-module/models/movie-model';
-import { SeriesModel } from '../../../media-module/models/series/series.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -216,32 +212,6 @@ export class LicenseService {
 
   public setLicenseResearch(license: LicenseModel[]): void {
     this.licenseResearch = license;
-  }
-
-  public changeMyListIntoLicenseHome(mediaId: number, state: boolean): void {
-    this.licenseHome.forEach((license: LicenseModel) => {
-      license.selectionList?.forEach((selection: SelectionModel) => {
-        selection.mediaList.forEach((media: MediaModel) => {
-          if (media.id === mediaId) {
-            media.isInList = state;
-            return;
-          }
-        })
-      })
-    });
-  }
-
-  public changeMyListIntoLicenseResearch(mediaId: number, state: boolean): void {
-    this.licenseResearch.forEach((license: LicenseModel) => {
-      license.selectionList?.forEach((selection: SelectionModel) => {
-        selection.mediaList.forEach((media: MediaModel) => {
-          if (media.id === mediaId) {
-            media.isInList = state;
-            return;
-          }
-        })
-      })
-    });
   }
 
 }
