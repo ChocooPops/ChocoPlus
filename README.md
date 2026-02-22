@@ -32,10 +32,10 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 ### Caractéristiques distinctives
 
 - **Architecture hybride** : Interface Electron/Angular + Lecteur natif C#/WinForms
-- **Sélections dynamiques** : Création de collections thématiques de films/séries
+- **Sélections dynamiques** : Création de sélections thématiques de films/séries par type de page
 - **Streaming HLS** : Support du streaming adaptatif avec hls.js (Fonctionnalité obsolète)
 - **Authentification sécurisée** : Stockage sécurisé des tokens avec Keytar
-- **Graphiques interactifs** : Visualisation d'un graphe avec D3.js
+- **Graphiques interactifs** : Visualisation d'un graphe avec D3.js et de plusieurs statistiques personnelles
 
 ## ✨ Fonctionnalités principales
 
@@ -75,7 +75,9 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
   - Statistiques par licence
   - Distribution par catégorie
   - Évolution de la bibliothèque
-- **Suivi de visionnage** : État IN PROGRESS ou FINISHED par média/épisode
+  - Diagramme fromage des catégories les plus visonnées
+  - Statistique de nombre d'heure de visionnage par date
+- **Suivi de visionnage** : État NOT_WATCHED, IN_PROGRESS ou FINISHED par média/épisode
 
 ## 🏗️ Architecture
 
