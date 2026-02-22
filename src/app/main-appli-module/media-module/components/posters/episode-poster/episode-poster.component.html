@@ -10,9 +10,9 @@
                     [episode]="episode" [seasons]="series.seasons"></app-start-button>
             </div>
             <img [src]="episodePoster[idx]">
-            @if(episode.stateProgress !== ProgressState.NOT_WATCHED) {
+            @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
             <div class="container-progress">
-                <div class="progress" [style.width.%]="episode.watchProgress"></div>
+                <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>
             </div>
             }
         </div>

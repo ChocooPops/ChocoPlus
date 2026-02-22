@@ -123,27 +123,6 @@ export class UserService {
     return this.myListMedia.some((media: MediaModel) => mediaId === media.id && mediaType === media.mediaType);
   }
 
-
-  public changeWatchProgressIntoMyList(mediaId: number, episodeId: number, mediaType: MediaTypeModel, watchProgress: number): void {
-    this.myListMedia.some((media: MediaModel) => {
-      if (media.id === mediaId) {
-        if (mediaType === MediaTypeModel.MOVIE) {
-          (media as MovieModel).watchProgress = watchProgress;
-          return;
-        } else if (mediaType === MediaTypeModel.SERIES) {
-          (media as SeriesModel).seasons.some((season: SeasonModel) => {
-            season.episodes.forEach((episode: EpisodeModel) => {
-              if (episode.id === episodeId) {
-                episode.watchProgress = watchProgress;
-                return;
-              }
-            });
-          });
-        }
-      }
-    });
-  }
-
   private isChangeProfilPictureActivate: boolean = true;
 
   public fetchChangeProfilPicture(idProfilPicture: number): Observable<ProfilPictureModel | null> {

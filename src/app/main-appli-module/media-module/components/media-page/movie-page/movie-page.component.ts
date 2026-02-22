@@ -15,6 +15,8 @@ import { ScalePoster } from '../../../../common-module/models/scale-poster.enum'
 import { NgClass } from '@angular/common';
 import { MediaSelectedService } from '../../../services/media-selected/media-selected.service';
 import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
+import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
+import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
 
 @Component({
   selector: 'app-movie-page',
@@ -45,12 +47,14 @@ export class MoviePageComponent {
   subscriptionSimilarTitles !: Subscription;
 
   ProgressState = ProgressStateMedia;
-  
+  historicProgress!: MediaProgressingModel;
+
   constructor(private verifTimerShowService: VerifTimerShowService,
     private imagePreloaderService: ImagePreloaderService,
     private compressedPosterService: CompressedPosterService,
     private similarTitleService: SimilarTitleService,
-    private mediaSelectedService: MediaSelectedService) { }
+    private mediaSelectedService: MediaSelectedService,
+    private historicWatchProgressService: HistoricWatchProgressService) { }
 
   ngOnInit(): void {
     this.initSimilarLoading();
@@ -105,6 +109,7 @@ export class MoviePageComponent {
     if (!this.poster) {
       this.onLoadPoster();
     }
+    this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.movie.id, this.movie.watchProgress, this.movie.stateProgress);
     setTimeout(() => {
       this.fetchSimilarMovie();
     }, 100)

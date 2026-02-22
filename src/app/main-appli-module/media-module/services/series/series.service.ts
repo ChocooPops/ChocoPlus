@@ -159,10 +159,10 @@ export class SeriesService {
     )
   }
 
-  public fetchGetWatchProgressForEpisode(episodeId: number): Observable<number> {
+  public fetchGetWatchProgressForEpisode(episodeId: number): Observable<{ watchProgress: number, state: ProgressStateMedia}> {
     return this.http.get<any>(`${this.apiUrlSeries}/${this.urlWatchProgress}/${episodeId}`).pipe(
       map((data: any) => {
-        return data.watchProgress;
+        return data;
       })
     )
   }

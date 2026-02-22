@@ -29,8 +29,8 @@
         </div>
 
         <div class="separation-bar"> 
-            @if(movie.stateProgress !== ProgressState.NOT_WATCHED) {
-            <div class="progress" [style.width.%]="movie.watchProgress"></div>
+            @if(historicProgress.stateProgress !== ProgressState.NOT_WATCHED) {
+            <div class="progress" [style.width.%]="historicProgress.watchProgress"></div>
             }
         </div>
 

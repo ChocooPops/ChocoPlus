@@ -7,6 +7,8 @@ import { MediaTypeModel } from '../../../models/media-type.enum';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { SeriesModel } from '../../../models/series/series.interface';
 import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
+import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
+import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
 
 @Component({
   selector: 'app-episode-poster',
@@ -22,20 +24,23 @@ export class EpisodePosterComponent {
   @Input() notRunning: boolean = true;
 
   episodePoster: any[] = [];
+  episodeProgress: MediaProgressingModel[] = [];
   type: MediaTypeModel = MediaTypeModel.SERIES;
   ProgressState = ProgressStateMedia;
 
-  constructor(private verifTimerShowService: VerifTimerShowService,
-    private compressedPosterService: CompressedPosterService
+  constructor(private readonly verifTimerShowService: VerifTimerShowService,
+    private readonly compressedPosterService: CompressedPosterService,
+    private readonly historicWatchProgressService: HistoricWatchProgressService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['episodes']) {
-      this.episodePoster = [];
-      this.episodes.forEach((episode: EpisodeModel) => {
-        const poster: string | undefined = this.compressedPosterService.getEpisodePoster(episode)
-        this.episodePoster.push(poster)
-      });
+      this.episodePoster = this.episodes.map((episode: EpisodeModel) =>
+        this.compressedPosterService.getEpisodePoster(episode)
+      );
+      this.episodeProgress = this.episodes.map((episode: EpisodeModel) =>
+        this.historicWatchProgressService.getHistoricEpisodeProgressById(episode.id, episode.watchProgress, episode.stateProgress)
+      );
     }
   }
 

@@ -10,6 +10,8 @@ import { MovieModel } from '../../../models/movie-model';
 import { EpisodeModel } from '../../../models/series/episode.interface';
 import { SeriesService } from '../../../services/series/series.service';
 import { firstValueFrom, take } from 'rxjs';
+import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
+import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 
 @Component({
   selector: 'app-start-button',
@@ -27,8 +29,9 @@ export class StartButtonComponent {
   @Input() seasons !: SeasonModel[] | undefined;
 
   constructor(//private router: Router,
-    private streamService: StreamService,
-    private seriesService: SeriesService
+    private readonly streamService: StreamService,
+    private readonly seriesService: SeriesService,
+    private readonly historicWatchProgressService: HistoricWatchProgressService
   ) { }
 
   srcStartButton: string = "icon/start.svg";
@@ -47,7 +50,8 @@ export class StartButtonComponent {
       SeasonMenu: []
     }
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
-      chocoPlayer.WatchProgress = (this.media as MovieModel).watchProgress;
+      const historicProgress: MediaProgressingModel = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, (this.media as MovieModel).watchProgress, (this.media as MovieModel).stateProgress);
+      chocoPlayer.WatchProgress = historicProgress.watchProgress;
       chocoPlayer.Url = this.streamService.getUrlStreamMovie(this.media.id);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       if (this.episode && this.episode.id > 0) {
@@ -77,7 +81,8 @@ export class StartButtonComponent {
     chocoPlayer.EpisodeId = episode.id;
     chocoPlayer.Title = `${chocoPlayer.Title} - ${episode.name}`;
     if (this.seasons) chocoPlayer.SeasonIndex = this.getSeasonIndexFromEpisodeId(this.seasons, episode.seasonId);
-    chocoPlayer.WatchProgress = episode.watchProgress;
+      const historicProgress: MediaProgressingModel = this.historicWatchProgressService.getHistoricEpisodeProgressById(episode.id, episode.watchProgress, episode.stateProgress);
+      chocoPlayer.WatchProgress = historicProgress.watchProgress;
       chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.media.id, episode.id ?? -1);
       chocoPlayer.SeasonMenu = this.seasons ? this.seasons.map((season: SeasonModel) => ({
         Id: season.id,

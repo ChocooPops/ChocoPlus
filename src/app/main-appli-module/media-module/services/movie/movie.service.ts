@@ -111,10 +111,10 @@ export class MovieService {
     )
   }
 
-  public fetchGetWatchProgressForMovie(movieId: number): Observable<number> {
+  public fetchGetWatchProgressForMovie(movieId: number): Observable<{ watchProgress: number, state: ProgressStateMedia}> {
     return this.http.get<any>(`${this.apiUrlMovie}/${this.urlWatchProgress}/${movieId}`).pipe(
       map((data: any) => {
-        return data.watchProgress;
+        return data;
       })
     )
   }

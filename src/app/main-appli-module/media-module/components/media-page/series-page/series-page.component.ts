@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { SeriesModel } from '../../../models/series/series.interface';
 import { NgClass } from '@angular/common';
 import { SeasonModel } from '../../../models/series/season.interface';
@@ -27,6 +27,8 @@ import { EpisodePosterLoadingComponent } from '../../posters/episode-poster-load
 export class SeriesPageComponent {
 
   @Input() series!: SeriesModel;
+  @ViewChild(EpisodePosterComponent) episodePoster!: EpisodePosterComponent;
+
   private abortController = new AbortController();
 
   srcSucces: string = 'icon/success.svg';
@@ -50,11 +52,11 @@ export class SeriesPageComponent {
   subscriptionEpisodes !: Subscription;
   subscriptionSimilarTitles !: Subscription;
 
-  constructor(private compressedPosterService: CompressedPosterService,
-    private mediaSelectedService: MediaSelectedService,
-    private similarTitleService: SimilarTitleService,
-    private imagePreloaderService: ImagePreloaderService,
-    private seriesService: SeriesService
+  constructor(private readonly compressedPosterService: CompressedPosterService,
+    private readonly mediaSelectedService: MediaSelectedService,
+    private readonly similarTitleService: SimilarTitleService,
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly seriesService: SeriesService
   ) { }
 
   ngOnInit(): void {

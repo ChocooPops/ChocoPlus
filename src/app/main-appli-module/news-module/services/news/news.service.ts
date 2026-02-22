@@ -174,24 +174,4 @@ export class NewsService {
     });
   }
 
-  public changeWatchProgressIntoNews(mediaId: number, episodeId: number, mediaType: MediaTypeModel, watchProgress: number): void {
-    this.news.some((news: NewsModel) => {
-      if (news.media.id === mediaId) {
-        if (mediaType === MediaTypeModel.MOVIE) {
-          (news.media as MovieModel).watchProgress = watchProgress;
-          return;
-        } else if (mediaType === MediaTypeModel.SERIES) {
-          (news.media as SeriesModel).seasons.some((season: SeasonModel) => {
-            season.episodes.forEach((episode: EpisodeModel) => {
-              if (episode.id === episodeId) {
-                episode.watchProgress = watchProgress;
-                return;
-              }
-            });
-          });
-          }
-        }
-    });
-  }
-
 }

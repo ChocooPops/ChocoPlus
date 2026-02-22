@@ -105,23 +105,4 @@ export class NewsVideoRunningService {
     }
   }
 
-  public changeWatchProgressIntoMovieNews(movieId: number, watchProgress: number): void {
-    if(this.firstMoviePresentation && this.firstMoviePresentation?.media.id === movieId) {
-      (this.firstMoviePresentation.media as MovieModel).watchProgress = watchProgress;
-    }
-  }
-
-  public changeWatchProgressIntoSeriesNews(seriesId: number, episodeId: number, watchProgress: number): void {
-    if(this.firstMoviePresentation && this.firstMoviePresentation?.media.id === seriesId) {
-      (this.firstMoviePresentation.media as SeriesModel).seasons.some((season: SeasonModel) => {
-        season.episodes.forEach((episode: EpisodeModel) => {
-          if (episode.id === episodeId) {
-            episode.watchProgress = watchProgress;
-            return;
-          }
-        });
-      });
-    }
-  }
-
 }

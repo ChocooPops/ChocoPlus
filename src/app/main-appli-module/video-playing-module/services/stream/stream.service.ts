@@ -5,12 +5,7 @@ import { ChocoPlayerModel } from '../../models/choco-player.interface';
 import { MovieService } from '../../../media-module/services/movie/movie.service';
 import { SeriesService } from '../../../media-module/services/series/series.service';
 import { take } from 'rxjs';
-import { SelectionService } from '../../../media-module/services/selection/selection.service';
-import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
-import { LicenseService } from '../../../license-module/service/license/licence.service';
-import { NewsService } from '../../../news-module/services/news/news.service';
-import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
-import { UserService } from '../../../user-module/service/user/user.service';
+import { HistoricWatchProgressService } from '../historic-watch-progress/historic-watch-progress.service';
 
 declare const window: any;
 
@@ -28,11 +23,7 @@ export class StreamService {
   constructor(private readonly authService: AuthService,
     private readonly movieService: MovieService,
     private readonly seriesService: SeriesService,
-    private readonly selectionService: SelectionService,
-    private readonly licenseService: LicenseService,
-    private readonly newsService: NewsService,
-    private readonly newsVideoRunningService: NewsVideoRunningService,
-    private readonly userService: UserService
+    private readonly historicWatchProgressService: HistoricWatchProgressService
   ) {
     window.electron.onChocoPlayerStatus((data: ChocoPlayerModel) => {
       this.setWatchProgressByMedia(data);
@@ -54,32 +45,18 @@ export class StreamService {
     return `${this.apiUrlStream}/${this.urlGetStreamNewsVideoRunning}/${newsId}?${this.paramToken}=${token}`;
   }
 
-  public async launchJavaAppToMovie(
-    chocoPlayer: ChocoPlayerModel,
-  ): Promise<void> {
+  public async launchJavaAppToMovie(chocoPlayer: ChocoPlayerModel): Promise<void> {
     await window.electron.invoke('launch-choco-player', chocoPlayer);
   }
 
   private setWatchProgressByMedia(chocoPlayer: ChocoPlayerModel): void {
     if (chocoPlayer.EpisodeId && chocoPlayer.EpisodeId > 0) {
-      this.seriesService.fetchGetWatchProgressForEpisode(chocoPlayer.EpisodeId).pipe(take(1)).subscribe((watchProgress: number) => {
-        this.selectionService.changeWatchProgressIntoHomeSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
-        this.selectionService.changeWatchProgressIntoSeriesSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, watchProgress);
-        this.licenseService.changeWatchProgressIntoHomeLicense(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
-        this.licenseService.changeWatchProgressIntoResearchSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
-        this.newsService.changeWatchProgressIntoNews(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
-        this.newsVideoRunningService.changeWatchProgressIntoSeriesNews(chocoPlayer.MediaId, chocoPlayer.EpisodeId, watchProgress);
-        this.userService.changeWatchProgressIntoMyList(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.SERIES, watchProgress);
+      this.seriesService.fetchGetWatchProgressForEpisode(chocoPlayer.EpisodeId).pipe(take(1)).subscribe((data) => {
+        this.historicWatchProgressService.updateHistoricEpisodeById(chocoPlayer.EpisodeId, data.watchProgress, data.state);
       });
     } else if (chocoPlayer.MediaId && chocoPlayer.MediaId > 0) {
-      this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((watchProgress: number) => {
-        this.selectionService.changeWatchProgressIntoHomeSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
-        this.selectionService.changeWatchProgressIntoMoviesSelection(chocoPlayer.MediaId, watchProgress);
-        this.licenseService.changeWatchProgressIntoHomeLicense(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
-        this.licenseService.changeWatchProgressIntoResearchSelection(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
-        this.newsService.changeWatchProgressIntoNews(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
-        this.newsVideoRunningService.changeWatchProgressIntoMovieNews(chocoPlayer.MediaId, watchProgress);
-        this.userService.changeWatchProgressIntoMyList(chocoPlayer.MediaId, chocoPlayer.EpisodeId, MediaTypeModel.MOVIE, watchProgress);
+      this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((data) => {
+        this.historicWatchProgressService.updateHistoricMovieById(chocoPlayer.MediaId, data.watchProgress, data.state);
       });
     }
   }

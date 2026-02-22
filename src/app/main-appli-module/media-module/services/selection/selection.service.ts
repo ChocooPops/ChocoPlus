@@ -190,56 +190,6 @@ export class SelectionService {
     );
   }
 
-  public changeWatchProgressIntoHomeSelection(mediaId: number, episodeId: number, mediaType: MediaTypeModel, watchProgress: number): void {
-    this.selectionOnHomePage.some((selection: SelectionModel) => {
-      selection.mediaList.some((media: MediaModel) => {
-        if (media.id === mediaId) {
-          if (mediaType === MediaTypeModel.MOVIE) {
-            (media as MovieModel).watchProgress = watchProgress;
-            return;
-          } else if (mediaType === MediaTypeModel.SERIES) {
-            (media as SeriesModel).seasons.some((season: SeasonModel) => {
-                season.episodes.forEach((episode: EpisodeModel) => {
-                  if (episode.id === episodeId) {
-                    episode.watchProgress = watchProgress;
-                    return;
-                  }
-                });
-            });
-          }
-        }
-      });
-    });
-  }
-
-  public changeWatchProgressIntoMoviesSelection(mediaId: number, watchProgress: number): void {
-    this.selectionOnMoviePage.some((selection: SelectionModel) => {
-      selection.mediaList.some((media: MediaModel) => {
-        if (media.id === mediaId) {
-          (media as MovieModel).watchProgress = watchProgress;
-          return;
-        }
-      });
-    });
-  }
-
-  public changeWatchProgressIntoSeriesSelection(mediaId: number, episodeId: number, watchProgress: number): void {
-    this.selectionOnSeriesPage.some((selection: SelectionModel) => {
-      selection.mediaList.some((media: MediaModel) => {
-        if (media.id === mediaId) {
-          (media as SeriesModel).seasons.some((season: SeasonModel) => {
-            season.episodes.forEach((episode: EpisodeModel) => {
-              if (episode.id === episodeId) {
-                episode.watchProgress = watchProgress;
-                return;
-              }
-            });
-          });
-        }
-      });
-    });
-  }
-
   public resetSelectionHome(): void {
     this.selectionOnHomePage = [];
   }
