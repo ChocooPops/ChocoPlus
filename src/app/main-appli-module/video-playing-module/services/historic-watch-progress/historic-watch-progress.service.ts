@@ -54,7 +54,7 @@ export class HistoricWatchProgressService {
       historic.watchProgress = watchProgress;
       historic.stateProgress = stateProgress;
     } else {
-      this.getHistoricMovieProgressById(episodeId, watchProgress, stateProgress);
+      this.getHistoricEpisodeProgressById(episodeId, watchProgress, stateProgress);
     }
   }
 

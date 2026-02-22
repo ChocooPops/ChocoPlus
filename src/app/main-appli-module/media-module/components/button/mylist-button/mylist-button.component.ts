@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Subject, take, takeUntil, filter } from 'rxjs';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
@@ -12,7 +12,7 @@ import { MediaModel } from '../../../models/media.interface';
   templateUrl: './mylist-button.component.html',
   styleUrl: '../../../../common-module/styles/movie-button.css'
 })
-export class MylistButtonComponent implements OnInit, OnDestroy {
+export class MylistButtonComponent {
 
   @Input() typeButton: boolean = false;
   @Input() typeDisplaying: boolean = false;
