@@ -8,18 +8,19 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ElectronService } from '../../../common-module/services/electron/electron.service';
 import { LoadOpeningPageService } from '../../services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../models/page.enum';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-preload-main-appli',
   standalone: true,
-  imports: [ButtonFormComponent],
+  imports: [ButtonFormComponent, TitleCasePipe],
   templateUrl: './preload-main-app.component.html',
   styleUrls: ['./preload-main-app.component.css', '../../../common-module/styles/loader.css']
 })
 export class PreloadMainAppComponent {
 
-  srcPP !: string;
-  messageWelcome !: string;
+  srcPP!: string;
+  pseudo!: string;
   subscription: Subscription = new Subscription();
   activateLoader: boolean = false;
   transitionPP: boolean = false;
@@ -35,8 +36,8 @@ export class PreloadMainAppComponent {
   ngOnInit(): void {
     this.userService.getCurrentUser().pipe(take(1)).subscribe((user: UserModel | undefined) => {
       if (user) {
-        this.messageWelcome = 'Bienvenue ' + user.pseudo;
         this.srcPP = user.profilPhoto;
+        this.pseudo = user.pseudo;
       }
     });
     this.userService.fetchMyMediaListByUserId().pipe(take(1)).subscribe(data => { });

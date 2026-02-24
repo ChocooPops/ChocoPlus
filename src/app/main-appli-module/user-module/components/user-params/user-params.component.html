@@ -6,7 +6,7 @@
             <div class="container-tmp"></div>
         </div>
         <div class="info-user">
-            <p class="pseudo"> {{ currentUser.pseudo }} </p>
+            <p class="pseudo"> {{ currentUser.pseudo | titlecase }} </p>
             <p class="text"> {{ currentUser.role}} </p>
             <p class="text"> Depuis le {{ currentUser.createdAt | date:'mediumDate' }} </p>
         </div>

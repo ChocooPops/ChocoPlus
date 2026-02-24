@@ -7,11 +7,12 @@ import { UserParametersService } from '../../service/user-parameters/user-parame
 import { MenuTabModel } from '../../../menu-module/model/menu-tab.interface';
 import { NgClass } from '@angular/common';
 import { RoleModel } from '../../../../common-module/models/role.enum';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-user-params',
   standalone: true,
-  imports: [DatePipe, NgClass],
+  imports: [DatePipe, NgClass, TitleCasePipe],
   templateUrl: './user-params.component.html',
   styleUrl: './user-params.component.css'
 })

@@ -65,12 +65,30 @@ namespace ChocoPlayer
         [DllImport("user32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
-        public ChocoPlayer(int mediaId, string baseUrl, string token, string title, string videoPath, int width, int height, int positionX, int positionY, bool isMaximized, bool isFullScreen, int episodeId, int seasonIndex, List<Season>? seasons, float watchProgress)
+        public ChocoPlayer(
+            int mediaId, 
+            string baseUrl, 
+            string HEADER_NAME, 
+            string HEADER_SECRET, 
+            string token, 
+            string title, 
+            string videoPath, 
+            int width, 
+            int height, 
+            int positionX, 
+            int positionY, 
+            bool isMaximized, 
+            bool isFullScreen, 
+            int episodeId, 
+            int seasonIndex, 
+            List<Season>? seasons, 
+            float watchProgress
+        )
         {
             _mediaId = mediaId;
             _watchProgress = watchProgress;
 
-            _apiService = new ApiService(baseUrl, token);
+            _apiService = new ApiService(baseUrl, HEADER_NAME, HEADER_SECRET, token);
             _audioLanguageSelected = Properties.Settings.Default.PreferredAudioLanguage;
             _subtitleLanguageSelected = Properties.Settings.Default.PreferredSubtitleLanguage;
 

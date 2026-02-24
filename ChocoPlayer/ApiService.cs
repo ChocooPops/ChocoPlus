@@ -13,7 +13,7 @@ namespace ChocoPlayer
         private readonly string _baseUrl;
         private readonly string _token;
 
-        public ApiService(string baseUrl, string token)
+        public ApiService(string baseUrl, string HEADER_NAME, string HEADER_SECRET, string token)
         {
             _baseUrl = baseUrl;
             _token = token;
@@ -23,6 +23,7 @@ namespace ChocoPlayer
             };
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", _token);
+            _httpClient.DefaultRequestHeaders.Add(HEADER_NAME, HEADER_SECRET);
         }
 
         public async Task<List<Episode>?> GetEpisodesBySeasonAsync(int seriesId, int seasonId)

@@ -3,6 +3,8 @@ namespace ChocoPlayer
     public class VideoInfo
     {
         public string? BaseUrl { get; set; }
+        public string? HEADER_NAME { get; set; }
+        public string? HEADER_SECRET { get; set; }
         public string? Token { get; set; }
         public int? MediaId { get; set; }
         public string? Title { get; set; }

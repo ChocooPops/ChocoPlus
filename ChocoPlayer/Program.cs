@@ -33,6 +33,8 @@ static class Program
         Application.Run(new ChocoPlayer(
             videoInfo?.MediaId ?? 0,
             videoInfo?.BaseUrl ?? "",
+            videoInfo?.HEADER_NAME ?? "",
+            videoInfo?.HEADER_SECRET ?? "",
             videoInfo?.Token ?? "",
             videoInfo?.Title ?? "",
             videoInfo?.Url ?? "",

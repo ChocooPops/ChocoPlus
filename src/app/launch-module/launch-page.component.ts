@@ -38,7 +38,7 @@ export class LaunchPageComponent {
         });
       },
       error: (error: HttpErrorResponse) => {
-        if (error.status === 0) {
+        if (error.status === 0 || error.status === 530) {
           this.router.navigate(['preload-offline-app'], { relativeTo: this.route });
         } else {
           this.router.navigate(['login'], { relativeTo: this.route });

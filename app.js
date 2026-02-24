@@ -291,6 +291,8 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     dataObject.IsMaximized = mainWindow.isMaximized();
     dataObject.IsFullScreen = mainWindow.isFullScreen();
     dataObject.Token = await keytar.getPassword(SERVICE, ACCOUNT);
+    dataObject.HEADER_NAME = process.env.HEADER_NAME_FIELD_SECRET_API;
+    dataObject.HEADER_SECRET = process.env.HEADER_SECRET_API;
 
     let csharpAppPath = '';
     if (app.isPackaged) {
