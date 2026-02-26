@@ -40,13 +40,20 @@ export class MenuTabService {
     },
     {
       id: 5,
+      name: "Catalogue",
+      route: "catalog",
+      srcImage: `${this.rootImage}/catalog.svg`,
+      isClicked: false
+    },
+    {
+      id: 6,
       name: "Ma liste",
       route: "my-list",
       srcImage: `${this.rootImage}/mylist.svg`,
       isClicked: false
     },
     {
-      id: 6,
+      id: 7,
       name: "Editer",
       route: "edition",
       srcImage: `${this.rootImage}/edition.svg`,

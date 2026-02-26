@@ -66,6 +66,8 @@ export class PreloadMainAppComponent {
       this.loadOpeningPageService.loadMoviePageDataAndNavigate();
     } else if (page === PageModel.PAGE_SERIES) {
       this.loadOpeningPageService.loadSeriesPageDataAndNavigate();
+    } else if (page === PageModel.PAGE_CATALOG) {
+      this.loadOpeningPageService.loadCatalogPageDataAndNavigate();
     } else if (page === PageModel.PAGE_MYLIST) {
       this.loadOpeningPageService.loadMyListPageDataAndNavigate();
     } else if (page === PageModel.PAGE_EDITION) {

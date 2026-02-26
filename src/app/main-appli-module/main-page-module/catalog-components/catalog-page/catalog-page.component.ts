@@ -12,62 +12,65 @@ import { MediaSelectedService } from '../../../media-module/services/media-selec
 import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
+import { PaginationPosterService } from '../../../media-module/services/pagination-poster/pagination-poster.service';
+import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
 
 @Component({
-  selector: 'app-my-list-page',
+  selector: 'app-catalog-page',
   standalone: true,
-  imports: [MenuTmpComponent, MediaPageComponent, GridListComponent],
-  templateUrl: './my-list-page.component.html',
-  styleUrl: './my-list-page.component.css'
+  imports: [MediaPageComponent, GridListComponent, MenuTmpComponent],
+  templateUrl: './catalog-page.component.html',
+  styleUrl: './catalog-page.component.css'
 })
-export class MyListPageComponent {
+export class CatalogPageComponent {
 
   private abortController = new AbortController();
-  title: string = 'Votre Liste';
+  title: string = '';
   medias: MediaModel[] | undefined = undefined;
-  format !: FormatPosterModel;
+  format = FormatPosterModel.VERTICAL;
   subscription: Subscription = new Subscription();
-  gap !: number;
+  subscritpionPagination!: Subscription;
   marginLeft !: number;
-  marginBottom !: number;
+  width!: string;
   mediaSelected: MediaModel | undefined = undefined;
   nbPosterPerLine: number = 0;
   loadNewFormat: boolean = false;
 
-  constructor(private userService: UserService,
-    private mediaSelectedService: MediaSelectedService,
-    private formatPosterService: FormatPosterService,
-    private imagePreloaderService: ImagePreloaderService,
-    private menuTabService: MenuTabService,
-    private loadOpeningPageService: LoadOpeningPageService
+  constructor(private readonly userService: UserService,
+    private readonly mediaSelectedService: MediaSelectedService,
+    private readonly formatPosterService: FormatPosterService,
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly menuTabService: MenuTabService,
+    private readonly loadOpeningPageService: LoadOpeningPageService,
+    private readonly paginationPosterService: PaginationPosterService
   ) {
     this.menuTabService.setActivateTransition(false);
-    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_MYLIST);
+    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_CATALOG);
   }
 
   ngOnInit(): void {
-    this.subscription.add(
-      this.userService.fetchMyMediaListByUserId().pipe(take(1)).subscribe((medias: MediaModel[]) => {
-        const format: FormatPosterModel = this.formatPosterService.getFormatPosterMyListValue();
-        const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(medias, format);
-
-        this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-          this.medias = medias;
-          this.loadNewFormat = true;
-        })
-      })
-    )
     this.subscription.add(
       this.mediaSelectedService.getMediaSelected().subscribe((medias: MediaModel | undefined) => {
         this.mediaSelected = medias;
       })
     )
     this.subscription.add(
-      this.formatPosterService.fetchFormatPosterMyList().subscribe((format: FormatPosterModel) => {
+      this.formatPosterService.fetchFormatPosterCatalog().subscribe((format: FormatPosterModel) => {
         this.format = format;
         if (this.loadNewFormat) {
           //this.medias = undefined;
           this.reloadWhenFormatPosterChange();
+        }
+        if (this.format === FormatPosterModel.VERTICAL) {
+          this.subscritpionPagination = this.paginationPosterService.getVerticalGeometricDimensionSelection().subscribe((dimension: GeometricDimensionSelectionModel) => {
+            this.marginLeft = dimension.marginLeft;
+            this.width = `calc(100% - ${this.marginLeft}vw - ${this.marginLeft}vw)`;
+          })
+        } else if (this.format === FormatPosterModel.HORIZONTAL) {
+          this.subscritpionPagination = this.paginationPosterService.getHorizontalGeometricDimensionSelection().subscribe((dimension: GeometricDimensionSelectionModel) => {
+            this.marginLeft = dimension.marginLeft;
+            this.width = `calc(100% - ${this.marginLeft}vw - ${this.marginLeft}vw)`;
+          })
         }
       })
     )
@@ -77,6 +80,9 @@ export class MyListPageComponent {
     this.subscription.unsubscribe();
     this.mediaSelectedService.clearSelection();
     this.abortController.abort();
+    if (this.subscritpionPagination) {
+      this.subscritpionPagination.unsubscribe();
+    }
   }
 
   private reloadWhenFormatPosterChange(): void {

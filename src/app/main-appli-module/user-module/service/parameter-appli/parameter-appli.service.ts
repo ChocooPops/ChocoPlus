@@ -125,6 +125,12 @@ export class ParameterAppliService {
     },
     {
       id: this.getId(),
+      name: "Page du catalogue",
+      radioButton: this.getRadioButtonForAllFormatPoster(),
+      call: null
+    },
+    {
+      id: this.getId(),
       name: "Page de recherche",
       radioButton: this.getRadioButtonForAllFormatPoster(),
       call: null
@@ -170,6 +176,12 @@ export class ParameterAppliService {
           id: this.getId(),
           name: "Page des séries",
           value: PageModel.PAGE_SERIES,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "Page du catalogue",
+          value: PageModel.PAGE_CATALOG,
           state: false
         },
         {
@@ -282,11 +294,12 @@ export class ParameterAppliService {
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterHome(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterMovie(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterSeries(format),
+      (format: FormatPosterModel) => this.formatPosterService.setFormatPosterCatalog(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterResearch(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterLicense(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterMyList(format)
     ]
-    const format: FormatPosterModel[] = [this.formatPosterService.getFormatPosterHomeValue(), this.formatPosterService.getFormatPosterMovieValue(), this.formatPosterService.getFormatPosterSeriesValue(), this.formatPosterService.getFormatPosterResearchValue(), this.formatPosterService.getFormatPosterLicenseValue(), this.formatPosterService.getFormatPosterMyListValue()];
+    const format: FormatPosterModel[] = [this.formatPosterService.getFormatPosterHomeValue(), this.formatPosterService.getFormatPosterMovieValue(), this.formatPosterService.getFormatPosterSeriesValue(), this.formatPosterService.getFormatPosterCatalogValue(), this.formatPosterService.getFormatPosterResearchValue(), this.formatPosterService.getFormatPosterLicenseValue(), this.formatPosterService.getFormatPosterMyListValue()];
     if (this.radioButtonFormatPoster.length === format.length) {
       for (let i: number = 0; i < this.radioButtonFormatPoster.length; i++) {
         this.radioButtonFormatPoster[i].call = callBackFormatPoster[i];

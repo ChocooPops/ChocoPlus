@@ -181,6 +181,10 @@ export class LoadOpeningPageService {
       );
   }
 
+  public loadCatalogPageDataAndNavigate(): void {
+    this.router.navigateByUrl('main-app/catalog');
+  }
+
   public loadMyListPageDataAndNavigate(): void {
     this.userService
       .fetchMyMediaListByUserId()

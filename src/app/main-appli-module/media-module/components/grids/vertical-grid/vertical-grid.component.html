@@ -1,5 +1,7 @@
 <div class="container-list" [style.margin-left.vw]="marginLeft">
-    <p> {{ title }} </p>
+    @if (title && title !== "") {
+        <p> {{ title }} </p>
+    }
     <div class="container-poster" [style.gap.vw]="gap">
         @if(mediaList) {
         @if(mediaList.length > 0) {

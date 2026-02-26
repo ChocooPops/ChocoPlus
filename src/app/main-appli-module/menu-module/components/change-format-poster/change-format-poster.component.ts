@@ -67,6 +67,10 @@ export class ChangeFormatPosterComponent {
         {
           test: u => u === '/main-app/my-list',
           get: () => this.formatPosterService.fetchFormatPosterMyList()
+        },
+        {
+          test: u => u === '/main-app/catalog',
+          get: () => this.formatPosterService.fetchFormatPosterCatalog()
         }
       ];
 
@@ -109,6 +113,8 @@ export class ChangeFormatPosterComponent {
         this.formatPosterService.setFormatPosterResearch(this.format)
       } else if (this.currentRoute === '/main-app/my-list') {
         this.formatPosterService.setFormatPosterMyList(this.format);
+      } else if (this.currentRoute === '/main-app/catalog') {
+        this.formatPosterService.setFormatPosterCatalog(this.format);
       }
       this.setClass(this.format);
     }

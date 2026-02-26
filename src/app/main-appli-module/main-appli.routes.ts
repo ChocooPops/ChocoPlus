@@ -20,6 +20,10 @@ export const mainAppliRoutes: Routes = [
         loadComponent: () => import('./main-page-module/media-components/series-page/series-page.component').then(m => m.SeriesPageComponent)
     },
     {
+        path: 'catalog',
+        loadComponent: () => import('./main-page-module/catalog-components/catalog-page/catalog-page.component').then(m => m.CatalogPageComponent)
+    },
+    {
         path: 'my-list',
         loadComponent: () => import('./main-page-module/my-list-components/my-list-page/my-list-page.component').then(m => m.MyListPageComponent)
     },

@@ -1,0 +1,16 @@
+<div class="container-page">
+    @if(mediaSelected != undefined) {
+    <app-media-page></app-media-page>
+    }
+    <app-menu-tmp></app-menu-tmp>
+    <div class="space"></div>
+    <div class="container-list">
+        <div class="container-title" [style.margin-left.vw]="marginLeft" [style.width]="width">
+            <p>Catalogue</p>
+            <div class="container-options"></div>
+            <div class="barre-separation"> </div>
+        </div>
+        <div style="margin-bottom: -70px;"></div>
+        <app-grid-list [mediaList]="medias" [title]="title" [format]="format"></app-grid-list>
+    </div>
+</div>

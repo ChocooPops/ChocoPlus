@@ -68,22 +68,25 @@ export class MenuBarComponent {
 
   private checkWindowSize(): void {
     const width: number = window.innerWidth;
-    if (width <= 1130 && width > 1000) {
+    if (width <= 1270 && width > 1155) {
       this.menuPlus = this.menuTabService.getLastElements(2);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 1000 && width > 900) {
+    } else if (width <= 1155 && width > 1015) {
       this.menuPlus = this.menuTabService.getLastElements(3);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 900 && width > 800) {
+    } else if (width <= 1015 && width > 915) {
       this.menuPlus = this.menuTabService.getLastElements(4);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 800 && width > 660) {
+    } else if (width <= 915 && width > 815) {
       this.menuPlus = this.menuTabService.getLastElements(5);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 660) {
+    } else if (width <= 815 && width > 680) {
       this.menuPlus = this.menuTabService.getLastElements(6);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else {
+    } else if (width <= 680) {
+      this.menuPlus = this.menuTabService.getLastElements(7);
+      this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
+    }else {
       this.menuPlus = [];
       this.menuTabs = this.menuTabService.getAllMenuTab();
     }
