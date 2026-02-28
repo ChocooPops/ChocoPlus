@@ -1,0 +1,22 @@
+<div class="container-filter" (click)="openFilter()" [ngClass]="{'is-Open': isOpen}">
+    <p> {{ getFilterSelected() }} </p>
+    <img [src]="srcArrow">
+    @if(isOpen) {
+    <div class="container-filters">
+        <div class="hollow"></div>
+        <div class="barre"></div>
+        @if(default) {
+        <div class="filter" [ngClass]="'border-bottom'" (click)="onClickFilter(default.id)" [ngClass]="{'selected' : default.isSelected}">
+            <p> {{ default.name }} </p>
+        </div>
+        }
+        @for (f of filter.filters; track f.id) {
+        @if (f.value) {
+        <div class="filter" (click)="onClickFilter(f.id)" [ngClass]="{'selected' : f.isSelected}">
+            <p> {{ f.name }} </p>
+        </div>
+        }
+        }
+    </div>
+    }
+</div>

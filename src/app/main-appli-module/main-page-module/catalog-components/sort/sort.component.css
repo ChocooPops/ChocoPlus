@@ -1,0 +1,90 @@
+.container-sort {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    gap: 10px;
+    position: relative;
+
+    img {
+        padding: 5px;
+        border-radius: 3px;
+        height: 18px;
+        width: 18px;
+        transition: 0.3s background-color;
+        z-index: 50;
+
+        &:hover {
+            background-color: #2B2B2B;
+        }
+    }
+}
+
+.is-Open {
+  z-index: 60;
+}
+
+p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: lighter;
+  color: var(--white-dark);
+  transition: color 0.3s;
+  z-index: 50;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.container-sorts {
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: rgba(43, 43, 43, 1);
+  border-radius: 5px;
+  top: -10px;
+  width: 220px;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2)
+}
+
+.sort {
+  padding-block: 5px;
+  height: 100%;
+  width: 100%;
+  transition: background-color 0.3s;
+  padding-left: 15px;
+  padding-right: 25px;
+  box-sizing: border-box;
+  padding-block: 10px;
+
+  &:hover {
+    background-color: rgba(55, 55, 55, 1);
+  }
+}
+
+.hollow {
+  height: 40px;
+  position: relative;
+  width: 100%;
+}
+
+.barre {
+  background-color: rgb(30, 30, 30);
+  top: 38px;
+  height: 2px;
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+
+.border-bottom {
+    border-bottom: 2px solid rgb(30, 30, 30);;
+}
+
+.selected {
+  background-color: rgba(55, 55, 55, 1);
+}

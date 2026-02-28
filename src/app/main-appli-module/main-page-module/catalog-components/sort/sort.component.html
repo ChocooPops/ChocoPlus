@@ -1,0 +1,21 @@
+<div class="container-sort" (click)="openFilter()" [ngClass]="{'is-Open': isOpen}">
+    <p> Trie par {{ getSortSelected() }} </p>
+    @if(orderDirection) {
+        <img [src]="srcAsc" (click)="toggleOrderDirection()">
+    } @else {
+        <img [src]="srcDesc" (click)="toggleOrderDirection()">
+    }
+    @if(isOpen) {
+    <div class="container-sorts">
+        <div class="hollow"></div>
+        <div class="barre"></div>
+        @for (s of sorts; track s.id) {
+        @if (s.value) {
+        <div class="sort" (click)="onClickFilter(s.id)" [ngClass]="{'selected' : s.isSelected}">
+            <p> {{ s.name }} </p>
+        </div>
+        }
+        }
+    </div>
+    }
+</div>

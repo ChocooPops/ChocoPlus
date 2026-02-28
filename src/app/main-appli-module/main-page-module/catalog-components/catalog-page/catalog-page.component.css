@@ -37,11 +37,14 @@ p {
 
 .container-options {
     position: absolute;
-    width: 300px;
+    width: auto;
     height: 20px;
-    background-color: rgb(95, 95, 95);
     right: 0;
-    bottom: 5px;
+    bottom: 10px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: right;
 }
 
 /* Quand écran < 1100px */

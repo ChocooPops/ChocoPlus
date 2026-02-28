@@ -7,7 +7,12 @@
     <div class="container-list">
         <div class="container-title" [style.margin-left.vw]="marginLeft" [style.width]="width">
             <p>Catalogue</p>
-            <div class="container-options"></div>
+            <div class="container-options">
+                <app-filter [filter]="decadeFilter" (onClicked)="onSelectedDecadeFilter($event)"></app-filter>
+                <app-filter [filter]="categoryFilter" (onClicked)="onSelectedCategoryFilter($event)"></app-filter>
+                <app-filter [filter]="mediaTypeFilter" (onClicked)="onSelectedMediaTypeFilter($event)"></app-filter>
+                <app-sort [sorts]="sortFilter" (onClicked)="onSelectedSortFilter($event)"></app-sort>
+            </div>
             <div class="barre-separation"> </div>
         </div>
         <div style="margin-bottom: -70px;"></div>
