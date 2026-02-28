@@ -1,10 +1,5 @@
 <div class="container-sort" (click)="openFilter()" [ngClass]="{'is-Open': isOpen}">
     <p> Trie par {{ getSortSelected() }} </p>
-    @if(orderDirection) {
-        <img [src]="srcAsc" (click)="toggleOrderDirection()">
-    } @else {
-        <img [src]="srcDesc" (click)="toggleOrderDirection()">
-    }
     @if(isOpen) {
     <div class="container-sorts">
         <div class="hollow"></div>

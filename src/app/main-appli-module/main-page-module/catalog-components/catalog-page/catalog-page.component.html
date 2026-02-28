@@ -12,6 +12,11 @@
                 <app-filter [filter]="categoryFilter" (onClicked)="onSelectedCategoryFilter($event)"></app-filter>
                 <app-filter [filter]="mediaTypeFilter" (onClicked)="onSelectedMediaTypeFilter($event)"></app-filter>
                 <app-sort [sorts]="sortFilter" (onClicked)="onSelectedSortFilter($event)"></app-sort>
+                @if(orderDirection) {
+                <img class="order-direction" [src]="srcAsc" (click)="toggleOrderDirection()">
+                } @else {
+                <img class="order-direction" [src]="srcDesc" (click)="toggleOrderDirection()">
+                }
             </div>
             <div class="barre-separation"> </div>
         </div>

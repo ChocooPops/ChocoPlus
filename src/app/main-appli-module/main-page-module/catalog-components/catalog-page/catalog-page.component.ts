@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { Subscription, take } from 'rxjs';
 import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-tmp.component';
@@ -46,6 +46,10 @@ export class CatalogPageComponent {
   mediaTypeFilter!: FiltersModel;
   sortFilter!: FilterModel[];
 
+  srcAsc: string = 'icon/asc.svg';
+  srcDesc: string = 'icon/desc.svg';
+  orderDirection!: boolean;
+
   constructor(private readonly userService: UserService,
     private readonly mediaSelectedService: MediaSelectedService,
     private readonly formatPosterService: FormatPosterService,
@@ -89,6 +93,11 @@ export class CatalogPageComponent {
         }
       })
     )
+    this.subscription.add(
+      this.filtersCatalogService.getOrderDirectionSort().subscribe((data: boolean) => {
+        this.orderDirection = data;
+      })
+    )
   }
 
   ngOnDestroy(): void {
@@ -126,4 +135,8 @@ export class CatalogPageComponent {
     this.filtersCatalogService.onSelectedSortFilter(id);
   }
 
+  public toggleOrderDirection(): void {
+    this.filtersCatalogService.toggleOrderDirectionSort();
+  }
+  
 }
