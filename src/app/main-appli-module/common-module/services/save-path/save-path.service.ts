@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { Location } from '@angular/common';
+import { Router, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -11,38 +10,42 @@ export class SavePathService {
 
   private history: string[] = [];
   private currentIndex = -1;
+  private pendingIndexChange: number | null = null;
 
-  private isHistoryNavigation = false;
+  private canGoBack$ = new BehaviorSubject<boolean>(false).asObservable();
+  private canGoForward$ = new BehaviorSubject<boolean>(false).asObservable();
 
   private canGoBackSubject = new BehaviorSubject<boolean>(false);
   private canGoForwardSubject = new BehaviorSubject<boolean>(false);
 
-  private canGoBack$ = this.canGoBackSubject.asObservable();
-  private canGoForward$ = this.canGoForwardSubject.asObservable();
+  private oldPath = '';
+  private id: number | undefined;
 
-  private oldPath: string = "";
-  private id: number | undefined = undefined;
-
-  constructor(
-    private readonly router: Router,
-    private readonly location: Location
-  ) {
+  constructor(private readonly router: Router) {
+    this.canGoBack$ = this.canGoBackSubject.asObservable();
+    this.canGoForward$ = this.canGoForwardSubject.asObservable();
 
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        const url = event.urlAfterRedirects;
-
-        // ⚠️ Si c'est un back/forward, on ne touche PAS à l'historique
-        if (this.isHistoryNavigation) {
-          this.isHistoryNavigation = false;
+      .pipe(filter(event =>
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ))
+      .subscribe(event => {
+        if (event instanceof NavigationCancel || event instanceof NavigationError) {
+          this.pendingIndexChange = null;
           this.updateStates();
           return;
         }
 
-        // Navigation normale
-        if (this.currentIndex === -1 || this.history[this.currentIndex] !== url) {
-          // On coupe le "forward stack"
+        if (!(event instanceof NavigationEnd)) return;
+
+        const url = event.urlAfterRedirects;
+
+        if (this.pendingIndexChange !== null) {
+          this.currentIndex = this.pendingIndexChange;
+          this.pendingIndexChange = null;
+        } else if (this.history[this.currentIndex] !== url) {
           this.history = this.history.slice(0, this.currentIndex + 1);
           this.history.push(url);
           this.currentIndex = this.history.length - 1;
@@ -52,9 +55,6 @@ export class SavePathService {
       });
   }
 
-  // ========================
-  // Observables publics
-  // ========================
   public getCanGoBack(): Observable<boolean> {
     return this.canGoBack$;
   }
@@ -63,46 +63,16 @@ export class SavePathService {
     return this.canGoForward$;
   }
 
-  // ========================
-  // Navigation custom
-  // ========================
-  public setActualPath(path: string): void {
-    this.oldPath = path;
-  }
-
-  public setActualId(actualId: number | undefined): void {
-    this.id = actualId;
-  }
-
-  public navigateToOldPath(): void {
-    if (!this.oldPath) return;
-
-    if (this.id === undefined) {
-      this.router.navigateByUrl(this.oldPath);
-    } else {
-      this.router.navigate([this.oldPath, this.id]);
-    }
-  }
-
-  // ========================
-  // Historique navigation
-  // ========================
   back(): void {
     if (!this.canGoBack()) return;
-
-    this.currentIndex--;
-    this.isHistoryNavigation = true;
-    this.location.back();
-    this.updateStates();
+    this.pendingIndexChange = this.currentIndex - 1;
+    this.router.navigateByUrl(this.history[this.pendingIndexChange]);
   }
 
   forward(): void {
     if (!this.canGoForward()) return;
-
-    this.currentIndex++;
-    this.isHistoryNavigation = true;
-    this.location.forward();
-    this.updateStates();
+    this.pendingIndexChange = this.currentIndex + 1;
+    this.router.navigateByUrl(this.history[this.pendingIndexChange]);
   }
 
   canGoBack(): boolean {
@@ -111,6 +81,21 @@ export class SavePathService {
 
   canGoForward(): boolean {
     return this.currentIndex < this.history.length - 1;
+  }
+
+  setActualPath(path: string): void {
+    this.oldPath = path;
+  }
+
+  setActualId(id: number | undefined): void {
+    this.id = id;
+  }
+
+  navigateToOldPath(): void {
+    if (!this.oldPath) return;
+    this.id === undefined
+      ? this.router.navigateByUrl(this.oldPath)
+      : this.router.navigate([this.oldPath, this.id]);
   }
 
   private updateStates(): void {
