@@ -17,6 +17,7 @@ export class SortComponent {
   
   subscription: Subscription = new Subscription();
   isOpen: boolean = false;
+  srcArrow: string = 'icon/arrow-2.svg';
 
   constructor(private readonly elementRef: ElementRef) {}
 

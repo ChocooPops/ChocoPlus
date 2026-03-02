@@ -1,10 +1,11 @@
 .container-filter {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  gap: 5px;
   position: relative;
+  height: 35px;
 
   img {
     height: 10px;
@@ -13,13 +14,21 @@
   }
 }
 
+.filter-selected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  height: 35px;
+}
+
 .is-Open {
   z-index: 60;
 }
 
 p {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: lighter;
   color: var(--white-dark);
   transition: color 0.3s;
@@ -36,46 +45,54 @@ p {
   flex-direction: column;
   position: absolute;
   background-color: rgba(43, 43, 43, 1);
-  border-radius: 5px;
-  top: -10px;
-  width: max-content;
+  border-radius: 0px 0px 5px 5px;
+  top: 35px;
   box-sizing: border-box;
   overflow: hidden;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2)
-}
-
-.filter {
-  padding-block: 5px;
-  height: 100%;
-  width: 100%;
-  transition: background-color 0.3s;
-  padding-left: 15px;
-  padding-right: 35px;
-  box-sizing: border-box;
-  padding-block: 10px;
-
-  &:hover {
-    background-color: rgba(55, 55, 55, 1);
-  }
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  max-height: calc(35px * 10);
+  width: 140px;
+  overflow-y: auto;
 }
 
 .hollow {
-  height: 40px;
-  position: relative;
-  width: 100%;
+  height: 35px;
+  position: absolute;
+  background-color: rgba(43, 43, 43, 1);
+  position: absolute;
+  top: 0;
+  width: 140px;
+  border-radius: 5px 5px 0px 0px;
 }
 
 .barre {
   background-color: rgb(30, 30, 30);
-  top: 38px;
   height: 2px;
-  position: absolute;
   width: 100%;
-  left: 0;
+  position: absolute;
+  top: 33px;
+  z-index: 70;
+  width: 140px;
 }
 
-.border-bottom {
-    border-bottom: 2px solid rgb(30, 30, 30);;
+.container-filters::-webkit-scrollbar {
+  height: 2px;
+  width: 2px;
+}
+
+.filter {
+  transition: background-color 0.3s;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-left: 15px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: rgba(55, 55, 55, 1);
+  }
 }
 
 .selected {

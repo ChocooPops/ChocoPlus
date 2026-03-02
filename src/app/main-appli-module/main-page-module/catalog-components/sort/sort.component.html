@@ -1,9 +1,12 @@
 <div class="container-sort" (click)="openFilter()" [ngClass]="{'is-Open': isOpen}">
-    <p> Trie par {{ getSortSelected() }} </p>
+    <div class="sort-selected">
+        <p> Trie par {{ getSortSelected() }} </p>
+        <img [src]="srcArrow">
+    </div>
     @if(isOpen) {
+    <div class="barre"></div>
+    <div class="hollow"></div>
     <div class="container-sorts">
-        <div class="hollow"></div>
-        <div class="barre"></div>
         @for (s of sorts; track s.id) {
         @if (s.value) {
         <div class="sort" (click)="onClickFilter(s.id)" [ngClass]="{'selected' : s.isSelected}">
