@@ -1,0 +1,16 @@
+<div class="container-navigation">
+    <div class="container-arrow" (click)="goBack()">
+        @if(canGoBack) {
+            <img [src]="arrowLeft">
+        } @else {
+            <img [src]="arrowLeftDisable">
+        }
+    </div>
+    <div class="container-arrow" (click)="goBack()">
+        @if(canGoForward) {
+            <img [src]="arrowRight">
+        } @else {
+            <img [src]="arrowRightDisable">
+        }
+    </div>
+</div>

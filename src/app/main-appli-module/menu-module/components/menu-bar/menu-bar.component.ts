@@ -7,11 +7,12 @@ import { fromEvent, Subscription } from 'rxjs';
 import { UserTabComponent } from '../user-tab/user-tab.component';
 import { ChangeFormatPosterComponent } from '../change-format-poster/change-format-poster.component';
 import { MenuTabService } from '../../service/menu-tab/menu-tab.service';
+import { NavigationButtonComponent } from '../navigation-button/navigation-button.component';
 
 @Component({
   selector: 'app-menu-bar',
   standalone: true,
-  imports: [MenuTabComponent, NgClass, UserTabComponent, ChangeFormatPosterComponent],
+  imports: [MenuTabComponent, NgClass, UserTabComponent, ChangeFormatPosterComponent, NavigationButtonComponent],
   templateUrl: './menu-bar.component.html',
   styleUrls: ['./menu-bar.component.css']
 })
@@ -68,22 +69,22 @@ export class MenuBarComponent {
 
   private checkWindowSize(): void {
     const width: number = window.innerWidth;
-    if (width <= 1270 && width > 1155) {
+    if (width <= 1340 && width > 1225) {
       this.menuPlus = this.menuTabService.getLastElements(2);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 1155 && width > 1015) {
+    } else if (width <= 1225 && width > 1080) {
       this.menuPlus = this.menuTabService.getLastElements(3);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 1015 && width > 915) {
+    } else if (width <= 1080 && width > 980) {
       this.menuPlus = this.menuTabService.getLastElements(4);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 915 && width > 815) {
+    } else if (width <= 980 && width > 890) {
       this.menuPlus = this.menuTabService.getLastElements(5);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 815 && width > 680) {
+    } else if (width <= 890 && width > 750) {
       this.menuPlus = this.menuTabService.getLastElements(6);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
-    } else if (width <= 680) {
+    } else if (width <= 750) {
       this.menuPlus = this.menuTabService.getLastElements(7);
       this.menuTabs = this.menuTabService.getTabsNotInPlus(this.menuPlus);
     }else {

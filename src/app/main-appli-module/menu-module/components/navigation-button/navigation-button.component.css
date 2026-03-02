@@ -1,0 +1,26 @@
+.container-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.container-arrow {
+    height: 35px;
+    width: 35px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+    img {
+        height: 14px;
+        width: 14px;
+    }
+}
+
+.container-arrow:hover {
+    background-color: #232323;
+}

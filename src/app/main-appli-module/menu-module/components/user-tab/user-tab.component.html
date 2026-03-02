@@ -3,7 +3,7 @@
         (mouseleave)="onMouseLeave()">
         <img [src]="user.profilPhoto" (error)="errorPpUser()">
     </div>
-    <div class="container-arrow">
+    <div class="container-arrow" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="arrow-down" [ngClass]="classArrow"></div>
     </div>
     <div class="container-under-menu" [ngClass]="class" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
