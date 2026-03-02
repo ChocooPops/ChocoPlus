@@ -9,6 +9,7 @@ import { ViewDataComponent } from "./components/view-data-page/view-data/view-da
 import { IsAdminGuard } from "../../common-module/guards/is-admin.user.guard";
 import { UnauthorizedPageComponent } from "../../common-module/components/unauthorized-page/unauthorized-page.component";
 import { ParameterAppliComponent } from "./components/parameter-appli/parameter-appli.component";
+import { DocumentationComponent } from "./components/documentation/documentation.component";
 
 export const userRoutes: Routes = [
     {
@@ -22,6 +23,10 @@ export const userRoutes: Routes = [
     {
         path: 'edit-profil',
         component: UserEditProfilComponent
+    },
+    {
+        path: 'documentation',
+        component: DocumentationComponent
     },
     {
         path: 'support',

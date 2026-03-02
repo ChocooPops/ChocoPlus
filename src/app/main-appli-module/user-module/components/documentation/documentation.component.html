@@ -1,0 +1,7 @@
+<div class="container">
+    @if(pdfUrl) {
+        <iframe [src]="pdfUrl"></iframe>
+    } @else {
+        <div class="little-spinner"></div>
+    }
+</div>

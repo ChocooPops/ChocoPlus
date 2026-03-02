@@ -26,6 +26,13 @@ export class UserParametersService {
       isClicked: false
     },
     {
+      id: 7,
+      name: 'Documentation',
+      route: `${this.rootRouter}/documentation`,
+      srcImage: `${this.rootImage}/documentation.svg`,
+      isClicked: false
+    },
+    {
       id: 3,
       name: 'Support utilisateur',
       route: `${this.rootRouter}/support`,
