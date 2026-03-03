@@ -12,6 +12,10 @@ export class ScrollEventService {
   private containerElement!: HTMLElement;
   private scrollListener!: () => void;
 
+  public getContainerElement(): HTMLElement {
+    return this.containerElement;
+  }
+
   public setRenderer(renderer: Renderer2): void {
     this.renderer = renderer;
   }

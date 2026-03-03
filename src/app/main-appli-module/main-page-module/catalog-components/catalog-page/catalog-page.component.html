@@ -22,5 +22,9 @@
         </div>
         <div style="margin-bottom: -70px;"></div>
         <app-grid-list [mediaList]="medias" [title]="title" [format]="format"></app-grid-list>
+    
+        @if(isLoading) {
+            <div class="loader">Chargement...</div>
+        }
     </div>
 </div>

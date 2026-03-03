@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { Subscription, take } from 'rxjs';
 import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-tmp.component';
-import { UserService } from '../../../user-module/service/user/user.service';
 import { GridListComponent } from '../../../media-module/components/grids/grid-list/grid-list.component';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
-import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
@@ -19,6 +17,10 @@ import { FilterModel } from '../../../media-module/models/catalog/filter.interfa
 import { FiltersCatalogService } from '../../../media-module/services/filters-catalog/filters-catalog.service';
 import { FiltersModel } from '../../../media-module/models/catalog/filters.interface';
 import { SortComponent } from '../sort/sort.component';
+import { MediaService } from '../../../media-module/services/media/media.service';
+import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
+import { SortCatalog } from '../../../media-module/models/catalog/sort-catalog.enum';
+import { ScrollEventService } from '../../../common-module/services/scroll-event/scroll-event.service';
 
 @Component({
   selector: 'app-catalog-page',
@@ -29,114 +31,198 @@ import { SortComponent } from '../sort/sort.component';
 })
 export class CatalogPageComponent {
 
-  private abortController = new AbortController();
-  title: string = '';
   medias: MediaModel[] | undefined = undefined;
-  format = FormatPosterModel.VERTICAL;
+
   subscription: Subscription = new Subscription();
   subscritpionPagination!: Subscription;
-  marginLeft !: number;
+  subscriptionCatalog!: Subscription;
+  private scrollUnlisten!: () => void;
+
+  title: string = '';
+  format: FormatPosterModel = FormatPosterModel.VERTICAL;
+
+  marginLeft!: number;
   width!: string;
   mediaSelected: MediaModel | undefined = undefined;
-  nbPosterPerLine: number = 0;
-  loadNewFormat: boolean = false;
 
   decadeFilter!: FiltersModel;
   categoryFilter!: FiltersModel;
   mediaTypeFilter!: FiltersModel;
   sortFilter!: FilterModel[];
 
+  declareSelected!: number;
+  categorySelected!: number;
+  mediaTypeSelected!: MediaTypeModel;
+  sortSelected!: SortCatalog;
+
   srcAsc: string = 'icon/asc.svg';
   srcDesc: string = 'icon/desc.svg';
   orderDirection!: boolean;
 
-  constructor(private readonly userService: UserService,
+  private currentOffset: number = 0;
+  private PAGE_SIZE!: number;
+  public isLoading: boolean = false;
+  private hasMore: boolean = true;
+
+  constructor(
+    private readonly renderer: Renderer2,
     private readonly mediaSelectedService: MediaSelectedService,
     private readonly formatPosterService: FormatPosterService,
-    private readonly imagePreloaderService: ImagePreloaderService,
     private readonly menuTabService: MenuTabService,
     private readonly loadOpeningPageService: LoadOpeningPageService,
     private readonly paginationPosterService: PaginationPosterService,
-    private readonly filtersCatalogService: FiltersCatalogService
+    private readonly filtersCatalogService: FiltersCatalogService,
+    private readonly mediaService: MediaService,
+    private readonly scrollEventService: ScrollEventService,
   ) {
     this.menuTabService.setActivateTransition(false);
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_CATALOG);
+
+    this.PAGE_SIZE = this.filtersCatalogService.getPAGE_SIZE();
     this.decadeFilter = this.filtersCatalogService.getDecadeFilter();
     this.categoryFilter = this.filtersCatalogService.getCategoryFilter();
     this.mediaTypeFilter = this.filtersCatalogService.getMediaTypeFilter();
     this.sortFilter = this.filtersCatalogService.getSortFilter();
+
+    this.declareSelected = this.decadeFilter.filters.find((item) => item.isSelected)?.value;
+    this.categorySelected = this.categoryFilter.filters.find((item) => item.isSelected)?.value;
+    this.mediaTypeSelected = this.mediaTypeFilter.filters.find((item) => item.isSelected)?.value;
+    this.sortSelected = this.sortFilter.find((item) => item.isSelected)?.value;
   }
 
   ngOnInit(): void {
     this.subscription.add(
-      this.mediaSelectedService.getMediaSelected().subscribe((medias: MediaModel | undefined) => {
-        this.mediaSelected = medias;
+      this.mediaSelectedService.getMediaSelected().subscribe((media: MediaModel | undefined) => {
+        this.mediaSelected = media;
       })
-    )
+    );
+
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterCatalog().subscribe((format: FormatPosterModel) => {
         this.format = format;
-        if (this.loadNewFormat) {
-          //this.medias = undefined;
-          this.reloadWhenFormatPosterChange();
-        }
-        if (this.format === FormatPosterModel.VERTICAL) {
-          this.subscritpionPagination = this.paginationPosterService.getVerticalGeometricDimensionSelection().subscribe((dimension: GeometricDimensionSelectionModel) => {
-            this.marginLeft = dimension.marginLeft;
-            this.width = `calc(100% - ${this.marginLeft}vw - ${this.marginLeft}vw)`;
-          })
-        } else if (this.format === FormatPosterModel.HORIZONTAL) {
-          this.subscritpionPagination = this.paginationPosterService.getHorizontalGeometricDimensionSelection().subscribe((dimension: GeometricDimensionSelectionModel) => {
-            this.marginLeft = dimension.marginLeft;
-            this.width = `calc(100% - ${this.marginLeft}vw - ${this.marginLeft}vw)`;
-          })
-        }
+        const obs = this.format === FormatPosterModel.VERTICAL
+          ? this.paginationPosterService.getVerticalGeometricDimensionSelection()
+          : this.paginationPosterService.getHorizontalGeometricDimensionSelection();
+
+        this.subscritpionPagination = obs.subscribe((dimension: GeometricDimensionSelectionModel) => {
+          this.marginLeft = dimension.marginLeft;
+          this.width = `calc(100% - ${this.marginLeft}vw - ${this.marginLeft}vw)`;
+        });
       })
-    )
+    );
+
     this.subscription.add(
       this.filtersCatalogService.getOrderDirectionSort().subscribe((data: boolean) => {
         this.orderDirection = data;
+        this.startNewCatalog();
       })
-    )
+    );
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      const container = this.scrollEventService.getContainerElement();
+      if (container) {
+        this.scrollUnlisten = this.renderer.listen(container, 'scroll', () => this.onScroll());
+      }
+    }, 100);
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.mediaSelectedService.clearSelection();
-    this.abortController.abort();
-    if (this.subscritpionPagination) {
-      this.subscritpionPagination.unsubscribe();
-    }
-  }
-
-  private reloadWhenFormatPosterChange(): void {
-    this.abortController.abort();
-    this.userService.fetchMyMediaListByUserId().pipe(take(1)).subscribe((medias: MediaModel[]) => {
-      const format: FormatPosterModel = this.formatPosterService.getFormatPosterMyListValue();
-      const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(medias, format);
-
-      this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        this.medias = medias;
-        this.loadNewFormat = true;
-      })
-    })
+    if (this.scrollUnlisten) this.scrollUnlisten();
+    if (this.subscritpionPagination) this.subscritpionPagination.unsubscribe();
+    if (this.subscriptionCatalog) this.subscriptionCatalog.unsubscribe();
   }
 
   public onSelectedDecadeFilter(id: number): void {
-    this.filtersCatalogService.onSelectedDecadeFilter(id);
+    this.declareSelected = this.filtersCatalogService.onSelectedDecadeFilter(id);
+    this.startNewCatalog();
   }
+
   public onSelectedCategoryFilter(id: number): void {
-    this.filtersCatalogService.onSelectedCategoryFilter(id);
+    this.categorySelected = this.filtersCatalogService.onSelectedCategoryFilter(id);
+    this.startNewCatalog();
   }
+
   public onSelectedMediaTypeFilter(id: number): void {
-    this.filtersCatalogService.onSelectedMediaTypeFilter(id);
+    this.mediaTypeSelected = this.filtersCatalogService.onSelectedMediaTypeFilter(id);
+    this.startNewCatalog();
   }
+
   public onSelectedSortFilter(id: number): void {
-    this.filtersCatalogService.onSelectedSortFilter(id);
+    this.sortSelected = this.filtersCatalogService.onSelectedSortFilter(id);
+    this.startNewCatalog();
   }
 
   public toggleOrderDirection(): void {
     this.filtersCatalogService.toggleOrderDirectionSort();
   }
-  
+
+  private onScroll(): void {
+    if (this.isLoading || !this.hasMore) return;
+
+    const container = this.scrollEventService.getContainerElement();
+    if (!container) return;
+
+    const scrollTop = container.scrollTop;
+    const clientHeight = container.clientHeight;
+    const scrollHeight = container.scrollHeight;
+
+    if (scrollTop + clientHeight >= scrollHeight - 250) {
+      this.loadNextPage();
+    }
+  }
+
+  private loadNextPage(): void {
+    if (this.isLoading || !this.hasMore) return;
+    this.isLoading = true;
+    this.currentOffset += this.PAGE_SIZE;
+
+    if (this.subscriptionCatalog) this.subscriptionCatalog.unsubscribe();
+
+    this.subscriptionCatalog = this.mediaService
+      .fetchMediaByCatalogFilters(
+        this.declareSelected,
+        this.categorySelected,
+        this.mediaTypeSelected,
+        this.sortSelected,
+        this.orderDirection,
+        this.PAGE_SIZE,
+        this.currentOffset
+      )
+      .pipe(take(1))
+      .subscribe((media: MediaModel[]) => {
+        if (media.length < this.PAGE_SIZE) this.hasMore = false;
+        if (this.medias) this.medias.push(...media);
+        this.isLoading = false;
+      });
+  }
+
+  public startNewCatalog(): void {
+    this.currentOffset = 0;
+    this.hasMore = true;
+    this.isLoading = false;
+    this.medias = undefined;
+
+    if (this.subscriptionCatalog) this.subscriptionCatalog.unsubscribe();
+
+    this.subscriptionCatalog = this.mediaService
+      .fetchMediaByCatalogFilters(
+        this.declareSelected,
+        this.categorySelected,
+        this.mediaTypeSelected,
+        this.sortSelected,
+        this.orderDirection,
+        this.PAGE_SIZE,
+        0
+      )
+      .pipe(take(1))
+      .subscribe((media: MediaModel[]) => {
+        if (media.length < this.PAGE_SIZE) this.hasMore = false;
+        this.medias = media;
+        this.isLoading = false;
+      });
+  }
 }

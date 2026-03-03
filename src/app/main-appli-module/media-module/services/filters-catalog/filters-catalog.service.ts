@@ -5,16 +5,23 @@ import { CategorySimpleModel } from '../../../edition-module/models/category/cat
 import { BehaviorSubject, Observable, take } from 'rxjs';
 import { FiltersModel } from '../../models/catalog/filters.interface';
 import { FilterModel } from '../../models/catalog/filter.interface';
+import { SortCatalog } from '../../models/catalog/sort-catalog.enum';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FiltersCatalogService {
+  
   private id: number = 0;
+  private readonly PAGE_SIZE: number = 100;
 
   private getId(): number {
     this.id++;
     return this.id;
+  }
+
+  public getPAGE_SIZE(): number {
+    return this.PAGE_SIZE;
   }
 
   private decadeFilter: FiltersModel = {
@@ -135,32 +142,32 @@ export class FiltersCatalogService {
     {
       id: this.getId(),
       name: 'Titre',
-      value: 'Titre',
+      value: SortCatalog.TITLE,
       isSelected: false,
     },
     {
       id: this.getId(),
       name: 'Date de sortie',
-      value: 'Titre',
+      value: SortCatalog.RELEASE_DATE,
       isSelected: false,
     },
     {
       id: this.getId(),
       name: "Date d'ajout",
-      value: 'Titre',
-      isSelected: true,
+      value: SortCatalog.ADDED_DATE,
+      isSelected: false,
     },
     {
       id: this.getId(),
       name: 'Durée',
-      value: 'Titre',
+      value: SortCatalog.DURATION,
       isSelected: false,
     },
     {
       id: this.getId(),
       name: 'Aléatoire',
-      value: 'Titre',
-      isSelected: false,
+      value: SortCatalog.SHUFFLE,
+      isSelected: true,
     },
   ];
 
@@ -208,40 +215,52 @@ export class FiltersCatalogService {
     this.orderDirectionSubject.next(!bool);
   }
 
-  public onSelectedDecadeFilter(id: number): void {
+  public onSelectedDecadeFilter(id: number): number {
+    let decade!: number;
     this.decadeFilter.filters.some((item) => {
       if(item.id === id) {
         item.isSelected = true;
+        decade = item.value;
       } else {
         item.isSelected = false;
       }
-    })
+    });
+    return decade;
   }
-  public onSelectedCategoryFilter(id: number): void {
+  public onSelectedCategoryFilter(id: number): number {
+    let category!: number;
     this.categoryFilter.filters.some((item) => {
       if(item.id === id) {
         item.isSelected = true;
+        category = item.value;
       } else {
         item.isSelected = false;
       }
-    })
+    });
+    return category;
   }
-  public onSelectedMediaTypeFilter(id: number): void {
+  public onSelectedMediaTypeFilter(id: number): MediaTypeModel {
+    let media!: MediaTypeModel;
     this.mediaTypeFilter.filters.some((item) => {
       if(item.id === id) {
         item.isSelected = true;
+        media = item.value;
       } else {
         item.isSelected = false;
       }
-    })
+    });
+    return media;
   }
-  public onSelectedSortFilter(id: number): void {
+  public onSelectedSortFilter(id: number): SortCatalog {
+    let sort!: SortCatalog;
     this.sortFilter.some((item) => {
       if(item.id === id) {
         item.isSelected = true;
+        sort = item.value;
       } else {
         item.isSelected = false;
       }
-    })
+    });
+    return sort;
   }
 }
