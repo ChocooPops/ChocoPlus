@@ -17,7 +17,9 @@ export class GridListComponent {
   @Input() mediaList: MediaModel[] | undefined = undefined;
   @Input() title: string = '';
   @Input() format: FormatPosterModel = FormatPosterModel.VERTICAL;
-  subscription !: Subscription;
-  FormatType = FormatPosterModel;
+  @Input() isLoadingCatalog!: boolean;
+
+  public subscription !: Subscription;
+  public FormatType = FormatPosterModel;
 
 }

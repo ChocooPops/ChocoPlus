@@ -10,6 +10,8 @@ export abstract class GridAbstraction {
 
     @Input() mediaList: MediaModel[] | undefined = undefined;
     @Input() title: string = '';
+    @Input() isLoadingCatalog!: boolean;
+
     protected subscription: Subscription = new Subscription();
     protected marginLeft !: number;
     protected marginBottom !: number;
@@ -19,6 +21,7 @@ export abstract class GridAbstraction {
     protected width !: number;
     protected marginBottomLoading !: number;
     protected postersLoading: number[] = [];
+    protected postersLoadingCatalog: number[] = [];
 
     protected verifTypeY: boolean = false;
 
@@ -36,6 +39,9 @@ export abstract class GridAbstraction {
     ngOnChanges(changes: SimpleChanges) {
         if (changes['mediaList'] && this.nbPosterPerLine) {
             this.resetTypeZoomMovie(this.nbPosterPerLine);
+        }
+        if (changes['isLoadingCatalog']) {
+            this.setPosterLoadingCatalog();
         }
     }
 
@@ -73,6 +79,17 @@ export abstract class GridAbstraction {
                         this.mediaList[i].typeZoomY = false;
                     }
                 }
+            }
+        }
+    }
+
+    protected setPosterLoadingCatalog(): void {
+        if (this.isLoadingCatalog && this.mediaList && this.nbPosterPerLine) {
+            const lastLine: number = this.mediaList.length % this.nbPosterPerLine;
+            const count: number = this.nbPosterPerLine - lastLine + this.nbPosterPerLine * 3;
+            this.postersLoadingCatalog = [];
+            for (let i = 0; i < count; i++) {
+                this.postersLoadingCatalog.push(i);
             }
         }
     }

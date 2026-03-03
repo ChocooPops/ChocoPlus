@@ -9,6 +9,11 @@
         <app-vertical-poster [media]="media" [typeZoomX]="media.typeZoomX"
             [typeZoomY]="media.typeZoomY"></app-vertical-poster>
         }
+        @if (isLoadingCatalog) {
+        @for(poster of postersLoadingCatalog; track poster) {
+        <app-poster-loading [height]="height" [width]="width" [marginBottom]="marginBottomLoading"></app-poster-loading>
+        }
+        }
         }@else {
         <div class="container-not-content-found">
             <app-setting-not-found></app-setting-not-found>

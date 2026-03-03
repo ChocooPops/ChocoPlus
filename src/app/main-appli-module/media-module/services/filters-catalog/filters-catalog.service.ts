@@ -13,7 +13,7 @@ import { SortCatalog } from '../../models/catalog/sort-catalog.enum';
 export class FiltersCatalogService {
   
   private id: number = 0;
-  private readonly PAGE_SIZE: number = 100;
+  private readonly PAGE_SIZE: number = 50;
 
   private getId(): number {
     this.id++;

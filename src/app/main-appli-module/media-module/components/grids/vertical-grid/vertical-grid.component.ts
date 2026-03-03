@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { GridAbstraction } from '../grid-abstraction.directive';
 import { VerticalPosterComponent } from '../../posters/vertical-poster/vertical-poster.component';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
@@ -23,8 +23,9 @@ export class VerticalGridComponent extends GridAbstraction {
         this.marginBottom = this.paginationPosterService.getMarginBottomPageToVerticalFormat();
         this.height = this.paginationPosterService.getRealHeighVerticalVerticalPoster();
         this.marginBottomLoading = this.paginationPosterService.getMarginBottomForVerticalPoster();
+        this.setPosterLoadingCatalog();
       })
-    )
+    );
   }
 
 }

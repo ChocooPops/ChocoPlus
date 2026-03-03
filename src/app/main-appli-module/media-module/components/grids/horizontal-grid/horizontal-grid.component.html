@@ -8,6 +8,11 @@
         @for(media of mediaList; track media) {
         <app-horizontal-poster [media]="media" [typeZoomX]="media.typeZoomX"></app-horizontal-poster>
         }
+        @if (isLoadingCatalog) {
+        @for(poster of postersLoadingCatalog; track poster) {
+        <app-poster-loading [height]="height" [width]="width" [marginBottom]="marginBottomLoading"></app-poster-loading>
+        }
+        }
         }@else {
         <div class="container-not-content-found">
             <app-setting-not-found></app-setting-not-found>
