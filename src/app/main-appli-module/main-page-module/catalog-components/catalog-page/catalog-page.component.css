@@ -76,7 +76,7 @@ p {
   height: 18px;
   width: 18px;
   transition: 0.3s background-color;
-  z-index: 50;
+  z-index: 5;
   cursor: pointer;
 
   &:hover {

@@ -58,9 +58,7 @@ export class PreloadMainAppComponent {
   }
 
   private loadPage(page: PageModel) : void {
-    if(page === PageModel.PAGE_HOME) {
-      this.loadOpeningPageService.loadHomePageDataAndNavigate();
-    } else if (page === PageModel.PAGE_RESEARCH) {
+    if (page === PageModel.PAGE_RESEARCH) {
       this.loadOpeningPageService.loadResearchPageDataAndNavigate();
     } else if (page === PageModel.PAGE_MOVIE) {
       this.loadOpeningPageService.loadMoviePageDataAndNavigate();
@@ -74,6 +72,8 @@ export class PreloadMainAppComponent {
       this.loadOpeningPageService.loadEditionPageDataAndNavigate();
     } else if (page === PageModel.PAGE_USER) {
       this.loadOpeningPageService.loadUserPageDataAndNavigate();
+    } else {
+      this.loadOpeningPageService.loadHomePageDataAndNavigate();
     }
   }
 

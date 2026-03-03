@@ -5,6 +5,7 @@ import { SelectionModel } from '../../../media-module/models/selection.interface
 import { HttpClient } from '@angular/common/http';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
+import { UserService } from '../../../user-module/service/user/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,9 @@ export class EditionSelectionPageService {
   private editSelectionIntoPageSubject: BehaviorSubject<SelectionModel[] | undefined> = new BehaviorSubject<SelectionModel[] | undefined>(undefined);
   private editSelectionInotPage$: Observable<SelectionModel[] | undefined> = this.editSelectionIntoPageSubject.asObservable();
 
-  constructor(private http: HttpClient,
-    private selectionService: SelectionService
+  constructor(private readonly http: HttpClient,
+    private readonly selectionService: SelectionService,
+    private readonly userService: UserService
   ) { }
 
   public getSelectionPage(): Observable<SelectionModel[] | undefined> {
@@ -67,6 +69,8 @@ export class EditionSelectionPageService {
 
   public fetchFillSelectionIntoHomePage(): void {
     this.selectionService.fetchSelectionOnHomePage().pipe(take(1)).subscribe((data: SelectionModel[]) => {
+      const userId: number = this.userService.getCurrentUserValue()?.id ?? -1;
+      data = data.filter((item: SelectionModel) => item.id !== userId);
       this.editSelectionIntoPageSubject.next(data);
     })
   }

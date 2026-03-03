@@ -42,6 +42,7 @@ export abstract class GridAbstraction {
         }
         if (changes['isLoadingCatalog']) {
             this.setPosterLoadingCatalog();
+            if (this.nbPosterPerLine) this.resetTypeZoomMovie(this.nbPosterPerLine);
         }
     }
 
