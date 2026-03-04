@@ -41,7 +41,7 @@ export class UserParametersService {
     },
     {
       id: 4,
-      name: "Paramètre de l'application",
+      name: "Paramètres de l'application",
       route: `${this.rootRouter}/parameter-appli`,
       srcImage: `${this.rootImage}/parameter.svg`,
       isClicked: false

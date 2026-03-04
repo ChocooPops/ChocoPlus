@@ -59,11 +59,17 @@
 }
 
 .align-button {
+    height: min-content;
+    width: min-content;
     opacity: 0.8;
     display: flex;
     gap: 5px;
     align-items: center;
     animation: 0.3s enter_2;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .img-poster {
