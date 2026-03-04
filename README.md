@@ -50,6 +50,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - **Page Films** : Catalogue aléatoire avec vidéo tournante (NewsVideoRunning)
 - **Page Séries** : Catalogue de série aléatoire, avec organisation par saisons et épisodes avec vidéo tournante
 - **Page Recherche** : Moteur de recherche avancé par titre + affichage des plus grandes licenses de studio ou de saga
+- **Page du Catalogue** : Visualisation du catalogue complet, avec la possibilité de trier et de filtrer le contenu selon la catégorie, la date, le type de média ...
 - **Page Édition** (Admin uniquement) : Gestion complète des médias, licences, sélections
 
 ### Système de contenu
@@ -187,12 +188,10 @@ News_Video_Running (Vidéos tournantes Films/Séries)
    - Affiche une `News` en vedette en haut
 
 2. **Page Films** :
-   - Récupère les `License` avec `mediaType = 'MOVIE'`
    - Même système de sélections que l'accueil
    - Affiche une `News_Video_Running` en haut
 
 3. **Page Séries** :
-   - Récupère les `License` avec `mediaType = 'SERIES'`
    - Même système de sélections
    - Affiche une `News_Video_Running` en haut
 
@@ -228,6 +227,9 @@ News_Video_Running (Vidéos tournantes Films/Séries)
      - **Date de naissance** : Modification du champ `dateBorn`
    - Validation et mise à jour via API REST
    
+  **Onlget Documentation** :
+   - Visualisation de la documentation/notice d'utilisation principale de ChocoPlus en format pdf
+
    **Onglet Administration** (Visible uniquement pour `role = 'ADMIN'`) :
    - Liste complète de tous les utilisateurs de la table `User`
    - Affichage : pseudo, email, rôle actuel, date de création
