@@ -66,6 +66,8 @@ export class CatalogPageComponent {
   public isLoading: boolean = false;
   private hasMore: boolean = true;
 
+  heightScrolling: number = 0;
+
   constructor(
     private readonly renderer: Renderer2,
     private readonly mediaSelectedService: MediaSelectedService,
@@ -108,8 +110,13 @@ export class CatalogPageComponent {
           : this.paginationPosterService.getHorizontalGeometricDimensionSelection();
 
         this.subscritpionPagination = obs.subscribe((dimension: GeometricDimensionSelectionModel) => {
+          const marginBottom: number = this.format === FormatPosterModel.VERTICAL
+            ? this.paginationPosterService.getMarginBottomForVerticalPoster()
+            : this.paginationPosterService.getMarginBottomForHorizontalPoster()
+
           this.marginLeft = dimension.marginLeft;
           this.width = `calc(100% - ${this.marginLeft}vw - ${this.marginLeft}vw)`;
+          this.heightScrolling = dimension.heightPoster * 1.1 + marginBottom;
         });
       })
     );
@@ -174,7 +181,7 @@ export class CatalogPageComponent {
     const clientHeight = container.clientHeight;
     const scrollHeight = container.scrollHeight;
 
-    if (scrollTop + clientHeight >= scrollHeight - 250) {
+    if (scrollTop + clientHeight >= scrollHeight - this.vwToPx(this.heightScrolling) - 220) {
       this.loadNextPage();
     }
   }
@@ -239,4 +246,10 @@ export class CatalogPageComponent {
         });
       });
   }
+
+  private vwToPx(vw: number): number {
+    const width = window.innerWidth;
+    return (vw / 100) * width;
+  }
+
 }
