@@ -293,6 +293,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     dataObject.Token = await keytar.getPassword(SERVICE, ACCOUNT);
     dataObject.HEADER_NAME = process.env.HEADER_NAME_FIELD_SECRET_API;
     dataObject.HEADER_SECRET = process.env.HEADER_SECRET_API;
+    dataObject.WatchProgress = dataObject.WatchProgress ?? 0;
 
     let csharpAppPath = '';
     if (app.isPackaged) {

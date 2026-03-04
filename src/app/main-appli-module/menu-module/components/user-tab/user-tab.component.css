@@ -1,15 +1,25 @@
 .container-menu-tab {
+    position: relative;
+}
+
+.container-menu-tab {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
     position: relative;
+    cursor: pointer;
+
+    &:hover {
+        img {
+            transform: scale(1.1);
+        }
+    }
 }
 
 .container-pp {
     height: 35px;
     width: 35px;
-    cursor: pointer;
 
     img {
         height: 100%;
@@ -17,12 +27,6 @@
         object-fit: cover;
         border-radius: 3px;
         transition: transform 0.3s;
-    }
-
-    &:hover {
-        img {
-            transform: scale(1.1);
-        }
     }
 }
 

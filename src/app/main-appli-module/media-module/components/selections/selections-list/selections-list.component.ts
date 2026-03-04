@@ -43,6 +43,7 @@ export class SelectionsListComponent {
   }
 
   private subscribePagination(): void {
+    if (this.subsrciption) this.subsrciption.unsubscribe();
     this.subsrciption = this.paginationPosterService.getVerticalGeometricDimensionSelection().subscribe(() => {
       if (this.format === this.FormatPoster.VERTICAL) {
         this.marginBottom = this.paginationPosterService.getMarginBottomPageToVerticalFormat();

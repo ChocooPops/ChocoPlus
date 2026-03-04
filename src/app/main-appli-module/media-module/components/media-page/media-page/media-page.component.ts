@@ -96,6 +96,7 @@ export class MediaPageComponent {
   ngOnDestroy(): void {
     this.stopTimer();
     this.mediaSelectedService.clearSelection();
+    this.subscriptionSelectedMedia.unsubscribe();
   }
 
   startTimerHidden(): void {

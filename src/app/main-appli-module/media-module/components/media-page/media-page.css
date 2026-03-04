@@ -225,3 +225,7 @@ p {
 .hidden {
     visibility: hidden;
 }
+
+.margin-bottom-text {
+    margin-bottom: 3px;
+}

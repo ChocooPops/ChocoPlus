@@ -39,22 +39,26 @@ export class HistoricWatchProgressService {
   }
 
   public updateHistoricMovieById(movieId: number, watchProgress: number, stateProgress: ProgressStateMedia): void {
-    const historic = this.historicMovieProgress.get(movieId);
-    if (historic) {
-      historic.watchProgress = watchProgress;
-      historic.stateProgress = stateProgress;
-    } else {
-      this.getHistoricMovieProgressById(movieId, watchProgress, stateProgress);
+    if (watchProgress && stateProgress) {
+      const historic = this.historicMovieProgress.get(movieId);
+      if (historic) {
+        historic.watchProgress = watchProgress;
+        historic.stateProgress = stateProgress;
+      } else {
+        this.getHistoricMovieProgressById(movieId, watchProgress, stateProgress);
+      }
     }
   }
 
   public updateHistoricEpisodeById(episodeId: number, watchProgress: number, stateProgress: ProgressStateMedia): void {
-    const historic = this.historicEpisodeProgress.get(episodeId);
-    if (historic) {
-      historic.watchProgress = watchProgress;
-      historic.stateProgress = stateProgress;
-    } else {
-      this.getHistoricEpisodeProgressById(episodeId, watchProgress, stateProgress);
+    if (watchProgress && stateProgress) {
+      const historic = this.historicEpisodeProgress.get(episodeId);
+      if (historic) {
+        historic.watchProgress = watchProgress;
+        historic.stateProgress = stateProgress;
+      } else {
+        this.getHistoricEpisodeProgressById(episodeId, watchProgress, stateProgress);
+      }
     }
   }
 

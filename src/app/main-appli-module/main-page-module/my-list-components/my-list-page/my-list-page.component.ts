@@ -75,7 +75,6 @@ export class MyListPageComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    this.mediaSelectedService.clearSelection();
     this.abortController.abort();
   }
 
