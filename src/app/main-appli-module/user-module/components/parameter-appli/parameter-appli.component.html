@@ -3,6 +3,9 @@
     <div class="container-zone-concerned">
         <div class="title">
             <p> Poster des films & séries </p>
+            <div class="container-reset" (click)="onClickResetMediaParameters()">
+                <img [src]="srcReset">
+            </div>
         </div>
         @for(param of radioButtonPosterFilm; track param.id) {
         <div class="container-param">
@@ -16,6 +19,9 @@
     <div class="container-zone-concerned">
         <div class="title">
             <p> Poster des licenses </p>
+            <div class="container-reset" (click)="onClickResetLicenseParameters()">
+                <img [src]="srcReset">
+            </div>
         </div>
         @for(param of radioButtonPosterLicense; track param.id) {
         <div class="container-param">

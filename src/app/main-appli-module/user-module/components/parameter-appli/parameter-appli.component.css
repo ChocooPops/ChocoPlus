@@ -9,6 +9,7 @@
     flex-direction: column;
     gap: 35px;
     overflow: auto;
+    position: relative;
 }
 
 .container-zone-concerned {
@@ -19,13 +20,14 @@
 
 .title {
     background-color: hsla(0, 0%, 85%, 0.08);
-    width: 60%;
+    width: 80%;
     min-width: 300px;
     display: flex;
     align-items: center;
     padding-block: 10px;
     padding-left: 20px;
     box-sizing: border-box;
+    position: relative;
 
     p {
         font-size: 20px;
@@ -51,4 +53,29 @@ p {
 
 app-input-radio-button {
     padding-left: 35px;
+}
+
+.container-reset {
+    height: 25px;
+    width: 25px;
+    background-color: black;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgb(29, 29, 29);
+    }
+
+    img {
+        height: 70%;
+        width: 70%;
+    }
 }

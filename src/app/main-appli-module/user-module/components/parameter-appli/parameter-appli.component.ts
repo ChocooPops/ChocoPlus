@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ParameterAppliService } from '../../service/parameter-appli/parameter-appli.service';
 import { InputRadioButtonComponent } from '../../../edition-module/components/input-radio-button/input-radio-button.component';
 import { ParamaterAppliModel } from '../../dto/parameter-appli.interface';
+import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 
 @Component({
   selector: 'app-parameter-appli',
@@ -12,12 +13,16 @@ import { ParamaterAppliModel } from '../../dto/parameter-appli.interface';
 })
 export class ParameterAppliComponent {
 
+  srcReset: string = 'icon/modify.svg';
+
   radioButtonPosterFilm: ParamaterAppliModel[] = [];
   radioButtonPosterLicense: ParamaterAppliModel[] = [];
   radioButtonPosterFormat: ParamaterAppliModel[] = [];
   radioButtonOtherOption: ParamaterAppliModel[] = [];
 
-  constructor(private parameterAppliService: ParameterAppliService) {
+  constructor(private readonly parameterAppliService: ParameterAppliService,
+    private readonly compressedPosterService: CompressedPosterService
+  ) {
     this.parameterAppliService.initRadioButton();
     this.radioButtonPosterFilm = this.parameterAppliService.getRadioButtonForPosterFilm();
     this.radioButtonPosterLicense = this.parameterAppliService.getRadioButtonForPosterLicense();
@@ -39,6 +44,16 @@ export class ParameterAppliComponent {
 
   onChangeOpeningPage(idParam: number, idRadioButton: number): void {
     this.parameterAppliService.onChangeEmitToOpeningPage(idParam, idRadioButton);
+  }
+
+  onClickResetMediaParameters(): void {
+    this.compressedPosterService.resetAllParametersMedia();
+    this.parameterAppliService.initRadioButton();
+  }
+
+  onClickResetLicenseParameters(): void {
+    this.compressedPosterService.resetAllParametersLicense();
+    this.parameterAppliService.initRadioButton();
   }
 
 }

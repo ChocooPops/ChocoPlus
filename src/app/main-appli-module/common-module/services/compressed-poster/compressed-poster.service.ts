@@ -376,4 +376,26 @@ export class CompressedPosterService {
 
   constructor() { }
 
+  public resetAllParametersMedia(): void {
+    this.setCompressedVerticalPoster(ScalePoster.SCALE_300h);
+    this.setCompressedHorizontalPoster(ScalePoster.SCALE_300w);
+    this.setCompressedSpecialLicensePoster(ScalePoster.SCALE_600h);
+    this.setCompressedLogoIntoPoster(ScalePoster.SCALE_500w);
+    
+    this.setCompressedBackgroundPresentationToHead(ScalePoster.SCALE_ORIGINAL);
+    this.setCompressedLogoPresentationToHead(ScalePoster.SCALE_ORIGINAL);
+
+    this.setCompressedBackgroundPresentation(ScalePoster.SCALE_1920w);
+    this.setCompressedLogoPresentation(ScalePoster.SCALE_700w);
+
+    this.setCompressedSeasonPoster(ScalePoster.SCALE_300h);
+    this.setCompressedEpisodePoster(ScalePoster.SCALE_300w);
+  }
+
+  public resetAllParametersLicense(): void {
+    this.setcompressedIconLicense(ScalePoster.SCALE_600w);
+    this.setCompressedLogoLicense(ScalePoster.SCALE_ORIGINAL);
+    this.setcompressedBackgroundLicense(ScalePoster.SCALE_ORIGINAL);
+  }
+
 }
