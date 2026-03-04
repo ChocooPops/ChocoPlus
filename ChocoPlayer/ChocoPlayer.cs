@@ -22,6 +22,7 @@ namespace ChocoPlayer
         private SeasonsMenu? _seasonsMenu;
         private ApiService? _apiService;
         private MiniPlayerButton? _miniPlayerButton;
+        private KeyActionOverlay? _keyActionOverlay;
 
         private int _mediaId;
         private int _currentEpisodeId = 0;
@@ -666,6 +667,9 @@ namespace ChocoPlayer
             _clickOverlay.MouseDown += ClickOverlay_MouseDown;
             this.Controls.Add(_clickOverlay);
 
+            _keyActionOverlay = new KeyActionOverlay();
+            this.Controls.Add(_keyActionOverlay);
+
             _playerControls = new PlayerControls();
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
             this.Controls.Add(_playerControls);
@@ -833,6 +837,11 @@ namespace ChocoPlayer
             _playerControls.BringToFront();
             _miniPlayerButton?.BringToFront();
             _trackSettingsMenu.BringToFront();
+            if (_keyActionOverlay != null)
+            {
+                _keyActionOverlay.Location = new Point(16, titleBarHeight + 16);
+                _keyActionOverlay.BringToFront();
+            }
 
             if (_hasSeasons && _seasonsMenu != null)
             {
@@ -1321,6 +1330,7 @@ namespace ChocoPlayer
                         _mediaPlayer.Time + seekMs,
                         _mediaPlayer.Length
                     );
+                    _keyActionOverlay?.ShowSeek(seekMs / 1000);
                     return true;
 
                 case Keys.Left:
@@ -1328,16 +1338,19 @@ namespace ChocoPlayer
                         _mediaPlayer.Time - seekMs,
                         0
                     );
+                    _keyActionOverlay?.ShowSeek(-(seekMs / 1000));
                     return true;
 
                 case Keys.Up:
                     _mediaPlayer.Volume = Math.Min(_mediaPlayer.Volume + volumeStep, 100);
                     _playerControls?.SetVolume(_mediaPlayer.Volume);
+                    _keyActionOverlay?.ShowVolume(true, _mediaPlayer.Volume);
                     return true;
 
                 case Keys.Down:
                     _mediaPlayer.Volume = Math.Max(_mediaPlayer.Volume - volumeStep, 0);
                     _playerControls?.SetVolume(_mediaPlayer.Volume);
+                    _keyActionOverlay?.ShowVolume(false, _mediaPlayer.Volume);
                     return true;
 
                 case Keys.Space:
@@ -1345,11 +1358,13 @@ namespace ChocoPlayer
                     {
                         _mediaPlayer.Pause();
                         _playerControls?.SetPlaying(false);
+                        _keyActionOverlay?.ShowPlayPause(true);
                     }
                     else
                     {
                         _mediaPlayer.Play();
                         _playerControls?.SetPlaying(true);
+                        _keyActionOverlay?.ShowPlayPause(false);
                     }
                     return true;
 
