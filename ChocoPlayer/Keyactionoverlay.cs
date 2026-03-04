@@ -181,7 +181,7 @@ namespace ChocoPlayer
             using var font = new Font("Segoe UI", 9f, FontStyle.Bold);
             using var brush = new SolidBrush(Color.White);
             var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Far };
-            g.DrawString(label, font, brush, new RectangleF(inner.X, inner.Y, inner.Width, inner.Height), sf);
+            g.DrawString(label, font, brush, new RectangleF(inner.X, inner.Y + 8, inner.Width, inner.Height), sf);
         }
 
         private void DrawVolumeIcon(Graphics g, Rectangle inner)
@@ -247,7 +247,7 @@ namespace ChocoPlayer
             using var font = new Font("Segoe UI", 9f, FontStyle.Bold);
             using var brush = new SolidBrush(Color.White);
             var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Far };
-            g.DrawString($"{_volumeLevel}%", font, brush, new RectangleF(inner.X, inner.Y, inner.Width, inner.Height), sf);
+            g.DrawString($"{_volumeLevel}%", font, brush, new RectangleF(inner.X, inner.Y + 8, inner.Width, inner.Height), sf);
         }
 
         private static void DrawPlayIcon(Graphics g, Rectangle inner)
