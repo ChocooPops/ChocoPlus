@@ -20,6 +20,8 @@ export class DetailUserComponent {
   currentClass: 'height-user-historic' | 'height-user-perso' = 'height-user-perso';
 
   formGroup !: FormGroup;
+  formControlId: string = 'inputId';
+  formControlEmail: string = 'inputEmail';
   formControlFirstName: string = 'inputFirstName';
   formControlLastName: string = 'inputLastName';
   formControlPseudo: string = 'inputPseudo';
@@ -33,6 +35,8 @@ export class DetailUserComponent {
 
   initForm(): void {
     this.formGroup = this.fb.group({
+      inputId: [this.user.id],
+      inputEmail: [this.user.email],
       inputFirstName: [this.user.firstName],
       inputLastName: [this.user.lastName],
       inputPseudo: [this.user.pseudo],

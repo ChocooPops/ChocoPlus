@@ -16,6 +16,8 @@ import { OptComponent } from '../opt/opt.component';
 })
 export class RegisterComponent extends FormPageDirectiveAbstract {
 
+  isSend: boolean = false;
+
   placeHolderPseudo: string = 'Pseudo';
   placeHolderFirstName: string = 'Prénom';
   placeHolderLastName: string = 'Nom';
@@ -86,6 +88,7 @@ export class RegisterComponent extends FormPageDirectiveAbstract {
     this.message = 'Chargement ...';
     this.authService.fetchValidateVerificationCode(code, this.email).pipe(take(1)).subscribe((data: MessageReturnedModel) => {
       this.message = data.message;
+      this.isSend = data.state;
     })
   }
 

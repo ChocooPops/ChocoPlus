@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -10,6 +10,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 })
 export class OptComponent {
 
+  @Input() isSend: boolean = false;
+
   @Output() validate = new EventEmitter<number>();
   @Output() sendNewCode = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
@@ -17,6 +19,7 @@ export class OptComponent {
   srcClose: string = 'icon/close.svg';
   otpForm!: FormGroup;
   controls = ['d1', 'd2', 'd3', 'd4', 'd5', 'd6'];
+  srcImage: string = 'icon/ask.svg';
 
   constructor(private fb: FormBuilder) {
     this.otpForm = this.fb.group({
@@ -31,7 +34,6 @@ export class OptComponent {
 
   onInput(event: any, index: number): void {
     const value = event.target.value;
-
     // Si l'utilisateur tape un chiffre -> focus input suivant
     if (/^[0-9]$/.test(value) && index < 5) {
       const next = document.querySelectorAll('.otp-input')[index + 1] as HTMLElement;

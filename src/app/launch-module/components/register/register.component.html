@@ -1,7 +1,7 @@
 <div class="container-register">
 
     @if(displayPopup) {
-    <app-opt (close)="onClosePopup()" (sendNewCode)="onSendNewCode()" (validate)="onValidate($event)"></app-opt>
+    <app-opt [isSend]="isSend" (close)="onClosePopup()" (sendNewCode)="onSendNewCode()" (validate)="onValidate($event)"></app-opt>
     }
 
     <p class="label"> Créer un compte</p>

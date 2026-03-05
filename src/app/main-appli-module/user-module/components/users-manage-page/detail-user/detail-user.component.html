@@ -26,6 +26,17 @@
             <form [formGroup]="formGroup">
                 <div class="container-inputs">
                     <div class="container-input">
+                        <label>Id : </label>
+                        <input placeholder="Id" [formControlName]="formControlId">
+                    </div>
+                    <div class="container-input">
+                        <label>Adresse email : </label>
+                        <input placeholder="Adresse mail" [formControlName]="formControlEmail">
+                    </div>
+                </div>
+
+                <div class="container-inputs">
+                    <div class="container-input">
                         <label>Prénom : </label>
                         <input placeholder="Prénom" [formControlName]="formControlFirstName">
                     </div>
