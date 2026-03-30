@@ -26,7 +26,7 @@ export class FormatMediaPageButtonComponent {
 
   ngOnInit(): void {
     this.subscription = this.formatMediaPageButtonService.getCurrentFormatMediaPage().subscribe((value: FormatMediaPageModel) => {
-      if (value === FormatMediaPageModel.HORIZONTAL) {
+      if (value === FormatMediaPageModel.VERTICAL) {
         this.currentClass = this.verticalClass;
       } else {
         this.currentClass = this.horizontalClass;

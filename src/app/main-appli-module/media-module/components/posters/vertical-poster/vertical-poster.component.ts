@@ -20,18 +20,5 @@ export class VerticalPosterComponent extends PosterAbstraction {
 
   override typePoster: SelectionType = SelectionType.NORMAL_POSTER;
   protected override transformScale: number = 2;
-  keyWord: string[] = [];
-
-  public getRandomElements(tab: string[]): string[] {
-    return tab
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
-  }
-
-  ngAfterViewInit(): void {
-    if (this.media.keyWord && this.media.keyWord.length > 0) {
-      this.keyWord = this.getRandomElements(this.media.keyWord);
-    }
-  }
 
 }

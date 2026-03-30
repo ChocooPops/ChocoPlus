@@ -17,6 +17,7 @@ import { MediaSelectedService } from '../../../../services/media-selected/media-
 import { ProgressStateMedia } from '../../../../models/progress-state-media.enum';
 import { HistoricWatchProgressService } from '../../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { MediaProgressingModel } from '../../../../../video-playing-module/models/media-progressing.interface';
+import { MediaInfoModel } from '../../../../models/media-info.interface';
 
 @Component({
   selector: 'app-movie-vertical-page',
@@ -45,9 +46,12 @@ export class MovieVerticalPageComponent {
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
   subscriptionSimilarTitles !: Subscription;
+  subscriptionMovieInfo!: Subscription;
 
   ProgressState = ProgressStateMedia;
   historicProgress!: MediaProgressingModel;
+
+  mediaInfoLoaded: boolean = false;
 
   constructor(private verifTimerShowService: VerifTimerShowService,
     private imagePreloaderService: ImagePreloaderService,
@@ -63,6 +67,9 @@ export class MovieVerticalPageComponent {
   ngOnDestroy(): void {
     if (this.subscriptionSimilarTitles) {
       this.subscriptionSimilarTitles.unsubscribe();
+    }
+    if (this.subscriptionMovieInfo) {
+      this.subscriptionMovieInfo.unsubscribe();
     }
     this.abortController.abort();
   }
@@ -87,22 +94,12 @@ export class MovieVerticalPageComponent {
   }
 
   private init(): void {
+    this.mediaInfoLoaded = false;
     this.duration = this.verifTimerShowService.extractHourAndMinute(this.movie?.time) || '2015';
     this.quality = this.movie?.quality || 'any quality';
     this.date = this.movie.date || new Date();
     this.description = this.movie?.description || '';
-    if (this.movie.categories) {
-      this.genre = this.movie.categories.map(item => item.name).join(', ');
-    }
-    if (this.movie.keyWord) {
-      this.keyWord = this.movie.keyWord.map(item => this.transform(item)).join(', ');
-    }
-    if (this.movie.actors) {
-      this.actors = this.movie.actors.join(', ');
-    }
-    if (this.movie.directors) {
-      this.director = this.movie.directors.join(', ');
-    }
+    
     if (this.movie) {
       this.poster = this.compressedPosterService.getPosterMedia(SelectionType.NORMAL_POSTER, this.movie, ScalePoster.SCALE_300h);
     }
@@ -112,6 +109,7 @@ export class MovieVerticalPageComponent {
     this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.movie.id, this.movie.watchProgress, this.movie.stateProgress);
     setTimeout(() => {
       this.fetchSimilarMovie();
+      this.fetchMediaInfo();
     }, 100)
   }
 
@@ -132,6 +130,23 @@ export class MovieVerticalPageComponent {
         this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
           this.similarMedias = data;
         })
+      })
+    }
+  }
+
+  fetchMediaInfo(): void {
+    if (this.movie) {
+      if (this.subscriptionMovieInfo) {
+        this.subscriptionMovieInfo.unsubscribe();
+      }
+      this.subscriptionMovieInfo = this.mediaSelectedService.fetchGetMediaInfoById(this.movie.id).pipe(take(1)).subscribe((info: MediaInfoModel | null) => {
+        if (info) {
+            this.genre = info.categories.map(item => item.name).join(', ');
+            this.keyWord = info.keyWords.map(item => this.transform(item)).join(', ');
+            this.actors = info.actors.map(item => item.fullName).join(', ');
+            this.director = info.actors.map(item => item.fullName).join(', ');
+        }
+        this.mediaInfoLoaded = true;
       })
     }
   }

@@ -16,6 +16,7 @@ import { FormatPosterModel } from '../../../../../common-module/models/format-po
 import { SeriesService } from '../../../../services/series/series.service';
 import { EpisodePosterComponent } from '../../../posters/episode-poster/episode-poster.component';
 import { EpisodePosterLoadingComponent } from '../../../posters/episode-poster-loading/episode-poster-loading.component';
+import { MediaInfoModel } from '../../../../models/media-info.interface';
 
 @Component({
   selector: 'app-series-vertical-page',
@@ -51,6 +52,9 @@ export class SeriesVerticalPageComponent {
 
   subscriptionEpisodes !: Subscription;
   subscriptionSimilarTitles !: Subscription;
+  subscriptionSeriesInfo!: Subscription;
+
+  mediaInfoLoaded: boolean = false;
 
   constructor(private readonly compressedPosterService: CompressedPosterService,
     private readonly mediaSelectedService: MediaSelectedService,
@@ -74,12 +78,14 @@ export class SeriesVerticalPageComponent {
       } else {
         this.onClickTypeSimilarTitles();
       }
+      this.fetchMediaInfo();
     }
   }
 
   ngOnDestroy(): void {
     this.setUnsubscribeEpisode();
     this.setUnsubscriptionSimilarTitle();
+    this.setUnsubscriptionSeriesInfo();
     this.abortController.abort();
   }
 
@@ -106,23 +112,16 @@ export class SeriesVerticalPageComponent {
       this.subscriptionSimilarTitles.unsubscribe();
     }
   }
+  private setUnsubscriptionSeriesInfo(): void {
+    if (this.subscriptionSeriesInfo) {
+      this.subscriptionSeriesInfo.unsubscribe();
+    }
+  }
 
   private init(): void {
+    this.mediaInfoLoaded = false;
     this.description = this.series?.description || '';
     this.date = this.series.date || new Date();
-
-    if (this.series.categories) {
-      this.genre = this.series.categories.map(item => item.name).join(', ');
-    }
-    if (this.series.keyWord) {
-      this.keyWord = this.series.keyWord.map(item => this.transform(item)).join(', ');
-    }
-    if (this.series.actors) {
-      this.actors = this.series.actors.join(', ');
-    }
-    if (this.series.directors) {
-      this.director = this.series.directors.join(', ');
-    }
   }
 
   private initSeasons(): void {
@@ -220,6 +219,21 @@ export class SeriesVerticalPageComponent {
         this.similarMedias = data;
       })
     });
+  }
+
+  private fetchMediaInfo(): void {
+    if (this.series) {
+      this.setUnsubscriptionSeriesInfo();
+      this.subscriptionSeriesInfo = this.mediaSelectedService.fetchGetMediaInfoById(this.series.id).pipe(take(1)).subscribe((info: MediaInfoModel | null) => {
+        if (info) {
+          this.genre = info.categories.map(item => item.name).join(', ');
+          this.keyWord = info.keyWords.map(item => this.transform(item)).join(', ');
+          this.actors = info.actors.map(item => item.fullName).join(', ');
+          this.director = info.actors.map(item => item.fullName).join(', ');
+        }
+        this.mediaInfoLoaded = true;
+      })
+    }
   }
 
   onErrorPosterSeason(index: number): void {

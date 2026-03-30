@@ -24,3 +24,31 @@
     transform: translateX(-50%);
     will-change: transform;
 }
+
+.container-illustration-movie {
+    width: 100%;
+    aspect-ratio: 15.5 / 9;
+    background-color: #141414;
+    border-radius: 5px;
+    position: relative;
+}
+
+.containCrossButton {
+    height: auto;
+    width: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-top: 15px;
+    padding-right: 13px;
+    transition: 0.3s opacity;
+    z-index: 30;
+}
+
+.crossButtonAppears {
+    opacity: 1;
+}
+
+.crossButtonDisappears {
+    opacity: 0;
+}

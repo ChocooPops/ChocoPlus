@@ -1,5 +1,15 @@
-<div #scrollContainer class="container-media-page">
-    <div class="container-media-informations">
+<div #scrollContainer class="container-media-page" (click)="onClickBackground()"
+    [ngClass]="{'backgroundDesable' : isHidden}">
+    <div class="container-media-informations" (click)="onClickInformations($event)"
+        [ngClass]="{'animationWhenDisappears' : isHidden, 'animationWhenAppears' : !isHidden}">
+
+        <div class="container-illustration-movie" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()">
+
+            <div class="containCrossButton"
+                [ngClass]="{'crossButtonDisappears' : !isHover, 'crossButtonAppears' : isHover}">
+                <app-cross-button (click)="deleteMoviePage()"></app-cross-button>
+            </div>
+        </div>
 
     </div>
 </div>

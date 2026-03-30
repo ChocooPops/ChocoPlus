@@ -19,20 +19,6 @@ export class HorizontalPosterComponent extends PosterAbstraction {
   override typePoster: SelectionType = SelectionType.HORIZONTAL_POSTER;
   protected override transformScale: number = 1.7;
 
-  keyWord: string[] = [];
-
-  public getRandomElements(tab: string[]): string[] {
-    return tab
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3)
-  }
-
-  ngAfterViewInit(): void {
-    if (this.media.keyWord && this.media.keyWord.length > 0) {
-      this.keyWord = this.getRandomElements(this.media.keyWord);
-    }
-  }
-
   onErrorLogo(): void {
     this.srcLogo = undefined;
   }

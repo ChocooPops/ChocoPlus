@@ -16,13 +16,26 @@
         <div class="container-movie-placement">
             <p class="title" [ngClass]="'margin-bottom-title'"> {{ series.title }}
             </p>
-            @if(description !== '') {
-            <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
+            @if(mediaInfoLoaded) {
+                @if(description !== '') {
+                <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
+                }
+                <p [ngClass]="'margin-bottom-text'"> <span>Réalisateur : </span> {{ director }}</p>
+                <p [ngClass]="'margin-bottom-text'"> <span>Acteurs : </span> {{ actors }}</p>
+                <p [ngClass]="'margin-bottom-text'"> <span>Genres :</span> {{ genre }} </p>
+                <p [ngClass]="'margin-bottom-text'"> <span>Un film :</span> {{ keyWord }} </p>
+            } @else {
+                <div class="container-media-infos-loader">
+                    <div class="container-media-info-loader" [ngClass]="'container-animation-gradient-normal'">
+                        <p [ngClass]="'margin-bottom-title'"> Hanté par un lourd passé, Mad Max estime que le meilleur moyen de survivre est de rester seul. Cependant, il se retrouve embarqué par une bande qui parcourt le désert à bord d’un véhicule militaire piloté par l’Impératrice Furiosa. Ils fuient la Citadelle où sévit le terrible Immortan Joe qui s’est fait voler un objet irremplaçable. Enragé, ce Seigneur de guerre envoie ses hommes pour traquer les rebelles impitoyablement…  </p>
+                    </div>
+                    <div class="container-media-info-loader" [ngClass]="'container-animation-gradient-normal'">
+                        <p [ngClass]="'margin-bottom-text'"> <span>Réalisateur : </span> George Miller </p>
+                        <p [ngClass]="'margin-bottom-text'"> <span>Acteurs : </span> Tom Hardy, Zo? Kravitz, Charlize Theron, Nicholas Hoult, Hugh Keays-Byrne, Josh Helman, Nathan Jones, Rosie Huntington-Whiteley, Riley Keough, Abbey Lee </p>
+                        <p [ngClass]="'margin-bottom-text'"> <span>Un film :</span> rescue, future, australia, chase, dystopia, post-apocalyptic future, survival, on the run, on the road, desert, convoy, peak oil, dark future, car, intense </p>
+                    </div>
+                </div>
             }
-            <p [ngClass]="'margin-bottom-text'"> <span>Réalisateur : </span> {{ director }}</p>
-            <p [ngClass]="'margin-bottom-text'"> <span>Acteurs : </span> {{ actors }}</p>
-            <p [ngClass]="'margin-bottom-text'"> <span>Genres :</span> {{ genre }} </p>
-            <p [ngClass]="'margin-bottom-text'"> <span>Un film :</span> {{ keyWord }} </p>
         </div>
         <div class="separation-bar"> </div>
 

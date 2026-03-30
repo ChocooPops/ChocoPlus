@@ -50,3 +50,18 @@
         font-weight: bold;
     }
 }
+
+.container-media-infos-loader {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.container-media-info-loader {
+    height: auto;
+    width: auto;
+
+    p {
+       visibility: hidden;
+    }
+}
