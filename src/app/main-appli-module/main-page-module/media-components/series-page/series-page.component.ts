@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { VideoRunningPresentationComponent } from '../video-running-presentation/video-running-presentation.component';
 import { VideoRunningPresentationLoadingComponent } from '../video-running-presentation-loading/video-running-presentation-loading.component';
 import { SelectionsListComponent } from '../../../media-module/components/selections/selections-list/selections-list.component';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { forkJoin, Subscription, take } from 'rxjs';
@@ -16,6 +15,7 @@ import { NewsVideoRunningModel } from '../../../news-module/models/news-video-ru
 import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
+import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-series-page',

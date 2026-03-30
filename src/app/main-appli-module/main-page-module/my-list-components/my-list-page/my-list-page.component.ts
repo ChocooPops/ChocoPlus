@@ -9,9 +9,9 @@ import { FormatPosterService } from '../../../common-module/services/format-post
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
+import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-my-list-page',

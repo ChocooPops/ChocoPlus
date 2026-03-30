@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MediaPageComponent } from './media-page.component';
 
-describe('MediaPageComponent', () => {
+describe('MoviePageComponent', () => {
   let component: MediaPageComponent;
   let fixture: ComponentFixture<MediaPageComponent>;
 
@@ -10,7 +10,7 @@ describe('MediaPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [MediaPageComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MediaPageComponent);
     component = fixture.componentInstance;

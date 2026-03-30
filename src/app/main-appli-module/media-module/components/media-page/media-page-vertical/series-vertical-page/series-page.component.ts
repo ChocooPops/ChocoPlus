@@ -1,30 +1,30 @@
 import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
-import { SeriesModel } from '../../../models/series/series.interface';
+import { SeriesModel } from '../../../../models/series/series.interface';
 import { NgClass } from '@angular/common';
-import { SeasonModel } from '../../../models/series/season.interface';
-import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
-import { MediaModel } from '../../../models/media.interface';
-import { SimilarPosterComponent } from '../../posters/similar-poster/similar-poster.component';
-import { SimilarPosterLoadingComponent } from '../../posters/similar-poster-loading/similar-poster-loading.component';
-import { MediaSelectedService } from '../../../services/media-selected/media-selected.service';
-import { EpisodeModel } from '../../../models/series/episode.interface';
+import { SeasonModel } from '../../../../models/series/season.interface';
+import { CompressedPosterService } from '../../../../../common-module/services/compressed-poster/compressed-poster.service';
+import { MediaModel } from '../../../../models/media.interface';
+import { SimilarPosterComponent } from '../../../posters/similar-poster/similar-poster.component';
+import { SimilarPosterLoadingComponent } from '../../../posters/similar-poster-loading/similar-poster-loading.component';
+import { MediaSelectedService } from '../../../../services/media-selected/media-selected.service';
+import { EpisodeModel } from '../../../../models/series/episode.interface';
 import { DatePipe } from '@angular/common';
 import { Subscription, take } from 'rxjs';
-import { SimilarTitleService } from '../../../services/similar-title/similar-title.service';
-import { ImagePreloaderService } from '../../../../../common-module/services/image-preloader/image-preloader.service';
-import { FormatPosterModel } from '../../../../common-module/models/format-poster.enum';
-import { SeriesService } from '../../../services/series/series.service';
-import { EpisodePosterComponent } from '../../posters/episode-poster/episode-poster.component';
-import { EpisodePosterLoadingComponent } from '../../posters/episode-poster-loading/episode-poster-loading.component';
+import { SimilarTitleService } from '../../../../services/similar-title/similar-title.service';
+import { ImagePreloaderService } from '../../../../../../common-module/services/image-preloader/image-preloader.service';
+import { FormatPosterModel } from '../../../../../common-module/models/format-poster.enum';
+import { SeriesService } from '../../../../services/series/series.service';
+import { EpisodePosterComponent } from '../../../posters/episode-poster/episode-poster.component';
+import { EpisodePosterLoadingComponent } from '../../../posters/episode-poster-loading/episode-poster-loading.component';
 
 @Component({
-  selector: 'app-series-page',
+  selector: 'app-series-vertical-page',
   standalone: true,
   imports: [NgClass, EpisodePosterLoadingComponent, EpisodePosterComponent, SimilarPosterComponent, SimilarPosterLoadingComponent, DatePipe],
   templateUrl: './series-page.component.html',
-  styleUrls: ['./series-page.component.css', '../../../../common-module/styles/animation.css', '../media-page.css']
+  styleUrls: ['./series-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css']
 })
-export class SeriesPageComponent {
+export class SeriesVerticalPageComponent {
 
   @Input() series!: SeriesModel;
   @ViewChild(EpisodePosterComponent) episodePoster!: EpisodePosterComponent;

@@ -1,16 +1,16 @@
 import { Component, EventEmitter, Input, SimpleChanges, Output } from '@angular/core';
-import { MediaModel } from '../../../models/media.interface';
-import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { NgClass } from '@angular/common';
+import { MediaModel } from '../../../../models/media.interface';
+import { CompressedPosterService } from '../../../../../common-module/services/compressed-poster/compressed-poster.service';
 
 @Component({
-  selector: 'app-media-background',
+  selector: 'app-media-vertical-background',
   standalone: true,
   imports: [NgClass],
   templateUrl: './media-background.component.html',
-  styleUrls: ['./media-background.component.css', '../../../../common-module/styles/animation.css']
+  styleUrls: ['./media-background.component.css', '../../../../../common-module/styles/animation.css']
 })
-export class MediaBackgroundComponent {
+export class MediaBackgroundVerticalComponent {
 
   @Input() media!: MediaModel;
   @Output() newEmitLoader = new EventEmitter<void>();

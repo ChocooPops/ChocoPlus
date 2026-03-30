@@ -7,7 +7,6 @@ import { FormatPosterModel } from '../../../common-module/models/format-poster.e
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
 import { PaginationPosterService } from '../../../media-module/services/pagination-poster/pagination-poster.service';
@@ -22,6 +21,7 @@ import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SortCatalog } from '../../../media-module/models/catalog/sort-catalog.enum';
 import { ScrollEventService } from '../../../common-module/services/scroll-event/scroll-event.service';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
+import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-catalog-page',

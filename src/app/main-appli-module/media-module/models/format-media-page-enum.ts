@@ -1,0 +1,4 @@
+export enum FormatMediaPageModel {
+    VERTICAL = 'MEDIA_PAGE_VERTICAL',
+    HORIZONTAL = 'MEDIA_PAGE_HORIZONTAL'
+}

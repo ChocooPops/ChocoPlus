@@ -1,0 +1,26 @@
+.container-media-page {
+    z-index: 9999;
+    min-height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background-color: #14141454;
+    transition: 0.2s background-color;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.container-media-informations {
+    margin-top: 80px;
+    width: 95vw;
+    height: 95vh;
+    background-color: #141414;
+    border-radius: 5px;
+    box-shadow: 15px 15px 15px black, -15px 15px 15px black;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    will-change: transform;
+}

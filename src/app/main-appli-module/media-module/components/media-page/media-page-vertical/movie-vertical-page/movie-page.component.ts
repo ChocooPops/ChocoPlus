@@ -1,31 +1,31 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { SimilarPosterLoadingComponent } from '../../posters/similar-poster-loading/similar-poster-loading.component';
-import { SimilarPosterComponent } from '../../posters/similar-poster/similar-poster.component';
-import { MediaModel } from '../../../models/media.interface';
-import { MovieModel } from '../../../models/movie-model';
+import { SimilarPosterLoadingComponent } from '../../../posters/similar-poster-loading/similar-poster-loading.component';
+import { SimilarPosterComponent } from '../../../posters/similar-poster/similar-poster.component';
+import { MediaModel } from '../../../../models/media.interface';
+import { MovieModel } from '../../../../models/movie-model';
 import { Subscription, take } from 'rxjs';
-import { FormatPosterModel } from '../../../../common-module/models/format-poster.enum';
-import { VerifTimerShowService } from '../../../../common-module/services/verif-timer/verif-timer-show.service';
-import { ImagePreloaderService } from '../../../../../common-module/services/image-preloader/image-preloader.service';
-import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
-import { SimilarTitleService } from '../../../services/similar-title/similar-title.service';
-import { SelectionType } from '../../../models/selection-type.enum';
-import { ScalePoster } from '../../../../common-module/models/scale-poster.enum';
+import { FormatPosterModel } from '../../../../../common-module/models/format-poster.enum';
+import { VerifTimerShowService } from '../../../../../common-module/services/verif-timer/verif-timer-show.service';
+import { ImagePreloaderService } from '../../../../../../common-module/services/image-preloader/image-preloader.service';
+import { CompressedPosterService } from '../../../../../common-module/services/compressed-poster/compressed-poster.service';
+import { SimilarTitleService } from '../../../../services/similar-title/similar-title.service';
+import { SelectionType } from '../../../../models/selection-type.enum';
+import { ScalePoster } from '../../../../../common-module/models/scale-poster.enum';
 import { NgClass } from '@angular/common';
-import { MediaSelectedService } from '../../../services/media-selected/media-selected.service';
-import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
-import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
-import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
+import { MediaSelectedService } from '../../../../services/media-selected/media-selected.service';
+import { ProgressStateMedia } from '../../../../models/progress-state-media.enum';
+import { HistoricWatchProgressService } from '../../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
+import { MediaProgressingModel } from '../../../../../video-playing-module/models/media-progressing.interface';
 
 @Component({
-  selector: 'app-movie-page',
+  selector: 'app-movie-vertical-page',
   standalone: true,
   imports: [DatePipe, SimilarPosterLoadingComponent, SimilarPosterComponent, NgClass],
   templateUrl: './movie-page.component.html',
-  styleUrls: ['./movie-page.component.css', '../../../../common-module/styles/animation.css', '../media-page.css']
+  styleUrls: ['./movie-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css']
 })
-export class MoviePageComponent {
+export class MovieVerticalPageComponent {
 
   @Input() movie !: MovieModel;
   @Input() displaying: boolean = false;

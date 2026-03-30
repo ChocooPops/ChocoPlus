@@ -8,7 +8,6 @@ import { MediaSelectedService } from '../../../media-module/services/media-selec
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 import { VideoRunningPresentationComponent } from '../video-running-presentation/video-running-presentation.component';
 import { VideoRunningPresentationLoadingComponent } from '../video-running-presentation-loading/video-running-presentation-loading.component';
 import { SelectionsListComponent } from '../../../media-module/components/selections/selections-list/selections-list.component';
@@ -16,6 +15,7 @@ import { NewsVideoRunningService } from '../../../news-module/services/news-vide
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
+import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-movie-page',

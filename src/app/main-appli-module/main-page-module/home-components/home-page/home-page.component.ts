@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { forkJoin, Subscription, take } from 'rxjs';
 import { SelectionsListComponent } from '../../../media-module/components/selections/selections-list/selections-list.component';
@@ -17,6 +16,7 @@ import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-
 import { NewsListComponent } from '../../../news-module/components/news-list/news-list.component';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
+import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-home-page',

@@ -1,0 +1,7 @@
+<div class="MovieButtonSizeIfDisplayTypeIsTrue" [ngClass]="currentClass" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" (click)="onClick()">
+    @if(isHovering) {
+    <img [src]="srcButtonPressed">
+    } @else {
+    <img [src]="srcButton">
+    }
+</div>
