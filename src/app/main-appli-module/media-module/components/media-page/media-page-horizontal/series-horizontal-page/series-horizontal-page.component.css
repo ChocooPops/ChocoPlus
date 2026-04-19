@@ -1,0 +1,28 @@
+span {
+    color: var(--grey);
+}
+
+.container-media-infos-loader {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.container-media-info-loader {
+    height: auto;
+    width: auto;
+
+    p {
+       visibility: hidden;
+    }
+}
+
+p {
+    margin: 0px;
+}
+
+.container-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}

@@ -1,15 +1,28 @@
 <div #scrollContainer class="container-media-page" (click)="onClickBackground()"
     [ngClass]="{'backgroundDesable' : isHidden}">
+    @if(media) {
     <div class="container-media-informations" (click)="onClickInformations($event)"
         [ngClass]="{'animationWhenDisappears' : isHidden, 'animationWhenAppears' : !isHidden}">
 
         <div class="container-illustration-movie" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()">
-
+            <app-media-horizontal-background [media]="media" (formatEmit)="onClickFormatMediaPage()"></app-media-horizontal-background>
             <div class="containCrossButton"
                 [ngClass]="{'crossButtonDisappears' : !isHover, 'crossButtonAppears' : isHover}">
                 <app-cross-button (click)="deleteMoviePage()"></app-cross-button>
             </div>
         </div>
 
+        <div class="container-media-type-info">
+            <div class="tmp"></div>
+            <div class="container-media-info-by-type">
+                @if(media.mediaType === MediaType.MOVIE) {
+                    <app-movie-horizontal-page [movie]="transformMediaIntoMovie()"></app-movie-horizontal-page>
+                } @else if (media.mediaType === MediaType.SERIES) {
+                    <app-series-horizontal-page [series]="transformMediaIntoSeries()"></app-series-horizontal-page>
+                }
+            </div>
+        </div>
+
     </div>
+    }
 </div>

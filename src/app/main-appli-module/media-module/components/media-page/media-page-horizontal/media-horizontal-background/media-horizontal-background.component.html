@@ -1,0 +1,59 @@
+<div class="container-media-horizontal-background">
+    <div class="containerLogo" [ngClass]="{'container-animation-gradient-normal' : !displaying, 'test' : !displaying}">
+        @if(srcLogo != undefined) {
+        <img [src]="srcLogo" loading="lazy" (error)="onErrorImageLogo()" (load)="onBackgroundLoad()"
+            [ngClass]="{'hidden' : !displaying}">
+        } @else {
+        <div class="containerTitle">
+            <p class="title"> {{title}}</p>
+        </div>
+        }
+    </div>
+    <div class="containerBackground" [ngClass]="{'container-animation-gradient-little' : !displaying}">
+        @if(srcBackground != undefined) {
+            <img [src]="srcBackground" loading="lazy" (error)="onErrorImageBackground()" (load)="onLogoLoad()"
+                [ngClass]="{'hidden' : !displaying}">
+        }
+    </div>
+
+    <div class="container-bartitle">
+        <div class="container-poster">
+            <div class="poster" [ngClass]="{'container-animation-gradient-normal' : !displaying, 'test' : !displaying}">
+                <div class="container-tmp-poster"></div>
+                @if(srcPoster != undefined) {
+                    <img [src]="srcPoster" loading="lazy" (error)="onErrorImagePoster()" (load)="onPosterLoad()"
+                    [ngClass]="{'hidden' : !displaying}">
+                } @else {
+                    <p class="title"> {{title}}</p>
+                }
+            </div>
+        </div>
+        <div class="container-info-button">
+            <div class="container-info">
+                <p class="main-title"> {{ title }} </p>
+                <div class="other-info">
+                    <p>{{ media.date| date:'yyyy' }}</p>
+                    @if (media.mediaType === MediaType.MOVIE) {
+                        <p> {{ duration }} </p>
+                        <div class="container-quality">
+                            <p> {{ quality }} </p>
+                        </div>
+                    } @else if (media.mediaType === MediaType.SERIES) {
+                        @if(nbSeasons > 1) {
+                            <p> {{ nbSeasons }} Saisons </p>
+                        } @else {
+                            <p> {{ nbSeasons }} Saison </p>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="container-button">
+                <app-start-button [media]="media" class="start-button"></app-start-button>
+                <app-mylist-button [media]="media"></app-mylist-button>
+                <app-modify-button [idMedia]="media.id" [mediaType]="media.mediaType"></app-modify-button>
+                <app-format-media-page-button (click)="onClickFormatMediaPage()"></app-format-media-page-button>
+            </div>
+        </div>
+    </div>
+
+</div>

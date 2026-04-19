@@ -12,6 +12,8 @@ import { SeriesModel } from '../../models/series/series.interface';
 @Directive({})
 export abstract class MediaPageAbstraction {
 
+    clearMediaSelected: boolean = true;
+
     @ViewChild('scrollContainer') scrollContainer!: ElementRef;
     private _viewChildBack?: MediaBackgroundVerticalComponent;
 
@@ -83,7 +85,9 @@ export abstract class MediaPageAbstraction {
 
     ngOnDestroy(): void {
         this.stopTimer();
-        this.mediaSelectedService.clearSelection();
+        if (this.clearMediaSelected) {
+            this.mediaSelectedService.clearSelection();
+        }
         this.subscriptionSelectedMedia.unsubscribe();
     }
 
@@ -138,5 +142,9 @@ export abstract class MediaPageAbstraction {
 
     onLoadPoster(): void {
         this._viewChildBack?.onPosterLoad();
+    }
+
+    onClickFormatMediaPage(): void {
+        this.clearMediaSelected = false;
     }
 }
