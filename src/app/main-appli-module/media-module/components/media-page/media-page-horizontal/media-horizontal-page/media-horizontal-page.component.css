@@ -12,7 +12,7 @@
 .container-media-informations {
     margin-top: 80px;
     width: 95vw;
-    height: 95vh;
+    min-height: 95vh;
     background-color: #141414;
     border-radius: 5px;
     box-shadow: 15px 15px 15px black, -15px 15px 15px black;
@@ -68,4 +68,9 @@
     width: 100%;
     padding-right: 30px;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+.margin-bottom {
+    margin-bottom: 35px;
 }

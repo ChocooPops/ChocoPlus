@@ -1,35 +1,55 @@
 <div class="container">
-    @if (mediaInfoLoaded) {
-    <div class="container-info">
-        @if(description !== '') {
-        <p> <span>Description :</span> {{ description }} </p>
-        }
-        <p> <span>Genres :</span> {{ genre }} </p>
-        <p> <span>Un film :</span> {{ keyWord }} </p>
-    </div>
-    } @else {
-    <div class="container-media-infos-loader">
-        <div class="container-media-info-loader" [ngClass]="'container-animation-gradient-normal'">
-            <p> Hanté par un lourd passé, Mad Max estime que le meilleur moyen de survivre
-                est de rester seul. Cependant, il se retrouve embarqué par une bande qui parcourt le désert à bord d’un
-                véhicule militaire piloté par l’Impératrice Furiosa. Ils fuient la Citadelle où sévit le terrible
-                Immortan
-                Joe qui s’est fait voler un objet irremplaçable. Enragé, ce Seigneur de guerre envoie ses hommes pour
-                traquer les rebelles impitoyablement… </p>
-                            <p> <span>Réalisateur : </span> George Miller </p>
+    <div class="container-first-line">
+        @if (mediaInfoLoaded) {
+        <div class="container-info">
+            @if(description !== '') {
+            <p> <span>Description :</span> {{ description }} </p>
+            }
+            <p> <span>Genres :</span> {{ genre }} </p>
+            <p> <span>Un film :</span> {{ keyWord }} </p>
+        </div>
+        } @else {
+        <div class="container-media-infos-loader">
+            <div class="container-media-info-loader" [ngClass]="'container-animation-gradient-normal'">
+                <p> Hanté par un lourd passé, Mad Max estime que le meilleur moyen de survivre
+                    est de rester seul. Cependant, il se retrouve embarqué par une bande qui parcourt le désert à bord
+                    d’un
+                    véhicule militaire piloté par l’Impératrice Furiosa. Ils fuient la Citadelle où sévit le terrible
+                    Immortan
+                    Joe qui s’est fait voler un objet irremplaçable. Enragé, ce Seigneur de guerre envoie ses hommes
+                    pour
+                    traquer les rebelles impitoyablement… </p>
+                <p> <span>Réalisateur : </span> George Miller </p>
 
+            </div>
+            <div class="container-media-info-loader" [ngClass]="'container-animation-gradient-normal'">
+                <p> <span>Réalisateur : </span> George Miller </p>
+            </div>
+            <div class="container-media-info-loader" [ngClass]="'container-animation-gradient-normal'">
+                <p> <span>Acteurs : </span> Tom Hardy, Zo? Kravitz, Charlize Theron, Nicholas
+                    Hoult, Hugh Keays-Byrne, Josh Helman, Nathan Jones, Rosie Huntington-Whiteley, Riley Keough, Abbey
+                    Lee
+                </p>
+                <p> <span>Un film :</span> rescue, future, australia, chase, dystopia,
+                    post-apocalyptic future, survival, on the run, on the road, desert, convoy, peak oil, dark future,
+                    car,
+                    intense </p>
+            </div>
         </div>
-        <div class="container-media-info-loader" [ngClass]="'container-animation-gradient-normal'">
-            <p> <span>Réalisateur : </span> George Miller </p>
-        </div>
-        <div class="container-media-info-loader" [ngClass]="'container-animation-gradient-normal'">
-            <p> <span>Acteurs : </span> Tom Hardy, Zo? Kravitz, Charlize Theron, Nicholas
-                Hoult, Hugh Keays-Byrne, Josh Helman, Nathan Jones, Rosie Huntington-Whiteley, Riley Keough, Abbey Lee
-            </p>
-            <p> <span>Un film :</span> rescue, future, australia, chase, dystopia,
-                post-apocalyptic future, survival, on the run, on the road, desert, convoy, peak oil, dark future, car,
-                intense </p>
-        </div>
+        }
     </div>
-    }
+
+    <div class="container-second-line">
+        <app-staff-poster [staffs]="directors" [jobTitle]="JobModel.DIRECTOR"></app-staff-poster>
+    </div>
+
+    <div class="container-third-line">
+        <app-staff-poster [staffs]="actors" [jobTitle]="JobModel.ACTOR"></app-staff-poster>
+    </div>
+
+    <div class="container-fourth-line">
+        @if (similarMedias) {
+            <app-similar-poster-vertical [medias]="similarMedias" (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-vertical>
+        }
+    </div>
 </div>

@@ -11,6 +11,7 @@ import { ImagePreloaderService } from '../../../../common-module/services/image-
 import { SeriesService } from '../../services/series/series.service';
 import { SeasonModel } from '../../models/series/season.interface';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
+import { StaffModel } from '../../models/staff.interface';
 
 @Directive({})
 export abstract class SeriesPageAbstraction {
@@ -25,8 +26,8 @@ export abstract class SeriesPageAbstraction {
   srcSucces: string = 'icon/success.svg';
   genre: string = '';
   keyWord: string = '';
-  actors!: string;
-  director!: string;
+  actors: StaffModel[] = [];
+  directors: StaffModel[] = [];
   description!: string;
   mediaInfoLoaded: boolean = false;
 
@@ -76,8 +77,8 @@ export abstract class SeriesPageAbstraction {
 
   private resetInfo(): void {
     this.resetInfoSpe();
-    this.director = '';
-    this.actors = '';
+    this.directors = [];
+    this.actors = [];
     this.genre = '';
     this.keyWord = '';
     this.similarMedias = undefined;
@@ -210,8 +211,8 @@ export abstract class SeriesPageAbstraction {
             this.keyWord = info.keyWords
               .map((item) => this.transform(item))
               .join(', ');
-            this.actors = info.actors.map((item) => item.fullName).join(', ');
-            this.director = info.actors.map((item) => item.fullName).join(', ');
+            this.actors = info.actors;
+            this.directors = info.directors;
           }
           this.mediaInfoLoaded = true;
         });

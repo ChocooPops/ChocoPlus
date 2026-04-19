@@ -14,8 +14,15 @@
     gap: 15px;
 }
 
-span {
+span.legend {
     color: var(--grey);
+}
+
+span.content {
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .title {

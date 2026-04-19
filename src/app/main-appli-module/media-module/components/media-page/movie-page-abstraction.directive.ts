@@ -7,6 +7,8 @@ import { SimilarTitleService } from '../../services/similar-title/similar-title.
 import { MediaSelectedService } from '../../services/media-selected/media-selected.service';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { MediaInfoModel } from '../../models/media-info.interface';
+import { StaffModel } from '../../models/staff.interface';
+import { JobModel } from '../../models/job.eum';
 
 @Directive({})
 export abstract class MoviePageAbstraction {
@@ -16,8 +18,8 @@ export abstract class MoviePageAbstraction {
   protected subscriptionSimilarTitles!: Subscription;
   protected subscriptionMovieInfo!: Subscription;
 
-  director!: string;
-  actors!: string;
+  directors: StaffModel[] = [];
+  actors: StaffModel[] = [];
   genre: string = '';
   keyWord: string = '';
   description!: string;
@@ -26,6 +28,8 @@ export abstract class MoviePageAbstraction {
 
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
+
+  JobModel = JobModel;
 
   constructor(
     protected readonly imagePreloaderService: ImagePreloaderService,
@@ -62,8 +66,8 @@ export abstract class MoviePageAbstraction {
 
   private resetInfo(): void {
     this.resetInfoSpe();
-    this.director = '';
-    this.actors = '';
+    this.directors = [];
+    this.actors = [];
     this.genre = '';
     this.keyWord = '';
     this.description = '';
@@ -119,8 +123,8 @@ export abstract class MoviePageAbstraction {
             this.keyWord = info.keyWords
               .map((item) => this.transform(item))
               .join(', ');
-            this.actors = info.actors.map((item) => item.fullName).join(', ');
-            this.director = info.actors.map((item) => item.fullName).join(', ');
+            this.actors = info.actors;
+            this.directors = info.directors;
           }
           this.mediaInfoLoaded = true;
         });
@@ -131,6 +135,10 @@ export abstract class MoviePageAbstraction {
     if (!value) return '';
     value = value.trimStart();
     return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+
+  onClickSimilarTitle(media: MediaModel): void {
+    this.mediaSelectedService.selectMedia(media);
   }
 
   protected abstract resetInfoSpe(): void;

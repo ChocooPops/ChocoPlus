@@ -1,0 +1,16 @@
+@if (jobTitle === JobModel.ACTOR) {
+<h2>Acteur</h2>
+} @else if(jobTitle === JobModel.DIRECTOR) {
+<h2>Réalisateur</h2>
+}
+<div class="container-staffs" [style.gap.vw]="gap">
+@for (staff of staffs; track $index) {
+    <div class="container-staff">
+        <div class="staff-poster" [style.height.vw]="height" [style.width.vw]="width">
+            <div class="container-tmp-poster"></div>
+        </div>
+        <p> {{ staff.fullName }} </p>
+    </div>
+}
+<div class="margin-left"></div>
+</div>

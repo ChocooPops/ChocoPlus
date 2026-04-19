@@ -11,13 +11,13 @@ import { MovieModel } from '../../../models/movie-model';
 import { SeriesModel } from '../../../models/series/series.interface';
 
 @Component({
-  selector: 'app-similar-poster',
+  selector: 'app-similar-poster-horizontal',
   standalone: true,
   imports: [MylistButtonComponent, StartButtonComponent, DatePipe],
-  templateUrl: './similar-poster.component.html',
-  styleUrl: './similar-poster.component.css'
+  templateUrl: './similar-poster-horizontal.component.html',
+  styleUrl: './similar-poster-horizontal.component.css'
 })
-export class SimilarPosterComponent {
+export class SimilarPosterHorizontalComponent {
 
   @Input() media !: MediaModel;
   @Output() onClicked = new EventEmitter<MediaModel>();

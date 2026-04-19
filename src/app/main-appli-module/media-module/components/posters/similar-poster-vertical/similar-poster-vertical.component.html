@@ -1,0 +1,19 @@
+<h2>Titres similaires</h2>
+<div class="container-medias" [style.gap.vw]="gap">
+@for (media of medias; track $index) {
+    <div class="media-poster" [style.height.vw]="height" [style.width.vw]="width" (click)="onClickMovie(media)">
+        <div class="container-tmp-poster">
+            <div class="align-button" (click)="onClickButton($event)">
+                <app-start-button [typeButton]="true" [typeDisplaying]="true" [media]="media"></app-start-button>
+                <app-mylist-button [typeDisplaying]="false" [media]="media"></app-mylist-button>
+            </div>
+        </div>
+        @if (srcPoster[$index]) {
+            <img [src]="srcPoster[$index]" (error)="onErrorImage($index)">
+        } @else {
+            <p class="titlePoster">{{ media.title }}</p>
+        }
+    </div>
+}
+<div class="margin-left"></div>
+</div>

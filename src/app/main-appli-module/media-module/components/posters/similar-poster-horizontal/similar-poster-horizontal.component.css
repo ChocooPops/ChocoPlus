@@ -27,7 +27,7 @@
 .container-button {
     height: 100%;
     width: 100%;
-    background-color: hsla(0, 0%, 15%, 0.4);
+    background-color: rgb(14, 14, 14, 0.6);
     position: absolute;
     left: 50%;
     top: 50%;
@@ -35,7 +35,7 @@
     display: none;
     justify-content: center;
     align-content: center;
-    animation: 0.3s enter;
+    animation: 0.5s enter;
 }
 
 @keyframes enter {

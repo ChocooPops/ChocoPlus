@@ -5,7 +5,7 @@
         [ngClass]="{'animationWhenDisappears' : isHidden, 'animationWhenAppears' : !isHidden}">
 
         <div class="container-illustration-movie" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()">
-            <app-media-horizontal-background [media]="media" (formatEmit)="onClickFormatMediaPage()"></app-media-horizontal-background>
+            <app-media-horizontal-background [media]="media" [seasons]="seasons" (formatEmit)="onClickFormatMediaPage()"></app-media-horizontal-background>
             <div class="containCrossButton"
                 [ngClass]="{'crossButtonDisappears' : !isHover, 'crossButtonAppears' : isHover}">
                 <app-cross-button (click)="deleteMoviePage()"></app-cross-button>
@@ -22,6 +22,7 @@
                 }
             </div>
         </div>
+        <div class="margin-bottom"></div>
 
     </div>
     }

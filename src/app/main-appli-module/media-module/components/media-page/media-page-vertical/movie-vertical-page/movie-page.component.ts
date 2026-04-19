@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { SimilarPosterLoadingComponent } from '../../../posters/similar-poster-loading/similar-poster-loading.component';
-import { SimilarPosterComponent } from '../../../posters/similar-poster/similar-poster.component';
 import { MediaModel } from '../../../../models/media.interface';
 import { VerifTimerShowService } from '../../../../../common-module/services/verif-timer/verif-timer-show.service';
 import { ImagePreloaderService } from '../../../../../../common-module/services/image-preloader/image-preloader.service';
@@ -15,11 +13,13 @@ import { ProgressStateMedia } from '../../../../models/progress-state-media.enum
 import { HistoricWatchProgressService } from '../../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { MediaProgressingModel } from '../../../../../video-playing-module/models/media-progressing.interface';
 import { MoviePageAbstraction } from '../../movie-page-abstraction.directive';
+import { SimilarPosterHorizontalComponent } from '../../../posters/similar-poster-horizontal/similar-poster-horizontal.component';
+import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/similar-poster-horizontal-loading/similar-poster-horizontal-loading.component';
 
 @Component({
   selector: 'app-movie-vertical-page',
   standalone: true,
-  imports: [DatePipe, SimilarPosterLoadingComponent, SimilarPosterComponent, NgClass],
+  imports: [DatePipe, SimilarPosterHorizontalLoadingComponent, SimilarPosterHorizontalComponent, NgClass],
   templateUrl: './movie-page.component.html',
   styleUrls: ['./movie-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css']
 })
@@ -64,10 +64,6 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
       this.onLoadPoster();
     }
     this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.movie.id, this.movie.watchProgress, this.movie.stateProgress);
-  }
-
-  onClickSimilarTitle(media: MediaModel): void {
-    this.mediaSelectedService.selectMedia(media);
   }
 
   onErrorPoster(): void {

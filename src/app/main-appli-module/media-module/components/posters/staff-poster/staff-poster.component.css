@@ -1,0 +1,53 @@
+.container-staffs {
+    display: flex;
+    overflow-x: auto;
+}
+
+.container-staffs::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+}
+
+.container-staff {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0px;
+}
+
+.staff-poster {
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    img {
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.container-tmp-poster {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    background-color: #0e0e0e;
+    transition: opacity 0.5s;
+    z-index: 99;
+}
+.container-tmp-poster:hover {
+    opacity: 0.5;
+}
+
+p {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.margin-left {
+    width: 50px;
+}

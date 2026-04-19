@@ -86,6 +86,8 @@
     width: 25vw;
     position: relative;
     height: 100%;
+    display: flex;
+    gap: 5px;
 }
 
 .poster {
@@ -140,15 +142,16 @@
 }
 
 .main-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     color: white;
 }
 
 .other-info {
     display: flex;
+    align-items: center;
     gap: 17px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     color: var(--grey);
 }
@@ -163,7 +166,7 @@
     padding-block: 3px;
 
     p {
-        font-size: 15px;
+        font-size: 14px;
     }
 }
 
@@ -182,4 +185,21 @@
 
 p { 
     margin: 0;
+}
+
+.separation-bar {
+    top: calc(30vw - 100px);
+    position: absolute;
+    width: 75%;
+    background-color: var(--white-dark);
+    height: 2px;
+    border-radius: 1px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.progress {
+    height: 100%;
+    background-color: #FFD301;
 }

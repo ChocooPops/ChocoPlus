@@ -15,6 +15,9 @@ import { MovieModel } from '../../../../models/movie-model';
 import { DatePipe } from '@angular/common';
 import { SeasonModel } from '../../../../models/series/season.interface';
 import { SeriesModel } from '../../../../models/series/series.interface';
+import { ProgressStateMedia } from '../../../../models/progress-state-media.enum';
+import { MediaProgressingModel } from '../../../../../video-playing-module/models/media-progressing.interface';
+import { HistoricWatchProgressService } from '../../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 
 @Component({
   selector: 'app-media-horizontal-background',
@@ -26,6 +29,7 @@ import { SeriesModel } from '../../../../models/series/series.interface';
 export class MediaHorizontalBackgroundComponent {
 
   @Input() media!: MediaModel;
+  @Input() seasons!: SeasonModel[] | undefined;
   @Output() formatEmit = new EventEmitter<void>();
   MediaType = MediaTypeModel;
 
@@ -43,8 +47,12 @@ export class MediaHorizontalBackgroundComponent {
   quality!: string;
   nbSeasons!: number;
 
-  constructor(private compressedPosterService: CompressedPosterService,
-    private verifTimerShowService: VerifTimerShowService
+  ProgressState = ProgressStateMedia;
+  historicProgress!: MediaProgressingModel;
+
+  constructor(private readonly compressedPosterService: CompressedPosterService,
+    private readonly verifTimerShowService: VerifTimerShowService,
+    private readonly historicWatchProgressService: HistoricWatchProgressService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -62,6 +70,7 @@ export class MediaHorizontalBackgroundComponent {
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).time) || '2015';
       this.quality = (this.media as MovieModel)?.quality || 'any quality';
+      this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, (this.media as MovieModel).watchProgress, (this.media as MovieModel).stateProgress);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       this.nbSeasons = (this.media as SeriesModel).seasons.length;
     }
