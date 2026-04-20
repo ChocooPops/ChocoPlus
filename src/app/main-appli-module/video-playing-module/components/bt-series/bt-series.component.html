@@ -22,10 +22,10 @@
             </div>
             <div class="container-episodes">
                 @if(episodes) {
-                <app-episode-poster class="animation" [episodes]="episodes" [series]="series"
-                    [notRunning]="false"></app-episode-poster>
+                <app-episode-poster-vertical-view class="animation" [episodes]="episodes" [series]="series"
+                    [notRunning]="false"></app-episode-poster-vertical-view>
                 }@else {
-                <app-episode-poster-loading [notRunning]="false"></app-episode-poster-loading>
+                <app-episode-poster-vertical-view-loading [notRunning]="false"></app-episode-poster-vertical-view-loading>
                 }
                 <div class="height-tmp"></div>
             </div>

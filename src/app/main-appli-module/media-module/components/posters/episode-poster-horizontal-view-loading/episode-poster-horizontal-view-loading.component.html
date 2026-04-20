@@ -1,0 +1,15 @@
+<h2>Episodes</h2>
+<div class="container-episodes" [style.gap.vw]="gap">
+    @for (episode of episodesTab; track $index) {
+    <div class="container-episode" [style.max-width.vw]="width">
+        <div class="container-poster" [ngClass]="'container-animation-gradient-little'" [style.height.vw]="height" [style.width.vw]="width">
+            
+        </div>
+        <div class="container-other-info">
+            <p class="title" [ngClass]="'container-animation-gradient-little'">  Loading Loading Loading Loading </p>
+            <p class="other-info" [ngClass]="'container-animation-gradient-little'"> Loading <br> Loading Loading </p>
+        </div>
+    </div>
+    }
+    <div class="margin-left"></div>
+</div>

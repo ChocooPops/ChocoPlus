@@ -1,7 +1,7 @@
 .container-medias {
     display: flex;
     overflow-x: auto;
-    padding-bottom: 45px;
+    padding-bottom: 40px;
     box-sizing: border-box;
 }
 

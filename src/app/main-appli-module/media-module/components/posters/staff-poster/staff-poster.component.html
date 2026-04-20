@@ -1,7 +1,11 @@
 @if (jobTitle === JobModel.ACTOR) {
 <h2>Acteur</h2>
 } @else if(jobTitle === JobModel.DIRECTOR) {
-<h2>Réalisateur</h2>
+    @if(mediaType === MediaTypeModel.SERIES) {
+        <h2>Créateur</h2>
+    }@else {
+        <h2>Réalisateur</h2>
+    }
 }
 <div class="container-staffs" [style.gap.vw]="gap">
 @for (staff of staffs; track $index) {

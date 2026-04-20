@@ -4,6 +4,7 @@ import { JobModel } from '../../../models/job.eum';
 import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
+import { MediaTypeModel } from '../../../models/media-type.enum';
 
 @Component({
   selector: 'app-staff-poster',
@@ -15,12 +16,14 @@ import { GeometricDimensionSelectionModel } from '../../../models/geometric-dime
 export class StaffPosterComponent {
   @Input() jobTitle!: JobModel;
   @Input() staffs: StaffModel[] = [];
+  @Input() mediaType!: MediaTypeModel;
   private subscription!: Subscription;
 
   height!: number;
   width!: number;
   gap!: number;
   JobModel = JobModel;
+  MediaTypeModel = MediaTypeModel;
 
   minPoster = 4;
   posterTmp: number[] = [];

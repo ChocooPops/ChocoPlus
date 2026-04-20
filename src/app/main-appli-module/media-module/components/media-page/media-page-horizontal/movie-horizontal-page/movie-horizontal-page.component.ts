@@ -5,6 +5,7 @@ import { StaffPosterComponent } from '../../../posters/staff-poster/staff-poster
 import { SimilarPosterVerticalComponent } from '../../../posters/similar-poster-vertical/similar-poster-vertical.component';
 import { SimilarPosterVerticalLoadingComponent } from '../../../posters/similar-poster-vertical-loading/similar-poster-vertical-loading.component';
 import { StaffPosterLoadingComponent } from '../../../posters/staff-poster-loading/staff-poster-loading.component';
+import { FormatMediaPageModel } from '../../../../models/format-media-page-enum';
 
 @Component({
   selector: 'app-movie-horizontal-page',
@@ -15,6 +16,8 @@ import { StaffPosterLoadingComponent } from '../../../posters/staff-poster-loadi
 })
 export class MovieHorizontalPageComponent extends MoviePageAbstraction {
 
+  protected formatMediaPage: FormatMediaPageModel = FormatMediaPageModel.HORIZONTAL;
+  
   protected resetInfoSpe(): void {}
   protected initSpe(): void {}
 

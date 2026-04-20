@@ -52,7 +52,7 @@
     width: 100%;
     aspect-ratio: 1920/1080;
     border-radius: 5px;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.7);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
     position: relative;
     overflow: hidden;
 

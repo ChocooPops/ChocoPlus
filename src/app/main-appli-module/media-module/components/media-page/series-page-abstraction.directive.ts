@@ -13,12 +13,16 @@ import { SeasonModel } from '../../models/series/season.interface';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { StaffModel } from '../../models/staff.interface';
 import { JobModel } from '../../models/job.eum';
+import { FormatMediaPageModel } from '../../models/format-media-page-enum';
 
 @Directive({})
 export abstract class SeriesPageAbstraction {
-    
   @Input() series!: SeriesModel;
-  protected abortController = new AbortController();
+
+  protected abstract formatMediaPage: FormatMediaPageModel;
+
+  protected abortControllerEpisodes = new AbortController();
+  protected abortControllerSimilarMedias = new AbortController();
 
   protected subscriptionEpisodes!: Subscription;
   protected subscriptionSimilarTitles!: Subscription;
@@ -75,7 +79,6 @@ export abstract class SeriesPageAbstraction {
     this.setUnsubscribeEpisode();
     this.setUnsubscriptionSimilarTitle();
     this.setUnsubscriptionSeriesInfo();
-    this.abortController.abort();
   }
 
   private resetInfo(): void {
@@ -95,11 +98,13 @@ export abstract class SeriesPageAbstraction {
     if (this.subscriptionEpisodes) {
       this.subscriptionEpisodes.unsubscribe();
     }
+    this.abortControllerEpisodes.abort();
   }
   private setUnsubscriptionSimilarTitle(): void {
     if (this.subscriptionSimilarTitles) {
       this.subscriptionSimilarTitles.unsubscribe();
     }
+    this.abortControllerSimilarMedias.abort();
   }
   private setUnsubscriptionSeriesInfo(): void {
     if (this.subscriptionSeriesInfo) {
@@ -159,9 +164,10 @@ export abstract class SeriesPageAbstraction {
   protected fetchEpisodeBySeason(idSeason: number, indexSeason: number): void {
     this.episodes = undefined;
     this.setUnsubscribeEpisode();
-    this.setUnsubscriptionSimilarTitle();
+    if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
+      this.setUnsubscriptionSimilarTitle();
+    }
     if (this.series.seasons[indexSeason].episodes.length <= 0) {
-      this.abortController.abort();
       this.subscriptionEpisodes = this.seriesService
         .fetchEpisodesBySeriesAndSeasonId(this.series.id, idSeason)
         .pipe(take(1))
@@ -169,7 +175,7 @@ export abstract class SeriesPageAbstraction {
           const img: string[] =
             this.imagePreloaderService.getPosterFromEpisodes(data);
           this.imagePreloaderService
-            .preloadImages(img, this.abortController.signal)
+            .preloadImages(img, this.abortControllerEpisodes.signal)
             .finally(() => {
               this.series.seasons[indexSeason].episodes = data;
               this.episodes = this.series.seasons[indexSeason].episodes;
@@ -182,20 +188,28 @@ export abstract class SeriesPageAbstraction {
 
   protected fetchSimilarMovie(): void {
     this.episodes = undefined;
-    this.setUnsubscribeEpisode();
+    if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
+      this.setUnsubscribeEpisode();
+    }
     this.setUnsubscriptionSimilarTitle();
-    this.abortController.abort();
     this.subscriptionSimilarTitles = this.similarTitleService
       .fetchSimilarTitlesForOneMovieById(this.series.id)
       .pipe(take(1))
       .subscribe((data: MediaModel[]) => {
-        const img: string[] =
-          this.imagePreloaderService.getPosterFromMediaListToLoad(
+        let img: string[] = [];
+        if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
+          img = this.imagePreloaderService.getPosterFromMediaListToLoad(
             data,
             FormatPosterModel.HORIZONTAL,
           );
+        } else if (this.formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
+          img = this.imagePreloaderService.getPosterFromMediaListToLoad(
+            data,
+            FormatPosterModel.VERTICAL,
+          );
+        }
         this.imagePreloaderService
-          .preloadImages(img, this.abortController.signal)
+          .preloadImages(img, this.abortControllerSimilarMedias.signal)
           .finally(() => {
             this.similarMedias = data;
           });
@@ -248,5 +262,4 @@ export abstract class SeriesPageAbstraction {
   protected abstract resetInfoSpe(): void;
   protected abstract initSpe(): void;
   protected abstract fetchDataSpe(): void;
-
 }

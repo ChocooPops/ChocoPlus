@@ -19,7 +19,7 @@
                 @if(description !== '') {
                 <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
                 }
-                <p [ngClass]="'margin-bottom-text'"> <span class="legend">Réalisateur : </span> 
+                <p [ngClass]="'margin-bottom-text'"> <span class="legend">Créateur : </span> 
                     @for (director of directors; track $index) {
                         @if ($index !== directors.length - 1) {
                             <span class="content">{{director.fullName}}</span>,
@@ -98,10 +98,10 @@
             }
         </div>
         @if(episodes) {
-        <app-episode-poster [series]="series" [episodes]="episodes"
-            [ngClass]="'animationPosterAndLicense'"></app-episode-poster>
+        <app-episode-poster-vertical-view [series]="series" [episodes]="episodes"
+            [ngClass]="'animationPosterAndLicense'"></app-episode-poster-vertical-view>
         }@else {
-        <app-episode-poster-loading></app-episode-poster-loading>
+        <app-episode-poster-vertical-view-loading></app-episode-poster-vertical-view-loading>
         }
     </div>
     } @else {

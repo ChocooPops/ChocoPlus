@@ -10,11 +10,11 @@ import { MediaInfoModel } from '../../models/media-info.interface';
 import { StaffModel } from '../../models/staff.interface';
 import { JobModel } from '../../models/job.eum';
 import { FormatMediaPageModel } from '../../models/format-media-page-enum';
-import { FormatMediaPageButtonService } from '../../services/format-media-page/format-media-page-button.service';
 
 @Directive({})
 export abstract class MoviePageAbstraction {
   @Input() movie!: MovieModel;
+  protected abstract formatMediaPage: FormatMediaPageModel;
   protected abortController = new AbortController();
   protected subscriptionSimilarTitles!: Subscription;
   protected subscriptionMovieInfo!: Subscription;
@@ -35,7 +35,6 @@ export abstract class MoviePageAbstraction {
     protected readonly imagePreloaderService: ImagePreloaderService,
     protected readonly similarTitleService: SimilarTitleService,
     protected readonly mediaSelectedService: MediaSelectedService,
-    protected readonly formatMediaPageButtonService: FormatMediaPageButtonService,
   ) {}
 
   ngOnInit(): void {
@@ -97,14 +96,12 @@ export abstract class MoviePageAbstraction {
         .pipe(take(1))
         .subscribe((data: MediaModel[]) => {
           let img: string[] = [];
-          const formatMediaPage: FormatMediaPageModel =
-            this.formatMediaPageButtonService.getCurrentFormatMediaPageValue();
-          if (formatMediaPage === FormatMediaPageModel.VERTICAL) {
+          if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
             img = this.imagePreloaderService.getPosterFromMediaListToLoad(
               data,
               FormatPosterModel.HORIZONTAL,
             );
-          } else if (formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
+          } else if (this.formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
             img = this.imagePreloaderService.getPosterFromMediaListToLoad(
               data,
               FormatPosterModel.VERTICAL,

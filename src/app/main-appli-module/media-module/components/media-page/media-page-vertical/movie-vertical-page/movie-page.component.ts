@@ -15,6 +15,7 @@ import { MoviePageAbstraction } from '../../movie-page-abstraction.directive';
 import { SimilarPosterHorizontalComponent } from '../../../posters/similar-poster-horizontal/similar-poster-horizontal.component';
 import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/similar-poster-horizontal-loading/similar-poster-horizontal-loading.component';
 import { FormatMediaPageButtonService } from '../../../../services/format-media-page/format-media-page-button.service';
+import { FormatMediaPageModel } from '../../../../models/format-media-page-enum';
 
 @Component({
   selector: 'app-movie-vertical-page',
@@ -25,6 +26,8 @@ import { FormatMediaPageButtonService } from '../../../../services/format-media-
 })
 export class MovieVerticalPageComponent extends MoviePageAbstraction {
 
+  protected formatMediaPage: FormatMediaPageModel = FormatMediaPageModel.VERTICAL;
+  
   @Input() displaying: boolean = false;
   @Output() posterLoading = new EventEmitter<void>();
 
@@ -40,11 +43,10 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   constructor(imagePreloaderService: ImagePreloaderService,
     similarTitleService: SimilarTitleService,
     mediaSelectedService: MediaSelectedService,
-    formatMediaPageButtonService: FormatMediaPageButtonService,
     private readonly verifTimerShowService: VerifTimerShowService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly historicWatchProgressService: HistoricWatchProgressService) { 
-      super(imagePreloaderService, similarTitleService, mediaSelectedService, formatMediaPageButtonService);
+      super(imagePreloaderService, similarTitleService, mediaSelectedService);
     }
 
   protected resetInfoSpe(): void {

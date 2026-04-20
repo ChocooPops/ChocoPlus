@@ -41,7 +41,7 @@
 
     <div class="container-second-line">
         @if (directors) {
-            <app-staff-poster [staffs]="directors" [jobTitle]="JobModel.DIRECTOR"></app-staff-poster>
+            <app-staff-poster [ngClass]="'animationPosterAndLicense'" [staffs]="directors" [jobTitle]="JobModel.DIRECTOR" [mediaType]="movie.mediaType"></app-staff-poster>
         } @else {
             <app-staff-poster-loading [jobTitle]="JobModel.DIRECTOR"></app-staff-poster-loading>
         }
@@ -49,7 +49,7 @@
 
     <div class="container-third-line">
         @if (actors) {
-            <app-staff-poster [staffs]="actors" [jobTitle]="JobModel.ACTOR"></app-staff-poster>
+            <app-staff-poster [ngClass]="'animationPosterAndLicense'" [staffs]="actors" [jobTitle]="JobModel.ACTOR"></app-staff-poster>
         } @else {
             <app-staff-poster-loading [jobTitle]="JobModel.ACTOR"></app-staff-poster-loading>
         }
@@ -57,7 +57,7 @@
 
     <div class="container-fourth-line">
         @if (similarMedias) {
-            <app-similar-poster-vertical [medias]="similarMedias" (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-vertical>
+            <app-similar-poster-vertical [ngClass]="'animationPosterAndLicense'" [medias]="similarMedias" (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-vertical>
         } @else {
             <app-similar-poster-vertical-loading></app-similar-poster-vertical-loading>
         }

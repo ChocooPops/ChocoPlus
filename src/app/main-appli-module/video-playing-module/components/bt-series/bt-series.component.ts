@@ -1,18 +1,18 @@
-import { Component, Input, HostListener, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { BtClassicComponent } from '../bt-classic/bt-classic.component';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 import { SeriesService } from '../../../media-module/services/series/series.service';
 import { Subscription, take } from 'rxjs';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
-import { EpisodePosterComponent } from '../../../media-module/components/posters/episode-poster/episode-poster.component';
-import { EpisodePosterLoadingComponent } from '../../../media-module/components/posters/episode-poster-loading/episode-poster-loading.component';
 import { NgClass } from '@angular/common';
+import { EpisodePosterVerticalViewComponent } from '../../../media-module/components/posters/episode-poster-vertical-view/episode-poster-vertical-view.component';
+import { EpisodePosterVerticalViewLoadingComponent } from '../../../media-module/components/posters/episode-poster-vertical-view-loading/episode-poster-vertical-view-loading.component';
 
 @Component({
   selector: 'app-bt-series',
   standalone: true,
-  imports: [BtClassicComponent, EpisodePosterComponent, EpisodePosterLoadingComponent, NgClass],
+  imports: [BtClassicComponent, EpisodePosterVerticalViewComponent, EpisodePosterVerticalViewLoadingComponent, NgClass],
   templateUrl: './bt-series.component.html',
   styleUrl: './bt-series.component.css'
 })

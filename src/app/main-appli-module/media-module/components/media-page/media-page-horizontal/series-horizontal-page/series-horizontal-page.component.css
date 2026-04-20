@@ -32,3 +32,56 @@ p {
     flex-direction: column;
     gap: 12px;
 }
+
+.container-second-line {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.container-seasons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.container-season {
+    width: 60px;
+    height: 35px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s background-color;
+    cursor: pointer;
+
+    p {
+        margin: 0;
+        text-align: center;
+        font-weight: bold;
+        font-size: 17px;
+        transition: 0.3s color;
+    }
+
+    &:hover {
+        background-color: #FFD300;
+        p {
+            color: black;
+        }
+    }
+}
+
+.season-clicked {
+    background-color: #FFD300;
+    p {
+        color: black;
+    }
+}
+
+.season-not-clicked {
+    background-color: #2E2E2E;
+    p {
+        color: white;
+    }
+}

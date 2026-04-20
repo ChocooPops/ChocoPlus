@@ -1,19 +1,20 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { DatePipe } from '@angular/common';
-import { EpisodePosterComponent } from '../../../posters/episode-poster/episode-poster.component';
-import { EpisodePosterLoadingComponent } from '../../../posters/episode-poster-loading/episode-poster-loading.component';
 import { SeriesPageAbstraction } from '../../series-page-abstraction.directive';
 import { SimilarPosterHorizontalComponent } from '../../../posters/similar-poster-horizontal/similar-poster-horizontal.component';
 import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/similar-poster-horizontal-loading/similar-poster-horizontal-loading.component';
+import { EpisodePosterVerticalViewComponent } from '../../../posters/episode-poster-vertical-view/episode-poster-vertical-view.component';
+import { EpisodePosterVerticalViewLoadingComponent } from '../../../posters/episode-poster-vertical-view-loading/episode-poster-vertical-view-loading.component';
+import { FormatMediaPageModel } from '../../../../models/format-media-page-enum';
 
 @Component({
   selector: 'app-series-vertical-page',
   standalone: true,
   imports: [
     NgClass,
-    EpisodePosterLoadingComponent,
-    EpisodePosterComponent,
+    EpisodePosterVerticalViewComponent,
+    EpisodePosterVerticalViewLoadingComponent,
     SimilarPosterHorizontalComponent,
     SimilarPosterHorizontalLoadingComponent,
     DatePipe,
@@ -27,6 +28,8 @@ import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/simila
 })
 export class SeriesVerticalPageComponent extends SeriesPageAbstraction {
 
+  protected formatMediaPage: FormatMediaPageModel = FormatMediaPageModel.VERTICAL;
+  
   date!: Date | null;
   type: boolean = true;
 

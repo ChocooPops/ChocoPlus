@@ -1,0 +1,24 @@
+<h2>Episodes</h2>
+<div class="container-episodes" [style.gap.vw]="gap">
+    @for (episode of episodes; track episode.id; let idx = $index) {
+    <div class="container-episode" [style.max-width.vw]="width">
+        <div class="container-poster" [style.height.vw]="height" [style.width.vw]="width" (click)="start.onClick()">
+            <div class="container-tmp-poster">
+                <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                    [episode]="episode" [seasons]="series.seasons"></app-start-button>
+            </div>
+            <img [src]="episodePoster[idx]">
+            @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
+            <div class="container-progress">
+                <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>
+            </div>
+            }
+        </div>
+        <div class="container-other-info">
+            <p class="title"> {{episode.episodeNumber}}. {{episode.name}} </p>
+            <p class="other-info"> {{ getTimerEpisode(episode.time) }} <br> {{ episode.date | date:'d MMMM, y'}} </p>
+        </div>
+    </div>
+    }
+    <div class="margin-left"></div>
+</div>
