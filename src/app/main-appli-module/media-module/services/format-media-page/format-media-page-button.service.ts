@@ -25,6 +25,10 @@ export class FormatMediaPageButtonService {
     return this.formatMediaPage$;
   }
 
+  public getCurrentFormatMediaPageValue(): FormatMediaPageModel {
+    return this.formatMediaPageSubject.value;
+  }
+
   public toggleFormatMediaPage(): void {
     const currentValue: FormatMediaPageModel = this.formatMediaPageSubject.value;
     if (currentValue === FormatMediaPageModel.VERTICAL) {

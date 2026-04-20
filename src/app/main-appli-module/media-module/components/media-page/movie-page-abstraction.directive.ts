@@ -9,23 +9,23 @@ import { FormatPosterModel } from '../../../common-module/models/format-poster.e
 import { MediaInfoModel } from '../../models/media-info.interface';
 import { StaffModel } from '../../models/staff.interface';
 import { JobModel } from '../../models/job.eum';
+import { FormatMediaPageModel } from '../../models/format-media-page-enum';
+import { FormatMediaPageButtonService } from '../../services/format-media-page/format-media-page-button.service';
 
 @Directive({})
 export abstract class MoviePageAbstraction {
-  
   @Input() movie!: MovieModel;
   protected abortController = new AbortController();
   protected subscriptionSimilarTitles!: Subscription;
   protected subscriptionMovieInfo!: Subscription;
 
-  directors: StaffModel[] = [];
-  actors: StaffModel[] = [];
   genre: string = '';
   keyWord: string = '';
   description!: string;
-
   mediaInfoLoaded: boolean = false;
 
+  directors: StaffModel[] | undefined = undefined;
+  actors: StaffModel[] | undefined = undefined;
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
 
@@ -35,6 +35,7 @@ export abstract class MoviePageAbstraction {
     protected readonly imagePreloaderService: ImagePreloaderService,
     protected readonly similarTitleService: SimilarTitleService,
     protected readonly mediaSelectedService: MediaSelectedService,
+    protected readonly formatMediaPageButtonService: FormatMediaPageButtonService,
   ) {}
 
   ngOnInit(): void {
@@ -66,8 +67,8 @@ export abstract class MoviePageAbstraction {
 
   private resetInfo(): void {
     this.resetInfoSpe();
-    this.directors = [];
-    this.actors = [];
+    this.directors = undefined;
+    this.actors = undefined;
     this.genre = '';
     this.keyWord = '';
     this.description = '';
@@ -95,11 +96,20 @@ export abstract class MoviePageAbstraction {
         .fetchSimilarTitlesForOneMovieById(this.movie.id)
         .pipe(take(1))
         .subscribe((data: MediaModel[]) => {
-          const img: string[] =
-            this.imagePreloaderService.getPosterFromMediaListToLoad(
+          let img: string[] = [];
+          const formatMediaPage: FormatMediaPageModel =
+            this.formatMediaPageButtonService.getCurrentFormatMediaPageValue();
+          if (formatMediaPage === FormatMediaPageModel.VERTICAL) {
+            img = this.imagePreloaderService.getPosterFromMediaListToLoad(
               data,
               FormatPosterModel.HORIZONTAL,
             );
+          } else if (formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
+            img = this.imagePreloaderService.getPosterFromMediaListToLoad(
+              data,
+              FormatPosterModel.VERTICAL,
+            );
+          }
           this.imagePreloaderService
             .preloadImages(img, this.abortController.signal)
             .finally(() => {
@@ -143,5 +153,4 @@ export abstract class MoviePageAbstraction {
 
   protected abstract resetInfoSpe(): void;
   protected abstract initSpe(): void;
-
 }

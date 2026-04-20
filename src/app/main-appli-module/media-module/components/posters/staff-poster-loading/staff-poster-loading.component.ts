@@ -1,36 +1,36 @@
 import { Component, Input } from '@angular/core';
-import { StaffModel } from '../../../models/staff.interface';
 import { JobModel } from '../../../models/job.eum';
 import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-staff-poster',
+  selector: 'app-staff-poster-loading',
   standalone: true,
-  imports: [],
-  templateUrl: './staff-poster.component.html',
-  styleUrl: './staff-poster.component.css',
+  imports: [NgClass],
+  templateUrl: './staff-poster-loading.component.html',
+  styleUrls: ['./staff-poster-loading.component.css', '../staff-poster/staff-poster.component.css', '../../../../common-module/styles/animation.css'],
 })
-export class StaffPosterComponent {
+export class StaffPosterLoadingComponent {
   @Input() jobTitle!: JobModel;
-  @Input() staffs: StaffModel[] = [];
   private subscription!: Subscription;
+
+  nbPoster: number = 5;
+  staffTab: number[] = [];
 
   height!: number;
   width!: number;
   gap!: number;
   JobModel = JobModel;
 
-  minPoster = 4;
-  posterTmp: number[] = [];
-
   constructor(private paginationPosterService: PaginationPosterService) {}
 
   ngOnInit(): void {
-    for(let i=0; i< this.minPoster - this.staffs.length; i++) {
-      this.posterTmp.push(i);
+    for (let i = 0; i < this.nbPoster; i++) {
+      this.staffTab.push(i);
     }
+
     this.subscription = this.paginationPosterService
       .getVerticalGeometricDimensionSelection()
       .subscribe((data: GeometricDimensionSelectionModel) => {

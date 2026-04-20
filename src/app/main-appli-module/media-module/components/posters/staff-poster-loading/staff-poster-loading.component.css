@@ -1,0 +1,18 @@
+.title-loading {
+    height: auto;
+    width: auto;
+    position: relative;
+
+    p {
+        visibility: hidden;
+    }
+}
+
+.loader {
+    position: absolute;
+    height: 20px;
+    width: 150px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

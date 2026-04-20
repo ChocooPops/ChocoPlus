@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { MediaModel } from '../../../../models/media.interface';
 import { VerifTimerShowService } from '../../../../../common-module/services/verif-timer/verif-timer-show.service';
 import { ImagePreloaderService } from '../../../../../../common-module/services/image-preloader/image-preloader.service';
 import { CompressedPosterService } from '../../../../../common-module/services/compressed-poster/compressed-poster.service';
@@ -15,6 +14,7 @@ import { MediaProgressingModel } from '../../../../../video-playing-module/model
 import { MoviePageAbstraction } from '../../movie-page-abstraction.directive';
 import { SimilarPosterHorizontalComponent } from '../../../posters/similar-poster-horizontal/similar-poster-horizontal.component';
 import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/similar-poster-horizontal-loading/similar-poster-horizontal-loading.component';
+import { FormatMediaPageButtonService } from '../../../../services/format-media-page/format-media-page-button.service';
 
 @Component({
   selector: 'app-movie-vertical-page',
@@ -40,10 +40,11 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   constructor(imagePreloaderService: ImagePreloaderService,
     similarTitleService: SimilarTitleService,
     mediaSelectedService: MediaSelectedService,
+    formatMediaPageButtonService: FormatMediaPageButtonService,
     private readonly verifTimerShowService: VerifTimerShowService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly historicWatchProgressService: HistoricWatchProgressService) { 
-      super(imagePreloaderService, similarTitleService, mediaSelectedService);
+      super(imagePreloaderService, similarTitleService, mediaSelectedService, formatMediaPageButtonService);
     }
 
   protected resetInfoSpe(): void {

@@ -26,7 +26,6 @@ import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/simila
   ],
 })
 export class SeriesVerticalPageComponent extends SeriesPageAbstraction {
-  @ViewChild(EpisodePosterComponent) episodePoster!: EpisodePosterComponent;
 
   date!: Date | null;
   type: boolean = true;

@@ -1,0 +1,18 @@
+@if (jobTitle === JobModel.ACTOR) {
+<h2>Acteur</h2>
+} @else if(jobTitle === JobModel.DIRECTOR) {
+<h2>Réalisateur</h2>
+}
+<div class="container-staffs" [style.gap.vw]="gap">
+@for (item of staffTab; track $index) {
+    <div class="container-staff">
+        <div class="staff-poster" [ngClass]="'container-animation-gradient-little'" [style.height.vw]="height" [style.width.vw]="width">
+        </div>
+        <div class="title-loading">
+            <p>Loading Loading</p>
+            <div class="loader" [ngClass]="'container-animation-gradient-little'"></div>
+        </div>
+    </div>
+}
+<div class="margin-left"></div>
+</div>

@@ -15,7 +15,7 @@
         </div>
         <div class="container-movie-placement">
             <p class="title" [ngClass]="'margin-bottom-title'"> {{ series.title }} </p>
-            @if(mediaInfoLoaded) {
+            @if(actors && directors && mediaInfoLoaded) {
                 @if(description !== '') {
                 <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
                 }

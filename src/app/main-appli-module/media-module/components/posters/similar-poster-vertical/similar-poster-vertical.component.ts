@@ -42,7 +42,7 @@ export class SimilarPosterVerticalComponent {
         this.height =
           this.paginationPosterService.getRealHeighVerticalVerticalPoster();
         this.width = data.widthPoster;
-        this.gap = data.gapBetweenPoster;
+        this.gap = data.gapBetweenPoster * 2;
       });
   }
 

@@ -12,6 +12,7 @@ import { SeriesService } from '../../services/series/series.service';
 import { SeasonModel } from '../../models/series/season.interface';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { StaffModel } from '../../models/staff.interface';
+import { JobModel } from '../../models/job.eum';
 
 @Directive({})
 export abstract class SeriesPageAbstraction {
@@ -26,11 +27,11 @@ export abstract class SeriesPageAbstraction {
   srcSucces: string = 'icon/success.svg';
   genre: string = '';
   keyWord: string = '';
-  actors: StaffModel[] = [];
-  directors: StaffModel[] = [];
   description!: string;
   mediaInfoLoaded: boolean = false;
 
+  actors: StaffModel[] | undefined = undefined;
+  directors: StaffModel[] | undefined = undefined;
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
 
@@ -44,6 +45,8 @@ export abstract class SeriesPageAbstraction {
   seasonsLoading: number[] = [];
   seasonsPosterTmp: number[] = [];
   episodes: EpisodeModel[] | undefined = [];
+
+  JobModel = JobModel;
 
   constructor(
     protected readonly compressedPosterService: CompressedPosterService,
@@ -77,11 +80,11 @@ export abstract class SeriesPageAbstraction {
 
   private resetInfo(): void {
     this.resetInfoSpe();
-    this.directors = [];
-    this.actors = [];
+    this.directors = undefined;
+    this.actors = undefined;
+    this.similarMedias = undefined;
     this.genre = '';
     this.keyWord = '';
-    this.similarMedias = undefined;
     this.episodes = [];
     this.seasons = [];
     this.seasonsPosterTmp = [];

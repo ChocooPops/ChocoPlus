@@ -12,5 +12,13 @@
         <p> {{ staff.fullName }} </p>
     </div>
 }
+@for (item of posterTmp; track $index) {
+    <div class="container-staff">
+        <div class="staff-poster" [style.height.vw]="height" [style.width.vw]="width">
+            <div class="container-tmp-poster"></div>
+        </div>
+        <p style="visibility: hidden;"> tmp </p>
+    </div>
+}
 <div class="margin-left"></div>
 </div>
