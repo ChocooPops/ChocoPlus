@@ -158,32 +158,27 @@ export abstract class SeriesPageAbstraction {
     this.seasons.forEach((s, i) => {
       s.isClicked = i === index;
     });
-    this.fetchEpisodeBySeason(this.series.seasons[index].id, index);
+    this.fetchEpisodeBySeason(this.series.seasons[index].id);
   }
 
-  protected fetchEpisodeBySeason(idSeason: number, indexSeason: number): void {
+  protected fetchEpisodeBySeason(idSeason: number): void {
     this.episodes = undefined;
     this.setUnsubscribeEpisode();
     if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
       this.setUnsubscriptionSimilarTitle();
     }
-    if (this.series.seasons[indexSeason].episodes.length <= 0) {
-      this.subscriptionEpisodes = this.seriesService
-        .fetchEpisodesBySeriesAndSeasonId(this.series.id, idSeason)
-        .pipe(take(1))
-        .subscribe((data: EpisodeModel[]) => {
-          const img: string[] =
-            this.imagePreloaderService.getPosterFromEpisodes(data);
-          this.imagePreloaderService
-            .preloadImages(img, this.abortControllerEpisodes.signal)
-            .finally(() => {
-              this.series.seasons[indexSeason].episodes = data;
-              this.episodes = this.series.seasons[indexSeason].episodes;
-            });
-        });
-    } else {
-      this.episodes = this.series.seasons[indexSeason].episodes;
-    }
+    this.subscriptionEpisodes = this.seriesService
+      .fetchEpisodesBySeriesAndSeasonId(this.series.id, idSeason)
+      .pipe(take(1))
+      .subscribe((data: EpisodeModel[]) => {
+        const img: string[] =
+          this.imagePreloaderService.getPosterFromEpisodes(data);
+        this.imagePreloaderService
+          .preloadImages(img, this.abortControllerEpisodes.signal)
+          .finally(() => {
+            this.episodes = data;
+          });
+      });
   }
 
   protected fetchSimilarMovie(): void {
@@ -250,11 +245,11 @@ export abstract class SeriesPageAbstraction {
         (item: SeasonModel) => item.isClicked === true,
       );
       if (index >= 0) {
-        this.fetchEpisodeBySeason(this.series.seasons[index].id, index);
+        this.fetchEpisodeBySeason(this.series.seasons[index].id);
       } else {
         this.series.seasons[0].isClicked = true;
         this.seasons[0].isClicked = true;
-        this.fetchEpisodeBySeason(this.series.seasons[0].id, 0);
+        this.fetchEpisodeBySeason(this.series.seasons[0].id);
       }
     }
   }

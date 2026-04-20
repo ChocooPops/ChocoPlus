@@ -30,7 +30,7 @@ export class MediaSelectedService {
   }
 
   public fetchGetMediaInfoById(mediaId: number): Observable<MediaInfoModel | null> {
-    const cached = this.mediaInfoMap.get(mediaId);
+    const cached: MediaInfoModel | undefined = this.mediaInfoMap.get(mediaId);
     if (cached) {
       return of(cached);
     }

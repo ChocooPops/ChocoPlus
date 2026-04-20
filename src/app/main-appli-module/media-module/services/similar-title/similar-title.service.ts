@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { MovieService } from '../movie/movie.service';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { MediaModel } from '../../models/media.interface';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { SeriesService } from '../series/series.service';
@@ -12,14 +12,20 @@ import { SeriesService } from '../series/series.service';
 })
 export class SimilarTitleService {
 
-  private apiUrlSimilarTitle: string = `${environment.apiUrlSimilarTitle}`;
+  private readonly apiUrlSimilarTitle: string = `${environment.apiUrlSimilarTitle}`;
+  private similarMediaMap: Map<number, MediaModel[]> = new Map();
 
-  constructor(private http: HttpClient,
-    private movieService: MovieService,
-    private seriesService: SeriesService
+  constructor(private readonly http: HttpClient,
+    private readonly movieService: MovieService,
+    private readonly seriesService: SeriesService
   ) { }
 
   public fetchSimilarTitlesForOneMovieById(idMedia: number): Observable<MediaModel[]> {
+    const cached: MediaModel[] | undefined = this.similarMediaMap.get(idMedia);
+    if (cached) {
+      return of(cached);
+    }
+    
     return this.http.get<any[]>(`${this.apiUrlSimilarTitle}/${idMedia}`).pipe(
       map((data: any[]) => {
         const medias: MediaModel[] = []
@@ -30,6 +36,7 @@ export class SimilarTitleService {
             medias.push(this.seriesService.createNewSeries(media));
           }
         })
+        this.similarMediaMap.set(idMedia, medias);
         return medias;
       })
     )

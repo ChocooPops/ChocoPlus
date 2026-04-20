@@ -55,17 +55,12 @@ export class EditNewsSeriesRunningComponent {
   private fetchEpisodeBySeason(index: number): void {
     this.episodes = undefined;
     this.unsubscriptionEpisode();
-    if (this.series.seasons[index].episodes.length <= 0) {
-      this.subscription = this.seriesService.fetchEpisodesBySeriesAndSeasonId(this.series.id, this.series.seasons[index].id).pipe(take(1)).subscribe((data: EpisodeModel[]) => {
-        data.forEach((item: EpisodeModel) => {
-          item.srcPoster = this.compressedPosterService.getEpisodePoster(item, ScalePoster.SCALE_300w);
-        });
-        this.series.seasons[index].episodes = data;
-        this.episodes = this.series.seasons[index].episodes;
-      })
-    } else {
-      this.episodes = this.series.seasons[index].episodes;
-    }
+    this.subscription = this.seriesService.fetchEpisodesBySeriesAndSeasonId(this.series.id, this.series.seasons[index].id).pipe(take(1)).subscribe((data: EpisodeModel[]) => {
+      data.forEach((item: EpisodeModel) => {
+        item.srcPoster = this.compressedPosterService.getEpisodePoster(item, ScalePoster.SCALE_300w);
+      });
+      this.episodes = data;
+    })
   }
 
 }

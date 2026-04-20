@@ -21,6 +21,8 @@ export class SeriesService {
   private readonly urlLastEpisodeWatched: string = 'last-episode-watched';
   private readonly urlWatchProgress: string = 'watchProgress';
 
+  private episodeMap: Map<number, EpisodeModel[]> = new Map();
+
   constructor(private http: HttpClient) { }
 
   public createNewSeries(series: any): SeriesModel {
@@ -111,9 +113,15 @@ export class SeriesService {
   }
 
   public fetchEpisodesBySeriesAndSeasonId(idSeries: number, idSeason: number): Observable<EpisodeModel[]> {
+    const cached: EpisodeModel[] | undefined = this.episodeMap.get(idSeason);
+    if (cached) {
+      return of(cached);
+    }
     return this.http.get<any[]>(`${this.apiUrlSeries}/${this.urlEpisodes}/${idSeries}/${idSeason}`).pipe(
       map((data: EpisodeModel[]) => {
-        return this.createNewEpisodes(data);
+        const episodes: EpisodeModel[] = this.createNewEpisodes(data);
+        this.episodeMap.set(idSeason, episodes);
+        return episodes;
       }),
       catchError(() => {
         return of([]);

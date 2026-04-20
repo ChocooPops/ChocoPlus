@@ -1,7 +1,7 @@
 <div class="container">
     
-    <div class="container-menu-tab" (mouseleave)="onMouseLeave()" (mouseenter)="onMouseEnter()">
-        <div class="container-pp" (click)="onNavigateToUserPage()">
+    <div class="container-menu-tab" (mouseleave)="onMouseLeave()" (mouseenter)="onMouseEnter()" (click)="onNavigateToUserPage()">
+        <div class="container-pp">
             <img [src]="user.profilPhoto" (error)="errorPpUser()">
         </div>
         <div class="container-arrow">
