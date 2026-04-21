@@ -67,6 +67,16 @@ export class MediaHorizontalBackgroundComponent {
     this.srcBackground = this.compressedPosterService.getBackgroundForMediaPresentation(this.media, ScalePoster.SCALE_ORIGINAL);
     this.title = this.media.title;
 
+    if (!this.srcPoster) {
+      this.onPosterLoad();
+    }
+    if (!this.srcLogo) {
+      this.onLogoLoad();
+    }
+    if (!this.srcBackground) {
+      this.onBackgroundLoad();
+    }
+
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).time) || '2015';
       this.quality = (this.media as MovieModel)?.quality || 'any quality';
@@ -77,7 +87,7 @@ export class MediaHorizontalBackgroundComponent {
   }
 
   onErrorImagePoster(): void {
-    this.srcLogo = undefined;
+    this.srcPoster = undefined;
     this.onLogoLoad();
   }
   onPosterLoad(): void {

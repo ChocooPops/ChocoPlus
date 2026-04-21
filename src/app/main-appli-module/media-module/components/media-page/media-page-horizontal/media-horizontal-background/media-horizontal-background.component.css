@@ -1,205 +1,217 @@
 .container-media-horizontal-background {
-    width: 100%;
-    height: 400px;
-    position: relative;
+  width: 100%;
+  height: 400px;
+  position: relative;
 }
 
 .containerBackground {
-    height: 100%;
-    width: 100%;
-    position: relative;
-    border-radius: 5px 5px 0px 0px;
-    overflow: hidden;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  border-radius: 5px 5px 0px 0px;
+  overflow: hidden;
 
-    img {
-        width: 100%;
-        position: absolute;
-        left: 50%;
-        top: 20%;
-        transform: translate(-50%, -20%);
-        opacity: 0.3;
-    }
+  img {
+    width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -20%);
+    opacity: 0.3;
+  }
 }
 
 .containerLogo {
-    right: 250px;
-    width: 40%;
-    height: 40%;
-    position: absolute;
-    top: 30%;
-    transform: translateY(-30%);
-    z-index: 20;
+  right: 250px;
+  width: 40%;
+  height: 40%;
+  position: absolute;
+  top: 30%;
+  transform: translateY(-30%);
+  z-index: 20;
 
-    img {
-        max-width: 100%;
-        max-height: 100%;
-        height: 100%;
-        width: auto;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-    }
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    height: 100%;
+    width: auto;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 .hidden {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .title {
-    max-width: 80%;
-    font-size: 2vw;
-    font-weight: bold;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.216);
-    color: white;
-    border-radius: 5px;
-    padding-block: 1vw;
-    padding-inline: 1.5vw;
-    margin: 0;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    white-space: normal;
+  max-width: 80%;
+  font-size: 2vw;
+  font-weight: bold;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.216);
+  color: white;
+  border-radius: 5px;
+  padding-block: 1vw;
+  padding-inline: 1.5vw;
+  margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 .borderBackground {
-    height: 100%;
-    width: 100%;
-    border-bottom: solid white 2px;
+  height: 100%;
+  width: 100%;
+  border-bottom: solid white 2px;
 }
 
 @media (max-width: 1400px) {
-    .title {
-        font-size: 35px;
-    }
+  .title {
+    font-size: 35px;
+  }
 }
 
 .container-bartitle {
-    width: 100%;
-    height: 100px;
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    background-color: rgba(28, 28, 28, 0.9);
+  width: 100%;
+  height: 100px;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  background-color: rgba(28, 28, 28, 0.9);
 }
 
 .container-poster {
-    width: 25vw;
-    position: relative;
-    height: 100%;
-    display: flex;
-    gap: 5px;
+  width: 25vw;
+  position: relative;
+  height: 100%;
+  display: flex;
+  gap: 5px;
 }
 
 .poster {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: -100px;
-    width: 80%;
-    aspect-ratio: 11/16;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    cursor: pointer;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -100px;
+  width: 80%;
+  aspect-ratio: 11/16;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  cursor: pointer;
 
-    img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
 }
 
 .container-tmp-poster {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    opacity: 0;
-    background-color: #0e0e0e;
-    transition: opacity 0.5s;
-    z-index: 99;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  background-color: #0e0e0e;
+  transition: opacity 0.5s;
+  z-index: 99;
 }
 
 .container-tmp-poster:hover {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .container-info-button {
-    flex: 1;
-    position: relative;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
+  flex: 1;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .container-info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .main-title {
-    font-size: 23px;
-    font-weight: bold;
-    color: white;
+  font-size: 23px;
+  font-weight: bold;
+  color: white;
 }
 
 .other-info {
-    display: flex;
-    align-items: center;
-    gap: 17px;
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--grey);
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--grey);
 }
 
 .container-quality {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: solid var(--grey) 1px;
-    border-radius: 3px;
-    padding-inline: 15px;
-    padding-block: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid var(--grey) 1px;
+  border-radius: 3px;
+  padding-inline: 15px;
+  padding-block: 3px;
 
-    p {
-        font-size: 14px;
-    }
+  p {
+    font-size: 14px;
+  }
 }
 
 .container-button {
-    top: 50%;
-    right: 35px;
-    transform: translateY(-50%);
-    position: absolute;
-    display: flex;
-    gap: 15px;
+  top: 50%;
+  right: 35px;
+  transform: translateY(-50%);
+  position: absolute;
+  display: flex;
+  gap: 15px;
 }
 
 .start-button {
-    padding-right: 30px;
+  padding-right: 30px;
 }
 
-p { 
-    margin: 0;
+p {
+  margin: 0;
 }
 
 .separation-bar {
-    top: calc(30vw - 100px);
-    position: absolute;
-    width: 75%;
-    background-color: var(--white-dark);
-    height: 2px;
-    border-radius: 1px;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
+  top: calc(30vw - 100px);
+  position: absolute;
+  width: 75%;
+  background-color: var(--white-dark);
+  height: 2px;
+  border-radius: 1px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .progress {
-    height: 100%;
-    background-color: #FFD301;
+  height: 100%;
+  background-color: #ffd301;
+}
+
+@media (max-width: 800px) {
+  .poster {
+    top: -20px;
+  }
+  .separation-bar {
+    top: calc(30vw - 20px);
+  }
 }

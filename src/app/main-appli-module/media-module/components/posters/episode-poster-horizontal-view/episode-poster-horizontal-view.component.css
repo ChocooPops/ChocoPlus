@@ -1,88 +1,97 @@
 .container-episodes {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 25px;
-    box-sizing: border-box;
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 25px;
+  box-sizing: border-box;
 }
 
 .container-episodes::-webkit-scrollbar {
-    height: 4px;
-    width: 4px;
+  height: 4px;
+  width: 4px;
 }
 
 .container-episode {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .container-progress {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 3px;
-    background-color: transparent;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background-color: transparent;
 }
 
 .progress {
-    height: 100%;
-    background-color: #FFD301;
+  height: 100%;
+  background-color: #ffd301;
 }
 
 .container-poster {
-    position: relative;
-    border-radius: 4px;
-    box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
+  position: relative;
+  border-radius: 4px;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 
-    img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
 }
 
 .container-tmp-poster {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    opacity: 0;
-    background-color: #0e0e0e;
-    transition: opacity 0.3s;
-    z-index: 99;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  background-color: #0e0e0e;
+  transition: opacity 0.3s;
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 .container-tmp-poster:hover {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .title {
-    font-size: 20px;
-    color: white;
+  font-size: 20px;
+  color: white;
 }
 
 .container-other-info {
-    margin-left: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .other-info {
-    font-size: 14px;
-    color: var(--grey);
+  font-size: 14px;
+  color: var(--grey);
 }
 
 p {
-    margin: 0;
-    font-weight: bold;
+  margin: 0;
+  font-weight: bold;
 }
 
 .margin-left {
-    width: 50px;
+  width: 50px;
+}
+
+@media (max-width: 1100px) {
+  .title {
+    font-size: 18px;
+  }
+  .other-info {
+    font-size: 12px;
+  }
 }

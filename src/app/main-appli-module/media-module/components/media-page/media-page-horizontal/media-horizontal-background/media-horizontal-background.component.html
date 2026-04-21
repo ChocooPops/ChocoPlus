@@ -1,17 +1,15 @@
 <div class="container-media-horizontal-background">
     <div class="containerLogo" [ngClass]="{'container-animation-gradient-normal' : !displaying, 'test' : !displaying}">
         @if(srcLogo != undefined) {
-        <img [src]="srcLogo" loading="lazy" (error)="onErrorImageLogo()" (load)="onBackgroundLoad()"
+        <img [src]="srcLogo" loading="lazy" (error)="onErrorImageLogo()" (load)="onLogoLoad()"
             [ngClass]="{'hidden' : !displaying}">
         } @else {
-        <div class="containerTitle">
-            <p class="title"> {{title}}</p>
-        </div>
+        <p class="title"> {{title}}</p>
         }
     </div>
     <div class="containerBackground" [ngClass]="{'container-animation-gradient-little' : !displaying}">
         @if(srcBackground != undefined) {
-        <img [src]="srcBackground" loading="lazy" (error)="onErrorImageBackground()" (load)="onLogoLoad()"
+        <img [src]="srcBackground" loading="lazy" (error)="onErrorImageBackground()" (load)="onBackgroundLoad()"
             [ngClass]="{'hidden' : !displaying}">
         }
     </div>
