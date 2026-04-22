@@ -19,6 +19,14 @@
             </div>
             <div class="barre-separation"> </div>
         </div>
+        <div class="container-filters" [style.margin-left.vw]="marginLeft">
+            @for (FILTER of FILTERS; track FILTER.id) {
+                <div class="container-filter">
+                    <p> {{ FILTER.title }} </p>
+                    <img [src]="srcYellowCross" (click)="deleteFilter(FILTER)">
+                </div>
+            }
+        </div>
         <div style="margin-bottom: -70px;"></div>
         <app-grid-list [mediaList]="medias" [title]="title" [format]="format" [isLoadingCatalog]="isLoading"></app-grid-list>
     </div>

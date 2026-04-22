@@ -1,20 +1,15 @@
 <div class="container-filter" (click)="openFilter()" [ngClass]="{'is-Open': isOpen}">
     <div class="filter-selected">
-        <p> {{ getFilterSelected() }} </p>
+        <p> {{ filter.name }} </p>
         <img [src]="srcArrow">
     </div>
     @if(isOpen) {
     <div class="barre"></div>
     <div class="hollow"></div>
     <div class="container-filters">
-        @if(default) {
-        <div class="filter" [ngClass]="'border-bottom'" (click)="onClickFilter(default.id)" [ngClass]="{'selected' : default.isSelected}">
-            <p> {{ default.name }} </p>
-        </div>
-        }
         @for (f of filter.filters; track f.id) {
         @if (f.value) {
-        <div class="filter" (click)="onClickFilter(f.id)" [ngClass]="{'selected' : f.isSelected}">
+        <div class="filter" (click)="onClickFilter($event, f.id)" [ngClass]="{'selected' : f.isSelected}">
             <p> {{ f.name }} </p>
         </div>
         }

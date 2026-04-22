@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, HostListener, Output, EventEmitter } from '@angular/core';
-import { FilterModel } from '../../../media-module/models/catalog/filter.interface';
 import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
+import { FilterChoiceModel } from '../../../media-module/models/catalog/filter-choice.interface';
 
 @Component({
   selector: 'app-sort',
@@ -12,7 +12,7 @@ import { NgClass } from '@angular/common';
 })
 export class SortComponent {
 
-  @Input() sorts!: FilterModel[];
+  @Input() sorts!: FilterChoiceModel[];
   @Output() onClicked = new EventEmitter<number>();
   
   subscription: Subscription = new Subscription();

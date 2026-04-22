@@ -3,9 +3,11 @@ import { MediaTypeModel } from '../../models/media-type.enum';
 import { CategoryService } from '../../../edition-module/services/category/category.service';
 import { CategorySimpleModel } from '../../../edition-module/models/category/categorySimple.model';
 import { BehaviorSubject, Observable, take } from 'rxjs';
-import { FiltersModel } from '../../models/catalog/filters.interface';
-import { FilterModel } from '../../models/catalog/filter.interface';
 import { SortCatalog } from '../../models/catalog/sort-catalog.enum';
+import { FiltersChoicesModel } from '../../models/catalog/filters-choices.interface';
+import { FilterChoiceModel } from '../../models/catalog/filter-choice.interface';
+import { FilterType } from '../../models/catalog/filter-type.enum';
+import { FILTERS } from '../../models/catalog/filters.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -24,121 +26,97 @@ export class FiltersCatalogService {
     return this.PAGE_SIZE;
   }
 
-  private decadeFilter: FiltersModel = {
+  private decadeFilter: FiltersChoicesModel = {
     name: 'Décennie',
+    type: FilterType.DECADE,
     filters: [
       {
         id: this.getId(),
-        name: 'Aucune date',
-        value: null,
-        isSelected: true,
-      },
-      {
-        id: this.getId(),
         name: '2020s',
-        value: 2020,
-        isSelected: false,
+        value: 2020
       },
       {
         id: this.getId(),
         name: '2010s',
-        value: 2010,
-        isSelected: false,
+        value: 2010
       },
       {
         id: this.getId(),
         name: '2000s',
-        value: 2000,
-        isSelected: false,
+        value: 2000
       },
       {
         id: this.getId(),
         name: '1990s',
-        value: 1990,
-        isSelected: false,
+        value: 1990
       },
       {
         id: this.getId(),
         name: '1980s',
-        value: 1980,
-        isSelected: false,
+        value: 1980
       },
       {
         id: this.getId(),
         name: '1970s',
-        value: 1970,
-        isSelected: false,
+        value: 1970
       },
       {
         id: this.getId(),
         name: '1960s',
-        value: 1960,
-        isSelected: false,
+        value: 1960
       },
       {
         id: this.getId(),
         name: '1950s',
-        value: 1950,
-        isSelected: false,
+        value: 1950
       },
       {
         id: this.getId(),
         name: '1940s',
-        value: 1940,
-        isSelected: false,
+        value: 1940
       },
       {
         id: this.getId(),
         name: '1930s',
-        value: 1930,
-        isSelected: false,
+        value: 1930
       },
       {
         id: this.getId(),
         name: '1920s',
-        value: 1920,
-        isSelected: false,
+        value: 1920
       },
     ],
   };
 
-  private categoryFilter: FiltersModel = {
+  private categoryFilter: FiltersChoicesModel = {
     name: 'Categorie',
-    filters: [
-      {
-        id: this.getId(),
-        name: 'Aucun catégorie',
-        value: null,
-        isSelected: true,
-      }
-    ]
+    type: FilterType.CATEGORY,
+    filters: []
   };
 
-  private mediaTypeFilter: FiltersModel = {
+  private mediaTypeFilter: FiltersChoicesModel = {
     name: 'Média',
+    type: FilterType.MEDIA,
     filters: [
-      {
+    {
       id: this.getId(),
       name: 'TOUT',
-      value: null,
-      isSelected: true,
+      value: MediaTypeModel.OTHER
     },
     {
       id: this.getId(),
       name: 'FILM',
-      value: MediaTypeModel.MOVIE,
-      isSelected: false,
+      value: MediaTypeModel.MOVIE
     },
     {
       id: this.getId(),
       name: 'SERIES',
-      value: MediaTypeModel.SERIES,
-      isSelected: false,
+      value: MediaTypeModel.SERIES
     },
     ]
   }
 
-  private sortFilter: FilterModel[] = [
+  private sortFilter: FilterChoiceModel[] = [
     {
       id: this.getId(),
       name: 'Titre',
@@ -174,6 +152,9 @@ export class FiltersCatalogService {
   private orderDirectionSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   private orderDirection$: Observable<boolean> = this.orderDirectionSubject.asObservable();
 
+  private FILTERS_SUBJECT: BehaviorSubject<FILTERS[]> = new BehaviorSubject<FILTERS[]>([]);
+  private FILTERS$: Observable<FILTERS[]> = this.FILTERS_SUBJECT.asObservable();
+
   constructor(private readonly categoryService: CategoryService) {
     this.categoryService
       .fetchAllCategories()
@@ -190,24 +171,27 @@ export class FiltersCatalogService {
       });
   }
 
-  public getDecadeFilter(): FiltersModel {
+  public getDecadeFilter(): FiltersChoicesModel {
     return this.decadeFilter;
   }
 
-  public getCategoryFilter(): FiltersModel {
+  public getCategoryFilter(): FiltersChoicesModel {
     return this.categoryFilter;
   }
 
-  public getMediaTypeFilter(): FiltersModel {
+  public getMediaTypeFilter(): FiltersChoicesModel {
     return this.mediaTypeFilter;
   }
   
-  public getSortFilter(): FilterModel[] {
+  public getSortFilter(): FilterChoiceModel[] {
     return this.sortFilter;
   }
 
   public getOrderDirectionSort(): Observable<boolean> {
     return this.orderDirection$;
+  }
+  public getFILTERS(): Observable<FILTERS[]> {
+    return this.FILTERS$;
   }
 
   public toggleOrderDirectionSort(): void {
@@ -215,42 +199,29 @@ export class FiltersCatalogService {
     this.orderDirectionSubject.next(!bool);
   }
 
-  public onSelectedDecadeFilter(id: number): number {
-    let decade!: number;
-    this.decadeFilter.filters.some((item) => {
-      if(item.id === id) {
-        item.isSelected = true;
-        decade = item.value;
-      } else {
-        item.isSelected = false;
-      }
-    });
-    return decade;
+  public onSelectedDecadeFilter(filtre: FILTERS): void {
+    this.addFilters(filtre);
   }
-  public onSelectedCategoryFilter(id: number): number {
-    let category!: number;
-    this.categoryFilter.filters.some((item) => {
-      if(item.id === id) {
-        item.isSelected = true;
-        category = item.value;
-      } else {
-        item.isSelected = false;
-      }
-    });
-    return category;
+  public onSelectedCategoryFilter(filtre: FILTERS): void {
+    this.addFilters(filtre);
   }
-  public onSelectedMediaTypeFilter(id: number): MediaTypeModel {
-    let media!: MediaTypeModel;
-    this.mediaTypeFilter.filters.some((item) => {
-      if(item.id === id) {
-        item.isSelected = true;
-        media = item.value;
-      } else {
-        item.isSelected = false;
-      }
-    });
-    return media;
+  public onSelectedMediaTypeFilter(filtre: FILTERS): void {
+    this.addFilters(filtre);
   }
+
+  private addFilters(filtre: FILTERS): void {
+    const filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
+    filtre.title = this.getTitleByFilter(filtre);
+    filtres.push(filtre);
+    this.FILTERS_SUBJECT.next(filtres);
+  }
+
+  public deleteFilter(filtre: FILTERS): void {
+    let filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
+    filtres = filtres.filter((item) => item.id !== filtre.id);
+    this.FILTERS_SUBJECT.next(filtres);
+  }
+
   public onSelectedSortFilter(id: number): SortCatalog {
     let sort!: SortCatalog;
     this.sortFilter.some((item) => {
@@ -263,4 +234,26 @@ export class FiltersCatalogService {
     });
     return sort;
   }
+
+  private getTitleByFilter(filtre: FILTERS): string {
+    let type: string = filtre.typeData;
+    let operation: string = filtre.operation;
+    let values: string = filtre.value.map((item) => item.name).join(' & ');
+    if (filtre.typeData === FilterType.DECADE) {
+      type = "Décennie";
+    } else if (filtre.typeData === FilterType.CATEGORY) {
+      type = "Catégorie";
+    } else if (filtre.typeData === FilterType.MEDIA) {
+      type = "Média";
+    }
+
+    if (filtre.operation === "CONTAIN") {
+      operation = "contient";
+    } else if (filtre.operation === "NOT_CONTAIN") {
+      operation = "ne contient pas";
+    }
+
+    return `${type} ${operation} ${values}`
+  }
+
 }

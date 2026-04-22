@@ -53,6 +53,19 @@ p {
   max-height: calc(35px * 10);
   width: 140px;
   overflow-y: auto;
+  animation: 0.3s filters-enter;
+}
+
+@keyframes filters-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
 }
 
 .hollow {
@@ -63,6 +76,17 @@ p {
   top: 0;
   width: 140px;
   border-radius: 5px 5px 0px 0px;
+  animation: hollow-enter 0.3s;
+}
+
+@keyframes hollow-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .barre {

@@ -12,9 +12,6 @@ import { PageModel } from '../../../../launch-module/models/page.enum';
 import { PaginationPosterService } from '../../../media-module/services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
 import { FilterComponent } from '../filter/filter.component';
-import { FilterModel } from '../../../media-module/models/catalog/filter.interface';
-import { FiltersCatalogService } from '../../../media-module/services/filters-catalog/filters-catalog.service';
-import { FiltersModel } from '../../../media-module/models/catalog/filters.interface';
 import { SortComponent } from '../sort/sort.component';
 import { MediaService } from '../../../media-module/services/media/media.service';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
@@ -22,6 +19,10 @@ import { SortCatalog } from '../../../media-module/models/catalog/sort-catalog.e
 import { ScrollEventService } from '../../../common-module/services/scroll-event/scroll-event.service';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
+import { FiltersCatalogService } from '../../../media-module/services/filters-catalog/filters-catalog.service';
+import { FiltersChoicesModel } from '../../../media-module/models/catalog/filters-choices.interface';
+import { FilterChoiceModel } from '../../../media-module/models/catalog/filter-choice.interface';
+import { FILTERS } from '../../../media-module/models/catalog/filters.interface';
 
 @Component({
   selector: 'app-catalog-page',
@@ -47,10 +48,10 @@ export class CatalogPageComponent {
   width!: string;
   mediaSelected: MediaModel | undefined = undefined;
 
-  decadeFilter!: FiltersModel;
-  categoryFilter!: FiltersModel;
-  mediaTypeFilter!: FiltersModel;
-  sortFilter!: FilterModel[];
+  decadeFilter!: FiltersChoicesModel;
+  categoryFilter!: FiltersChoicesModel;
+  mediaTypeFilter!: FiltersChoicesModel;
+  sortFilter!: FilterChoiceModel[];
 
   declareSelected!: number;
   categorySelected!: number;
@@ -59,6 +60,7 @@ export class CatalogPageComponent {
 
   srcAsc: string = 'icon/asc.svg';
   srcDesc: string = 'icon/desc.svg';
+  srcYellowCross: string = 'icon/yellow-cross.svg'
   orderDirection!: boolean;
 
   private currentOffset: number = 0;
@@ -67,6 +69,8 @@ export class CatalogPageComponent {
   private hasMore: boolean = true;
 
   heightScrolling: number = 0;
+
+  FILTERS: FILTERS[] = [];
 
   constructor(
     private readonly renderer: Renderer2,
@@ -127,6 +131,13 @@ export class CatalogPageComponent {
         this.startNewCatalog();
       })
     );
+
+    this.subscription.add(
+      this.filtersCatalogService.getFILTERS().subscribe((data: FILTERS[]) => {
+        this.FILTERS = data;
+        this.startNewCatalog();
+      })
+    );
   }
 
   ngAfterViewInit(): void {
@@ -147,19 +158,14 @@ export class CatalogPageComponent {
     this.abortController.abort();
   }
 
-  public onSelectedDecadeFilter(id: number): void {
-    this.declareSelected = this.filtersCatalogService.onSelectedDecadeFilter(id);
-    this.startNewCatalog();
+  public onSelectedDecadeFilter(filtre: FILTERS): void {
+    this.filtersCatalogService.onSelectedDecadeFilter(filtre);
   }
-
-  public onSelectedCategoryFilter(id: number): void {
-    this.categorySelected = this.filtersCatalogService.onSelectedCategoryFilter(id);
-    this.startNewCatalog();
+  public onSelectedCategoryFilter(filtre: FILTERS): void {
+    this.filtersCatalogService.onSelectedCategoryFilter(filtre);
   }
-
-  public onSelectedMediaTypeFilter(id: number): void {
-    this.mediaTypeSelected = this.filtersCatalogService.onSelectedMediaTypeFilter(id);
-    this.startNewCatalog();
+  public onSelectedMediaTypeFilter(filtre: FILTERS): void {
+    this.filtersCatalogService.onSelectedMediaTypeFilter(filtre);
   }
 
   public onSelectedSortFilter(id: number): void {
@@ -250,6 +256,10 @@ export class CatalogPageComponent {
   private vwToPx(vw: number): number {
     const width = window.innerWidth;
     return (vw / 100) * width;
+  }
+
+  deleteFilter(filtre: FILTERS): void {
+    this.filtersCatalogService.deleteFilter(filtre);
   }
 
 }

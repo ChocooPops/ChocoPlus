@@ -1,7 +1,7 @@
 import { Component, Input, ElementRef, HostListener, Output, EventEmitter } from '@angular/core';
-import { FiltersModel } from '../../../media-module/models/catalog/filters.interface';
 import { NgClass } from '@angular/common';
-import { FilterModel } from '../../../media-module/models/catalog/filter.interface';
+import { FiltersChoicesModel } from '../../../media-module/models/catalog/filters-choices.interface';
+import { FILTERS } from '../../../media-module/models/catalog/filters.interface';
 
 @Component({
   selector: 'app-filter',
@@ -12,23 +12,20 @@ import { FilterModel } from '../../../media-module/models/catalog/filter.interfa
 })
 export class FilterComponent {
 
-  @Input() filter!: FiltersModel;
-  @Output() onClicked = new EventEmitter<number>();
+  @Input() filter!: FiltersChoicesModel;
+  @Output() onClicked = new EventEmitter<FILTERS>();
   srcArrow: string = 'icon/arrow-2.svg';
   isOpen: boolean = false;
-  default!: FilterModel | undefined;
+  private static nextId: number = 1;
+  private pendingFilter: FILTERS | null = null;
 
   constructor(private readonly elementRef: ElementRef) { }
-
-  ngOnInit(): void {
-    this.default = this.filter.filters.find((item) => item.value === null);
-  }
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
     const clickedInside = this.elementRef.nativeElement.contains(event.target);
     if (!clickedInside) {
-      this.isOpen = false;
+      this.closeAndEmit();
     }
   }
 
@@ -36,15 +33,47 @@ export class FilterComponent {
     this.isOpen = true;
   }
 
-  getFilterSelected(): string {
-    return this.filter.filters.find((item) => item.isSelected === true && item.value != null)?.name || this.filter.name;
+  onClickFilter(event: MouseEvent, id: number): void {
+    event.stopPropagation();
+
+    const choice = this.filter.filters.find(f => f.id === id);
+    if (!choice) return;
+
+    const isCtrl = event.ctrlKey || event.metaKey;
+
+    if (isCtrl) {
+      choice.isSelected = !choice.isSelected;
+    } else {
+      this.filter.filters.forEach(f => (f.isSelected = false));
+      choice.isSelected = true;
+    }
+
+    const selectedChoices = this.filter.filters.filter(f => f.isSelected);
+
+    if (selectedChoices.length === 0) {
+      this.pendingFilter = null;
+    } else {
+      this.pendingFilter = {
+        id: this.pendingFilter?.id ?? FilterComponent.nextId++,
+        title: '',
+        typeData: this.filter.type,
+        operation: 'CONTAIN',
+        value: selectedChoices.map(f => ({ name: f.name, value: f.value }))
+      };
+    }
+
+    if (!isCtrl) {
+      setTimeout(() => this.closeAndEmit());
+    }
   }
 
-  onClickFilter(id: number): void {
-    this.onClicked.emit(id);
-    setTimeout(() => {
-      this.isOpen = false;
-    });
+  private closeAndEmit(): void {
+    this.isOpen = false;
+    if (this.pendingFilter) {
+      this.onClicked.emit(this.pendingFilter);
+    }
+    this.pendingFilter = null;
+    this.filter.filters.forEach(f => (f.isSelected = false));
   }
 
 }
