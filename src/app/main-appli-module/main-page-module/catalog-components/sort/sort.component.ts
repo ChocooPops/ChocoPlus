@@ -22,7 +22,7 @@ export class SortComponent {
   constructor(private readonly elementRef: ElementRef) {}
 
   getSortSelected(): string {
-    return this.sorts.find((item) => item.isSelected === true)?.name || 'Aucun trie';
+    return this.sorts.find((item) => item.isSelected === 1)?.name || 'Aucun trie';
   }
 
   @HostListener('document:click', ['$event'])

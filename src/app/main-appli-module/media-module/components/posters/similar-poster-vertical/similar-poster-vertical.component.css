@@ -56,7 +56,7 @@
     opacity: 0.8;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     align-items: center;
     animation: 0.3s enter_2;
     position: absolute;

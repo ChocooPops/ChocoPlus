@@ -1,0 +1,58 @@
+<div class="container-other-filter">
+    <div #filterSelected class="filter-selected" (click)="openFilter()">
+        <p class="title">Ajouter un autre filtre</p>
+        <img [src]="srcCross">
+    </div>
+
+    @if(isOpen) {
+    <div class="barre"></div>
+    <div #fcWrap class="fc-wrap">
+
+        <div class="fc-select-wrap" [class.is-open]="openDropdown === 'type'">
+            <div class="fc-select-btn" (click)="toggleDropdown('type')">
+                <div class="back"></div>
+                <span class="fc-select-label" [class.placeholder]="!selected.type">
+                    {{ selected.type || 'Type de donnée' }}
+                </span>
+                <div class="fc-arrow"></div>
+            </div>
+            <div class="fc-dropdown">
+                @for (opt of typeOptions; track opt) {
+                <div class="fc-option" [class.selected]="selected.type === opt" (click)="selectOption('type', opt)">{{
+                    opt }}</div>
+                @if (!$last) { <div class="fc-divider"></div> }
+                }
+            </div>
+        </div>
+
+        <div class="fc-select-wrap" [class.is-open]="openDropdown === 'op'">
+            <div class="fc-select-btn" (click)="toggleDropdown('op')">
+                <span class="fc-select-label" [class.placeholder]="!selected.op">
+                    {{ selected.op || 'Opération' }}
+                </span>
+                <div class="fc-arrow"></div>
+            </div>
+            <div class="fc-dropdown">
+                @for (opt of operationOptions; track opt) {
+                <div class="fc-option" [class.selected]="selected.op === opt" (click)="selectOption('op', opt)">{{ opt
+                    }}</div>
+                @if (!$last) { <div class="fc-divider"></div> }
+                }
+            </div>
+        </div>
+
+        <!-- Input avec tags -->
+        <div class="fc-input-wrap" (click)="textInput.focus()">
+            @for (tag of tags; track $index) {
+            <div class="fc-tag">
+                <span>{{ tag }}</span>
+                <button class="fc-tag-remove" (click)="removeTag($index)">✕</button>
+            </div>
+            }
+            <input #textInput class="fc-input" type="text" placeholder="{{ tags.length === 0 ? 'Valeurs...' : '' }}"
+                [(ngModel)]="textValue" (keydown)="onKeyDown($event)" />
+        </div>
+
+    </div>
+    }
+</div>

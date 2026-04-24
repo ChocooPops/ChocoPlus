@@ -23,11 +23,13 @@ import { FiltersCatalogService } from '../../../media-module/services/filters-ca
 import { FiltersChoicesModel } from '../../../media-module/models/catalog/filters-choices.interface';
 import { FilterChoiceModel } from '../../../media-module/models/catalog/filter-choice.interface';
 import { FILTERS } from '../../../media-module/models/catalog/filters.interface';
+import { OtherFiltersComponent } from '../other-filters/other-filters.component';
+import { FilterType } from '../../../media-module/models/catalog/filter-type.enum';
 
 @Component({
   selector: 'app-catalog-page',
   standalone: true,
-  imports: [MediaPageComponent, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
+  imports: [OtherFiltersComponent, MediaPageComponent, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
   templateUrl: './catalog-page.component.html',
   styleUrl: './catalog-page.component.css'
 })
@@ -52,6 +54,7 @@ export class CatalogPageComponent {
   categoryFilter!: FiltersChoicesModel;
   mediaTypeFilter!: FiltersChoicesModel;
   sortFilter!: FilterChoiceModel[];
+  TypeData = FilterType;
 
   declareSelected!: number;
   categorySelected!: number;
@@ -135,7 +138,7 @@ export class CatalogPageComponent {
     this.subscription.add(
       this.filtersCatalogService.getFILTERS().subscribe((data: FILTERS[]) => {
         this.FILTERS = data;
-        this.startNewCatalog();
+        //this.startNewCatalog();
       })
     );
   }
@@ -166,6 +169,9 @@ export class CatalogPageComponent {
   }
   public onSelectedMediaTypeFilter(filtre: FILTERS): void {
     this.filtersCatalogService.onSelectedMediaTypeFilter(filtre);
+  }
+  public onFilterCreated(filtre: FILTERS): void {
+    this.filtersCatalogService.addFilters(filtre);
   }
 
   public onSelectedSortFilter(id: number): void {

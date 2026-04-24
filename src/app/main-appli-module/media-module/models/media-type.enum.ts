@@ -6,5 +6,6 @@ export enum MediaTypeModel {
     SELECTION = "SELECTION",
     LICENSE = "LICENSE",
     CATEGORY = "CATEGORY",
-    OTHER = "OTHER"
+    OTHER = "OTHER",
+    ALL = "ALL"
 }

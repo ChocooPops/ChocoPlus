@@ -7,6 +7,7 @@
         <div class="container-title" [style.margin-left.vw]="marginLeft" [style.width]="width">
             <p>Catalogue</p>
             <div class="container-options">
+                <app-other-filters (onFilterCreated)="onFilterCreated($event)"></app-other-filters>
                 <app-filter [filter]="decadeFilter" (onClicked)="onSelectedDecadeFilter($event)"></app-filter>
                 <app-filter [filter]="categoryFilter" (onClicked)="onSelectedCategoryFilter($event)"></app-filter>
                 <app-filter [filter]="mediaTypeFilter" (onClicked)="onSelectedMediaTypeFilter($event)"></app-filter>
@@ -23,7 +24,9 @@
             @for (FILTER of FILTERS; track FILTER.id) {
                 <div class="container-filter">
                     <p> {{ FILTER.title }} </p>
-                    <img [src]="srcYellowCross" (click)="deleteFilter(FILTER)">
+                    @if (FILTER.typeData !== TypeData.MEDIA) {
+                        <img [src]="srcYellowCross" (click)="deleteFilter(FILTER)">
+                    }
                 </div>
             }
         </div>

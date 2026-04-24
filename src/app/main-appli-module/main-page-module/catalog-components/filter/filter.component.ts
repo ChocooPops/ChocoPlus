@@ -1,17 +1,24 @@
-import { Component, Input, ElementRef, HostListener, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  ElementRef,
+  HostListener,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { NgClass } from '@angular/common';
 import { FiltersChoicesModel } from '../../../media-module/models/catalog/filters-choices.interface';
 import { FILTERS } from '../../../media-module/models/catalog/filters.interface';
+import { Operation } from '../../../media-module/models/catalog/operation.enum';
 
 @Component({
   selector: 'app-filter',
   standalone: true,
   imports: [NgClass],
   templateUrl: './filter.component.html',
-  styleUrl: './filter.component.css'
+  styleUrl: './filter.component.css',
 })
 export class FilterComponent {
-
   @Input() filter!: FiltersChoicesModel;
   @Output() onClicked = new EventEmitter<FILTERS>();
   srcArrow: string = 'icon/arrow-2.svg';
@@ -19,7 +26,7 @@ export class FilterComponent {
   private static nextId: number = 1;
   private pendingFilter: FILTERS | null = null;
 
-  constructor(private readonly elementRef: ElementRef) { }
+  constructor(private readonly elementRef: ElementRef) {}
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
@@ -36,19 +43,25 @@ export class FilterComponent {
   onClickFilter(event: MouseEvent, id: number): void {
     event.stopPropagation();
 
-    const choice = this.filter.filters.find(f => f.id === id);
+    const choice = this.filter.filters.find((f) => f.id === id);
     if (!choice) return;
 
     const isCtrl = event.ctrlKey || event.metaKey;
 
     if (isCtrl) {
-      choice.isSelected = !choice.isSelected;
+      choice.isSelected = choice.isSelected === 1 ? 0 : 1;
     } else {
-      this.filter.filters.forEach(f => (f.isSelected = false));
-      choice.isSelected = true;
+      this.filter.filters.forEach((f) => {
+        if (f.isSelected !== 2) {
+          f.isSelected = 0;
+        }
+      });
+      choice.isSelected = 1;
     }
 
-    const selectedChoices = this.filter.filters.filter(f => f.isSelected);
+    const selectedChoices = this.filter.filters.filter(
+      (f) => f.isSelected === 1,
+    );
 
     if (selectedChoices.length === 0) {
       this.pendingFilter = null;
@@ -57,8 +70,8 @@ export class FilterComponent {
         id: this.pendingFilter?.id ?? FilterComponent.nextId++,
         title: '',
         typeData: this.filter.type,
-        operation: 'CONTAIN',
-        value: selectedChoices.map(f => ({ name: f.name, value: f.value }))
+        operation: Operation.CONTAIN,
+        value: selectedChoices.map((f) => ({ name: f.name, value: f.value })),
       };
     }
 
@@ -73,7 +86,10 @@ export class FilterComponent {
       this.onClicked.emit(this.pendingFilter);
     }
     this.pendingFilter = null;
-    this.filter.filters.forEach(f => (f.isSelected = false));
+    this.filter.filters.forEach((f) => {
+      if (f.isSelected !== 2) {
+        f.isSelected = 0;
+      }
+    });
   }
-
 }

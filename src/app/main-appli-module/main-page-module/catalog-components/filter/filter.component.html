@@ -8,8 +8,8 @@
     <div class="hollow"></div>
     <div class="container-filters">
         @for (f of filter.filters; track f.id) {
-        @if (f.value) {
-        <div class="filter" (click)="onClickFilter($event, f.id)" [ngClass]="{'selected' : f.isSelected}">
+        @if (f.value && f.isSelected !== 2) {
+        <div class="filter" (click)="onClickFilter($event, f.id)" [ngClass]="{'selected' : f.isSelected === 1}">
             <p> {{ f.name }} </p>
         </div>
         }

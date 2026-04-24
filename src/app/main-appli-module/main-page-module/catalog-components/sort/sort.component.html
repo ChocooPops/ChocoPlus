@@ -9,7 +9,7 @@
     <div class="container-sorts">
         @for (s of sorts; track s.id) {
         @if (s.value) {
-        <div class="sort" (click)="onClickFilter(s.id)" [ngClass]="{'selected' : s.isSelected}">
+        <div class="sort" (click)="onClickFilter(s.id)" [ngClass]="{'selected' : s.isSelected === 1}">
             <p> {{ s.name }} </p>
         </div>
         }
