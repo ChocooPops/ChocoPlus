@@ -3,10 +3,26 @@
         @if (mediaInfoLoaded) {
         <div class="container-info">
             @if(description !== '') {
-            <p> <span>Description :</span> {{ description }} </p>
+            <p> <span class="legend">Description :</span> {{ description }} </p>
             }
-            <p> <span>Genres :</span> {{ genre }} </p>
-            <p> <span>Un film :</span> {{ keyWord }} </p>
+            <p [ngClass]="'margin-bottom-text'"> <span class="legend">Genres: </span>
+                @for (genre of genres; track $index) {
+                @if ($index !== genres.length - 1) {
+                <span class="content" (click)="setFilterCategory(genre)">{{ genre.name}}</span>, 
+                } @else {
+                <span class="content" (click)="setFilterCategory(genre)">{{ genre.name}}</span>
+                }
+                }
+            </p>
+            <p [ngClass]="'margin-bottom-text'"> <span class="legend">Un film: </span>
+                @for (keyWord of keyWords; track $index) {
+                @if ($index !== keyWords.length - 1) {
+                <span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord}}</span>, 
+                } @else {
+                <span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord}}</span>
+                }
+                }
+            </p>
         </div>
         } @else {
         <div class="container-media-infos-loader">
@@ -41,25 +57,28 @@
 
     <div class="container-second-line">
         @if (directors) {
-            <app-staff-poster [ngClass]="'animationPosterAndLicense'" [staffs]="directors" [jobTitle]="JobModel.DIRECTOR" [mediaType]="movie.mediaType"></app-staff-poster>
+        <app-staff-poster (onClickStaffEmit)="setFilterStaff($event)" [ngClass]="'animationPosterAndLicense'" [staffs]="directors" [jobTitle]="JobModel.DIRECTOR"
+            [mediaType]="movie.mediaType"></app-staff-poster>
         } @else {
-            <app-staff-poster-loading [jobTitle]="JobModel.DIRECTOR"></app-staff-poster-loading>
+        <app-staff-poster-loading [jobTitle]="JobModel.DIRECTOR"></app-staff-poster-loading>
         }
     </div>
 
     <div class="container-third-line">
         @if (actors) {
-            <app-staff-poster [ngClass]="'animationPosterAndLicense'" [staffs]="actors" [jobTitle]="JobModel.ACTOR"></app-staff-poster>
+        <app-staff-poster (onClickStaffEmit)="setFilterStaff($event)" [ngClass]="'animationPosterAndLicense'" [staffs]="actors"
+            [jobTitle]="JobModel.ACTOR"></app-staff-poster>
         } @else {
-            <app-staff-poster-loading [jobTitle]="JobModel.ACTOR"></app-staff-poster-loading>
+        <app-staff-poster-loading [jobTitle]="JobModel.ACTOR"></app-staff-poster-loading>
         }
     </div>
 
     <div class="container-fourth-line">
         @if (similarMedias) {
-            <app-similar-poster-vertical [ngClass]="'animationPosterAndLicense'" [medias]="similarMedias" (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-vertical>
+        <app-similar-poster-vertical [ngClass]="'animationPosterAndLicense'" [medias]="similarMedias"
+            (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-vertical>
         } @else {
-            <app-similar-poster-vertical-loading></app-similar-poster-vertical-loading>
+        <app-similar-poster-vertical-loading></app-similar-poster-vertical-loading>
         }
     </div>
 </div>

@@ -9,7 +9,7 @@
 }
 <div class="container-staffs" [style.gap.vw]="gap">
 @for (staff of staffs; track $index) {
-    <div class="container-staff">
+    <div class="container-staff" (click)="onClickStaff(staff)">
         <div class="staff-poster" [style.height.vw]="height" [style.width.vw]="width">
             <div class="container-tmp-poster"></div>
         </div>

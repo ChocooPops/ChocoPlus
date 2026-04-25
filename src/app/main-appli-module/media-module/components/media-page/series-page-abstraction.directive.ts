@@ -14,6 +14,12 @@ import { FormatPosterModel } from '../../../common-module/models/format-poster.e
 import { StaffModel } from '../../models/staff.interface';
 import { JobModel } from '../../models/job.eum';
 import { FormatMediaPageModel } from '../../models/format-media-page-enum';
+import { CategorySimpleModel } from '../../../edition-module/models/category/categorySimple.model';
+import { FILTERS } from '../../models/catalog/filters.interface';
+import { Operation } from '../../models/catalog/operation.enum';
+import { FiltersCatalogService } from '../../services/filters-catalog/filters-catalog.service';
+import { Router } from '@angular/router';
+import { FilterType } from '../../models/catalog/filter-type.enum';
 
 @Directive({})
 export abstract class SeriesPageAbstraction {
@@ -29,8 +35,8 @@ export abstract class SeriesPageAbstraction {
   protected subscriptionSeriesInfo!: Subscription;
 
   srcSucces: string = 'icon/success.svg';
-  genre: string = '';
-  keyWord: string = '';
+  genres: CategorySimpleModel[] = [];
+  keyWords: string[] = [];
   description!: string;
   mediaInfoLoaded: boolean = false;
 
@@ -58,6 +64,8 @@ export abstract class SeriesPageAbstraction {
     protected readonly similarTitleService: SimilarTitleService,
     protected readonly imagePreloaderService: ImagePreloaderService,
     protected readonly seriesService: SeriesService,
+    protected readonly filtersCatalogService: FiltersCatalogService,
+    protected readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -86,8 +94,8 @@ export abstract class SeriesPageAbstraction {
     this.directors = undefined;
     this.actors = undefined;
     this.similarMedias = undefined;
-    this.genre = '';
-    this.keyWord = '';
+    this.genres = [];
+    this.keyWords = [];
     this.episodes = [];
     this.seasons = [];
     this.seasonsPosterTmp = [];
@@ -219,10 +227,8 @@ export abstract class SeriesPageAbstraction {
         .pipe(take(1))
         .subscribe((info: MediaInfoModel | null) => {
           if (info) {
-            this.genre = info.categories.map((item) => item.name).join(', ');
-            this.keyWord = info.keyWords
-              .map((item) => this.transform(item))
-              .join(', ');
+            this.genres = info.categories;
+            this.keyWords = info.keyWords.map((item) => this.transform(item));
             this.actors = info.actors;
             this.directors = info.directors;
           }
@@ -257,4 +263,56 @@ export abstract class SeriesPageAbstraction {
   protected abstract resetInfoSpe(): void;
   protected abstract initSpe(): void;
   protected abstract fetchDataSpe(): void;
+  
+protected setFilterCategory(category: CategorySimpleModel): void {
+    const filter: FILTERS = {
+      id: -2,
+      title: '',
+      typeData: FilterType.CATEGORY,
+      operation: Operation.CONTAIN,
+      value: [
+        {
+          name: category.name,
+          value: category.id
+        }
+      ]
+    }
+    this.setFilterCatalogAndNavigate(filter);
+  }
+  protected setFilterStaff(staff: StaffModel): void {
+    const filter: FILTERS = {
+      id: -2,
+      title: '',
+      typeData: staff.job,
+      operation: Operation.CONTAIN,
+      value: [
+        {
+          name: staff.fullName,
+          value: staff.id
+        }
+      ]
+    }
+    this.setFilterCatalogAndNavigate(filter);
+  }
+  protected setFilterKeyWord(keyword: string): void {
+    const filter: FILTERS = {
+      id: -2,
+      title: '',
+      typeData: FilterType.KEY_WORD,
+      operation: Operation.CONTAIN,
+      value: [
+        {
+          name: keyword,
+          value: keyword
+        }
+      ]
+    }
+    this.setFilterCatalogAndNavigate(filter);
+  }
+
+  protected setFilterCatalogAndNavigate(filtre: FILTERS): void {
+    this.filtersCatalogService.setFilterFromMediaPage(filtre);
+    this.router.navigateByUrl('main-app/catalog');
+  }
+
 }

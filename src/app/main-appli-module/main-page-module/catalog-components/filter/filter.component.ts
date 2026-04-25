@@ -86,10 +86,12 @@ export class FilterComponent {
       this.onClicked.emit(this.pendingFilter);
     }
     this.pendingFilter = null;
-    this.filter.filters.forEach((f) => {
-      if (f.isSelected !== 2) {
-        f.isSelected = 0;
-      }
-    });
+    if (this.filter) {
+      this.filter.filters.forEach((f) => {
+        if (f.isSelected !== 2) {
+          f.isSelected = 0;
+        }
+      });
+    }
   }
 }

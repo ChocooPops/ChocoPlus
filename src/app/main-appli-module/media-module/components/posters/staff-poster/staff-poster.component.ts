@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { StaffModel } from '../../../models/staff.interface';
 import { JobModel } from '../../../models/job.eum';
 import { Subscription } from 'rxjs';
@@ -14,9 +14,12 @@ import { MediaTypeModel } from '../../../models/media-type.enum';
   styleUrl: './staff-poster.component.css',
 })
 export class StaffPosterComponent {
+
   @Input() jobTitle!: JobModel;
   @Input() staffs: StaffModel[] = [];
   @Input() mediaType!: MediaTypeModel;
+  @Output() onClickStaffEmit = new EventEmitter<StaffModel>();
+
   private subscription!: Subscription;
 
   height!: number;
@@ -49,4 +52,9 @@ export class StaffPosterComponent {
       this.subscription.unsubscribe();
     }
   }
+
+  onClickStaff(staff: StaffModel): void {
+    this.onClickStaffEmit.emit(staff);
+  }
+  
 }

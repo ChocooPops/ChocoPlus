@@ -14,8 +14,9 @@ import { MediaProgressingModel } from '../../../../../video-playing-module/model
 import { MoviePageAbstraction } from '../../movie-page-abstraction.directive';
 import { SimilarPosterHorizontalComponent } from '../../../posters/similar-poster-horizontal/similar-poster-horizontal.component';
 import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/similar-poster-horizontal-loading/similar-poster-horizontal-loading.component';
-import { FormatMediaPageButtonService } from '../../../../services/format-media-page/format-media-page-button.service';
 import { FormatMediaPageModel } from '../../../../models/format-media-page-enum';
+import { FiltersCatalogService } from '../../../../services/filters-catalog/filters-catalog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-movie-vertical-page',
@@ -43,10 +44,12 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   constructor(imagePreloaderService: ImagePreloaderService,
     similarTitleService: SimilarTitleService,
     mediaSelectedService: MediaSelectedService,
+    FiltersCatalogService: FiltersCatalogService,
+    router: Router,
     private readonly verifTimerShowService: VerifTimerShowService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly historicWatchProgressService: HistoricWatchProgressService) { 
-      super(imagePreloaderService, similarTitleService, mediaSelectedService);
+      super(imagePreloaderService, similarTitleService, mediaSelectedService, FiltersCatalogService, router);
     }
 
   protected resetInfoSpe(): void {

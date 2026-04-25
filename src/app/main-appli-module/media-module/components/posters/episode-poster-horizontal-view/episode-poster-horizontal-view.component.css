@@ -15,6 +15,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  position: relative;
 }
 
 .container-progress {
@@ -94,4 +95,56 @@ p {
   .other-info {
     font-size: 12px;
   }
+}
+
+.container-info-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 100;
+}
+
+.info-icon {
+  width: 18px !important;
+  height: 18px !important;
+  opacity: 0.3;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: block;
+  filter: invert(1);
+}
+
+.container-info-icon:hover .info-icon {
+  opacity: 1;
+}
+
+.info-tooltip {
+  position: absolute;
+  top: 26px;
+  right: 0;
+  width: 220px;
+  background-color: rgba(20, 20, 20, 0.95);
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 10px 12px;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  p {
+    margin: 0;
+    font-size: 12px;
+    font-weight: normal;
+    color: #ccc;
+    line-height: 1.5;
+    white-space: normal;
+  }
+}
+
+.container-info-icon:hover .info-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }

@@ -2,6 +2,12 @@
 <div class="container-episodes" [style.gap.vw]="gap">
     @for (episode of episodes; track episode.id; let idx = $index) {
     <div class="container-episode" [style.max-width.vw]="width">
+        <div class="container-info-icon" (click)="$event.stopPropagation()">
+                <img class="info-icon" [src]="srcIconInfo">
+                <div class="info-tooltip">
+                <p>{{ episode.description }}</p>
+                </div>
+        </div>
         <div class="container-poster" [style.height.vw]="height" [style.width.vw]="width" (click)="start.onClick()">
             <div class="container-tmp-poster">
                 <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"

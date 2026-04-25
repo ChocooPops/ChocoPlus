@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { SeriesModel } from '../../../models/series/series.interface';
 import { EpisodeModel } from '../../../models/series/episode.interface';
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
@@ -31,6 +31,7 @@ export class EpisodePosterHorizontalViewComponent {
   height!: number;
   width!: number;
   gap!: number;
+  srcIconInfo: string = 'icon/info.svg';
 
   private subscription!: Subscription;
 

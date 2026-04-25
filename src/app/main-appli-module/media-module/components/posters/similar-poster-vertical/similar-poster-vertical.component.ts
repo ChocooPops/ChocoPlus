@@ -26,6 +26,7 @@ export class SimilarPosterVerticalComponent {
   width!: number;
   gap!: number;
   srcPoster: (string | undefined)[] = [];
+  srcIconInfo: string = 'icon/info.svg';
 
   constructor(private readonly paginationPosterService: PaginationPosterService,
     private readonly compressedPosterService: CompressedPosterService

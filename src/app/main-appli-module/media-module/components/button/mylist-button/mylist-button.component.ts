@@ -33,7 +33,9 @@ export class MylistButtonComponent {
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    this.isInList = this.userService.mediaIsIntoList(this.media.id);
+    if (this.media) {
+      this.isInList = this.userService.mediaIsIntoList(this.media.id);
+    }
 
     this.userService.getMyListChanged().pipe(
       filter((changedId: number) => changedId === this.media.id),
