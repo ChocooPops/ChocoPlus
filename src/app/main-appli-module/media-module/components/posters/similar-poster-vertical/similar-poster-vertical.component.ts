@@ -35,7 +35,7 @@ export class SimilarPosterVerticalComponent {
   ngOnInit(): void {
     this.medias.forEach((media: MediaModel) => {
       this.srcPoster.push(this.compressedPosterService.getPosterMedia(SelectionType.NORMAL_POSTER, media));
-    })
+    });
     
     this.subscription = this.paginationPosterService
       .getVerticalGeometricDimensionSelection()

@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { MediaTypeModel } from '../../../models/media-type.enum';
+import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 
 @Component({
   selector: 'app-staff-poster',
@@ -30,13 +31,20 @@ export class StaffPosterComponent {
 
   minPoster = 4;
   posterTmp: number[] = [];
+  srcPoster: (string | undefined)[] = [];
+  srcIconStaff: string = 'icon/person.svg';
 
-  constructor(private paginationPosterService: PaginationPosterService) {}
+  constructor(private readonly paginationPosterService: PaginationPosterService,
+    private readonly compressedPosterService: CompressedPosterService
+  ) {}
 
   ngOnInit(): void {
     for(let i=0; i< this.minPoster - this.staffs.length; i++) {
       this.posterTmp.push(i);
     }
+    this.staffs.forEach((staff: StaffModel) => {
+      this.srcPoster.push(this.compressedPosterService.getStaffPoster(staff));
+    });
     this.subscription = this.paginationPosterService
       .getVerticalGeometricDimensionSelection()
       .subscribe((data: GeometricDimensionSelectionModel) => {
@@ -57,4 +65,8 @@ export class StaffPosterComponent {
     this.onClickStaffEmit.emit(staff);
   }
   
+  onErrorImage(index: number): void {
+    this.srcPoster[index] = undefined;
+  }
+
 }

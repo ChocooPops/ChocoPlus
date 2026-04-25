@@ -84,13 +84,13 @@
         </div>
     </div>
 
-    @if(similarMedias) {
+    @if (similarMedias) {
     <div class="container-similar-movies" [ngClass]="'animationPosterAndLicense'">
         @for (media of similarMedias; track media) {
         <app-similar-poster-horizontal (onClicked)="onClickSimilarTitle($event)" [media]="media"></app-similar-poster-horizontal>
         }
     </div>
-    }@else {
+    } @else {
     <div class="container-similar-movies">
         @for(media of similarMediasLoading; track media) {
         <app-similar-poster-horizontal-loading></app-similar-poster-horizontal-loading>

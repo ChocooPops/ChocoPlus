@@ -12,6 +12,11 @@
     <div class="container-staff" (click)="onClickStaff(staff)">
         <div class="staff-poster" [style.height.vw]="height" [style.width.vw]="width">
             <div class="container-tmp-poster"></div>
+            @if (srcPoster[$index]) {
+                <img [src]="srcPoster[$index]" (error)="onErrorImage($index)">
+            } @else {
+                <img [src]="srcIconStaff">
+            }
         </div>
         <p> {{ staff.fullName }} </p>
     </div>

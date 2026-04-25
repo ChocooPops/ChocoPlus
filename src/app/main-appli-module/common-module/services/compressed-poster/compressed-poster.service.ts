@@ -7,6 +7,7 @@ import { SeasonModel } from '../../../media-module/models/series/season.interfac
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 import { NewsModel } from '../../../news-module/models/news.interface';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
+import { StaffModel } from '../../../media-module/models/staff.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,8 @@ export class CompressedPosterService {
   private readonly compressedSeasonPoster: string = 'COMPRESSED_SEASON_POSTER';
   private readonly compressedEpisodePoster: string = 'COMPRESSED_EPISODE_POSTER'
 
+  private readonly compressedStaffPoster: string = 'COMPRESSED_STAFF_POSTER';
+
   private currentScaleNormalVerticalPoster: ScalePoster = this.initCompressedPoster(this.compressedVerticalPoster, ScalePoster.SCALE_300h);
   private currentScaleHorizontalPoster: ScalePoster = this.initCompressedPoster(this.compressedHorizontalPoster, ScalePoster.SCALE_300w);
   private currentScaleSpecialAndLicensePoster: ScalePoster = this.initCompressedPoster(this.compressedSpecialLicensePoster, ScalePoster.SCALE_600h);
@@ -48,6 +51,8 @@ export class CompressedPosterService {
 
   private currentScaleSeasonPoster: ScalePoster = this.initCompressedPoster(this.compressedSeasonPoster, ScalePoster.SCALE_300h);
   private currentScaleEpisodePoster: ScalePoster = this.initCompressedPoster(this.compressedEpisodePoster, ScalePoster.SCALE_300w);
+
+  private currentScaleStaffPoster: ScalePoster = this.initCompressedPoster(this.compressedStaffPoster, ScalePoster.SCALE_600h);
 
   private initCompressedPoster(compressedName: string, scale: ScalePoster): ScalePoster {
     const item = localStorage.getItem(compressedName) as ScalePoster;
@@ -270,6 +275,18 @@ export class CompressedPosterService {
     }
   }
 
+  public getStaffPoster(staff: StaffModel, scale: ScalePoster | undefined = undefined): string | undefined {
+    if (staff.srcPoster && typeof staff.srcPoster === 'string') {
+      if (scale) {
+        return this.insertIntoUrlBeforeFilename(staff.srcPoster, scale);
+      } else {
+        return this.insertIntoUrlBeforeFilename(staff.srcPoster, this.currentScaleStaffPoster);
+      }
+    } else {
+      return undefined;
+    }
+  }
+
   public getCompressedVerticalPoster(): ScalePoster | null {
     return localStorage.getItem(this.compressedVerticalPoster) as ScalePoster | null;
   }
@@ -374,6 +391,14 @@ export class CompressedPosterService {
     this.currentScaleEpisodePoster = scale;
   }
 
+  public getCompressedStaffPoster(): ScalePoster | null {
+    return localStorage.getItem(this.compressedStaffPoster) as ScalePoster | null;
+  }
+  public setCompressedStaffPoster(scale: ScalePoster): void {
+    localStorage.setItem(this.compressedStaffPoster, scale);
+    this.currentScaleStaffPoster = scale;
+  }
+
   constructor() { }
 
   public resetAllParametersMedia(): void {
@@ -390,6 +415,7 @@ export class CompressedPosterService {
 
     this.setCompressedSeasonPoster(ScalePoster.SCALE_300h);
     this.setCompressedEpisodePoster(ScalePoster.SCALE_300w);
+    this.setCompressedStaffPoster(ScalePoster.SCALE_600h);
   }
 
   public resetAllParametersLicense(): void {

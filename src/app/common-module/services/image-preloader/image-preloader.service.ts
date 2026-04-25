@@ -9,6 +9,7 @@ import { NewsModel } from '../../../main-appli-module/news-module/models/news.in
 import { SeasonModel } from '../../../main-appli-module/media-module/models/series/season.interface';
 import { EpisodeModel } from '../../../main-appli-module/media-module/models/series/episode.interface';
 import { NewsVideoRunningModel } from '../../../main-appli-module/news-module/models/news-video-running.interface';
+import { StaffModel } from '../../../main-appli-module/media-module/models/staff.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class ImagePreloaderService {
   private preloadedImageUrls = new Set<string>();
   private controllers = new Map<string, AbortController>();
 
-  constructor(private compressedPosterService: CompressedPosterService) { }
+  constructor(private readonly compressedPosterService: CompressedPosterService) { }
 
   async preloadImages(imageUrls: string[], signal?: AbortSignal): Promise<void> {
     const newUrls = imageUrls.filter(url => !this.preloadedImageUrls.has(url));
@@ -189,6 +190,18 @@ export class ImagePreloaderService {
         img.push(poster);
       }
     });
+    return img;
+  }
+
+  public getPosterFromStaffs(staff: StaffModel[]): string[] {
+    const img: string[] = [];
+    staff.forEach((staff: StaffModel) => {
+      const poster: string | undefined = this.compressedPosterService.getStaffPoster(staff);
+      if (poster) {
+        img.push(poster);
+      }
+    });
+    img.push('icon/person.svg')
     return img;
   }
 

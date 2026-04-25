@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { FormatMediaPageButtonService } from '../../../services/format-media-page/format-media-page-button.service';
 import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
 import { FormatMediaPageModel } from '../../../models/format-media-page-enum';
+import { FormatMediaPageService } from '../../../services/format-media-page/format-media-page-button.service';
 
 @Component({
   selector: 'app-format-media-page-button',
@@ -22,10 +22,10 @@ export class FormatMediaPageButtonComponent {
   verticalClass: string = 'vertical';
   horizontalClass: string = 'horizontal';
 
-  constructor(private readonly formatMediaPageButtonService: FormatMediaPageButtonService) { }
+  constructor(private readonly formatMediaPageService: FormatMediaPageService) { }
 
   ngOnInit(): void {
-    this.subscription = this.formatMediaPageButtonService.getCurrentFormatMediaPage().subscribe((value: FormatMediaPageModel) => {
+    this.subscription = this.formatMediaPageService.fetchCurrentFormatMediaPage().subscribe((value: FormatMediaPageModel) => {
       if (value === FormatMediaPageModel.VERTICAL) {
         this.currentClass = this.verticalClass;
       } else {
@@ -49,7 +49,7 @@ export class FormatMediaPageButtonComponent {
   }
 
   onClick(): void {
-    this.formatMediaPageButtonService.toggleFormatMediaPage();
+    this.formatMediaPageService.toggleFormatMediaPage();
   }
 
 }

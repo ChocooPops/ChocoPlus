@@ -29,29 +29,41 @@
 
     &:hover {
         .container-tmp-poster {
-            display: flex;
+            opacity: 1;
+            pointer-events: all;
+            animation: 0.4s enter forwards;
         }
     }
 }
 
-@keyframes enter {
-    0% {
-        opacity: 0;
+@keyframes leave {
+    0%   { 
+        opacity: 1; 
     }
 
-    100% {
-        opacity: 1;
+    100% { 
+        opacity: 0; 
+    }
+}
+
+@keyframes enter {
+    0%   { 
+        opacity: 0; 
+    }
+
+    100% { 
+        opacity: 1; 
     }
 }
 
 .container-tmp-poster {
-    position: absolute;
     height: 100%;
     width: 100%;
-    background-color: rgb(14, 14, 14, 0.6);
-    z-index: 99;
-    display: none;
-    animation: 0.5s enter;
+    background-color: rgb(14, 14, 14, 0.7);
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    animation: 0.4s leave forwards;
 }
 
 .align-button {

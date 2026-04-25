@@ -4,5 +4,6 @@ export interface StaffModel {
     id: number,
     fullName: string,
     fullNameCharacter ?: string,
-    job: JobModel
+    job: JobModel,
+    srcPoster: string | undefined
 }

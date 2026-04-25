@@ -19,9 +19,11 @@ import { Operation } from '../../models/catalog/operation.enum';
 
 @Directive({})
 export abstract class MoviePageAbstraction {
+
   @Input() movie!: MovieModel;
   protected abstract formatMediaPage: FormatMediaPageModel;
-  protected abortController = new AbortController();
+  protected abortControllerSimilarMedias = new AbortController();
+  protected abortControllerInfoMovie = new AbortController();
   protected subscriptionSimilarTitles!: Subscription;
   protected subscriptionMovieInfo!: Subscription;
 
@@ -43,20 +45,29 @@ export abstract class MoviePageAbstraction {
     protected readonly mediaSelectedService: MediaSelectedService,
     protected readonly filtersCatalogService: FiltersCatalogService,
     protected readonly router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initSimilarLoading();
   }
 
   ngOnDestroy(): void {
-    if (this.subscriptionSimilarTitles) {
-      this.subscriptionSimilarTitles.unsubscribe();
-    }
+    this.setUnsubscriptionMovieInfo();
+    this.setUnsubscriptionSimilarTitles();
+  }
+
+  private setUnsubscriptionMovieInfo(): void {
     if (this.subscriptionMovieInfo) {
       this.subscriptionMovieInfo.unsubscribe();
     }
-    this.abortController.abort();
+    this.abortControllerInfoMovie.abort();
+  }
+
+  private setUnsubscriptionSimilarTitles(): void {
+    if (this.subscriptionSimilarTitles) {
+      this.subscriptionSimilarTitles.unsubscribe();
+    }
+    this.abortControllerSimilarMedias.abort();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -93,12 +104,9 @@ export abstract class MoviePageAbstraction {
     }, 100);
   }
 
-  fetchSimilarMovie(): void {
+  protected fetchSimilarMovie(): void {
     if (this.movie) {
-      if (this.subscriptionSimilarTitles) {
-        this.subscriptionSimilarTitles.unsubscribe();
-      }
-      this.abortController.abort();
+      this.setUnsubscriptionSimilarTitles();
       this.subscriptionSimilarTitles = this.similarTitleService
         .fetchSimilarTitlesForOneMovieById(this.movie.id)
         .pipe(take(1))
@@ -116,7 +124,7 @@ export abstract class MoviePageAbstraction {
             );
           }
           this.imagePreloaderService
-            .preloadImages(img, this.abortController.signal)
+            .preloadImages(img, this.abortControllerSimilarMedias.signal)
             .finally(() => {
               this.similarMedias = data;
             });
@@ -124,20 +132,29 @@ export abstract class MoviePageAbstraction {
     }
   }
 
-  fetchMediaInfo(): void {
+  protected fetchMediaInfo(): void {
     if (this.movie) {
-      if (this.subscriptionMovieInfo) {
-        this.subscriptionMovieInfo.unsubscribe();
-      }
+      this.setUnsubscriptionMovieInfo();
       this.subscriptionMovieInfo = this.mediaSelectedService
         .fetchGetMediaInfoById(this.movie.id)
         .pipe(take(1))
         .subscribe((info: MediaInfoModel | null) => {
           if (info) {
             this.genres = info.categories;
-            this.keyWords = info.keyWords.map((item) => this.transform(item))
-            this.actors = info.actors;
-            this.directors = info.directors;
+            this.keyWords = info.keyWords.map((item) => this.transform(item));
+            
+            if (this.formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
+              const img = this.imagePreloaderService.getPosterFromStaffs([...info.actors, ...info.directors]);
+              this.imagePreloaderService
+                .preloadImages(img, this.abortControllerInfoMovie.signal)
+                .finally(() => {
+                  this.actors = info.actors;
+                  this.directors = info.directors;
+              });
+            } else {
+              this.actors = info.actors;
+              this.directors = info.directors;
+            }
           }
           this.mediaInfoLoaded = true;
         });

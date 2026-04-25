@@ -5,7 +5,7 @@ import { FormatMediaPageModel } from '../../models/format-media-page-enum';
 @Injectable({
   providedIn: 'root',
 })
-export class FormatMediaPageButtonService {
+export class FormatMediaPageService {
 
   private readonly formatMediaPageName: string = 'FORMAT_MEDIA_PAGE';
   private formatMediaPageSubject: BehaviorSubject<FormatMediaPageModel> = new BehaviorSubject<FormatMediaPageModel>(this.initCompressedPoster(FormatMediaPageModel.VERTICAL));
@@ -21,12 +21,17 @@ export class FormatMediaPageButtonService {
     }
   }
 
-  public getCurrentFormatMediaPage(): Observable<FormatMediaPageModel> {
+  public fetchCurrentFormatMediaPage(): Observable<FormatMediaPageModel> {
     return this.formatMediaPage$;
   }
 
   public getCurrentFormatMediaPageValue(): FormatMediaPageModel {
     return this.formatMediaPageSubject.value;
+  }
+
+  public setFormatPosterHome(format: FormatMediaPageModel): void {
+    localStorage.setItem(this.formatMediaPageName, format);
+    this.formatMediaPageSubject.next(format);
   }
 
   public toggleFormatMediaPage(): void {

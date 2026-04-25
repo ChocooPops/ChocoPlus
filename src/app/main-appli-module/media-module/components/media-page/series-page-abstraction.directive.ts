@@ -29,6 +29,7 @@ export abstract class SeriesPageAbstraction {
 
   protected abortControllerEpisodes = new AbortController();
   protected abortControllerSimilarMedias = new AbortController();
+  protected abortControllerInfoSerie = new AbortController();
 
   protected subscriptionEpisodes!: Subscription;
   protected subscriptionSimilarTitles!: Subscription;
@@ -66,7 +67,7 @@ export abstract class SeriesPageAbstraction {
     protected readonly seriesService: SeriesService,
     protected readonly filtersCatalogService: FiltersCatalogService,
     protected readonly router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initComponentLoading();
@@ -86,7 +87,7 @@ export abstract class SeriesPageAbstraction {
   ngOnDestroy(): void {
     this.setUnsubscribeEpisode();
     this.setUnsubscriptionSimilarTitle();
-    this.setUnsubscriptionSeriesInfo();
+    this.setUnsubscriptionSerieInfo();
   }
 
   private resetInfo(): void {
@@ -114,10 +115,11 @@ export abstract class SeriesPageAbstraction {
     }
     this.abortControllerSimilarMedias.abort();
   }
-  private setUnsubscriptionSeriesInfo(): void {
+  private setUnsubscriptionSerieInfo(): void {
     if (this.subscriptionSeriesInfo) {
       this.subscriptionSeriesInfo.unsubscribe();
     }
+    this.abortControllerInfoSerie.abort();
   }
 
   private init(): void {
@@ -137,7 +139,7 @@ export abstract class SeriesPageAbstraction {
         seasonNumber: season.seasonNumber,
       });
     });
-    const iteration: number = 5 - this.seasons.length;
+    const iteration: number = 4 - this.seasons.length;
     for (let i = 0; i < iteration; i++) {
       this.seasonsPosterTmp.push(i);
     }
@@ -191,10 +193,10 @@ export abstract class SeriesPageAbstraction {
 
   protected fetchSimilarMovie(): void {
     this.episodes = undefined;
+    this.setUnsubscriptionSimilarTitle();
     if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
       this.setUnsubscribeEpisode();
     }
-    this.setUnsubscriptionSimilarTitle();
     this.subscriptionSimilarTitles = this.similarTitleService
       .fetchSimilarTitlesForOneMovieById(this.series.id)
       .pipe(take(1))
@@ -221,7 +223,7 @@ export abstract class SeriesPageAbstraction {
 
   protected fetchMediaInfo(): void {
     if (this.series) {
-      this.setUnsubscriptionSeriesInfo();
+      this.setUnsubscriptionSerieInfo();
       this.subscriptionSeriesInfo = this.mediaSelectedService
         .fetchGetMediaInfoById(this.series.id)
         .pipe(take(1))
@@ -229,8 +231,19 @@ export abstract class SeriesPageAbstraction {
           if (info) {
             this.genres = info.categories;
             this.keyWords = info.keyWords.map((item) => this.transform(item));
-            this.actors = info.actors;
-            this.directors = info.directors;
+            
+            if (this.formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
+              const img = this.imagePreloaderService.getPosterFromStaffs([...info.actors, ...info.directors]);
+              this.imagePreloaderService
+                .preloadImages(img, this.abortControllerInfoSerie.signal)
+                .finally(() => {
+                  this.actors = info.actors;
+                  this.directors = info.directors;
+              });
+            } else {
+              this.actors = info.actors;
+              this.directors = info.directors;
+            }
           }
           this.mediaInfoLoaded = true;
         });

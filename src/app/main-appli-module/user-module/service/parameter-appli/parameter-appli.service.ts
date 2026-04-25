@@ -7,15 +7,18 @@ import { FormatPosterService } from '../../../common-module/services/format-post
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
+import { FormatMediaPageService } from '../../../media-module/services/format-media-page/format-media-page-button.service';
+import { FormatMediaPageModel } from '../../../media-module/models/format-media-page-enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParameterAppliService {
 
-  constructor(private formatPosterService: FormatPosterService,
-    private compressedPosterService: CompressedPosterService,
-    private loadOpeningPageService: LoadOpeningPageService
+  constructor(private readonly formatPosterService: FormatPosterService,
+    private readonly compressedPosterService: CompressedPosterService,
+    private readonly loadOpeningPageService: LoadOpeningPageService,
+    private readonly formatMediaPageService: FormatMediaPageService
   ) { }
 
   private id: number = 0;
@@ -72,13 +75,19 @@ export class ParameterAppliService {
     {
       id: this.getId(),
       name: "Qualité des posters des saisons",
-      radioButton: this.getRadioButtonForSeasonPoster(),
+      radioButton: this.getRadioButtonForSeasonOrStaffPoster(),
       call: null
     },
     {
       id: this.getId(),
       name: "Qualité des posters des épisodes",
       radioButton: this.getRadioButtonForEpisodePoster(),
+      call: null
+    },
+    {
+      id: this.getId(),
+      name: "Qualité des posters des credits",
+      radioButton: this.getRadioButtonForSeasonOrStaffPoster(),
       call: null
     }
   ]
@@ -145,6 +154,12 @@ export class ParameterAppliService {
       id: this.getId(),
       name: "Page MyList",
       radioButton: this.getRadioButtonForAllFormatPoster(),
+      call: null
+    },
+    {
+      id: this.getId(),
+      name: "Page dynamique des médias",
+      radioButton: this.getRadioButtonForMediaFormat(),
       call: null
     }
   ]
@@ -225,7 +240,8 @@ export class ParameterAppliService {
       (scale: ScalePoster) => this.compressedPosterService.setCompressedBackgroundPresentation(scale),
       (scale: ScalePoster) => this.compressedPosterService.setCompressedLogoPresentation(scale),
       (scale: ScalePoster) => this.compressedPosterService.setCompressedSeasonPoster(scale),
-      (scale: ScalePoster) => this.compressedPosterService.setCompressedEpisodePoster(scale)
+      (scale: ScalePoster) => this.compressedPosterService.setCompressedEpisodePoster(scale),
+      (scale: ScalePoster) => this.compressedPosterService.setCompressedStaffPoster(scale)
     ]
 
     const moviePosterScale: ScalePoster[] = [];
@@ -239,6 +255,7 @@ export class ParameterAppliService {
     const logoHead: ScalePoster | null = this.compressedPosterService.getCompressedLogoPresentation();
     const season: ScalePoster | null = this.compressedPosterService.getCompressedSeasonPoster();
     const episode: ScalePoster | null = this.compressedPosterService.getCompressedEpisodePoster();
+    const staff: ScalePoster | null = this.compressedPosterService.getCompressedStaffPoster();
 
     if (vertical) moviePosterScale.push(vertical);
     if (horizontal) moviePosterScale.push(horizontal);
@@ -250,6 +267,7 @@ export class ParameterAppliService {
     if (logoHead) moviePosterScale.push(logoHead);
     if (season) moviePosterScale.push(season);
     if (episode) moviePosterScale.push(episode);
+    if (staff) moviePosterScale.push(staff);
 
     if (this.radioButtonPosterFilm.length === moviePosterScale.length) {
       for (let i = 0; i < this.radioButtonPosterFilm.length; i++) {
@@ -297,9 +315,10 @@ export class ParameterAppliService {
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterCatalog(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterResearch(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterLicense(format),
-      (format: FormatPosterModel) => this.formatPosterService.setFormatPosterMyList(format)
+      (format: FormatPosterModel) => this.formatPosterService.setFormatPosterMyList(format),
+      (format: FormatMediaPageModel) => this.formatMediaPageService.setFormatPosterHome(format)
     ]
-    const format: FormatPosterModel[] = [this.formatPosterService.getFormatPosterHomeValue(), this.formatPosterService.getFormatPosterMovieValue(), this.formatPosterService.getFormatPosterSeriesValue(), this.formatPosterService.getFormatPosterCatalogValue(), this.formatPosterService.getFormatPosterResearchValue(), this.formatPosterService.getFormatPosterLicenseValue(), this.formatPosterService.getFormatPosterMyListValue()];
+    const format: (FormatPosterModel | FormatMediaPageModel)[] = [this.formatPosterService.getFormatPosterHomeValue(), this.formatPosterService.getFormatPosterMovieValue(), this.formatPosterService.getFormatPosterSeriesValue(), this.formatPosterService.getFormatPosterCatalogValue(), this.formatPosterService.getFormatPosterResearchValue(), this.formatPosterService.getFormatPosterLicenseValue(), this.formatPosterService.getFormatPosterMyListValue(), this.formatMediaPageService.getCurrentFormatMediaPageValue()];
     if (this.radioButtonFormatPoster.length === format.length) {
       for (let i: number = 0; i < this.radioButtonFormatPoster.length; i++) {
         this.radioButtonFormatPoster[i].call = callBackFormatPoster[i];
@@ -502,7 +521,24 @@ export class ParameterAppliService {
     ]
   }
 
-  private getRadioButtonForSeasonPoster(): SimpleModel[] {
+  private getRadioButtonForMediaFormat(): SimpleModel[] {
+    return [
+      {
+        id: this.getId(),
+        name: "Vertical",
+        value: FormatMediaPageModel.VERTICAL,
+        state: false
+      },
+      {
+        id: this.getId(),
+        name: "Horizontal",
+        value: FormatMediaPageModel.HORIZONTAL,
+        state: false
+      }
+    ]
+  }
+
+  private getRadioButtonForSeasonOrStaffPoster(): SimpleModel[] {
     return [
       {
         id: this.getId(),
