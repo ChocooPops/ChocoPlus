@@ -155,6 +155,9 @@ export abstract class MoviePageAbstraction {
               this.actors = info.actors;
               this.directors = info.directors;
             }
+          } else {
+            this.actors = [];
+            this.directors = [];
           }
           this.mediaInfoLoaded = true;
         });
