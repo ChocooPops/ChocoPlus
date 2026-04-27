@@ -1,15 +1,11 @@
-import {
-  Component,
-  HostListener,
-  ViewChild,
-  ElementRef,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, HostListener, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { FilterType } from '../../../media-module/models/catalog/filter-type.enum';
 import { FormsModule } from '@angular/forms';
 import { Operation } from '../../../media-module/models/catalog/operation.enum';
 import { FILTERS } from '../../../media-module/models/catalog/filters.interface';
+import { CreditService } from '../../../media-module/services/credit/credit.service';
+import { Subscription } from 'rxjs';
+import { JobModel } from '../../../media-module/models/job.eum';
 
 @Component({
   selector: 'app-other-filters',
@@ -19,6 +15,7 @@ import { FILTERS } from '../../../media-module/models/catalog/filters.interface'
   styleUrl: './other-filters.component.css',
 })
 export class OtherFiltersComponent {
+
   @ViewChild('filterSelected') filterSelected!: ElementRef;
   @ViewChild('fcWrap') fcWrap!: ElementRef;
   @ViewChild('textInput') textInput!: ElementRef<HTMLInputElement>;
@@ -26,16 +23,10 @@ export class OtherFiltersComponent {
 
   srcCross: string = 'icon/cross-white.svg';
 
-  typeOptions: FilterType[] = [
-    FilterType.ACTOR,
-    FilterType.DIRECTOR,
-    FilterType.KEY_WORD,
-    FilterType.CATEGORY,
-    FilterType.DECADE,
-  ];
-  operationOptions: Operation[] = [Operation.CONTAIN, Operation.NOT_CONTAIN];
+  typeOptions: (JobModel | FilterType)[] = [];
+  operationOptions: Operation[] = Object.values(Operation);
 
-  selected: { type: FilterType | null; op: Operation | null } = {
+  selected: { type: JobModel | FilterType | null; op: Operation | null } = {
     type: null,
     op: null,
   };
@@ -46,6 +37,21 @@ export class OtherFiltersComponent {
   tags: string[] = [];
 
   private nextId: number = 1;
+  private subscription!: Subscription;
+
+  constructor(private readonly creditService: CreditService) { }
+
+  ngOnInit(): void {
+    this.subscription = this.creditService.getAllJobFilters().subscribe((data: JobModel[]) => {
+      this.typeOptions = [...data, FilterType.KEY_WORD, FilterType.DECADE, FilterType.CATEGORY];
+    })
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 
   openFilter(): void {
     this.isOpen = true;

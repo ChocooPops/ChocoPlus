@@ -180,6 +180,7 @@
 }
 
 .fc-dropdown {
+  max-height: calc(6 * 35px);
   display: none;
   position: absolute;
   top: 35px;
@@ -192,6 +193,11 @@
   z-index: 49;
   overflow: hidden;
   animation: ddEnter 0.15s ease;
+  overflow: auto;
+}
+.fc-dropdown::-webkit-scrollbar {
+  height: 2px;
+  width: 2px;
 }
 
 .fc-select-wrap.is-open .fc-dropdown {
