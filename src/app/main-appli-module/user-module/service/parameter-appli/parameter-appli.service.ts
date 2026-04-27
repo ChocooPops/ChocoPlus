@@ -241,7 +241,7 @@ export class ParameterAppliService {
       (scale: ScalePoster) => this.compressedPosterService.setCompressedLogoPresentation(scale),
       (scale: ScalePoster) => this.compressedPosterService.setCompressedSeasonPoster(scale),
       (scale: ScalePoster) => this.compressedPosterService.setCompressedEpisodePoster(scale),
-      (scale: ScalePoster) => this.compressedPosterService.setCompressedStaffPoster(scale)
+      (scale: ScalePoster) => this.compressedPosterService.setCompressedCreditPoster(scale)
     ]
 
     const moviePosterScale: ScalePoster[] = [];
@@ -255,7 +255,7 @@ export class ParameterAppliService {
     const logoHead: ScalePoster | null = this.compressedPosterService.getCompressedLogoPresentation();
     const season: ScalePoster | null = this.compressedPosterService.getCompressedSeasonPoster();
     const episode: ScalePoster | null = this.compressedPosterService.getCompressedEpisodePoster();
-    const staff: ScalePoster | null = this.compressedPosterService.getCompressedStaffPoster();
+    const staff: ScalePoster | null = this.compressedPosterService.getCompressedCreditPoster();
 
     if (vertical) moviePosterScale.push(vertical);
     if (horizontal) moviePosterScale.push(horizontal);
@@ -268,13 +268,15 @@ export class ParameterAppliService {
     if (season) moviePosterScale.push(season);
     if (episode) moviePosterScale.push(episode);
     if (staff) moviePosterScale.push(staff);
-
+    
     if (this.radioButtonPosterFilm.length === moviePosterScale.length) {
       for (let i = 0; i < this.radioButtonPosterFilm.length; i++) {
         this.radioButtonPosterFilm[i].call = callBackMoviePosterScale[i];
         for (let j = 0; j < this.radioButtonPosterFilm[i].radioButton.length; j++) {
           if (this.radioButtonPosterFilm[i].radioButton[j].value && this.radioButtonPosterFilm[i].radioButton[j].value === moviePosterScale[i]) {
             this.radioButtonPosterFilm[i].radioButton[j].state = true;
+          } else {
+            this.radioButtonPosterFilm[i].radioButton[j].state = false;
           }
         }
       }
@@ -302,6 +304,8 @@ export class ParameterAppliService {
         for (let j = 0; j < this.radioButtonPosterLicense[i].radioButton.length; j++) {
           if (this.radioButtonPosterLicense[i].radioButton[j].value && this.radioButtonPosterLicense[i].radioButton[j].value === licensePosterScale[i]) {
             this.radioButtonPosterLicense[i].radioButton[j].state = true;
+          } else {
+            this.radioButtonPosterLicense[i].radioButton[j].state = false;
           }
         }
       }
@@ -325,6 +329,8 @@ export class ParameterAppliService {
         for (let j = 0; j < this.radioButtonFormatPoster[i].radioButton.length; j++) {
           if (this.radioButtonFormatPoster[i].radioButton[j].value && this.radioButtonFormatPoster[i].radioButton[j].value === format[i]) {
             this.radioButtonFormatPoster[i].radioButton[j].state = true;
+          } else {
+            this.radioButtonFormatPoster[i].radioButton[j].state = false;
           }
         }
       }
@@ -338,6 +344,8 @@ export class ParameterAppliService {
     for (let i: number = 0; i < this.radioButtonOtherOption[0].radioButton.length; i++) {
       if (this.radioButtonOtherOption[0].radioButton[i].value && this.radioButtonOtherOption[0].radioButton[i].value === this.loadOpeningPageService.getOpeningPage()) {
         this.radioButtonOtherOption[0].radioButton[i].state = true;
+      } else {
+        this.radioButtonOtherOption[0].radioButton[i].state = false;
       }
     }
   }

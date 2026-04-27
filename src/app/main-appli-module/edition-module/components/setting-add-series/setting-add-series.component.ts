@@ -24,11 +24,12 @@ import { MessageReturnedModel } from '../../../../common-module/models/message-r
 import { HttpErrorResponse } from '@angular/common/http';
 import { InputDateComponent } from '../input-date/input-date.component';
 import { InputTimeEditionComponent } from '../input-time-edition/input-time-edition.component';
+import { CreditsTableComponent } from '../credits-table/credits-table.component';
 
 @Component({
   selector: 'app-setting-add-series',
   standalone: true,
-  imports: [NgClass, InputTimeEditionComponent, InputDateComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
+  imports: [NgClass, CreditsTableComponent, InputTimeEditionComponent, InputDateComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
   templateUrl: './setting-add-series.component.html',
   styleUrls: ['./setting-add-series.component.css', '../../styles/edition.css']
 })

@@ -1,0 +1,58 @@
+<div class="ct-wrap" (click)="closeDropdowns()">
+  <table class="ct-table">
+    <thead>
+      <tr>
+        <th>Nom complet</th>
+        <th>Nom original</th>
+        <th>Personnage</th>
+        <th>Rôle</th>
+        <th>Poster</th>
+        <th>Ordre</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (credit of credits; track credit.id; let i = $index) {
+        <tr>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="credit.fullName" (ngModelChange)="onFieldChange(credit)"/>
+          </td>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="credit.originalFullName" (ngModelChange)="onFieldChange(credit)"/>
+          </td>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="credit.character" placeholder="—" (ngModelChange)="onFieldChange(credit)"/>
+          </td>
+          <td>
+            <div class="ct-select-wrap" [class.is-open]="openDropdown === 'job-' + i">
+              <div class="ct-select-btn" (click)="toggleDropdown('job-' + i, $event)">
+                <span class="ct-select-label">{{ credit.job }}</span>
+                <div class="ct-arrow"></div>
+              </div>
+              <div class="ct-dropdown" [style.height.px]="(credits.length - $index) * 34">
+                @for (opt of jobOptions; track opt) {
+                  <div class="ct-option" [class.selected]="credit.job === opt"
+                       (click)="selectJob(credit, opt, $event)">{{ opt }}</div>
+                  @if (!$last) { <div class="ct-divider"></div> }
+                }
+              </div>
+            </div>
+          </td>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="credit.srcPoster" placeholder="—" (ngModelChange)="onFieldChange(credit)"/>
+          </td>
+          <td>
+            <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.order" (ngModelChange)="onFieldChange(credit)"/>
+          </td>
+          <td class="td-action">
+            <button class="ct-btn-remove" (click)="removeCredit(i)" title="Supprimer">✕</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="ct-footer">
+    <button class="ct-btn-add" (click)="addCredit()">+ Ajouter une ligne</button>
+  </div>
+</div>

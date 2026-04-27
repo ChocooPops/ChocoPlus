@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { StaffModel } from '../../../models/staff.interface';
 import { JobModel } from '../../../models/job.eum';
 import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
+import { CreditModel } from '../../../models/credit.interface';
 
 @Component({
   selector: 'app-staff-poster',
@@ -17,9 +17,9 @@ import { CompressedPosterService } from '../../../../common-module/services/comp
 export class StaffPosterComponent {
 
   @Input() jobTitle!: JobModel;
-  @Input() staffs: StaffModel[] = [];
+  @Input() credits: CreditModel[] = [];
   @Input() mediaType!: MediaTypeModel;
-  @Output() onClickStaffEmit = new EventEmitter<StaffModel>();
+  @Output() onClickCreditEmit = new EventEmitter<CreditModel>();
 
   private subscription!: Subscription;
 
@@ -39,10 +39,10 @@ export class StaffPosterComponent {
   ) {}
 
   ngOnInit(): void {
-    for(let i=0; i< this.minPoster - this.staffs.length; i++) {
+    for(let i=0; i< this.minPoster - this.credits.length; i++) {
       this.posterTmp.push(i);
     }
-    this.staffs.forEach((staff: StaffModel) => {
+    this.credits.forEach((staff: CreditModel) => {
       this.srcPoster.push(this.compressedPosterService.getStaffPoster(staff));
     });
     this.subscription = this.paginationPosterService
@@ -61,8 +61,8 @@ export class StaffPosterComponent {
     }
   }
 
-  onClickStaff(staff: StaffModel): void {
-    this.onClickStaffEmit.emit(staff);
+  onClickCredit(staff: CreditModel): void {
+    this.onClickCreditEmit.emit(staff);
   }
   
   onErrorImage(index: number): void {

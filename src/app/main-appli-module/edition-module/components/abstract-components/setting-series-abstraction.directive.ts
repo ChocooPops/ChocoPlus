@@ -11,6 +11,7 @@ import { MediaTypeModel } from "../../../media-module/models/media-type.enum";
 import { EditSeasonModel } from "../../models/series/edit-season.interface";
 import { TmdbOperationService } from "../../services/tmdb-operation/tmdb-operation.service";
 import { AiButtonComponent } from "../ai-button/ai-button.component";
+import { CreditModel } from "../../../media-module/models/credit.interface";
 
 @Directive({})
 export abstract class SettingSeriesAbstraction extends UnauthorizedError {
@@ -102,12 +103,8 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
         this.editionSeriesService.modifyOtherLanguageTitle(titles);
     }
 
-    protected onInputDirector(newDirector: string[]): void {
-        this.editionSeriesService.modifyDirectorSeries(newDirector);
-    }
-
-    protected onInputActors(actors: string[]): void {
-        this.editionSeriesService.modifyActorsSeries(actors);
+    protected onInputCredits(credits: CreditModel[]): void {
+        this.editionSeriesService.modifyCredits(credits);
     }
 
     protected onInputCategory(categories: CategorySimpleModel[]): void {

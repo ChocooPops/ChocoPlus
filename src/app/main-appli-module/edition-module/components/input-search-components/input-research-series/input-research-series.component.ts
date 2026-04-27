@@ -22,8 +22,8 @@ export class InputResearchSeriesComponent extends InputResearchAbstract<SeriesMo
 
   constructor(fb: FormBuilder,
     elementRef: ElementRef,
-    private seriesService: SeriesService,
-    private compressedPosterService: CompressedPosterService
+    private readonly seriesService: SeriesService,
+    private readonly compressedPosterService: CompressedPosterService
   ) {
     super(fb, elementRef);
   }

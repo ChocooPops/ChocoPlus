@@ -4,7 +4,7 @@
     height: 40px;
     width: 200px;
     position: relative;
-    font-size: 18px;
+    font-size: 15px;
     gap: 5px;
     overflow: visible;
 }
@@ -34,16 +34,21 @@
 }
 
 .containerArrow {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    img {
-        height: 30%;
-        transform: rotate(-90deg)
-    }
+  img {
+    width: 10px;
+    height: 10px;
+    transform: rotate(-90deg);
+    transition: transform 0.2s;
+  }
+}
+
+.borderRadiusBottom .containerArrow img {
+  transform: rotate(90deg);
 }
 
 .containerSelectedType {
@@ -62,16 +67,17 @@
     position: absolute;
     cursor: pointer;
     z-index: 99;
+    animation: ddEnter 0.15s ease;
 }
 
 .containerTypeSelection {
     width: 100%;
     padding-block: 10px;
-    background-color: #353535;
+    background-color: #2A2A2A;
     text-align: center;
 
     &:hover {
-        background-color: #585858;
+        background-color: #3c3c3c;
     }
 
     p {
@@ -81,4 +87,9 @@
 
 .containerListTypeSelection .containerTypeSelection:last-child {
     border-radius: 0px 0px 5px 5px;
+}
+
+@keyframes ddEnter {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

@@ -21,8 +21,8 @@ export class InputResearchMovieComponent extends InputResearchAbstract<MovieMode
 
   constructor(fb: FormBuilder,
     elementRef: ElementRef,
-    private movieService: MovieService,
-    private compressedPosterService: CompressedPosterService
+    private readonly movieService: MovieService,
+    private readonly compressedPosterService: CompressedPosterService
   ) {
     super(fb, elementRef);
   }

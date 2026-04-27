@@ -7,7 +7,7 @@ import { SeasonModel } from '../../../media-module/models/series/season.interfac
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 import { NewsModel } from '../../../news-module/models/news.interface';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
-import { StaffModel } from '../../../media-module/models/staff.interface';
+import { CreditModel } from '../../../media-module/models/credit.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class CompressedPosterService {
   private readonly compressedSeasonPoster: string = 'COMPRESSED_SEASON_POSTER';
   private readonly compressedEpisodePoster: string = 'COMPRESSED_EPISODE_POSTER'
 
-  private readonly compressedStaffPoster: string = 'COMPRESSED_STAFF_POSTER';
+  private readonly compressedCreditPoster: string = 'COMPRESSED_CREDIT_POSTER';
 
   private currentScaleNormalVerticalPoster: ScalePoster = this.initCompressedPoster(this.compressedVerticalPoster, ScalePoster.SCALE_300h);
   private currentScaleHorizontalPoster: ScalePoster = this.initCompressedPoster(this.compressedHorizontalPoster, ScalePoster.SCALE_300w);
@@ -52,7 +52,7 @@ export class CompressedPosterService {
   private currentScaleSeasonPoster: ScalePoster = this.initCompressedPoster(this.compressedSeasonPoster, ScalePoster.SCALE_300h);
   private currentScaleEpisodePoster: ScalePoster = this.initCompressedPoster(this.compressedEpisodePoster, ScalePoster.SCALE_300w);
 
-  private currentScaleStaffPoster: ScalePoster = this.initCompressedPoster(this.compressedStaffPoster, ScalePoster.SCALE_600h);
+  private currentScaleCreditPoster: ScalePoster = this.initCompressedPoster(this.compressedCreditPoster, ScalePoster.SCALE_600h);
 
   private initCompressedPoster(compressedName: string, scale: ScalePoster): ScalePoster {
     const item = localStorage.getItem(compressedName) as ScalePoster;
@@ -275,12 +275,12 @@ export class CompressedPosterService {
     }
   }
 
-  public getStaffPoster(staff: StaffModel, scale: ScalePoster | undefined = undefined): string | undefined {
-    if (staff.srcPoster && typeof staff.srcPoster === 'string') {
+  public getStaffPoster(credit: CreditModel, scale: ScalePoster | undefined = undefined): string | undefined {
+    if (credit.srcPoster && typeof credit.srcPoster === 'string') {
       if (scale) {
-        return this.insertIntoUrlBeforeFilename(staff.srcPoster, scale);
+        return this.insertIntoUrlBeforeFilename(credit.srcPoster, scale);
       } else {
-        return this.insertIntoUrlBeforeFilename(staff.srcPoster, this.currentScaleStaffPoster);
+        return this.insertIntoUrlBeforeFilename(credit.srcPoster, this.currentScaleCreditPoster);
       }
     } else {
       return undefined;
@@ -391,12 +391,12 @@ export class CompressedPosterService {
     this.currentScaleEpisodePoster = scale;
   }
 
-  public getCompressedStaffPoster(): ScalePoster | null {
-    return localStorage.getItem(this.compressedStaffPoster) as ScalePoster | null;
+  public getCompressedCreditPoster(): ScalePoster | null {
+    return localStorage.getItem(this.compressedCreditPoster) as ScalePoster | null;
   }
-  public setCompressedStaffPoster(scale: ScalePoster): void {
-    localStorage.setItem(this.compressedStaffPoster, scale);
-    this.currentScaleStaffPoster = scale;
+  public setCompressedCreditPoster(scale: ScalePoster): void {
+    localStorage.setItem(this.compressedCreditPoster, scale);
+    this.currentScaleCreditPoster = scale;
   }
 
   constructor() { }
@@ -415,7 +415,7 @@ export class CompressedPosterService {
 
     this.setCompressedSeasonPoster(ScalePoster.SCALE_300h);
     this.setCompressedEpisodePoster(ScalePoster.SCALE_300w);
-    this.setCompressedStaffPoster(ScalePoster.SCALE_600h);
+    this.setCompressedCreditPoster(ScalePoster.SCALE_600h);
   }
 
   public resetAllParametersLicense(): void {

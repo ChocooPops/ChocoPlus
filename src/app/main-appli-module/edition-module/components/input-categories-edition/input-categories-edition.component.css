@@ -1,8 +1,9 @@
 .containerInputCategories {
     display: flex;
-    column-gap: 45px;
+    column-gap: 15px;
     row-gap: 20px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .containerSelectCategory {
@@ -58,16 +59,16 @@
 
 .container-category-searched {
     width: 100%;
-    background-color: #353535;
+    background-color: #2A2A2A;
     padding-left: 20px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     min-height: 40px;
     display: flex;
     align-items: center;
 
     &:hover {
-        background-color: #585858;
+        background-color: #3c3c3c;
     }
 
     p {

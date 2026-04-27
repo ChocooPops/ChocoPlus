@@ -20,11 +20,12 @@ import { InputLanguageTitleComponent } from '../input-language-title/input-langu
 import { InputPosterHorizontalEditionComponent } from '../input-poster-horizontal-edition/input-poster-horizontal-edition.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EditMovieModel } from '../../models/edit-movie.interface';
+import { CreditsTableComponent } from '../credits-table/credits-table.component';
 
 @Component({
   selector: 'app-setting-add-movie',
   standalone: true,
-  imports: [NgClass, InputDateComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, PopupComponent, AiButtonComponent, ButtonRemoveComponent, InputTextEditionComponent, InputTimeEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputKeywordsEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputImageEditionComponent, ButtonSaveComponent, InputLanguageTitleComponent],
+  imports: [NgClass, CreditsTableComponent, InputDateComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, PopupComponent, AiButtonComponent, ButtonRemoveComponent, InputTextEditionComponent, InputTimeEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputKeywordsEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputImageEditionComponent, ButtonSaveComponent, InputLanguageTitleComponent],
   templateUrl: './setting-add-movie.component.html',
   styleUrls: ['./setting-add-movie.component.css', '../../styles/edition.css']
 })

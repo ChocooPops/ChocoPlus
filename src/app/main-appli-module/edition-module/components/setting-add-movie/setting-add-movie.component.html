@@ -35,18 +35,6 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Director <span class="yellow">**</span></p>
-        <app-input-keywords-edition [keyWords]="editMovie.directors" (onInputChange)="onInputDirector($event)"
-            [placeHolder]="placeHolderDirector"></app-input-keywords-edition>
-    </div>
-
-    <div class="containerFieldToFill">
-        <p>Acteurs <span class="yellow">**</span></p>
-        <app-input-keywords-edition [keyWords]="editMovie.actors" (onInputChange)="onInputActors($event)"
-            [placeHolder]="placeHolderActor"></app-input-keywords-edition>
-    </div>
-
-    <div class="containerFieldToFill">
         <p>Date de sortie du film <span class="yellow">**</span></p>
         <app-input-date [date]="editMovie.date" (onInputChange)="onInputDate($event)"></app-input-date>
     </div>
@@ -65,6 +53,11 @@
                     (onInputChange)="onInputTimerEnd($event)"></app-input-time-edition>
             </div>
         </div>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Credits<span class="yellow">**</span></p>
+        <app-credits-table [credits]="editMovie.credits" (onCreditChanged)="onInputCredits($event)"></app-credits-table>
     </div>
 
     <div class="containerFieldToFill">

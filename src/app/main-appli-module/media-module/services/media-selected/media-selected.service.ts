@@ -41,8 +41,8 @@ export class MediaSelectedService {
 
         const mediaInfo: MediaInfoModel = {
           id: data.id,
-          actors: data.actors ?? [],
-          directors: data.directors ?? [],
+          casts: data.casts ?? [],
+          crews: data.crews ?? [],
           categories: data.categories ?? [],
           keyWords: data.keyWords ?? []
         };

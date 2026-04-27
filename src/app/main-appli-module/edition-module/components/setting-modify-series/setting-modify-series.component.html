@@ -48,18 +48,6 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Creator <span class="yellow">**</span></p>
-        <app-input-keywords-edition [keyWords]="editSeries.directors" (onInputChange)="onInputDirector($event)"
-            [placeHolder]="placeHolderDirector"></app-input-keywords-edition>
-    </div>
-
-    <div class="containerFieldToFill">
-        <p>Acteurs <span class="yellow">**</span></p>
-        <app-input-keywords-edition [keyWords]="editSeries.actors" (onInputChange)="onInputActors($event)"
-            [placeHolder]="placeHolderActor"></app-input-keywords-edition>
-    </div>
-
-    <div class="containerFieldToFill">
         <p>Date d'apparition de la série <span class="yellow">**</span></p>
         <app-input-date [date]="editSeries.date" (onInputChange)="onInputDate($event)"></app-input-date>
     </div>
@@ -78,6 +66,11 @@
                     (onInputChange)="modifyEndShow($event)"></app-input-time-edition>
             </div>
         </div>
+    </div>
+
+    <div class="containerFieldToFill">
+        <p>Credits<span class="yellow">**</span></p>
+        <app-credits-table [credits]="editSeries.credits" (onCreditChanged)="onInputCredits($event)"></app-credits-table>
     </div>
 
     <div class="containerFieldToFill">

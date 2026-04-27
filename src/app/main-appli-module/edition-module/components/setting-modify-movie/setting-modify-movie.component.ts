@@ -25,11 +25,12 @@ import { TmdbOperationService } from '../../services/tmdb-operation/tmdb-operati
 import { HttpErrorResponse } from '@angular/common/http';
 import { EditMovieModel } from '../../models/edit-movie.interface';
 import { MovieModel } from '../../../media-module/models/movie-model';
+import { CreditsTableComponent } from '../credits-table/credits-table.component';
 
 @Component({
   selector: 'app-setting-modify-movie',
   standalone: true,
-  imports: [ButtonSaveComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputDateComponent, PopupComponent, ButtonRemoveComponent, NgClass, InputTimeEditionComponent, InputRadioButtonComponent, InputImageEditionComponent, InputPosterEditionComponent, InputTextAreaEditionComponent, InputKeywordsEditionComponent, InputCategoriesEditionComponent, InputTextEditionComponent, InputResearchMovieComponent],
+  imports: [ButtonSaveComponent, CreditsTableComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputDateComponent, PopupComponent, ButtonRemoveComponent, NgClass, InputTimeEditionComponent, InputRadioButtonComponent, InputImageEditionComponent, InputPosterEditionComponent, InputTextAreaEditionComponent, InputKeywordsEditionComponent, InputCategoriesEditionComponent, InputTextEditionComponent, InputResearchMovieComponent],
   templateUrl: './setting-modify-movie.component.html',
   styleUrls: ['./setting-modify-movie.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })

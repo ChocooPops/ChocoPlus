@@ -29,11 +29,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { InputDateComponent } from '../input-date/input-date.component';
 import { InputTimeEditionComponent } from '../input-time-edition/input-time-edition.component';
+import { CreditsTableComponent } from '../credits-table/credits-table.component';
 
 @Component({
   selector: 'app-setting-modify-series',
   standalone: true,
-  imports: [NgClass, InputTimeEditionComponent, InputDateComponent, InputResearchSeriesComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
+  imports: [NgClass, CreditsTableComponent, InputTimeEditionComponent, InputDateComponent, InputResearchSeriesComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
   templateUrl: './setting-modify-series.component.html',
   styleUrls: ['./setting-modify-series.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })

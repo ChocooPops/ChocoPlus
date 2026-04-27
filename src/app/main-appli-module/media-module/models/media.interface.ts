@@ -1,14 +1,14 @@
 import { TranslationTitle } from "../../edition-module/models/translation-title.interface"
 import { CategorySimpleModel } from "../../edition-module/models/category/categorySimple.model";
 import { MediaTypeModel } from "./media-type.enum";
+import { CreditModel } from "./credit.interface";
 
 export interface MediaModel {
     id: number,
     title: string,
     jellyfinId: string,
     otherTitles?: TranslationTitle[],
-    directors?: string[],
-    actors?: string[],
+    credits?: CreditModel[],
     keyWord?: string[] | undefined,
     categories?: CategorySimpleModel[],
     description?: string | undefined,

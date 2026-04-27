@@ -10,6 +10,7 @@ import { TmdbOperationService } from "../../services/tmdb-operation/tmdb-operati
 import { UnauthorizedError } from "./unauthorized-error-abstract.directive";
 import { EditMovieModel } from "../../models/edit-movie.interface";
 import { MediaTypeModel } from "../../../media-module/models/media-type.enum";
+import { CreditModel } from "../../../media-module/models/credit.interface";
 
 @Directive({})
 export abstract class SettingMovieAbstraction extends UnauthorizedError {
@@ -107,12 +108,8 @@ export abstract class SettingMovieAbstraction extends UnauthorizedError {
         this.editionMovieService.modifyOtherLanguageTitle(titles);
     }
 
-    protected onInputDirector(newDirector: string[]): void {
-        this.editionMovieService.modifyDirectorMovie(newDirector);
-    }
-
-    protected onInputActors(actors: string[]): void {
-        this.editionMovieService.modifyActorsMovie(actors);
+    protected onInputCredits(credits: CreditModel[]): void {
+        this.editionMovieService.modifyCredits(credits);
     }
 
     protected onInputCategory(categories: CategorySimpleModel[]): void {

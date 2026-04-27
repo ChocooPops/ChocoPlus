@@ -14,6 +14,7 @@ import { MovieService } from '../../../media-module/services/movie/movie.service
 import { MovieModel } from '../../../media-module/models/movie-model';
 import { EditMovieModel } from '../../models/edit-movie.interface';
 import { EditionMediaService } from '../edition-media/edition-media.service';
+import { CreditModel } from '../../../media-module/models/credit.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +44,7 @@ export class EditionMovieService extends EditionMediaService {
       otherTitles: [],
       startShow: '00:00:00',
       endShow: '00:00:00',
-      directors: [],
-      actors: [],
+      credits: [],
       categories: [],
       keyWords: [],
       date: new Date(),
@@ -95,12 +95,8 @@ export class EditionMovieService extends EditionMediaService {
     this.updateMovie({ jellyfinId: jellyfinId });
   }
 
-  public modifyDirectorMovie(director: string[]): void {
-    this.updateMovie({ directors: director });
-  }
-
-  public modifyActorsMovie(actors: string[]): void {
-    this.updateMovie({ actors: actors });
+  public modifyCredits(credits: CreditModel[]): void {
+    this.updateMovie({ credits: credits })
   }
 
   public modifyCategories(categories: CategorySimpleModel[]): void {
@@ -349,8 +345,7 @@ export class EditionMovieService extends EditionMediaService {
       otherTitles: movie.otherTitles || [],
       startShow: movie.startShow || '00:00:00',
       endShow: movie.endShow || '00:00:00',
-      directors: movie.directors || [],
-      actors: movie.actors || [],
+      credits: movie.credits || [],
       categories: movie.categories || [],
       date: movie.date || new Date(),
       keyWords: movie.keyWord ?? [],

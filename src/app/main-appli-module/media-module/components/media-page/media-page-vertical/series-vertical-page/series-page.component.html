@@ -15,25 +15,25 @@
         </div>
         <div class="container-movie-placement">
             <p class="title" [ngClass]="'margin-bottom-title'"> {{ series.title }} </p>
-            @if(actors && directors && mediaInfoLoaded) {
+            @if(casts && crews && mediaInfoLoaded) {
                 @if(description !== '') {
                 <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
                 }
                 <p [ngClass]="'margin-bottom-text'"> <span class="legend">Créateur: </span> 
-                    @for (director of directors; track $index) {
-                        @if ($index !== directors.length - 1) {
-                            <span class="content" (click)="setFilterStaff(director)">{{ director.fullName}}</span>,
+                    @for (crew of crews; track $index) {
+                        @if ($index !== crews.length - 1) {
+                            <span class="content" (click)="setFilterCredit(crew)">{{ crew.fullName}}</span>,
                         } @else {
-                            <span class="content" (click)="setFilterStaff(director)">{{ director.fullName}}</span>
+                            <span class="content" (click)="setFilterCredit(crew)">{{ crew.fullName}}</span>
                         }
                     }
                 </p>
                 <p [ngClass]="'margin-bottom-text'"> <span class="legend">Acteurs: </span> 
-                    @for (actor of actors; track $index) {
-                        @if ($index !== actors.length - 1) {
-                            <span class="content" (click)="setFilterStaff(actor)">{{ actor.fullName}}</span>, 
+                    @for (cast of casts; track $index) {
+                        @if ($index !== casts.length - 1) {
+                            <span class="content" (click)="setFilterCredit(cast)">{{ cast.fullName}}</span>, 
                         } @else {
-                            <span class="content" (click)="setFilterStaff(actor)">{{ actor.fullName}}</span>
+                            <span class="content" (click)="setFilterCredit(cast)">{{ cast.fullName}}</span>
                         }
                     }
                 </p>

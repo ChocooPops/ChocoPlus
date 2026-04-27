@@ -11,7 +11,6 @@ import { ImagePreloaderService } from '../../../../common-module/services/image-
 import { SeriesService } from '../../services/series/series.service';
 import { SeasonModel } from '../../models/series/season.interface';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
-import { StaffModel } from '../../models/staff.interface';
 import { JobModel } from '../../models/job.eum';
 import { FormatMediaPageModel } from '../../models/format-media-page-enum';
 import { CategorySimpleModel } from '../../../edition-module/models/category/categorySimple.model';
@@ -20,9 +19,11 @@ import { Operation } from '../../models/catalog/operation.enum';
 import { FiltersCatalogService } from '../../services/filters-catalog/filters-catalog.service';
 import { Router } from '@angular/router';
 import { FilterType } from '../../models/catalog/filter-type.enum';
+import { CreditModel } from '../../models/credit.interface';
 
 @Directive({})
 export abstract class SeriesPageAbstraction {
+
   @Input() series!: SeriesModel;
 
   protected abstract formatMediaPage: FormatMediaPageModel;
@@ -41,8 +42,8 @@ export abstract class SeriesPageAbstraction {
   description!: string;
   mediaInfoLoaded: boolean = false;
 
-  actors: StaffModel[] | undefined = undefined;
-  directors: StaffModel[] | undefined = undefined;
+  casts: CreditModel[] | undefined = undefined;
+  crews: CreditModel[] | undefined = undefined;
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
 
@@ -92,8 +93,8 @@ export abstract class SeriesPageAbstraction {
 
   private resetInfo(): void {
     this.resetInfoSpe();
-    this.directors = undefined;
-    this.actors = undefined;
+    this.crews = undefined;
+    this.casts = undefined;
     this.similarMedias = undefined;
     this.genres = [];
     this.keyWords = [];
@@ -233,20 +234,20 @@ export abstract class SeriesPageAbstraction {
             this.keyWords = info.keyWords.map((item) => this.transform(item));
             
             if (this.formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
-              const img = this.imagePreloaderService.getPosterFromStaffs([...info.actors, ...info.directors]);
+              const img = this.imagePreloaderService.getPosterFromCredits([...info.casts, ...info.crews]);
               this.imagePreloaderService
                 .preloadImages(img, this.abortControllerInfoSerie.signal)
                 .finally(() => {
-                  this.actors = info.actors;
-                  this.directors = info.directors;
+                  this.casts = info.casts;
+                  this.crews = info.crews;
               });
             } else {
-              this.actors = info.actors;
-              this.directors = info.directors;
+              this.casts = info.casts;
+              this.crews = info.crews;
             }
           } else {
-            this.actors = [];
-            this.directors = [];
+            this.casts = [];
+            this.crews = [];
           }
           this.mediaInfoLoaded = true;
         });
@@ -295,16 +296,16 @@ protected setFilterCategory(category: CategorySimpleModel): void {
     }
     this.setFilterCatalogAndNavigate(filter);
   }
-  protected setFilterStaff(staff: StaffModel): void {
+  protected setFilterCredit(credit: CreditModel): void {
     const filter: FILTERS = {
       id: -2,
       title: '',
-      typeData: staff.job,
+      typeData: credit.job,
       operation: Operation.CONTAIN,
       value: [
         {
-          name: staff.fullName,
-          value: staff.id
+          name: credit.fullName,
+          value: credit.id
         }
       ]
     }

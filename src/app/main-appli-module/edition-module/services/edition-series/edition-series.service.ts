@@ -17,6 +17,7 @@ import { SeriesService } from '../../../media-module/services/series/series.serv
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { SeasonModel } from '../../../media-module/models/series/season.interface';
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
+import { CreditModel } from '../../../media-module/models/credit.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +49,7 @@ export class EditionSeriesService extends EditionMediaService {
       title: undefined,
       jellyfinId: undefined,
       otherTitles: [],
-      directors: [],
-      actors: [],
+      credits: [],
       categories: [],
       keyWords: [],
       description: undefined,
@@ -106,12 +106,8 @@ export class EditionSeriesService extends EditionMediaService {
     this.updateSeries({ jellyfinId: jellyfinId });
   }
 
-  public modifyDirectorSeries(director: string[]): void {
-    this.updateSeries({ directors: director });
-  }
-
-  public modifyActorsSeries(actors: string[]): void {
-    this.updateSeries({ actors: actors });
+  public modifyCredits(credits: CreditModel[]): void {
+    this.updateSeries({ credits: credits })
   }
 
   public modifyCategories(categories: CategorySimpleModel[]): void {
@@ -587,8 +583,7 @@ export class EditionSeriesService extends EditionMediaService {
       title: series.title,
       jellyfinId: series.jellyfinId,
       otherTitles: series.otherTitles || [],
-      directors: series.directors || [],
-      actors: series.actors || [],
+      credits: series.credits || [],
       categories: series.categories || [],
       keyWords: series.keyWord ?? [],
       description: series.description,

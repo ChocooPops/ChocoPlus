@@ -2,7 +2,7 @@ input {
     width: 800px;
     height: 45px;
     border: transparent;
-    font-size: 20px;
+    font-size: 17px;
     padding-left: 75px;
     color: white;
     font-family: Arial, Helvetica, sans-serif;
@@ -20,8 +20,8 @@ input {
 }
 
 .container-image-research {
-    height: 22px;
-    width: 22px;
+    height: 16px;
+    width: 16px;
     position: absolute;
     left: 40px;
     top: 50%;
@@ -30,14 +30,21 @@ input {
     img {
         height: 100%;
         width: 100%;
+        filter: invert(0.1);
     }
 }
 
 .containerInputResearch {
     margin: 0;
     border: 2px solid white;
+    border: 1.5px solid #3a3a3a;
+    background: #111;
     border-radius: 5px;
-    background: linear-gradient(to right, #3E3E3E, #1E1E1E);
+    transition: border-color 0.2s;
+
+    &:focus-within {
+        border-color: #888;
+    }
 }
 
 .borderRadiusTop {
@@ -70,17 +77,23 @@ input {
     z-index: 9999;
     box-sizing: border-box;
     max-height: calc(4*50px);
-    border: solid 2px white;
+    border: 1.5px solid #888;
     border-top: none;
     overflow-y: scroll;
     overflow-x: hidden;
+    animation: ddEnter 0.15s ease;
+    background: #111;
+}
+
+@keyframes ddEnter {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .movieSearched {
     display: flex;
     width: 100%;
     height: 50px;
-    background-color: #353535;
     border-bottom: solid 2px white;
     display: flex;
     align-items: center;
@@ -88,9 +101,25 @@ input {
     padding-left: 50px;
     cursor: pointer;
     box-sizing: border-box;
+    transition: background 0.15s;
 
+    p {
+        margin: 0;
+        font-size: 16px;
+        color: #aaa;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
     &:hover {
-        background-color: #585858;
+        background: #222;
+        p { color: #fff; }
+    }
+
+    &:not(:last-child) {
+        border-bottom: 1px solid #2a2a2a;
     }
 
     img {

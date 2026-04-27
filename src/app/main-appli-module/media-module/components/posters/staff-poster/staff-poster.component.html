@@ -1,15 +1,11 @@
 @if (jobTitle === JobModel.ACTOR) {
-<h2>Acteur</h2>
+<h2>Casting</h2>
 } @else if(jobTitle === JobModel.DIRECTOR) {
-    @if(mediaType === MediaTypeModel.SERIES) {
-        <h2>Créateur</h2>
-    }@else {
-        <h2>Réalisateur</h2>
-    }
+<h2>Equipe tecnhique</h2>
 }
 <div class="container-staffs" [style.gap.vw]="gap">
-@for (staff of staffs; track $index) {
-    <div class="container-staff" (click)="onClickStaff(staff)">
+@for (credit of credits; track $index) {
+    <div class="container-staff" (click)="onClickCredit(credit)">
         <div class="staff-poster" [style.height.vw]="height" [style.width.vw]="width">
             <div class="container-tmp-poster"></div>
             @if (srcPoster[$index]) {
@@ -18,7 +14,7 @@
                 <img [src]="srcIconStaff">
             }
         </div>
-        <p> {{ staff.fullName }} </p>
+        <p> {{ credit.fullName }} </p>
     </div>
 }
 @for (item of posterTmp; track $index) {

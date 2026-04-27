@@ -1,0 +1,264 @@
+.ct-wrap {
+  width: 100%;
+  box-sizing: border-box;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ── Table ── */
+.ct-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+thead tr {
+  background-color: #111;
+  border-bottom: 2px solid #2a2a2a;
+}
+
+th {
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: left;
+  text-transform: uppercase;
+  /* font-family: 'Courier New', monospace; */
+  /*   color: #555; */
+}
+
+tbody tr {
+  border-bottom: 1px solid #222;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: #1e1e1e;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+td {
+  padding: 6px 8px;
+  vertical-align: middle;
+}
+
+/* ── Text input ── */
+.ct-input {
+  width: 100%;
+  height: 34px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  color: #ccc;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: #2a2a2a;
+  }
+
+  &:focus {
+    border-color: #444;
+    background: #111;
+  }
+
+  &::placeholder {
+    color: #444;
+  }
+}
+
+.ct-input-order {
+  width: 70px;
+
+  /* Masque les flèches number */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+/* ── Select custom ── */
+.ct-select-wrap {
+  position: relative;
+  height: 34px;
+}
+
+.ct-select-wrap.is-open {
+  z-index: 50;
+}
+
+.ct-select-btn {
+  width: 100%;
+  height: 34px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: #2a2a2a;
+  }
+}
+
+.ct-select-wrap.is-open .ct-select-btn {
+  border-color: #444;
+  background: #111;
+  border-radius: 6px 6px 0 0;
+}
+
+.ct-select-label {
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  color: #ccc;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ct-arrow {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #666;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.ct-select-wrap.is-open .ct-arrow {
+  transform: rotate(180deg);
+}
+
+.ct-dropdown {
+  display: none;
+  position: absolute;
+  top: 34px;
+  left: 0;
+  right: 0;
+  background: #111;
+  border: 1.5px solid #444;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  z-index: 49;
+  min-height: 34px;
+  max-height: calc(34px * 6);
+  overflow-y: auto;
+  animation: ddEnter 0.15s ease;
+
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+}
+
+.ct-select-wrap.is-open .ct-dropdown {
+  display: block;
+}
+
+@keyframes ddEnter {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ct-option {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  color: #aaa;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background: #222;
+    color: #fff;
+  }
+}
+
+.ct-option.selected {
+  background: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.ct-divider {
+  height: 1px;
+  background: #2a2a2a;
+  margin: 0 8px;
+}
+
+th:nth-child(1) { width: 17.5%; }  /* Nom complet      */
+th:nth-child(2) { width: 17.5%; }  /* Nom original     */
+th:nth-child(3) { width: 15%; }  /* Personnage       */
+th:nth-child(4) { width: 20%; }  /* Rôle             */
+th:nth-child(5) { width: 22%; }  /* Poster (URL)     */
+th:nth-child(6) { width: 8%;  }  /* Ordre            */
+
+th:nth-child(7) { width: 40px; }
+
+.td-action {
+  text-align: center;
+  padding: 0 6px;
+}
+
+.ct-btn-remove {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+  line-height: 1;
+
+  &:hover {
+    color: #e05555;
+    background: rgba(224, 85, 85, 0.1);
+  }
+}
+
+.ct-footer {
+  border-top: 1px solid #222;
+  padding: 10px 14px;
+}
+
+.ct-btn-add {
+  background: none;
+  border: 1.5px dashed #333;
+  border-radius: 6px;
+  color: #555;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.03em;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  width: 100%;
+
+  &:hover {
+    border-color: #666;
+    color: #aaa;
+  }
+}
