@@ -33,7 +33,7 @@ export class SeriesService {
       otherTitles: series.otherTitles || [],
       credits: series.credits || [],
       categories: series.categories || [],
-      keyWord: series.keyWord || undefined,
+      keyWords: series.keyWords || undefined,
       description: series.description || undefined,
       date: series.date ? new Date(series.date) : new Date(),
       startShow: series.startShow || '00:00:00',

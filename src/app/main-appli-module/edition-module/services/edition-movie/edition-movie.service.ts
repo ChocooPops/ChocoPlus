@@ -348,7 +348,7 @@ export class EditionMovieService extends EditionMediaService {
       credits: movie.credits || [],
       categories: movie.categories || [],
       date: movie.date || new Date(),
-      keyWords: movie.keyWord ?? [],
+      keyWords: movie.keyWords ?? [],
       description: movie.description,
       posters: this.setPosterForMediaResearched(movie),
       horizontalPoster: this.setPosterHorizontalResearched(movie, state),

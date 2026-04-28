@@ -585,7 +585,7 @@ export class EditionSeriesService extends EditionMediaService {
       otherTitles: series.otherTitles || [],
       credits: series.credits || [],
       categories: series.categories || [],
-      keyWords: series.keyWord ?? [],
+      keyWords: series.keyWords ?? [],
       description: series.description,
       date: series.date ? new Date(series.date) : new Date(),
       startShow: series.startShow || '00:00:00',

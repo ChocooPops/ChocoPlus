@@ -44,6 +44,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+ margin-right: 5px;
 
   img {
     width: 10px;

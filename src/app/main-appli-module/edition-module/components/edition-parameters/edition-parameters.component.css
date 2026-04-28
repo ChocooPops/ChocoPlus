@@ -3,6 +3,7 @@
     width: 100%;
     padding-top: 40px;
     overflow-y: auto;
+    color: var(--white-dark);
 }
 
 .containerEditionParameters::-webkit-scrollbar {
@@ -47,6 +48,7 @@
         transform: rotate(90deg);
         transition: transform 0.3s;
         margin-right: 10px;
+        filter: invert(0.2);
     }
 
 }

@@ -94,7 +94,7 @@ input {
     height: 50px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
     padding-left: 50px;
     cursor: pointer;
     box-sizing: border-box;

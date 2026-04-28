@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener, ElementRef } from '@angular/core';
 import { CreditModel } from '../../../media-module/models/credit.interface';
 import { JobModel } from '../../../media-module/models/job.eum';
 import { FormsModule } from '@angular/forms';
@@ -19,9 +19,19 @@ export class CreditsTableComponent {
 
   openDropdown: string | null = null;
 
+  constructor(private readonly elementRef: ElementRef) { }
+
   toggleDropdown(key: string, event: MouseEvent): void {
     event.stopPropagation();
     this.openDropdown = this.openDropdown === key ? null : key;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const clickedInside = this.elementRef.nativeElement.contains(event.target);
+    if (!clickedInside) {
+      this.openDropdown = null;
+    }
   }
 
   selectJob(credit: CreditModel, job: JobModel, event: MouseEvent): void {

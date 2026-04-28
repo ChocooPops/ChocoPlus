@@ -59,7 +59,7 @@ export class MovieService {
       date: new Date(movie.date) || undefined,
       credits: movie.credits || [],
       categories: movie.categories || [],
-      keyWord: movie.keyWord || undefined,
+      keyWords: movie.keyWords || undefined,
       description: movie.description || undefined,
       srcPosterNormal: movie.srcPoster.normal.length <= 0 ? undefined : movie.srcPoster.normal,
       srcPosterSpecial: movie.srcPoster.special.length <= 0 ? undefined : movie.srcPoster.special,

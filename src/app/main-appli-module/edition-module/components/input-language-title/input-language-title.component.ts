@@ -17,11 +17,11 @@ export class InputLanguageTitleComponent {
 
   srcImages: { [iso: string]: string } = {};
   displayLanguageChoice: { [iso: string]: boolean } = {};
-  isoTab: ISO_3166_1[] = [ISO_3166_1.FR, ISO_3166_1.US, ISO_3166_1.ES, ISO_3166_1.DE, ISO_3166_1.IT, ISO_3166_1.RU, ISO_3166_1.PT, ISO_3166_1.CN, ISO_3166_1.JP, ISO_3166_1.KR, ISO_3166_1.VO]
+  isoTab: ISO_3166_1[] = Object.values(ISO_3166_1);
   isoAvailable: ISO_3166_1[] = [];
   srcDelete: string = './icon/delete.svg';
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(private readonly elementRef: ElementRef) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['titles']) {

@@ -9,7 +9,7 @@ export interface MediaModel {
     jellyfinId: string,
     otherTitles?: TranslationTitle[],
     credits?: CreditModel[],
-    keyWord?: string[] | undefined,
+    keyWords?: string[] | undefined,
     categories?: CategorySimpleModel[],
     description?: string | undefined,
     date?: Date | undefined,

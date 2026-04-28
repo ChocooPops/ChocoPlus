@@ -1,13 +1,13 @@
 export enum ISO_3166_1 {
-    VO = 'VO',
-    US = 'US',
     FR = 'FR',
+    US = 'US',
     ES = 'ES',
     DE = 'DE',
     IT = 'IT',
-    JP = 'JP',
+    PT = 'PT',
     RU = 'RU',
+    JP = 'JP',
     KR = 'KR',
     CN = 'CN',
-    PT = 'PT'
+    VO = 'VO'
 }

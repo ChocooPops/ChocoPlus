@@ -8,9 +8,9 @@
 
 .container-button {
     position: absolute;
-    right: -65px;
-    top: 0;
-    transform: scale(0.8);
+    right: -62px;
+    top: 5px;
+    transform: scale(0.9);
 }
 
 .input-text {
@@ -18,10 +18,10 @@
     height: 45px;
     border: 1.5px solid var(--edit-border);
     border-top: none;
-    background: var(--edit-background);
     box-sizing: border-box;
     position: relative;
     transition: border-color 0.2s;
+    background-color: transparent;
 
     &:focus-within {
         border-color: var(--edit-border-hover);
@@ -57,7 +57,7 @@
     }
 
     &:hover {
-        background-color: #303030;
+        background-color: var(--edit-background-hover);
     }
 }
 
