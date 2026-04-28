@@ -4,11 +4,12 @@ import { InputTextEditionComponent } from '../input-text-edition/input-text-edit
 import { CategoryService } from '../../services/category/category.service';
 import { CategorySimpleModel } from '../../models/category/categorySimple.model';
 import { Subscription } from 'rxjs';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-input-categories-edition',
   standalone: true,
-  imports: [InputTextEditionComponent, ContainerWordComponent],
+  imports: [InputTextEditionComponent, ContainerWordComponent, NgClass],
   templateUrl: './input-categories-edition.component.html',
   styleUrl: './input-categories-edition.component.css'
 })

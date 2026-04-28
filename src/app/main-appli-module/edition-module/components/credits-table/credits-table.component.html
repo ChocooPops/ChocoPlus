@@ -2,6 +2,7 @@
   <table class="ct-table">
     <thead>
       <tr>
+        <th>Tmdb Id</th>
         <th>Nom complet</th>
         <th>Nom original</th>
         <th>Personnage</th>
@@ -14,6 +15,9 @@
     <tbody>
       @for (credit of credits; track credit.id; let i = $index) {
         <tr>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="credit.tmdbId" (ngModelChange)="onFieldChange(credit)"/>
+          </td>
           <td>
             <input class="ct-input" type="text" [(ngModel)]="credit.fullName" (ngModelChange)="onFieldChange(credit)"/>
           </td>

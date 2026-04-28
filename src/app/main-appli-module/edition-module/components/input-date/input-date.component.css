@@ -1,6 +1,6 @@
 input {
-    color: white;
-    font-size: 18px;
+    color: var(--edit-color);
+    font-size: 17px;
     padding-left: 15px;
 }
 
@@ -11,16 +11,21 @@ input::placeholder {
 
 input:focus {
     outline: none;
-    border-color: white;
+    border-color: transparent;
 }
 
 .container-form-date {
     width: 200px;
     height: 40px;
-    border: solid white 2px;
+    border: 1.5px solid var(--edit-border);
+    background: var(--edit-background);
+    transition: border-color 0.2s;
     border-radius: 5px;
-    background-color: transparent;
     font-size: 17px;
+
+    &:focus-within {
+        border-color: var(--edit-border-hover);
+    }
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {

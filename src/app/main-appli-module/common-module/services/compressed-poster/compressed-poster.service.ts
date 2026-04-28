@@ -65,7 +65,7 @@ export class CompressedPosterService {
   }
 
   public insertIntoUrlBeforeFilename(url: string, insert: ScalePoster): string {
-    if (insert !== ScalePoster.SCALE_ORIGINAL) {
+    if (insert !== ScalePoster.SCALE_ORIGINAL && !url.includes(insert)) {
       const urlParts = url.split('/');
 
       if (urlParts.length < 2) return url;

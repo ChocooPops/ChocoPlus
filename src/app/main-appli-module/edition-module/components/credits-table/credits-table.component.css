@@ -22,7 +22,7 @@ th {
   padding: 12px 14px;
   font-size: 13px;
   font-weight: bold;
-  color: #ffffff;
+  color: var(--white-dark);
   text-align: left;
   text-transform: uppercase;
   /* font-family: 'Courier New', monospace; */
@@ -208,14 +208,15 @@ td {
   margin: 0 8px;
 }
 
-th:nth-child(1) { width: 17.5%; }  /* Nom complet      */
-th:nth-child(2) { width: 17.5%; }  /* Nom original     */
-th:nth-child(3) { width: 15%; }  /* Personnage       */
-th:nth-child(4) { width: 20%; }  /* Rôle             */
-th:nth-child(5) { width: 22%; }  /* Poster (URL)     */
-th:nth-child(6) { width: 8%;  }  /* Ordre            */
+th:nth-child(1) { width: 100px; }  /* Tmdb ID      */
+th:nth-child(2) { width: 17.5%; }  /* Nom complet      */
+th:nth-child(3) { width: 17.5%; }  /* Nom original     */
+th:nth-child(4) { width: 15%; }  /* Personnage       */
+th:nth-child(5) { width: 20%; }  /* Rôle             */
+th:nth-child(6) { width: 20%; }  /* Poster (URL)     */
+th:nth-child(7) { width: 8%;  }  /* Ordre            */
 
-th:nth-child(7) { width: 40px; }
+th:nth-child(8) { width: 40px; }
 
 .td-action {
   text-align: center;

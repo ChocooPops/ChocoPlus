@@ -12,14 +12,14 @@
     align-items: center;
     background-color: transparent;
     border-radius: 7px;
-    border: solid white 2px;
+    border: solid var(--white-dark) 2px;
     box-shadow: 10px 10px 15px black;
     cursor: pointer;
     box-sizing: border-box;
     transition: 0.3s background-color, 0.3s color;
 
     p {
-        color: white;
+        color: var(--white-dark)white;
         font-weight: bold;
         font-size: 23px;
         margin: 0;
@@ -27,7 +27,7 @@
 }
 
 .btRemove:hover {
-    background-color: white;
+    background-color: var(--white-dark);
 
     p {
         color: black;

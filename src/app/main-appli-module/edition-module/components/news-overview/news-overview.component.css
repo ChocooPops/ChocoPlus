@@ -51,7 +51,7 @@
 
     &:hover {
         .container-cover {
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.7);
         }
 
         .container-vertical-button {
@@ -76,7 +76,7 @@
     top: 25px;
     position: absolute;
     z-index: 25;
-    gap: 10px;
+    gap: 25px;
 }
 
 .container-horizontal-button {
@@ -87,7 +87,11 @@
     top: 25px;
     position: absolute;
     z-index: 25;
-    gap: 10px;
+    gap: 25px;
+}
+
+.zoom {
+    transform: scale(1.5) !important;
 }
 
 .container-cover {
@@ -130,9 +134,10 @@
     aspect-ratio: 1920 / 1080;
     border-radius: 0.5vw;
     overflow: hidden;
+    transition: border 0.2s;
 
     &:hover {
-        border: solid 4px rgb(216, 216, 216);
+        border: solid 4px #b1b1b1;
     }
 
     img {
@@ -147,7 +152,7 @@
 }
 
 .already-choosen {
-    border: solid 4px rgb(216, 216, 216);
+    border: solid 4px #b1b1b1;
 }
 
 .container-other-background::-webkit-scrollbar {

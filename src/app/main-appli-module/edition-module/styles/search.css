@@ -4,11 +4,11 @@ input {
     border: transparent;
     font-size: 17px;
     padding-left: 75px;
-    color: white;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
-    background-color: transparent;
     box-sizing: border-box;
+    background-color: transparent;
+    color: var(--edit-color);
 }
 
 .containerResearchInput {
@@ -30,20 +30,19 @@ input {
     img {
         height: 100%;
         width: 100%;
-        filter: invert(0.1);
+        filter: invert(0.2);
     }
 }
 
 .containerInputResearch {
     margin: 0;
-    border: 2px solid white;
-    border: 1.5px solid #3a3a3a;
-    background: #111;
+    border: 1.5px solid var(--edit-border);
+    background: var(--edit-background);
     border-radius: 5px;
     transition: border-color 0.2s;
 
     &:focus-within {
-        border-color: #888;
+        border-color: var(--edit-border-hover);
     }
 }
 
@@ -58,8 +57,7 @@ input {
 }
 
 .containerInputResearch input::placeholder {
-    color: white;
-    opacity: 0.8;
+    color: var(--edit-color);
 }
 
 .containerInputResearch input:focus {
@@ -77,12 +75,12 @@ input {
     z-index: 9999;
     box-sizing: border-box;
     max-height: calc(4*50px);
-    border: 1.5px solid #888;
+    border: 1.5px solid var(--edit-border-hover);
     border-top: none;
     overflow-y: scroll;
     overflow-x: hidden;
     animation: ddEnter 0.15s ease;
-    background: #111;
+    background: var(--edit-background);
 }
 
 @keyframes ddEnter {
@@ -94,7 +92,6 @@ input {
     display: flex;
     width: 100%;
     height: 50px;
-    border-bottom: solid 2px white;
     display: flex;
     align-items: center;
     gap: 20px;
@@ -102,11 +99,12 @@ input {
     cursor: pointer;
     box-sizing: border-box;
     transition: background 0.15s;
+    flex-shrink: 0;
 
     p {
         margin: 0;
         font-size: 16px;
-        color: #aaa;
+        color: var(--edit-color);
         letter-spacing: 0.03em;
         white-space: nowrap;
         overflow: hidden;
@@ -114,7 +112,7 @@ input {
     }
     
     &:hover {
-        background: #222;
+        background: var(--edit-background-hover);
         p { color: #fff; }
     }
 

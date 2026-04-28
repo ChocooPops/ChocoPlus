@@ -68,4 +68,11 @@ img {
     --grey: #808080;
     --grey-dark: #535353;
     --white-dark: #E6E6E6;
+
+    --edit-border: #3a3a3a;
+    --edit-border-hover: #888;
+    --edit-background: #111;
+    --edit-background-hover: #222;
+    --edit-color: #aaa;
+    --edit-placeholder: #aaa;
 }

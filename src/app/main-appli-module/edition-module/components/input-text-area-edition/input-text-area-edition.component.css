@@ -1,9 +1,22 @@
 .containerInputArea {
-    border: solid white 2px;
-    background-color: transparent;
+    border: 1.5px solid var(--edit-border);
+    background: var(--edit-background);
     border-radius: 5px;
     padding: 10px;
     position: relative;
+    transition: border-color 0.2s;
+
+    .wordLimit {
+        background-color: var(--edit-border);
+    }
+
+    &:focus-within {
+        border-color: var(--edit-border-hover);
+        .wordLimit {
+            background-color: var(--edit-border-hover);
+        }
+    }
+
 }
 
 .container-area-series {
@@ -35,9 +48,9 @@
     justify-content: center;
     align-items: center;
     font-size: 15px;
-    background-color: white;
     color: black;
     padding-inline: 5px;
+    transition: background-color 0.2s;
 
     p {
         padding: 5px;
@@ -46,17 +59,17 @@
 }
 
 textarea {
-    color: white;
-    font-size: 18px;
+    color: var(--edit-color);
+    font-size: 17px;
 }
 
 textarea::placeholder {
     font-family: Arial, Helvetica, sans-serif;
-    color: #585858;
+    color: var(--edit-placeholder);
     opacity: 0.8;
 }
 
 textarea:focus {
     outline: none;
-    border-color: white;
+    border-color: transparent;
 }

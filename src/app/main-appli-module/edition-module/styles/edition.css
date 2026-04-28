@@ -11,6 +11,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     position: absolute;
+    color: var(--white-dark);
 }
 
 .containerFieldToFill {

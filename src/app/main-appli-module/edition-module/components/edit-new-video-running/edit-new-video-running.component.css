@@ -41,7 +41,10 @@
 .container-jellyfin {
     width: 350px;
     height: 40px;
-    border: 2px solid white;
+    border: 1.5px solid var(--edit-border);
+    background: var(--edit-background);
+    color: var(--edit-color);
+    font-size: 17px;
     border-radius: 5px;
     display: flex;
     justify-content: left;

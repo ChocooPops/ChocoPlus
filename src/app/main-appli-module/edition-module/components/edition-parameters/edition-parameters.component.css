@@ -53,7 +53,7 @@
 
 .containerParameterTabPressed {
     &:hover {
-        background-color: #343434;
+        background-color: #262626;
 
         img {
             transform: rotate(270deg);
@@ -62,7 +62,7 @@
 }
 
 .containerParameterTabClicked {
-    background-color: #343434;
+    background-color: #262626;
 
     img {
         transform: rotate(270deg);
@@ -101,12 +101,12 @@
 
 .containerUnderParametersPressed {
     &:hover {
-        background-color: #343434;
+        background-color: #262626;
     }
 }
 
 .containerUnderParametersClicked {
-    background-color: #343434;
+    background-color: #262626;
 }
 
 @keyframes enter {

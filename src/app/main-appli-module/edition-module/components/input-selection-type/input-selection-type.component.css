@@ -4,16 +4,15 @@
     height: 40px;
     width: 200px;
     position: relative;
-    font-size: 15px;
+    font-size: 16px;
     gap: 5px;
     overflow: visible;
+    color: var(--edit-color);
 }
 
 .containerMainSelection {
     height: 100%;
     width: 100%;
-    background-color: transparent;
-    border: solid 2px white;
     text-align: center;
     position: relative;
     display: grid;
@@ -23,6 +22,13 @@
     cursor: pointer;
     box-sizing: border-box;
     position: relative;
+    transition: border-color 0.2s;
+    border: 1.5px solid var(--edit-border);
+    background: var(--edit-background);
+
+    &:focus-within {
+        border-color: var(--edit-border-hover);
+    }
 }
 
 .borderRadiusEveryWhere {
@@ -44,6 +50,7 @@
     height: 10px;
     transform: rotate(-90deg);
     transition: transform 0.2s;
+    filter: invert(0.3);
   }
 }
 

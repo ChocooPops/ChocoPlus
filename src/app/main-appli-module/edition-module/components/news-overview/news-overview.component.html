@@ -7,17 +7,17 @@
                 <app-news [news]="news" [orientation]="news.orientation"
                     [srcBackground]="news.srcBackground"></app-news>
                 <div class="container-vertical-button">
-                    <app-button-orientation [type]="1"
+                    <app-button-orientation [type]="1" class="zoom"
                         (hasBeenClick)="onModifyOrientationNews(news.id, $event)"></app-button-orientation>
-                    <app-button-orientation [type]="3"
+                    <app-button-orientation [type]="3" class="zoom"
                         (hasBeenClick)="onModifyOrientationNews(news.id, $event)"></app-button-orientation>
-                    <app-button-orientation [type]="2"
+                    <app-button-orientation [type]="2" class="zoom"
                         (hasBeenClick)="onModifyOrientationNews(news.id, $event)"></app-button-orientation>
                 </div>
                 <div class="container-horizontal-button">
-                    <app-button-delete [displayPicture]="true" (click)="onDeleteNews(news.id)"></app-button-delete>
-                    <app-button-move [direction]="2" (click)="onMoveTop(news.id)"></app-button-move>
-                    <app-button-move [direction]="1" (click)="onMoveBottom(news.id)"></app-button-move>
+                    <app-button-delete class="zoom" [displayPicture]="true" (click)="onDeleteNews(news.id)"></app-button-delete>
+                    <app-button-move class="zoom" [direction]="2" (click)="onMoveTop(news.id)"></app-button-move>
+                    <app-button-move class="zoom" [direction]="1" (click)="onMoveBottom(news.id)"></app-button-move>
                 </div>
                 <div class="container-cover"></div>
 

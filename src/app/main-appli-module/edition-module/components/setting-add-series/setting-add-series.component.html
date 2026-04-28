@@ -62,7 +62,7 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Credits<span class="yellow">**</span></p>
+        <p>Credits <span class="yellow">**</span></p>
         <app-credits-table [credits]="editSeries.credits" (onCreditChanged)="onInputCredits($event)"></app-credits-table>
     </div>
     
@@ -79,7 +79,7 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Description</p>
+        <p>Description <span class="yellow">**</span></p>
         <app-input-text-area-edition [text]="editSeries.description" (onInputChange)="onInputDescription($event)"
             [maxLength]="maxLength"></app-input-text-area-edition>
     </div>

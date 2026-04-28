@@ -1,7 +1,7 @@
 .container-input-other-title {
     display: flex;
     flex-direction: column;
-    background-color: #141414;
+    background: var(--edit-background);
     position: relative;
     z-index: 999;
 }
@@ -16,10 +16,17 @@
 .input-text {
     width: 100%;
     height: 45px;
-    border: solid white 2px;
+    border: 1.5px solid var(--edit-border);
     border-top: none;
-    background-color: transparent;
+    background: var(--edit-background);
     box-sizing: border-box;
+    position: relative;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+        border-color: var(--edit-border-hover);
+        z-index: 20;
+    }
 }
 
 .container-input-other-title .input-text:last-child {
@@ -30,6 +37,7 @@
     height: 100%;
     width: 100%;
     position: relative;
+    animation: enter 0.2s;
 }
 
 .flag {
@@ -54,19 +62,19 @@
 }
 
 input {
-    color: white;
-    font-size: 18px;
+    color: var(--edit-color);
+    font-size: 17px;
     padding-left: 15px;
 }
 
 input::placeholder {
-    color: #585858;
+    color: var(--edit-color);
     opacity: 0.8;
 }
 
 input:focus {
     outline: none;
-    border-color: white;
+    border-color: transparent;
 }
 
 .container-choose-language {
@@ -79,7 +87,7 @@ input:focus {
     min-height: 40px;
     z-index: 999;
     flex-wrap: wrap;
-    background-color: #161616;
+    background-color: var(--edit-background);
     border-radius: 3px;
     box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.4), -15px -15px 15px rgba(0, 0, 0, 0.4);
 }
@@ -97,7 +105,7 @@ input:focus {
     cursor: pointer;
 
     &:hover {
-        background-color: #303030;
+        background-color: var(--edit-background-hover);
     }
 
     img {
@@ -107,5 +115,22 @@ input:focus {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+    }
+}
+
+.icon-delete {
+    filter: invert(0.3);
+    height: 16px !important;
+    width: 16px !important;
+}
+
+@keyframes enter {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
     }
 }

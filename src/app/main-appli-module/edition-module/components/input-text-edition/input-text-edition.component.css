@@ -1,40 +1,55 @@
 .inputText_1 {
     width: 350px;
     height: 40px;
-    border: solid white 2px;
+    border: 1.5px solid var(--edit-border);
     border-radius: 5px;
-    background-color: transparent;
+    background: var(--edit-background);
+    transition: border-color 0.2s;
+
+    &:focus-within {
+        border-color: var(--edit-border-hover);
+    }
 }
 
 .inputText_2 {
     width: 280px;
     height: 37px;
-    border: solid white 2px;
+    border: 1.5px solid var(--edit-border);
     border-radius: 5px;
-    background-color: transparent;
+    background: var(--edit-background);
+    transition: border-color 0.2s;
+
+    &:focus-within {
+        border-color: var(--edit-border-hover);
+    }
 }
 
 .inputText_3 {
     width: 100%;
     height: 45px;
-    border: solid white 2px;
+    border: 1.5px solid var(--edit-border);
     border-radius: 5px;
-    background-color: transparent;
+    background: var(--edit-background);
     box-sizing: border-box;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+        border-color: var(--edit-border-hover);
+    }
 }
 
 input {
-    color: white;
-    font-size: 18px;
+    color: var(--edit-color);
+    font-size: 17px;
     padding-left: 15px;
 }
 
 input::placeholder {
-    color: #585858;
+    color: var(--edit-placeholder);
     opacity: 0.8;
 }
 
 input:focus {
     outline: none;
-    border-color: white;
+    border-color: transparent;
 }
