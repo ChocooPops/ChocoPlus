@@ -19,7 +19,7 @@
                 @if(description !== '') {
                 <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
                 }
-                <p [ngClass]="'margin-bottom-text'"> <span class="legend">Créateur: </span> 
+                <p [ngClass]="'margin-bottom-text'"> <span class="legend">Production & Réalisation: </span> 
                     @for (crew of crews; track $index) {
                         @if ($index !== crews.length - 1) {
                             <span class="content" (click)="setFilterCredit(crew)">{{ crew.fullName}}</span>,

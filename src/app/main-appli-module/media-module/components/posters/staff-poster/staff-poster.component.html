@@ -1,7 +1,7 @@
 @if (jobTitle === JobModel.ACTOR) {
 <h2>Casting</h2>
 } @else if(jobTitle === JobModel.DIRECTOR) {
-<h2>Equipe tecnhique</h2>
+<h2>Production & Réalisation</h2>
 }
 <div class="container-staffs" [style.gap.vw]="gap">
 @for (credit of credits; track $index) {
