@@ -10,7 +10,7 @@ import { TmdbOperationService } from "../../services/tmdb-operation/tmdb-operati
 import { UnauthorizedError } from "./unauthorized-error-abstract.directive";
 import { EditMovieModel } from "../../models/edit-movie.interface";
 import { MediaTypeModel } from "../../../media-module/models/media-type.enum";
-import { CreditModel } from "../../../media-module/models/credit.interface";
+import { MediaCreditModel } from "../../../media-module/models/media-credit.interface";
 
 @Directive({})
 export abstract class SettingMovieAbstraction extends UnauthorizedError {
@@ -43,8 +43,8 @@ export abstract class SettingMovieAbstraction extends UnauthorizedError {
     protected mediaType: MediaTypeModel = MediaTypeModel.MOVIE;
     protected maxLenght: number = 1000;
 
-    constructor(protected editionMovieService: EditionMovieService,
-        protected tmdbOperationService: TmdbOperationService
+    constructor(protected readonly editionMovieService: EditionMovieService,
+        protected readonly tmdbOperationService: TmdbOperationService
     ) {
         super();
         this.typeSelectionPosters = this.editionMovieService.getAllTypeSelectionPoster();
@@ -108,7 +108,7 @@ export abstract class SettingMovieAbstraction extends UnauthorizedError {
         this.editionMovieService.modifyOtherLanguageTitle(titles);
     }
 
-    protected onInputCredits(credits: CreditModel[]): void {
+    protected onInputCredits(credits: MediaCreditModel[]): void {
         this.editionMovieService.modifyCredits(credits);
     }
 

@@ -5,7 +5,7 @@ import { PaginationPosterService } from '../../../services/pagination-poster/pag
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
-import { CreditModel } from '../../../models/credit.interface';
+import { MediaCreditModel } from '../../../models/media-credit.interface';
 
 @Component({
   selector: 'app-staff-poster',
@@ -17,9 +17,9 @@ import { CreditModel } from '../../../models/credit.interface';
 export class StaffPosterComponent {
 
   @Input() jobTitle!: JobModel;
-  @Input() credits: CreditModel[] = [];
+  @Input() credits: MediaCreditModel[] = [];
   @Input() mediaType!: MediaTypeModel;
-  @Output() onClickCreditEmit = new EventEmitter<CreditModel>();
+  @Output() onClickCreditEmit = new EventEmitter<MediaCreditModel>();
 
   private subscription!: Subscription;
 
@@ -42,8 +42,8 @@ export class StaffPosterComponent {
     for(let i=0; i< this.minPoster - this.credits.length; i++) {
       this.posterTmp.push(i);
     }
-    this.credits.forEach((staff: CreditModel) => {
-      this.srcPoster.push(this.compressedPosterService.getStaffPoster(staff));
+    this.credits.forEach((staff: MediaCreditModel) => {
+      this.srcPoster.push(this.compressedPosterService.getCreditPoster(staff));
     });
     this.subscription = this.paginationPosterService
       .getVerticalGeometricDimensionSelection()
@@ -61,7 +61,7 @@ export class StaffPosterComponent {
     }
   }
 
-  onClickCredit(staff: CreditModel): void {
+  onClickCredit(staff: MediaCreditModel): void {
     this.onClickCreditEmit.emit(staff);
   }
   

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, HostListener, ElementRef } from '@angular/core';
-import { CreditModel } from '../../../media-module/models/credit.interface';
+import { MediaCreditModel } from '../../../media-module/models/media-credit.interface';
 import { JobModel } from '../../../media-module/models/job.eum';
 import { FormsModule } from '@angular/forms';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
@@ -13,9 +13,9 @@ import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 })
 export class CreditsTableComponent {
 
-  @Input() credits: CreditModel[] = [];
+  @Input() credits: MediaCreditModel[] = [];
   @Input() mediaType!: MediaTypeModel;
-  @Output() onCreditChanged  = new EventEmitter<CreditModel[]>();
+  @Output() onCreditChanged  = new EventEmitter<MediaCreditModel[]>();
 
   jobOptions: JobModel[] = Object.values(JobModel);
 
@@ -37,7 +37,7 @@ export class CreditsTableComponent {
     }
   }
 
-  selectJob(credit: CreditModel, job: JobModel, event: MouseEvent): void {
+  selectJob(credit: MediaCreditModel, job: JobModel, event: MouseEvent): void {
     event.stopPropagation();
     credit.job = job;
     this.openDropdown = null;
@@ -49,7 +49,7 @@ export class CreditsTableComponent {
   }
 
   addCredit(): void {
-    const newCredit: CreditModel = {
+    const newCredit: MediaCreditModel = {
       id: Date.now(),
       tmdbId: 0,
       fullName: '',
@@ -68,7 +68,7 @@ export class CreditsTableComponent {
     this.onCreditChanged.emit(this.credits);
   }
 
-  onFieldChange(credit: CreditModel): void {
+  onFieldChange(credit: MediaCreditModel): void {
     this.onCreditChanged.emit(this.credits);
   }
 

@@ -19,7 +19,7 @@ import { Operation } from '../../models/catalog/operation.enum';
 import { FiltersCatalogService } from '../../services/filters-catalog/filters-catalog.service';
 import { Router } from '@angular/router';
 import { FilterType } from '../../models/catalog/filter-type.enum';
-import { CreditModel } from '../../models/credit.interface';
+import { MediaCreditModel } from '../../models/media-credit.interface';
 
 @Directive({})
 export abstract class SeriesPageAbstraction {
@@ -42,8 +42,8 @@ export abstract class SeriesPageAbstraction {
   description!: string;
   mediaInfoLoaded: boolean = false;
 
-  casts: CreditModel[] | undefined = undefined;
-  crews: CreditModel[] | undefined = undefined;
+  casts: MediaCreditModel[] | undefined = undefined;
+  crews: MediaCreditModel[] | undefined = undefined;
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
 
@@ -296,7 +296,7 @@ protected setFilterCategory(category: CategorySimpleModel): void {
     }
     this.setFilterCatalogAndNavigate(filter);
   }
-  protected setFilterCredit(credit: CreditModel): void {
+  protected setFilterCredit(credit: MediaCreditModel): void {
     const filter: FILTERS = {
       id: -2,
       title: '',

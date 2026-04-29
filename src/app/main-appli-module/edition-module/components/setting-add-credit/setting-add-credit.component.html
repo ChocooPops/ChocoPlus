@@ -1,0 +1,44 @@
+<app-popup (emitActionData)="emitAddCredit()"></app-popup>
+
+<div class="containerSettingSelected">
+    <div class="container-profil">
+
+        <div class="containerFieldToFill">
+            <p>Poster du crédit <span class="yellow">**</span></p>
+            <app-input-image-edition [exText]="exTextPoster" [srcImageAdded]="editCredit.srcPoster"
+                (inputChange)="onInputSrcPoster($event)"></app-input-image-edition>
+        </div>
+
+        <div class="containerSettingSelected" style="position: relative;">
+            <div class="containerFieldToFill">
+                <p>TMDB ID <span class="yellow">*</span></p>
+                <div class="container-flex">
+                    <app-input-number-edition [number]="editCredit.tmdbId" (onInputChange)="onInputTmdbId($event)" [placeHolder]="placeholderTextTmdbId"></app-input-number-edition>
+                    <app-ai-button #buttonSearchTmdbId (clickEmit)="onClickButtonTmdbById()" #buttonSearchTmdb></app-ai-button>
+                </div>
+            </div>
+            
+            <div class="containerFieldToFill">
+                <p>Nom complet <span class="yellow">*</span></p>
+                <div class="container-flex">
+                    <app-input-text-edition [text]="editCredit.fullName" (onInputChange)="onInputFullName($event)"
+                    [placeHolder]="placeholderTextFullName"></app-input-text-edition>
+                    <app-ai-button #buttonSearchFullName (clickEmit)="onClickButtonTmdbByFullName()" #buttonSearchTmdb></app-ai-button>
+                </div>
+            </div>
+            <div class="containerFieldToFill">
+                <p>Nom complet orignal <span class="yellow">**</span></p>
+                <app-input-text-edition [text]="editCredit.originalFullName" (onInputChange)="onInputFullName($event)"
+                    [placeHolder]="placeholderTextOriginalFullName"></app-input-text-edition>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="containerFieldToFill">
+        <div class="containerLastButton">
+            <app-button-remove (clickEmit)="onClickReset()"></app-button-remove>
+            <app-button-save (clickEmit)="onClickAddCredit()"></app-button-save>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 import { JobModel } from "./job.eum";
 
-export interface CreditModel {
+export interface MediaCreditModel {
     id: number,
     tmdbId: number,
     fullName: string,

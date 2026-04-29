@@ -1,10 +1,10 @@
 import { CategorySimpleModel } from "../../edition-module/models/category/categorySimple.model";
-import { CreditModel } from "./credit.interface";
+import { MediaCreditModel } from "./media-credit.interface";
 
 export interface MediaInfoModel {
     id: number,
-    casts: CreditModel[],
-    crews: CreditModel[],
+    casts: MediaCreditModel[],
+    crews: MediaCreditModel[],
     categories: CategorySimpleModel[],
     keyWords: string[]
 }

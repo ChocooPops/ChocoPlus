@@ -41,7 +41,7 @@ export class SettingModifyMovieComponent extends SettingMovieAbstraction {
   private typeOperation !: number;
 
   constructor(editionMovieService: EditionMovieService,
-    private route: ActivatedRoute,
+    private readonly route: ActivatedRoute,
     tmdbOperationService: TmdbOperationService
   ) {
     super(editionMovieService, tmdbOperationService)

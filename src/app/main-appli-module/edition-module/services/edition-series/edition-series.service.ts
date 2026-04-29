@@ -17,7 +17,7 @@ import { SeriesService } from '../../../media-module/services/series/series.serv
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { SeasonModel } from '../../../media-module/models/series/season.interface';
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
-import { CreditModel } from '../../../media-module/models/credit.interface';
+import { MediaCreditModel } from '../../../media-module/models/media-credit.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -106,7 +106,7 @@ export class EditionSeriesService extends EditionMediaService {
     this.updateSeries({ jellyfinId: jellyfinId });
   }
 
-  public modifyCredits(credits: CreditModel[]): void {
+  public modifyCredits(credits: MediaCreditModel[]): void {
     this.updateSeries({ credits: credits })
   }
 

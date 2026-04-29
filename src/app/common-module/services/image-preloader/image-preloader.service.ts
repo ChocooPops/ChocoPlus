@@ -9,7 +9,7 @@ import { NewsModel } from '../../../main-appli-module/news-module/models/news.in
 import { SeasonModel } from '../../../main-appli-module/media-module/models/series/season.interface';
 import { EpisodeModel } from '../../../main-appli-module/media-module/models/series/episode.interface';
 import { NewsVideoRunningModel } from '../../../main-appli-module/news-module/models/news-video-running.interface';
-import { CreditModel } from '../../../main-appli-module/media-module/models/credit.interface';
+import { MediaCreditModel } from '../../../main-appli-module/media-module/models/media-credit.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -193,10 +193,10 @@ export class ImagePreloaderService {
     return img;
   }
 
-  public getPosterFromCredits(credits: CreditModel[]): string[] {
+  public getPosterFromCredits(credits: MediaCreditModel[]): string[] {
     const img: string[] = [];
-    credits.forEach((credit: CreditModel) => {
-      const poster: string | undefined = this.compressedPosterService.getStaffPoster(credit);
+    credits.forEach((credit: MediaCreditModel) => {
+      const poster: string | undefined = this.compressedPosterService.getCreditPoster(credit);
       if (poster) {
         img.push(poster);
       }

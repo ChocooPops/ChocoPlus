@@ -15,6 +15,8 @@ import { SettingModifySeriesComponent } from "./components/setting-modify-series
 import { SettingModifyNewsMovieRunningComponent } from "./components/setting-modify-news-movie-running/setting-modify-news-movie-running.component";
 import { SettingModifyNewsSeriesRunningComponent } from "./components/setting-modify-news-series-running/setting-modify-news-series-running.component";
 import { SettingModifyHomePageSelectionsComponent } from "./components/setting-modify-home-page-selections/setting-modify-home-page-selections.component";
+import { SettingModifyCreditComponent } from "./components/setting-modify-credit/setting-modify-credit.component";
+import { SettingAddCreditComponent } from "./components/setting-add-credit/setting-add-credit.component";
 
 export const editionRoutes: Routes = [
     {
@@ -49,6 +51,17 @@ export const editionRoutes: Routes = [
         children: [
             { path: ':id', component: SettingModifySeriesComponent },
             { path: '', component: SettingModifySeriesComponent }
+        ]
+    },
+    {
+        path: 'add-credit',
+        component: SettingAddCreditComponent,
+    },
+    {
+        path: 'modify-credit',
+        children: [
+            { path: ':id', component: SettingModifyCreditComponent },
+            { path: '', component: SettingModifyCreditComponent }
         ]
     },
     {

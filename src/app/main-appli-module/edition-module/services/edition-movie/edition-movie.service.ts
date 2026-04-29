@@ -14,7 +14,7 @@ import { MovieService } from '../../../media-module/services/movie/movie.service
 import { MovieModel } from '../../../media-module/models/movie-model';
 import { EditMovieModel } from '../../models/edit-movie.interface';
 import { EditionMediaService } from '../edition-media/edition-media.service';
-import { CreditModel } from '../../../media-module/models/credit.interface';
+import { MediaCreditModel } from '../../../media-module/models/media-credit.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -95,7 +95,7 @@ export class EditionMovieService extends EditionMediaService {
     this.updateMovie({ jellyfinId: jellyfinId });
   }
 
-  public modifyCredits(credits: CreditModel[]): void {
+  public modifyCredits(credits: MediaCreditModel[]): void {
     this.updateMovie({ credits: credits })
   }
 

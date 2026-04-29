@@ -215,6 +215,7 @@ th:nth-child(6) { width: 20%; }  /* Rôle             */
 th:nth-child(7) { width: 17%; }  /* Poster (URL)     */
 th:nth-child(8) { width: 50px;  }  /* Ordre            */
 th:nth-child(9) { width: 30px; }
+th:nth-child(10) { width: 30px; }
 
 .td-action {
   text-align: center;

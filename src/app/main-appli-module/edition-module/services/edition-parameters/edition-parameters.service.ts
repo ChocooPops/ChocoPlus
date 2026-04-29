@@ -104,6 +104,25 @@ export class EditionParametersService {
     },
     {
       id: this.getId(),
+      name: "Gestions des crédits",
+      isClicked: false,
+      underParameter: [
+        {
+          id: this.getId(),
+          name: "Ajouter un crédit",
+          route: "add-credit",
+          isClicked: false
+        },
+        {
+          id: this.getId(),
+          name: "Modificer un crédit",
+          route: "modify-credit",
+          isClicked: false
+        }
+      ]
+    },
+    {
+      id: this.getId(),
       name: "Gérer les sélections personnalisées",
       isClicked: false,
       underParameter: [

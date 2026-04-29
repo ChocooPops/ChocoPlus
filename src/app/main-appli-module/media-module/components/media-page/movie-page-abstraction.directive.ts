@@ -15,7 +15,7 @@ import { FILTERS } from '../../models/catalog/filters.interface';
 import { Router } from '@angular/router';
 import { FilterType } from '../../models/catalog/filter-type.enum';
 import { Operation } from '../../models/catalog/operation.enum';
-import { CreditModel } from '../../models/credit.interface';
+import { MediaCreditModel } from '../../models/media-credit.interface';
 
 @Directive({})
 export abstract class MoviePageAbstraction {
@@ -32,8 +32,8 @@ export abstract class MoviePageAbstraction {
   description!: string;
   mediaInfoLoaded: boolean = false;
 
-  crews: CreditModel[] | undefined = undefined;
-  casts: CreditModel[] | undefined = undefined;
+  crews: MediaCreditModel[] | undefined = undefined;
+  casts: MediaCreditModel[] | undefined = undefined;
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
 
@@ -192,7 +192,7 @@ export abstract class MoviePageAbstraction {
     }
     this.setFilterCatalogAndNavigate(filter);
   }
-  protected setFilterCredit(credit: CreditModel): void {
+  protected setFilterCredit(credit: MediaCreditModel): void {
     const filter: FILTERS = {
       id: -2,
       title: '',

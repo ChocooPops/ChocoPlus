@@ -1,4 +1,4 @@
-import { CreditModel } from "../../media-module/models/credit.interface";
+import { MediaCreditModel } from "../../media-module/models/media-credit.interface";
 import { CategorySimpleModel } from "./category/categorySimple.model";
 import { InputPosterModel } from "./input-poster.interface";
 import { TranslationTitle } from "./translation-title.interface";
@@ -8,7 +8,7 @@ export interface EditionMediaModel {
     title: string | undefined,
     jellyfinId: string | undefined,
     otherTitles: TranslationTitle[],
-    credits: CreditModel[],
+    credits: MediaCreditModel[],
     categories: CategorySimpleModel[],
     keyWords: string[],
     description: string | undefined,

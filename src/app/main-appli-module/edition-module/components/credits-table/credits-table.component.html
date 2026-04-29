@@ -6,9 +6,8 @@
         <th>Tmdb Id</th>
         <th>Nom complet</th>
         <th>Nom original</th>
-        @if (mediaType === MediaType.MOVIE) {
         <th>Personnage</th>
-        } @else if (mediaType === MediaType.SERIES) {
+        @if (mediaType === MediaType.SERIES) {
         <th>Nombre d'épisodes</th>
         }
         <th>Rôle</th>
@@ -32,11 +31,10 @@
           <td>
             <input class="ct-input" type="text" [(ngModel)]="credit.originalFullName" (ngModelChange)="onFieldChange(credit)"/>
           </td>
-          @if (mediaType === MediaType.MOVIE) {
           <td>
             <input class="ct-input" type="text" [(ngModel)]="credit.character" placeholder="—" (ngModelChange)="onFieldChange(credit)"/>
           </td>
-          } @else if (mediaType === MediaType.SERIES) {
+          @if (mediaType === MediaType.SERIES) {
           <td>
             <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.episodeCount" (ngModelChange)="onFieldChange(credit)"/>
           </td>

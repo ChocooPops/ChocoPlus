@@ -7,7 +7,7 @@ import { SeasonModel } from '../../../media-module/models/series/season.interfac
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 import { NewsModel } from '../../../news-module/models/news.interface';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
-import { CreditModel } from '../../../media-module/models/credit.interface';
+import { MediaCreditModel } from '../../../media-module/models/media-credit.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -275,7 +275,7 @@ export class CompressedPosterService {
     }
   }
 
-  public getStaffPoster(credit: CreditModel, scale: ScalePoster | undefined = undefined): string | undefined {
+  public getCreditPoster(credit: MediaCreditModel, scale: ScalePoster | undefined = undefined): string | undefined {
     if (credit.srcPoster && typeof credit.srcPoster === 'string') {
       if (scale) {
         return this.insertIntoUrlBeforeFilename(credit.srcPoster, scale);
