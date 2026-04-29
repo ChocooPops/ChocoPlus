@@ -75,7 +75,7 @@ export class ParameterAppliService {
     {
       id: this.getId(),
       name: "Qualité des posters des saisons",
-      radioButton: this.getRadioButtonForSeasonOrStaffPoster(),
+      radioButton: this.getRadioButtonForSeasonPoster(),
       call: null
     },
     {
@@ -87,7 +87,7 @@ export class ParameterAppliService {
     {
       id: this.getId(),
       name: "Qualité des posters des credits",
-      radioButton: this.getRadioButtonForSeasonOrStaffPoster(),
+      radioButton: this.getRadioButtonForCreditPoster(),
       call: null
     }
   ]
@@ -546,8 +546,43 @@ export class ParameterAppliService {
     ]
   }
 
-  private getRadioButtonForSeasonOrStaffPoster(): SimpleModel[] {
+  private getRadioButtonForSeasonPoster(): SimpleModel[] {
     return [
+      {
+        id: this.getId(),
+        name: "300px",
+        value: ScalePoster.SCALE_300h,
+        state: false,
+      },
+      {
+        id: this.getId(),
+        name: "600px",
+        value: ScalePoster.SCALE_600h,
+        state: false,
+      },
+      {
+        id: this.getId(),
+        name: "900px",
+        value: ScalePoster.SCALE_900h,
+        state: false,
+      },
+      {
+        id: this.getId(),
+        name: "Qualité originale",
+        value: ScalePoster.SCALE_ORIGINAL,
+        state: false
+      }
+    ]
+  }
+
+  private getRadioButtonForCreditPoster(): SimpleModel[] {
+    return [
+      {
+        id: this.getId(),
+        name: "100px",
+        value: ScalePoster.SCALE_100h,
+        state: false,
+      },
       {
         id: this.getId(),
         name: "300px",

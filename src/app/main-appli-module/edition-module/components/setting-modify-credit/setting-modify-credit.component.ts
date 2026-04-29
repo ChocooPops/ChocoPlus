@@ -7,18 +7,19 @@ import { map, distinctUntilChanged, take } from 'rxjs';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PopupComponent } from '../popup/popup.component';
-import { EditCreditModel } from '../../models/edit-credit.interface';
 import { InputTextEditionComponent } from '../input-text-edition/input-text-edition.component';
 import { InputNumberEditionComponent } from '../input-number-edition/input-number-edition.component';
 import { InputImageEditionComponent } from '../input-image-edition/input-image-edition.component';
 import { AiButtonComponent } from '../ai-button/ai-button.component';
 import { InputResearchCreditComponent } from '../input-search-components/input-research-credit/input-research-credit.component';
 import { MediaCreditModel } from '../../../media-module/models/media-credit.interface';
+import { ButtonRemoveComponent } from '../button-remove/button-remove.component';
+import { ButtonSaveComponent } from '../button-save/button-save.component';
 
 @Component({
   selector: 'app-setting-modify-credit',
   standalone: true,
-  imports: [PopupComponent, InputResearchCreditComponent, InputTextEditionComponent, InputNumberEditionComponent, InputImageEditionComponent, AiButtonComponent],
+  imports: [PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchCreditComponent, InputTextEditionComponent, InputNumberEditionComponent, InputImageEditionComponent, AiButtonComponent],
   templateUrl: './setting-modify-credit.component.html',
   styleUrls: ['./setting-modify-credit.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
@@ -47,7 +48,7 @@ export class SettingModifyCreditComponent extends SettingCreditAbstraction {
       distinctUntilChanged()
     ).subscribe((id: string | null) => {
       this.creditService.resetEditCredit();
-      this.initSubscriptionOfEditMovie();
+      this.initSubscriptionOfEditCredit();
       if (id) {
         this.creditService.setEditCreditImmediatlyByIdCredit(Number(id));
       }
@@ -84,14 +85,14 @@ export class SettingModifyCreditComponent extends SettingCreditAbstraction {
     });
   }
 
-  public onClickDeleteMovie(): void {
+  public onClickDeleteCredit(): void {
     this.typeOperation = 0;
     this.popup.setMessage(this.messageDelete, undefined);
     this.popup.setDisplayPopup(true);
     this.popup.setDisplayButton(true);
   }
 
-  public onClickModifyMovie(): void {
+  public onClickModifyCredit(): void {
     this.typeOperation = 1;
     this.popup.setMessage(this.messageModify, undefined);
     this.popup.setDisplayPopup(true);

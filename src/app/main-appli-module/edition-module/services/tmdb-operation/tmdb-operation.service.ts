@@ -6,6 +6,7 @@ import { EditMovieModel } from '../../models/edit-movie.interface';
 import { EditSeriesModel } from '../../models/series/edit-series.interface';
 import { EditSeasonModel } from '../../models/series/edit-season.interface';
 import { EditEpisodeModel } from '../../models/series/edit-episode.interface';
+import { EditCreditModel } from '../../models/edit-credit.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,8 @@ export class TmdbOperationService {
   private readonly apiUrlSearchMovieByJellyfin: string = 'search-movie-jellyfin';
   private readonly apiUrlSearchSeriesByTmdb: string = 'search-series-tmdb';
   private readonly apiUrlSearchSeriesJellyfin: string = 'search-series-jellyfin';
+  private readonly apiUrlSearchCreditById: string = 'search-credit-by-id';
+  private readonly apiUrlSearchCreditByFullName: string = 'search-credit-by-full-name';
 
   constructor(private http: HttpClient) { }
 
@@ -159,6 +162,24 @@ export class TmdbOperationService {
           });
         }
         return editSeries;
+      })
+    )
+  }
+
+  public fetchSearchCreditByTmdbId(tmdbId: number, editCredit: EditCreditModel): Observable<EditCreditModel> {
+    return this.http.get<any>(`${this.apiUrlAi}/${this.apiUrlSearchCreditById}/${tmdbId}`).pipe(
+      map((data: EditCreditModel) => {
+        data.id = editCredit.id;
+        return data;
+      })
+    )
+  }
+
+  public fetchSearchCreditByFullName(fullName: string, editCredit: EditCreditModel): Observable<EditCreditModel> {
+    return this.http.get<any>(`${this.apiUrlAi}/${this.apiUrlSearchCreditByFullName}/${fullName}`).pipe(
+      map((data: EditCreditModel) => {
+        data.id = editCredit.id;
+        return data;
       })
     )
   }

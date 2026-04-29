@@ -29,7 +29,7 @@ export class InputNumberEditionComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['text']) {
+    if (changes['number']) {
       if (this.formGroup) {
         this.formGroup.get('inputValue')?.setValue(this.number);
       }

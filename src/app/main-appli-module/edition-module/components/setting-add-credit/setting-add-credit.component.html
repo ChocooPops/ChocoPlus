@@ -13,22 +13,27 @@
             <div class="containerFieldToFill">
                 <p>TMDB ID <span class="yellow">*</span></p>
                 <div class="container-flex">
-                    <app-input-number-edition [number]="editCredit.tmdbId" (onInputChange)="onInputTmdbId($event)" [placeHolder]="placeholderTextTmdbId"></app-input-number-edition>
-                    <app-ai-button #buttonSearchTmdbId (clickEmit)="onClickButtonTmdbById()" #buttonSearchTmdb></app-ai-button>
+                    <app-input-number-edition [number]="editCredit.tmdbId" (onInputChange)="onInputTmdbId($event)"
+                        [placeHolder]="placeholderTextTmdbId"
+                        (keydown.enter)="onClickButtonTmdbById()"></app-input-number-edition>
+                    <app-ai-button #buttonSearchTmdbId (clickEmit)="onClickButtonTmdbById()"
+                        #buttonSearchTmdb></app-ai-button>
                 </div>
             </div>
-            
+
             <div class="containerFieldToFill">
                 <p>Nom complet <span class="yellow">*</span></p>
                 <div class="container-flex">
                     <app-input-text-edition [text]="editCredit.fullName" (onInputChange)="onInputFullName($event)"
-                    [placeHolder]="placeholderTextFullName"></app-input-text-edition>
-                    <app-ai-button #buttonSearchFullName (clickEmit)="onClickButtonTmdbByFullName()" #buttonSearchTmdb></app-ai-button>
+                        [placeHolder]="placeholderTextFullName"
+                        (keydown.enter)="onClickButtonTmdbByFullName()"></app-input-text-edition>
+                    <app-ai-button #buttonSearchFullName (clickEmit)="onClickButtonTmdbByFullName()"
+                        #buttonSearchTmdb></app-ai-button>
                 </div>
             </div>
             <div class="containerFieldToFill">
                 <p>Nom complet orignal <span class="yellow">**</span></p>
-                <app-input-text-edition [text]="editCredit.originalFullName" (onInputChange)="onInputFullName($event)"
+                <app-input-text-edition [text]="editCredit.originalFullName" (onInputChange)="onInputOriginalFullName($event)"
                     [placeHolder]="placeholderTextOriginalFullName"></app-input-text-edition>
             </div>
         </div>

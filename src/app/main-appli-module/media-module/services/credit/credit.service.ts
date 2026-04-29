@@ -14,6 +14,10 @@ export class CreditService {
 
   private readonly apiUrlCredit: string = `${environment.apiUrlCredit}`;
   private readonly urlJobFilters: string = 'job-filters';
+  private readonly urlResearch: string = 'research';
+  private readonly urlAddCredit: string = 'add';
+  private readonly urlModifyCredit: string = 'credit';
+  private readonly urlDeleteCredit: string = 'delete';
 
   private currentJobFiltersSubject: BehaviorSubject<JobModel[]> = new BehaviorSubject<JobModel[]>([]);
   private currentJobFilters$: Observable<JobModel[]> = this.currentJobFiltersSubject.asObservable();
@@ -98,7 +102,7 @@ export class CreditService {
   }
 
   public fetchCreateNewCredit(): Observable<MessageReturnedModel> {
-    return this.http.post<any>(`${this.apiUrlCredit}`, this.editCreditSubject.value).pipe(
+    return this.http.post<any>(`${this.apiUrlCredit}/${this.urlAddCredit}`, this.editCreditSubject.value).pipe(
       map((data: MessageReturnedModel) => {
         if (data.other) {
           this.fetchCreditById(data.other.id).pipe(take(1)).subscribe((data: EditCreditModel | null) => {
@@ -116,7 +120,7 @@ export class CreditService {
   }
 
   public fetchModifyCredit(): Observable<MessageReturnedModel> {
-    return this.http.put<any>(`${this.apiUrlCredit}`, this.editCreditSubject.value).pipe(
+    return this.http.put<any>(`${this.apiUrlCredit}/${this.urlModifyCredit}`, this.editCreditSubject.value).pipe(
       map((data: MessageReturnedModel) => {
         if (data.other) {
 
@@ -130,7 +134,7 @@ export class CreditService {
   }
 
   public fetchDeleteCredit(): Observable<MessageReturnedModel> {
-    return this.http.delete<any>(`${this.apiUrlCredit}/${this.editCreditSubject.value.id}`).pipe(
+    return this.http.delete<any>(`${this.apiUrlCredit}/${this.urlDeleteCredit}/${this.editCreditSubject.value.id}`).pipe(
       map((data: MessageReturnedModel) => {
         if (data.state) {
           this.resetEditCredit();
@@ -144,7 +148,7 @@ export class CreditService {
   }
 
   public fetchCreditWanted(fullName: string): Observable<MediaCreditModel[]> {
-    return this.http.get<any>(`${this.apiUrlCredit}/${fullName}`).pipe(
+    return this.http.get<any>(`${this.apiUrlCredit}/${this.urlResearch}/${fullName}`).pipe(
       map((data: MediaCreditModel[]) => {
         return data;
       })
