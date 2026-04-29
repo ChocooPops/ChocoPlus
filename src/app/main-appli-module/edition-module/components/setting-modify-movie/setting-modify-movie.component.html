@@ -62,7 +62,7 @@
 
     <div class="containerFieldToFill">
         <p>Credits <span class="yellow">**</span></p>
-        <app-credits-table [credits]="editMovie.credits" (onCreditChanged)="onInputCredits($event)"></app-credits-table>
+        <app-credits-table [credits]="editMovie.credits" [mediaType]="mediaType" (onCreditChanged)="onInputCredits($event)"></app-credits-table>
     </div>
 
     <div class="containerFieldToFill">

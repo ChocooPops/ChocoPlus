@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, HostListener, ElementRef } from
 import { CreditModel } from '../../../media-module/models/credit.interface';
 import { JobModel } from '../../../media-module/models/job.eum';
 import { FormsModule } from '@angular/forms';
+import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 
 @Component({
   selector: 'app-credits-table',
@@ -13,11 +14,13 @@ import { FormsModule } from '@angular/forms';
 export class CreditsTableComponent {
 
   @Input() credits: CreditModel[] = [];
+  @Input() mediaType!: MediaTypeModel;
   @Output() onCreditChanged  = new EventEmitter<CreditModel[]>();
 
   jobOptions: JobModel[] = Object.values(JobModel);
 
   openDropdown: string | null = null;
+  MediaType = MediaTypeModel;
 
   constructor(private readonly elementRef: ElementRef) { }
 

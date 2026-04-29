@@ -2,10 +2,15 @@
   <table class="ct-table">
     <thead>
       <tr>
+        <th>Indice</th>
         <th>Tmdb Id</th>
         <th>Nom complet</th>
         <th>Nom original</th>
+        @if (mediaType === MediaType.MOVIE) {
         <th>Personnage</th>
+        } @else if (mediaType === MediaType.SERIES) {
+        <th>Nombre d'épisodes</th>
+        }
         <th>Rôle</th>
         <th>Poster</th>
         <th>Ordre</th>
@@ -16,7 +21,10 @@
       @for (credit of credits; track credit.id; let i = $index) {
         <tr>
           <td>
-            <input class="ct-input" type="text" [(ngModel)]="credit.tmdbId" (ngModelChange)="onFieldChange(credit)"/>
+            <input class="ct-input" type="text" [value]="$index + 1" disabled>
+          </td>
+          <td>
+            <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.tmdbId" (ngModelChange)="onFieldChange(credit)"/>
           </td>
           <td>
             <input class="ct-input" type="text" [(ngModel)]="credit.fullName" (ngModelChange)="onFieldChange(credit)"/>
@@ -24,9 +32,15 @@
           <td>
             <input class="ct-input" type="text" [(ngModel)]="credit.originalFullName" (ngModelChange)="onFieldChange(credit)"/>
           </td>
+          @if (mediaType === MediaType.MOVIE) {
           <td>
             <input class="ct-input" type="text" [(ngModel)]="credit.character" placeholder="—" (ngModelChange)="onFieldChange(credit)"/>
           </td>
+          } @else if (mediaType === MediaType.SERIES) {
+          <td>
+            <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.episodeCount" (ngModelChange)="onFieldChange(credit)"/>
+          </td>
+          }
           <td>
             <div class="ct-select-wrap" [class.is-open]="openDropdown === 'job-' + i">
               <div class="ct-select-btn" (click)="toggleDropdown('job-' + i, $event)">

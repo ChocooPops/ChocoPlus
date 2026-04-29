@@ -8,5 +8,6 @@ export interface CreditModel {
     character: string | null,
     srcPoster: string | null,
     job: JobModel,
+    episodeCount?: number,
     order: number
 }
