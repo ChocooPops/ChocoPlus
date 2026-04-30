@@ -16,6 +16,7 @@
 
 span.legend {
     color: var(--grey);
+    font-weight: bold;
 }
 
 span.content {
@@ -170,6 +171,19 @@ p {
     margin-bottom: 35px;
 }
 
+.character-job {
+    color: #d3d3d3;
+    font-size: 15px;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.margin-bottom-text {
+    margin-bottom: 3px;
+}
+
 @media (max-width: 1920px) {
 
     .container-form-movie {
@@ -227,12 +241,17 @@ p {
         padding-inline: 25px;
         gap: 15px;
     }
-}
 
-.hidden {
-    visibility: hidden;
-}
+    .legend {
+        font-family: 13px;
+    }
 
-.margin-bottom-text {
-    margin-bottom: 3px;
+    .content {
+        font-size: 12px;
+    }
+
+    .character-job {
+        color: #d3d3d3;
+        font-size: 11px;
+    }
 }

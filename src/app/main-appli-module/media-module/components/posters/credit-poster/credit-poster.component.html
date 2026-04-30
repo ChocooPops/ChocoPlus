@@ -5,8 +5,8 @@
 }
 <div class="container-staffs" [style.gap.vw]="gap">
 @for (credit of credits; track $index) {
-    <div class="container-staff" (click)="onClickCredit(credit)">
-        <div class="staff-poster" [style.height.vw]="height" [style.width.vw]="width">
+    <div class="container-staff">
+        <div class="staff-poster" (click)="onClickCredit(credit)" [style.height.vw]="height" [style.width.vw]="width">
             <div class="container-tmp-poster"></div>
             @if (srcPoster[$index]) {
                 <img [src]="srcPoster[$index]" (error)="onErrorImage($index)">
@@ -14,7 +14,14 @@
                 <img [src]="srcIconStaff">
             }
         </div>
-        <p> {{ credit.fullName }} </p>
+        <div class="container-info-credit">
+        <p (click)="onClickCredit(credit)" [style.width.vw]="width"> {{ credit.fullName }} </p>
+        @if (jobTitle === JobModel.ACTOR) {
+            <p (click)="onClickCredit(credit)" class="character-job" [style.width.vw]="width"> {{ credit.character }} </p>
+        } @else if(jobTitle === JobModel.DIRECTOR) {
+            <p (click)="onClickCredit(credit)" class="character-job" [style.width.vw]="width"> {{ credit.job }} </p>
+        }
+        </div>
     </div>
 }
 @for (item of posterTmp; track $index) {

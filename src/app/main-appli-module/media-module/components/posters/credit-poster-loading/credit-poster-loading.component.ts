@@ -6,13 +6,13 @@ import { GeometricDimensionSelectionModel } from '../../../models/geometric-dime
 import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-staff-poster-loading',
+  selector: 'app-credit-poster-loading',
   standalone: true,
   imports: [NgClass],
-  templateUrl: './staff-poster-loading.component.html',
-  styleUrls: ['./staff-poster-loading.component.css', '../staff-poster/staff-poster.component.css', '../../../../common-module/styles/animation.css'],
+  templateUrl: './credit-poster-loading.component.html',
+  styleUrls: ['./credit-poster-loading.component.css', '../credit-poster/credit-poster.component.css', '../../../../common-module/styles/animation.css'],
 })
-export class StaffPosterLoadingComponent {
+export class CreditPosterLoadingComponent {
   @Input() jobTitle!: JobModel;
   private subscription!: Subscription;
 

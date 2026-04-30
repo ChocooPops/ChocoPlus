@@ -178,53 +178,63 @@ export abstract class MoviePageAbstraction {
   protected abstract initSpe(): void;
   
   protected setFilterCategory(category: CategorySimpleModel): void {
-    const filter: FILTERS = {
-      id: -2,
-      title: '',
-      typeData: FilterType.CATEGORY,
-      operation: Operation.CONTAIN,
-      value: [
-        {
-          name: category.name,
-          value: category.id
-        }
-      ]
-    }
-    this.setFilterCatalogAndNavigate(filter);
+    const filters: FILTERS[] = [
+      {
+        id: -2,
+        title: '',
+        typeData: FilterType.CATEGORY,
+        operation: Operation.CONTAIN,
+        value: [
+          {
+            name: category.name,
+            value: category.id
+          }
+        ]
+      }
+    ];
+    this.setFilterCatalogAndNavigate(filters);
   }
   protected setFilterCredit(credit: MediaCreditModel): void {
-    const filter: FILTERS = {
-      id: -2,
-      title: '',
-      typeData: credit.job,
-      operation: Operation.CONTAIN,
-      value: [
-        {
-          name: credit.fullName,
-          value: credit.id
-        }
-      ]
-    }
-    this.setFilterCatalogAndNavigate(filter);
+    const filters: FILTERS[] = [];
+    let id: number = -2;
+    const jobs: JobModel[] = credit.job.split('\\').map((item) => item.trim()) as any;
+    jobs.forEach((job: JobModel) => {
+      const filter: FILTERS = {
+        id: id--,
+        title: '',
+        typeData: job,
+        operation: Operation.CONTAIN,
+        value: [
+          {
+            name: credit.fullName,
+            value: credit.id
+          }
+        ]
+      }
+      filters.push(filter);
+    });
+    this.setFilterCatalogAndNavigate(filters);
   }
   protected setFilterKeyWord(keyword: string): void {
-    const filter: FILTERS = {
-      id: -2,
-      title: '',
-      typeData: FilterType.KEY_WORD,
-      operation: Operation.CONTAIN,
-      value: [
-        {
-          name: keyword,
-          value: keyword
-        }
-      ]
-    }
-    this.setFilterCatalogAndNavigate(filter);
+    const filters: FILTERS[] = [
+      {
+        id: -2,
+        title: '',
+        typeData: FilterType.KEY_WORD,
+        operation: Operation.CONTAIN,
+        value: [
+          {
+            name: keyword,
+            value: keyword
+          }
+        ]
+      }
+    ];
+    this.setFilterCatalogAndNavigate(filters);
   }
 
-  protected setFilterCatalogAndNavigate(filtre: FILTERS): void {
-    this.filtersCatalogService.setFilterFromMediaPage(filtre);
+  protected setFilterCatalogAndNavigate(filtres: FILTERS[]): void {
+    this.filtersCatalogService.setFilterFromMediaPage(filtres);
     this.router.navigateByUrl('main-app/catalog');
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Subject, take, takeUntil, filter } from 'rxjs';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
@@ -33,16 +33,20 @@ export class MylistButtonComponent {
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    if (this.media) {
-      this.isInList = this.userService.mediaIsIntoList(this.media.id);
-    }
-
     this.userService.getMyListChanged().pipe(
       filter((changedId: number) => changedId === this.media.id),
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.isInList = this.userService.mediaIsIntoList(this.media.id);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['media']) {
+      if (this.media) {
+        this.isInList = this.userService.mediaIsIntoList(this.media.id);
+      }
+    }
   }
 
   ngOnDestroy(): void {

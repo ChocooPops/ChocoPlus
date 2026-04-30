@@ -325,11 +325,13 @@ export class FiltersCatalogService {
     return `${type} ${operation} ${values}`
   }
 
-  public setFilterFromMediaPage(filtre: FILTERS): void {
-    const filtres: FILTERS[] = this.FILTERS_SUBJECT.value.slice(0, 1);
-    filtre.title = this.getTitleByFilter(filtre);
-    filtres.push(filtre);
-    this.FILTERS_SUBJECT.next(filtres);
+  public setFilterFromMediaPage(filtres: FILTERS[]): void {
+    const filtresSubject: FILTERS[] = this.FILTERS_SUBJECT.value.slice(0, 1);
+    filtres.forEach((filtre: FILTERS) => {
+      filtre.title = this.getTitleByFilter(filtre);
+      filtresSubject.push(filtre);
+    });
+    this.FILTERS_SUBJECT.next(filtresSubject);
   }
 
 }

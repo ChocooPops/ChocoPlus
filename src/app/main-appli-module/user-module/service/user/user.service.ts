@@ -22,15 +22,16 @@ export class UserService {
   private readonly urlToggleIntoMyList: string = 'toggle-into-my-list';
   private readonly urlUpdateProfilPicture: string = 'profil-picture';
   private readonly urlUpdateUserByUser: string = 'update-user-by-user';
-  
-  private myListMedia: MediaModel[] = [];
+
+  private myListMedia: Map<number, MediaModel> = new Map();
   private myListChangedSubject = new Subject<number>();
   private myListChanged$ = this.myListChangedSubject.asObservable();
 
   public currentUserSubject: BehaviorSubject<UserModel | undefined> = new BehaviorSubject<UserModel | undefined>(undefined);
   public currentUser$: Observable<UserModel | undefined> = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private movieService: MovieService,
     private seriesService: SeriesService
   ) { }
@@ -59,27 +60,28 @@ export class UserService {
         this.currentUserSubject.next(data);
         return data;
       })
-    )
+    );
   }
 
   public fetchMyMediaListByUserId(): Observable<MediaModel[]> {
-    if (this.myListMedia.length > 0) {
-      return of(this.myListMedia)
+    if (this.myListMedia.size > 0) {
+      return of(Array.from(this.myListMedia.values()));
     } else {
       return this.http.get<any>(`${this.apiUrlUser}/${this.urlGetMyList}`).pipe(
         map((data: any) => {
-          const medias: MediaModel[] = [];
+          this.myListMedia.clear();
           data.forEach((media: MediaModel) => {
             if (media.mediaType === MediaTypeModel.MOVIE) {
-              medias.push(this.movieService.createNewMovie(media));
+              const movie = this.movieService.createNewMovie(media);
+              this.myListMedia.set(movie.id, movie);
             } else if (media.mediaType === MediaTypeModel.SERIES) {
-              medias.push(this.seriesService.createNewSeries(media));
+              const series = this.seriesService.createNewSeries(media);
+              this.myListMedia.set(series.id, series);
             }
           });
-          this.myListMedia = medias;
-          return this.myListMedia;
+          return Array.from(this.myListMedia.values());
         })
-      )
+      );
     }
   }
 
@@ -88,19 +90,19 @@ export class UserService {
       map((data: MessageReturnedModel) => {
         if (data && data.id >= 0) {
           if (data.state) {
-            this.myListMedia.push(media);
+            this.myListMedia.set(media.id, media);
           } else {
-            this.myListMedia = this.myListMedia.filter((m: MediaModel) => m.id !== media.id);
+            this.myListMedia.delete(media.id);
           }
           this.myListChangedSubject.next(media.id);
         }
         return data;
       })
-    )
+    );
   }
 
   public mediaIsIntoList(mediaId: number): boolean {
-    return this.myListMedia.some((media: MediaModel) => mediaId === media.id);
+    return this.myListMedia.has(mediaId);
   }
 
   private isChangeProfilPictureActivate: boolean = true;
@@ -126,7 +128,7 @@ export class UserService {
           this.isChangeProfilPictureActivate = true;
           return of(null);
         })
-      )
+      );
     } else {
       return of(null);
     }
@@ -134,32 +136,16 @@ export class UserService {
 
   public fetchUpdateUserByUser(update: UpdateUserModel): Observable<MessageReturnedModel> {
     return this.http.put<any>(`${this.apiUrlUser}/${this.urlUpdateUserByUser}`, update).pipe(
-      map((data: MessageReturnedModel) => {
-        return data;
-      }),
-      catchError((error) => {
-        return of({
-          id: -1,
-          state: false,
-          message: "Erreur avec le serveur"
-        })
-      })
-    )
+      map((data: MessageReturnedModel) => data),
+      catchError(() => of({ id: -1, state: false, message: 'Erreur avec le serveur' }))
+    );
   }
 
   public fetchDeleteUserByUser(): Observable<MessageReturnedModel> {
     return this.http.delete<any>(`${this.apiUrlUser}`).pipe(
-      map((data: MessageReturnedModel) => {
-        return data;
-      }),
-      catchError((error) => {
-        return of({
-          id: -1,
-          state: false,
-          message: "Erreur avec le serveur"
-        })
-      })
-    )
+      map((data: MessageReturnedModel) => data),
+      catchError(() => of({ id: -1, state: false, message: 'Erreur avec le serveur' }))
+    );
   }
-
+  
 }

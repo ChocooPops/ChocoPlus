@@ -2,6 +2,7 @@
     display: flex;
     align-items: baseline;
     overflow-x: auto;
+    padding-bottom: 30px;
 }
 
 .container-staffs::-webkit-scrollbar {
@@ -13,7 +14,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0px;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .staff-poster {
@@ -57,8 +59,29 @@ p {
     text-align: center;
     font-weight: bold;
     font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .margin-left {
     width: 50px;
+}
+
+.container-info-credit {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    p {
+        text-align: center;
+        margin: 0;
+    }
+}
+
+.character-job {
+    color: var(--grey);
+    font-size: 14px;
 }

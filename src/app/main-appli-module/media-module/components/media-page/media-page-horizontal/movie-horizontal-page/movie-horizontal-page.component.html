@@ -3,7 +3,7 @@
         @if (mediaInfoLoaded) {
         <div class="container-info">
             @if(description !== '') {
-            <p> <span class="legend">Description :</span> {{ description }} </p>
+            <p> <span class="legend">Description: </span> {{ description }} </p>
             }
             <p [ngClass]="'margin-bottom-text'"> <span class="legend">Genres: </span>
                 @for (genre of genres; track $index) {
@@ -57,19 +57,19 @@
 
     <div class="container-second-line">
         @if (crews) {
-        <app-staff-poster (onClickCreditEmit)="setFilterCredit($event)" [ngClass]="'animationPosterAndLicense'" [credits]="crews" [jobTitle]="JobModel.DIRECTOR"
-            [mediaType]="movie.mediaType"></app-staff-poster>
+        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [ngClass]="'animationPosterAndLicense'" [credits]="crews" [jobTitle]="JobModel.DIRECTOR"
+            [mediaType]="movie.mediaType"></app-credit-poster>
         } @else {
-        <app-staff-poster-loading [jobTitle]="JobModel.DIRECTOR"></app-staff-poster-loading>
+        <app-credit-poster-loading [jobTitle]="JobModel.DIRECTOR"></app-credit-poster-loading>
         }
     </div>
 
     <div class="container-third-line">
         @if (casts) {
-        <app-staff-poster (onClickCreditEmit)="setFilterCredit($event)" [ngClass]="'animationPosterAndLicense'" [credits]="casts"
-            [jobTitle]="JobModel.ACTOR"></app-staff-poster>
+        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [ngClass]="'animationPosterAndLicense'" [credits]="casts"
+            [jobTitle]="JobModel.ACTOR"></app-credit-poster>
         } @else {
-        <app-staff-poster-loading [jobTitle]="JobModel.ACTOR"></app-staff-poster-loading>
+        <app-credit-poster-loading [jobTitle]="JobModel.ACTOR"></app-credit-poster-loading>
         }
     </div>
 

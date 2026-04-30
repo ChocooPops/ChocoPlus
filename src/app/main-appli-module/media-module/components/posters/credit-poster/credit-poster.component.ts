@@ -8,13 +8,13 @@ import { CompressedPosterService } from '../../../../common-module/services/comp
 import { MediaCreditModel } from '../../../models/media-credit.interface';
 
 @Component({
-  selector: 'app-staff-poster',
+  selector: 'app-credit-poster',
   standalone: true,
   imports: [],
-  templateUrl: './staff-poster.component.html',
-  styleUrl: './staff-poster.component.css',
+  templateUrl: './credit-poster.component.html',
+  styleUrl: './credit-poster.component.css',
 })
-export class StaffPosterComponent {
+export class CreditPosterComponent {
 
   @Input() jobTitle!: JobModel;
   @Input() credits: MediaCreditModel[] = [];
