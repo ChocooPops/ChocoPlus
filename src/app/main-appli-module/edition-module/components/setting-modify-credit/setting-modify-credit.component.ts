@@ -50,6 +50,7 @@ export class SettingModifyCreditComponent extends SettingCreditAbstraction {
       this.creditService.resetEditCredit();
       this.initSubscriptionOfEditCredit();
       if (id) {
+        this.displayLoader = true;
         this.creditService.setEditCreditImmediatlyByIdCredit(Number(id));
       }
     });

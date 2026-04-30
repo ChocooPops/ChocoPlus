@@ -61,6 +61,7 @@ export class SettingModifyMovieComponent extends SettingMovieAbstraction {
       this.editionMovieService.resetEditMovie();
       this.initSubscriptionOfEditMovie();
       if (id) {
+        this.displayLoader = true;
         this.editionMovieService.setEditMovieImmediatlyByIdMovie(Number(id));
       }
     });

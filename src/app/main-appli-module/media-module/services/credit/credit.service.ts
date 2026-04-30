@@ -16,7 +16,7 @@ export class CreditService {
   private readonly urlJobFilters: string = 'job-filters';
   private readonly urlResearch: string = 'research';
   private readonly urlAddCredit: string = 'add';
-  private readonly urlModifyCredit: string = 'credit';
+  private readonly urlModifyCredit: string = 'modify';
   private readonly urlDeleteCredit: string = 'delete';
 
   private currentJobFiltersSubject: BehaviorSubject<JobModel[]> = new BehaviorSubject<JobModel[]>([]);
@@ -123,7 +123,11 @@ export class CreditService {
     return this.http.put<any>(`${this.apiUrlCredit}/${this.urlModifyCredit}`, this.editCreditSubject.value).pipe(
       map((data: MessageReturnedModel) => {
         if (data.other) {
-
+          this.fetchCreditById(data.other.id).pipe(take(1)).subscribe((data: EditCreditModel | null) => {
+            if (data) {
+              this.editCreditSubject.next(data);
+            }
+          })
         }
         return data;
       }),
