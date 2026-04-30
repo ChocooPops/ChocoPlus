@@ -1,7 +1,7 @@
 @if(displayPopup) {
 <div class="container" (click)="onClick()">
     <div class="container-popup" (click)="onClickPopup($event)"
-        [ngClass]="{'animation' : true, 'background-false' : !back, 'background-true' : back}">
+        [ngClass]="'animation'">
         @if(messages) {
         <div class="container-message">
             @for(message of messages; track message) {

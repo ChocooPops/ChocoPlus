@@ -16,7 +16,7 @@ import { DetailUserComponent } from '../detail-user/detail-user.component';
   standalone: true,
   imports: [NgClass, UpperCasePipe, TitleCasePipe, ActionUserComponent, PopupComponent, DetailUserComponent],
   templateUrl: './users-manage.component.html',
-  styleUrls: ['./users-manage.component.css', '../../../styles/role.css']
+  styleUrls: ['./users-manage.component.css']
 })
 export class UsersManageComponent {
 

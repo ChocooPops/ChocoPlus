@@ -1,19 +1,22 @@
 .container {
   height: 90%;
   width: 100%;
-  background-color: #232323;
+  background-color: #161616;
+  border: 1.5px solid #2a2a2a;
   box-sizing: border-box;
   padding-inline: 50px;
-  padding-block: 60px;
+  padding-block: 50px;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 24px;
   position: absolute;
   bottom: 0;
   z-index: 10;
   overflow-x: hidden;
   overflow-y: auto;
+
+  &::-webkit-scrollbar { width: 2px; }
 }
 
 .container-edit-profil-picture {
@@ -22,40 +25,52 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 15;
-  animation: enter-edit-profil 0.5s;
+  animation: enter-edit-profil 0.3s ease-out;
 }
 
 @keyframes enter-edit-profil {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 16px)); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
 }
 
 .barre {
-  height: 2px;
+  height: 1px;
   width: 100%;
-  background-color: var(--white-dark);
+  background-color: #2a2a2a;
+}
+
+.container-title {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  p {
+    margin: 0;
+    font-size: 26px;
+    font-weight: bold;
+    color: #fff;
+  }
 }
 
 .containe-edition {
   display: flex;
-  gap: 45px;
-  justify-content: left;
+  gap: 36px;
+  align-items: flex-start;
 }
 
 .container-pp {
-  height: 180px;
-  width: 180px;
+  height: 160px;
+  width: 160px;
   border-radius: 5px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.3s;
+
+  &:hover {
+    .container-tmp { opacity: 0.5; }
+  }
 
   .pp {
     height: 100%;
@@ -65,44 +80,38 @@
 
   .button-edit {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    bottom: 8px;
+    left: 8px;
     z-index: 10;
-  }
-
-  &:hover {
-    .container-tmp {
-      opacity: 0.4;
-    }
   }
 }
 
 .container-tmp {
-  background-color: #232323;
+  background-color: #111;
   opacity: 0;
-  transition: 0.3s opacity;
+  transition: opacity 0.2s;
   position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
+  inset: 0;
 }
 
 .button-edit {
-  height: 29px;
-  width: 29px;
+  height: 28px;
+  width: 28px;
   border-radius: 50%;
-  border: solid 3px #232323;
-  background-color: #141414;
+  border: 2px solid #1e1e1e;
+  background-color: #111;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: border 0.3s;
+  transition: border-color 0.2s;
 
   img {
     height: 40%;
     width: 40%;
+    filter: invert(0.1);
+    opacity: 0.6;
+    transition: opacity 0.2s;
   }
 
   .img-password {
@@ -111,75 +120,64 @@
   }
 
   &:hover {
-    border: solid 3px #c8aa14;
+    border-color: #FFD301;
+
+    img { opacity: 1; }
   }
-}
-
-.container-title {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-
-  p {
-    margin: 0;
-    font-size: 35px;
-    font-weight: bold;
-  }
-}
-
-.container-relative {
-  height: min-content;
-  width: min-content;
-  position: relative;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 label {
-  font-size: 15px;
-  color: var(--grey);
+  font-size: 14px;
+  color: #555;
+  font-weight: normal;
 }
 
 .container-input {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   position: relative;
 
   .button-edit {
     position: absolute;
-    right: 15px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
   }
 }
 
+.container-relative {
+  position: relative;
+  width: min-content;
+  height: min-content;
+}
+
 input {
-  color: white;
-  font-size: 20px;
-  width: 400px;
-  height: 50px;
-  border: solid 1px hsla(0, 0%, 100%, 0.3);
-  background-color: #282828;
+  color: #ccc;
+  font-size: 18px;
   font-weight: bold;
+  width: 360px;
+  height: 50px;
+  border: 1.5px solid #2a2a2a;
+  background-color: #111;
   box-sizing: border-box;
-  padding-inline: 15px;
-  border-radius: 2px;
-  font-family: Arial, Helvetica, sans-serif;
-}
+  padding-inline: 14px;
+  padding-right: 44px;
+  border-radius: 3px;
+  transition: border-color 0.2s;
 
-input::placeholder {
-  color: var(--grey);
-  opacity: 0.8;
-}
+  &::placeholder { color: #444; }
 
-input:focus {
-  outline: none;
-  border: solid 1px hsla(0, 0%, 100%, 0.3);
+  &:focus {
+    outline: none;
+    border-color: #555;
+  }
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -187,57 +185,70 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   -webkit-appearance: none;
 }
 
+.space { margin-block: 4px; }
+
 .container-end {
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 28px;
 }
 
 .container-button {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 10px;
 }
 
 .button {
   height: 45px;
-  font-size: 20px;
-  padding-inline: 30px;
-  border-radius: 3px;
-  color: var(--grey);
-  border: solid 1px var(--grey);
+  padding-inline: 35px;
+  border-radius: 4px;
+  border: 1.5px solid transparent;
   background-color: transparent;
-  transition:
-    color 0.3s,
-    border 0.3s,
-    background-color 0.3s;
   cursor: pointer;
-  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: border-color 0.2s, background-color 0.2s;
 
   p {
     margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+    transition: color 0.2s;
   }
 
   &:hover {
-    border: solid 1px white;
-    background-color: white;
-    color: black;
+    border-color: #444;
+    background-color: #1e1e1e;
+
+    p { color: #fff; }
+  }
+}
+
+.container-button .button:first-child {
+  border-color: #555;
+
+  p { color: #ddd; }
+
+  &:hover {
+    border-color: #888;
+    background-color: #2a2a2a;
   }
 }
 
 .container-button .button:last-child {
-  margin-left: 50px;
-}
+  margin-left: auto;
 
-.space {
-  margin-block: 5px;
+  &:hover {
+    border-color: #c0392b;
+    background-color: rgba(192, 57, 43, 0.1);
+
+    p { color: #e05555; }
+  }
 }
 
 @media (max-width: 1000px) {
-  .container {
-    height: 100%;
-  }
+  .container { height: 100%; }
 }

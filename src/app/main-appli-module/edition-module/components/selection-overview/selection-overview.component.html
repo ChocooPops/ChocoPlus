@@ -10,7 +10,7 @@
                     <p>{{ mediaSelection.name}}</p>
                     @if(displaySettingSelection && mediaSelection.typeSelection !== SelectionType.LICENSE_POSTER)
                     {
-                    <div class="containerButtonForMovieSelection" [ngClass]="{'animationPosterAndLicense' : true}">
+                    <div class="containerButtonForMovieSelection">
                         <app-button-delete [displayPicture]="true"
                             (click)="removeSelection(mediaSelection.id)"></app-button-delete>
                         <app-button-move [direction]="2"
@@ -22,7 +22,7 @@
                 </div>
                 <div class="movieList" [style.gap.vw]="gapBetweenMedia">
                     @for(media of mediaSelection.mediaList; track media.id) {
-                    <div class="movie" [ngClass]="{'animationPosterAndLicense' : true}">
+                    <div class="movie" [ngClass]="'animationPosterAndLicense'">
                         @if(mediaSelection.typeSelection === SelectionType.NORMAL_POSTER) {
                         <app-vertical-poster [displayOnEditionPage]="true" [media]="media"></app-vertical-poster>
                         }@else if(mediaSelection.typeSelection === SelectionType.SPECIAL_POSTER) {
@@ -32,7 +32,7 @@
                         }
                         <div class="containerCover"></div>
                         @if((mediaSelectionList.length < 2 && displaButtonForMediaLicense)) { <div
-                            class="containerButton" [ngClass]="{'animationPosterAndLicense': true}">
+                            class="containerButton">
                             <app-button-move [direction]="3" (click)="moveMediaOnRight(media.id)"></app-button-move>
                             <app-button-move [direction]="4" (click)="moveMediaOnLeft(media.id)"></app-button-move>
                             <app-button-delete [displayPicture]="true"

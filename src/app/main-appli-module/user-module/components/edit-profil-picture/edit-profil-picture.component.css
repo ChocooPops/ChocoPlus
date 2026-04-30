@@ -1,82 +1,87 @@
 .container {
-    height: 28vw;
-    width: 53.4vw;
-    background-color: #232323;
-    box-shadow: 4px 4px 15px black;
-    border-radius: 5px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    padding-block: 2vw;
+  height: 28vw;
+  width: 53.4vw;
+  background-color: #161616;
+  border: 1.5px solid #2a2a2a;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border-radius: 5px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 1.7vw;
+  box-sizing: border-box;
+  position: relative;
+
+  &::-webkit-scrollbar {
+    height: 2px;
+    width: 2px;
+  }
 }
 
 .title {
-    font-size: 2vw;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 1.628vw;
-}
-
-.container::-webkit-scrollbar {
-    height: 2px;
-    width: 2px;
+  font-size: 1.6vw;
+  font-weight: bold;
+  text-align: center;
+  color: #ebebeb;
+  margin: 0 0 1.6vw 0;
 }
 
 .container-profil-picture {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1vw;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8vw;
+  justify-content: center;
+  align-items: center;
 }
 
 .profil-picture {
-    height: 5.2vw;
-    width: 5.2vw;
-    border-radius: 0.326vw;
-    overflow: hidden;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: border 0.3s;
-    border: 2px solid transparent;
+  position: relative;
+  height: 5.2vw;
+  width: 5.2vw;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
 
-    img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
+  img {
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 
-    &:hover {
-        border: 2px solid rgb(241, 241, 241);
-    }
+  &:hover {
+    border-color: #888;
+  }
 }
 
 .container-spinner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -5%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 @media (max-width: 1536px) {
+  .container {
+    height: 430px;
+    width: 820px;
+    padding: 28px;
+  }
 
-    .container {
-        height: 430px;
-        width: 820px;
-        padding-block: 30px;
-    }
+  .title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
 
-    .title {
-        font-size: 30px;
-        margin-bottom: 25px;
-    }
+  .profil-picture {
+    height: 76px;
+    width: 76px;
+  }
 
-    .profil-picture {
-        height: 80px;
-        width: 80px;
-        border-radius: 5px;
-    }
-
-    .container-profil-picture {
-        gap: 15px;
-    }
+  .container-profil-picture {
+    gap: 12px;
+  }
 }

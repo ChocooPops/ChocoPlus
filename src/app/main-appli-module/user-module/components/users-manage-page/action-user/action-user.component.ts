@@ -12,7 +12,7 @@ import { RoleModel } from '../../../../../common-module/models/role.enum';
   standalone: true,
   imports: [TitleCasePipe, UpperCasePipe, NgClass],
   templateUrl: './action-user.component.html',
-  styleUrls: ['./action-user.component.css', '../../../styles/role.css']
+  styleUrls: ['./action-user.component.css']
 })
 export class ActionUserComponent {
 

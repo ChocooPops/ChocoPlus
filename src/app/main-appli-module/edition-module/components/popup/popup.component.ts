@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { HostListener, ElementRef } from '@angular/core';
 
@@ -11,7 +11,6 @@ import { HostListener, ElementRef } from '@angular/core';
 })
 export class PopupComponent {
 
-  @Input() back: boolean = false;
   @Output() emitActionData = new EventEmitter<any>()
   messages: string[] | undefined = undefined;
   displayPopup: boolean = false;

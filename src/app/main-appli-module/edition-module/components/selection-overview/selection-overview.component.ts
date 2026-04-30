@@ -10,7 +10,6 @@ import { Subscription } from 'rxjs';
 import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
 import { SelectionType } from '../../../media-module/models/selection-type.enum';
 import { PaginationPosterService } from '../../../media-module/services/pagination-poster/pagination-poster.service';
-import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 
 @Component({
   selector: 'app-selection-overview',

@@ -1,124 +1,157 @@
 .container-menu-tab {
-    position: relative;
+  position: relative;
 }
 
 .container-menu-tab {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  cursor: pointer;
 
-    &:hover {
-        img {
-            transform: scale(1.1);
-        }
+  &:hover {
+    img {
+      transform: scale(1.1);
     }
+  }
 }
 
 .container-pp {
-    height: 35px;
-    width: 35px;
+  height: 35px;
+  width: 35px;
 
-    img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-        border-radius: 3px;
-        transition: transform 0.3s;
-    }
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 3px;
+    transition: transform 0.3s;
+  }
 }
 
 .container-arrow {
-    height: 10px;
-    width: 10px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+  height: 10px;
+  width: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .arrow-down {
-    width: 0;
-    height: 0;
-    border-right: 6px solid transparent;
-    border-left: 6px solid transparent;
-    border-top: 8px solid white;
-    transition: 0.4s transform;
-    cursor: pointer;
-    transition-delay: 0.1s;
-    border-radius: 2px;
+  width: 0;
+  height: 0;
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  border-top: 8px solid white;
+  transition: 0.4s transform;
+  cursor: pointer;
+  transition-delay: 0.1s;
+  border-radius: 2px;
 }
 
 .arrow-clicked {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .arrow-not-clicked {
-    transform: rotate(0deg);
+  transform: rotate(0deg);
 }
 
 .container-under-menu {
-    position: absolute;
-    top: 55px;
-    right: 0;
-    width: 230px;
-    height: auto;
-    background-color: #252525;
-    transition: 0.1s visibility;
-    transition-delay: 0.1s;
-    visibility: hidden;
+  position: absolute;
+  top: 55px;
+  right: 0;
+  width: 240px;
+  height: auto;
+  background-color: #181818;
+  transition-delay: 0.1s;
+  visibility: hidden;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+  transition: visibility 0.15s;
+  border-radius: 2px;
 }
 
 .not-visible-under-menu {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .visible-under-menu {
-    visibility: visible;
+  visibility: visible;
 }
 
 .container-option {
-    width: 100%;
-    height: 45px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    transition: 0.3s background-color;
-    cursor: pointer;
-    padding-left: 20px;
-    box-sizing: border-box;
-    gap: 10px;
+  width: 100%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding-left: 14px;
+  box-sizing: border-box;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  img {
+    height: 16px;
+    width: 16px;
+    filter: invert(0.1);
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: #ccc;
+    transition: color 0.15s;
+  }
+
+  &:hover {
+    background-color: #1e1e1e;
 
     img {
-        height: 20px;
-        width: 20px;
+      opacity: 0.8;
     }
-
     p {
-        margin: 0;
-        font-size: 13px;
+      color: #fff;
     }
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #1e1e1e;
+  }
 }
 
 .container-option:hover {
-    background-color: #3E3E3E;
+  background-color: #2d2d2d;
 }
 
 .container-deco {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-top: 1px solid white;
-    font-size: 15px;
-    cursor: pointer;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #2a2a2a;
+  font-size: 15px;
+  cursor: pointer;
 
-    &:hover {
-        p {
-            text-decoration: underline;
-        }
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #ccc;
+    transition: color 0.15s;
+  }
+
+  &:hover {
+    background-color: #1e1e1e;
+
+    img {
+      opacity: 0.8;
     }
+    p {
+      color: #fff;
+      text-decoration: underline;
+    }
+  }
 }

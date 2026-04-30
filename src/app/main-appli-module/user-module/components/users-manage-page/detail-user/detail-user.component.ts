@@ -10,7 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [NgClass, UserHistoricComponent, ReactiveFormsModule],
   templateUrl: './detail-user.component.html',
-  styleUrls: ['./detail-user.component.css', '../../../styles/role.css']
+  styleUrls: ['./detail-user.component.css']
 })
 export class DetailUserComponent {
 

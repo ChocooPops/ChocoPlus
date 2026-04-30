@@ -1,4 +1,4 @@
-<app-popup [back]="true" (emitActionData)="onEmitDelete()"></app-popup>
+<app-popup (emitActionData)="onEmitDelete()"></app-popup>
 
 <div class="container">
 
@@ -49,6 +49,8 @@
         </form>
     </div>
 
+    <div></div>
+    
     <form [formGroup]="formGroupPassWord">
         <div class="container-input">
             <label>Mots de passe actuel</label>

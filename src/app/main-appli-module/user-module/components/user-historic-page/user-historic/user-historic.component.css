@@ -13,8 +13,9 @@
 .container-info {
   height: 100%;
   width: 100%;
-  border-radius: 0;
-  background-color: #232323;
+  border-radius: 5px;
+  background-color: #161616;
+  border: 1.5px solid #2a2a2a;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -75,13 +76,4 @@
   transform: translate(-50%, -50%);
   width: 40px;
   height: 2px;
-}
-
-.container-info {
-  padding: 0;
-  border: none;
-}
-
-.container-info {
-  border-radius: 5px;
 }

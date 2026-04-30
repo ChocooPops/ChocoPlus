@@ -1,4 +1,4 @@
-<app-popup [back]="true"></app-popup>
+<app-popup></app-popup>
 
 <div class="container">
     <div class="container-info">
@@ -57,7 +57,7 @@
             <p class="label">Message :</p>
             <form [formGroup]="formGroup">
                 <textarea rows="7" [formControlName]="formControlMessage"></textarea>
-                <p>{{ currentLength }}/{{ maxLength}} caractères</p>
+                <p style="color: #aaa;">{{ currentLength }}/{{ maxLength}} caractères</p>
             </form>
         </div>
 
