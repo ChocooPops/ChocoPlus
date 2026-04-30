@@ -43,7 +43,7 @@ export class OtherFiltersComponent {
 
   ngOnInit(): void {
     this.subscription = this.creditService.getAllJobFilters().subscribe((data: JobModel[]) => {
-      this.typeOptions = [FilterType.CREDIT, ...data, FilterType.KEY_WORD, FilterType.DECADE, FilterType.CATEGORY];
+      this.typeOptions = [FilterType.CREDIT, ...data, FilterType.KEY_WORD, FilterType.YEAR, FilterType.CATEGORY];
     })
   }
 
