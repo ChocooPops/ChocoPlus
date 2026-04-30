@@ -307,7 +307,7 @@ export class FiltersCatalogService {
   private getTitleByFilter(filtre: FILTERS): string {
     let type: string = filtre.typeData;
     let operation: string = filtre.operation;
-    let values: string = filtre.value.map((item) => item.name).join(' & ');
+    let values: string = filtre.value.map((item) => item.name).join(' OU ');
     if (filtre.typeData === FilterType.DECADE) {
       type = "Décennie";
     } else if (filtre.typeData === FilterType.CATEGORY) {
@@ -316,9 +316,9 @@ export class FiltersCatalogService {
       type = "Média";
     }
 
-    if (filtre.operation === "CONTAIN") {
+    if (filtre.operation === Operation.CONTAIN) {
       operation = "contient";
-    } else if (filtre.operation === "NOT_CONTAIN") {
+    } else if (filtre.operation === Operation.NOT_CONTAIN) {
       operation = "ne contient pas";
     }
 

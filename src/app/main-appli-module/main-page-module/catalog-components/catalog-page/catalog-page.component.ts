@@ -138,7 +138,7 @@ export class CatalogPageComponent {
     this.subscription.add(
       this.filtersCatalogService.getFILTERS().subscribe((data: FILTERS[]) => {
         this.FILTERS = data;
-        //this.startNewCatalog();
+        this.startNewCatalog();
       })
     );
   }
@@ -207,9 +207,7 @@ export class CatalogPageComponent {
 
     this.subscriptionCatalog = this.mediaService
       .fetchMediaByCatalogFilters(
-        this.declareSelected,
-        this.categorySelected,
-        this.mediaTypeSelected,
+        this.FILTERS,
         this.sortSelected,
         this.orderDirection,
         this.PAGE_SIZE,
@@ -238,9 +236,7 @@ export class CatalogPageComponent {
 
     this.subscriptionCatalog = this.mediaService
       .fetchMediaByCatalogFilters(
-        this.declareSelected,
-        this.categorySelected,
-        this.mediaTypeSelected,
+        this.FILTERS,
         this.sortSelected,
         this.orderDirection,
         this.PAGE_SIZE,

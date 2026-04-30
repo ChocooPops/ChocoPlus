@@ -1,5 +1,6 @@
 export enum FilterType {
-    KEY_WORD = "KEY_WORD",
+    CREDIT = "CREDIT",
+    KEY_WORD = "KEY WORD",
     MEDIA = "MEDIA",
     DECADE = "DECADE",
     CATEGORY = "CATEGORY"

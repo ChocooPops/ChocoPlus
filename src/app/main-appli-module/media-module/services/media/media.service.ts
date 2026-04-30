@@ -7,6 +7,7 @@ import { catchError, Observable, of, map } from 'rxjs';
 import { MediaModel } from '../../models/media.interface';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { SortCatalog } from '../../models/catalog/sort-catalog.enum';
+import { FILTERS } from '../../models/catalog/filters.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -41,26 +42,14 @@ export class MediaService {
     )
   }
 
-  public fetchMediaByCatalogFilters(
-    decadeFilter: number | null,
-    categoryFilter: number | null,
-    mediaTypeFilter: MediaTypeModel | null,
-    sortFilter: SortCatalog,
-    orderDirection: boolean,
-    count: number,
-    offset: number
-  ): Observable<MediaModel[]> {
+  public fetchMediaByCatalogFilters(filters: FILTERS[], sortFilter: SortCatalog, orderDirection: boolean, count: number, offset: number): Observable<MediaModel[]> {
     let params = new HttpParams()
       .set('sortFilter', sortFilter)
       .set('orderDirection', String(orderDirection))
       .set('count', String(count))
       .set('offset', String(offset));
 
-    if (decadeFilter !== null) params = params.set('decadeFilter', String(decadeFilter));
-    if (categoryFilter !== null) params = params.set('categoryFilter', String(categoryFilter));
-    if (mediaTypeFilter !== null) params = params.set('mediaTypeFilter', mediaTypeFilter);
-
-    return this.http.get<any[]>(`${this.apiUrlMedia}/${this.urlCatalog}`, { params }).pipe(
+    return this.http.post<any[]>(`${this.apiUrlMedia}/${this.urlCatalog}`, filters, { params }).pipe(
       map((data: MediaModel[]) => {
         const medias: MediaModel[] = [];
         data.forEach((media: MediaModel) => {

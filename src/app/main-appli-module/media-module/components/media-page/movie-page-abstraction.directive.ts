@@ -195,14 +195,13 @@ export abstract class MoviePageAbstraction {
     this.setFilterCatalogAndNavigate(filters);
   }
   protected setFilterCredit(credit: MediaCreditModel): void {
-    const filters: FILTERS[] = [];
     let id: number = -2;
-    const jobs: JobModel[] = credit.job.split('\\').map((item) => item.trim()) as any;
-    jobs.forEach((job: JobModel) => {
-      const filter: FILTERS = {
+    //const jobs: JobModel[] = credit.job.split('\\').map((item) => item.trim()) as any;
+    const filters: FILTERS[] = [
+      {
         id: id--,
         title: '',
-        typeData: job,
+        typeData: FilterType.CREDIT,
         operation: Operation.CONTAIN,
         value: [
           {
@@ -211,8 +210,7 @@ export abstract class MoviePageAbstraction {
           }
         ]
       }
-      filters.push(filter);
-    });
+    ];
     this.setFilterCatalogAndNavigate(filters);
   }
   protected setFilterKeyWord(keyword: string): void {
@@ -235,6 +233,7 @@ export abstract class MoviePageAbstraction {
 
   protected setFilterCatalogAndNavigate(filtres: FILTERS[]): void {
     this.filtersCatalogService.setFilterFromMediaPage(filtres);
+    this.mediaSelectedService.clearSelection();
     this.router.navigateByUrl('main-app/catalog');
   }
 
