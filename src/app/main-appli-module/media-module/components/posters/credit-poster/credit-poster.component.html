@@ -11,15 +11,15 @@
             @if (srcPoster[$index]) {
                 <img [src]="srcPoster[$index]" (error)="onErrorImage($index)">
             } @else {
-                <img [src]="srcIconStaff">
+                <img [src]="srcIconCredit">
             }
         </div>
         <div class="container-info-credit">
         <p (click)="onClickCredit(credit)" [style.width.vw]="width"> {{ credit.fullName }} </p>
         @if (jobTitle === JobModel.ACTOR) {
-            <p (click)="onClickCredit(credit)" class="character-job" [style.width.vw]="width"> {{ credit.character }} </p>
+            <p (click)="onClickCredit(credit)" class="character" [style.width.vw]="width"> {{ credit.character }} </p>
         } @else if(jobTitle === JobModel.DIRECTOR) {
-            <p (click)="onClickCredit(credit)" class="character-job" [style.width.vw]="width"> {{ credit.job }} </p>
+            <p (click)="onClickCredit(credit)" class="job" [style.width.vw]="width"> {{ credit.job }} </p>
         }
         </div>
     </div>

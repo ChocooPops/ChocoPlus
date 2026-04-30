@@ -17,7 +17,7 @@ export class CreditPosterLoadingComponent {
   private subscription!: Subscription;
 
   nbPoster: number = 5;
-  staffTab: number[] = [];
+  creditTab: number[] = [];
 
   height!: number;
   width!: number;
@@ -28,7 +28,7 @@ export class CreditPosterLoadingComponent {
 
   ngOnInit(): void {
     for (let i = 0; i < this.nbPoster; i++) {
-      this.staffTab.push(i);
+      this.creditTab.push(i);
     }
 
     this.subscription = this.paginationPosterService

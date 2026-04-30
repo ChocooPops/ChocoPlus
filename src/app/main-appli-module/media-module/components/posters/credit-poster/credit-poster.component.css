@@ -81,7 +81,12 @@ p {
     }
 }
 
-.character-job {
+.character {
+    color: var(--grey);
+    font-size: 15px;
+}
+
+.job {
     color: var(--grey);
     font-size: 14px;
 }

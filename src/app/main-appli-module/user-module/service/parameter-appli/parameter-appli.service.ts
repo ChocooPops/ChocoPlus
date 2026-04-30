@@ -255,7 +255,7 @@ export class ParameterAppliService {
     const logoHead: ScalePoster | null = this.compressedPosterService.getCompressedLogoPresentation();
     const season: ScalePoster | null = this.compressedPosterService.getCompressedSeasonPoster();
     const episode: ScalePoster | null = this.compressedPosterService.getCompressedEpisodePoster();
-    const staff: ScalePoster | null = this.compressedPosterService.getCompressedCreditPoster();
+    const credit: ScalePoster | null = this.compressedPosterService.getCompressedCreditPoster();
 
     if (vertical) moviePosterScale.push(vertical);
     if (horizontal) moviePosterScale.push(horizontal);
@@ -267,7 +267,7 @@ export class ParameterAppliService {
     if (logoHead) moviePosterScale.push(logoHead);
     if (season) moviePosterScale.push(season);
     if (episode) moviePosterScale.push(episode);
-    if (staff) moviePosterScale.push(staff);
+    if (credit) moviePosterScale.push(credit);
     
     if (this.radioButtonPosterFilm.length === moviePosterScale.length) {
       for (let i = 0; i < this.radioButtonPosterFilm.length; i++) {

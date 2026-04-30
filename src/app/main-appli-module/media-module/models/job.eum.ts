@@ -1,5 +1,6 @@
 export enum JobModel {
     ACTOR = 'ACTOR',
+    CREATOR = 'CREATOR',
     DIRECTOR = 'DIRECTOR',
     SCREENPLAY= 'SCREENPLAY',
     WRITER = 'WRITER',

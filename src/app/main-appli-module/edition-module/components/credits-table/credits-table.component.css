@@ -25,6 +25,8 @@ th {
   color: var(--white-dark);
   text-align: left;
   text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
   /* font-family: 'Courier New', monospace; */
   /*   color: #555; */
 }
@@ -261,4 +263,32 @@ th:nth-child(10) { width: 30px; }
     border-color: #666;
     color: #aaa;
   }
+}
+
+.ct-resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.ct-resize-handle::after {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 16px;
+  background: #333;
+  border-radius: 1px;
+  transition: background 0.15s;
+}
+
+.ct-resize-handle:hover::after,
+.ct-resize-handle.is-resizing::after {
+  background: #666;
 }

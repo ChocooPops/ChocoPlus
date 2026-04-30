@@ -32,7 +32,7 @@ export class CreditPosterComponent {
   minPoster = 4;
   posterTmp: number[] = [];
   srcPoster: (string | undefined)[] = [];
-  srcIconStaff: string = 'icon/person.svg';
+  srcIconCredit: string = 'icon/person.svg';
 
   constructor(private readonly paginationPosterService: PaginationPosterService,
     private readonly compressedPosterService: CompressedPosterService
@@ -42,8 +42,8 @@ export class CreditPosterComponent {
     for(let i=0; i< this.minPoster - this.credits.length; i++) {
       this.posterTmp.push(i);
     }
-    this.credits.forEach((staff: MediaCreditModel) => {
-      this.srcPoster.push(this.compressedPosterService.getCreditPoster(staff));
+    this.credits.forEach((credit: MediaCreditModel) => {
+      this.srcPoster.push(this.compressedPosterService.getCreditPoster(credit));
     });
     this.subscription = this.paginationPosterService
       .getVerticalGeometricDimensionSelection()
@@ -61,8 +61,8 @@ export class CreditPosterComponent {
     }
   }
 
-  onClickCredit(staff: MediaCreditModel): void {
-    this.onClickCreditEmit.emit(staff);
+  onClickCredit(credit: MediaCreditModel): void {
+    this.onClickCreditEmit.emit(credit);
   }
   
   onErrorImage(index: number): void {

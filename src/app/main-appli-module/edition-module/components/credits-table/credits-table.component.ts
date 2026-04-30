@@ -17,12 +17,58 @@ export class CreditsTableComponent {
   @Input() mediaType!: MediaTypeModel;
   @Output() onCreditChanged  = new EventEmitter<MediaCreditModel[]>();
 
+  private readonly MIN_COL_WIDTH = 40;
+
   jobOptions: JobModel[] = Object.values(JobModel);
 
   openDropdown: string | null = null;
   MediaType = MediaTypeModel;
 
+  
   constructor(private readonly elementRef: ElementRef) { }
+
+  ngAfterViewInit(): void {
+    this.initResizableColumns();
+  }
+
+  private initResizableColumns(): void {
+    const handles = this.elementRef.nativeElement.querySelectorAll('.ct-resize-handle');
+    handles.forEach((handle: HTMLElement) => {
+      let startX = 0;
+      let startWidth = 0;
+      let th: HTMLElement | null = null;
+
+      const onMouseMove = (e: MouseEvent) => {
+        if (!th) return;
+        const newWidth = Math.max(this.MIN_COL_WIDTH, startWidth + (e.clientX - startX));
+        th.style.width = newWidth + 'px';
+      };
+
+      const onMouseUp = () => {
+        handle.classList.remove('is-resizing');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        th = null;
+      };
+
+      handle.addEventListener('mousedown', (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        th = handle.closest('th') as HTMLElement;
+        startX = e.clientX;
+        startWidth = th.offsetWidth;
+        handle.classList.add('is-resizing');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+    });
+  }
+
+
 
   toggleDropdown(key: string, event: MouseEvent): void {
     event.stopPropagation();
