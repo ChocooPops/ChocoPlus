@@ -171,6 +171,7 @@ input {
   padding-right: 44px;
   border-radius: 3px;
   transition: border-color 0.2s;
+  font-family: 'Arial';
 
   &::placeholder { color: #444; }
 

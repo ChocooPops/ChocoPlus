@@ -248,6 +248,14 @@ export class EditionParametersService {
     }
   }
 
+  public resetAllUnderParameterIsClicked(): void {
+    for (let editionParameter of this.editionParameters) {
+      for (let underParameter of editionParameter.underParameter) {
+        underParameter.isClicked = false;
+      }
+    }
+  }
+
   public openSpecifiqParametersById(idParam: number, idUnderParam: number): string {
     const indexParam = this.editionParameters.findIndex((param) => param.id === idParam);
     this.editionParameters[indexParam].isClicked = true;

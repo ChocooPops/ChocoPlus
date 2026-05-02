@@ -121,7 +121,7 @@ p {
   background-color: transparent;
 
   &:hover {
-    background-color: rgba(61, 61, 61, 0.4);
+    background-color: rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -171,6 +171,7 @@ input {
   padding-inline: 15px;
   border-radius: 2px;
   font-family: Arial, Helvetica, sans-serif;
+  border-radius: 3px;
 }
 
 input::placeholder {

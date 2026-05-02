@@ -104,4 +104,10 @@ export class UserParametersService {
     })
   }
 
+  public resetAllUserParametersIsClicked(): void {
+   this.userTabMenu.forEach((tab: MenuTabModel) => {
+      tab.isClicked = false;
+    })
+  }
+
 }
