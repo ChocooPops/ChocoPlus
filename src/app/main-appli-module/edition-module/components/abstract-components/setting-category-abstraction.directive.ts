@@ -7,12 +7,15 @@ import { SelectionType } from "../../../media-module/models/selection-type.enum"
 import { UnauthorizedError } from "./unauthorized-error-abstract.directive";
 import { MovieModel } from "../../../media-module/models/movie-model";
 import { SeriesModel } from "../../../media-module/models/series/series.interface";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive({})
 export abstract class SettingCategoryAbstraction extends UnauthorizedError {
 
-    constructor(protected categoryService: CategoryService) {
-        super();
+    constructor(protected readonly categoryService: CategoryService,
+        editionParametersService: EditionParametersService
+    ) {
+        super(editionParametersService);
     }
 
     protected exCategory: string = 'ex : Science Fiction';

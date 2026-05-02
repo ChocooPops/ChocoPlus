@@ -5,6 +5,7 @@ import { finalize, Subscription, take } from "rxjs";
 import { CreditService } from "../../../media-module/services/credit/credit.service";
 import { TmdbOperationService } from "../../services/tmdb-operation/tmdb-operation.service";
 import { AiButtonComponent } from "../ai-button/ai-button.component";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive({})
 export abstract class SettingCreditAbstraction extends UnauthorizedError {
@@ -22,9 +23,10 @@ export abstract class SettingCreditAbstraction extends UnauthorizedError {
     protected subscriptionSearch: Subscription = new Subscription();
 
     constructor(protected readonly creditService: CreditService,
-        protected readonly tmdbOperationService: TmdbOperationService
+        protected readonly tmdbOperationService: TmdbOperationService,
+        editionParametersService: EditionParametersService
     ) { 
-        super();
+        super(editionParametersService);
     }
 
     ngOnInit(): void {

@@ -9,6 +9,8 @@ import { PopupComponent } from '../../../edition-module/components/popup/popup.c
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { ElectronService } from '../../../../common-module/services/electron/electron.service';
 import { AuthService } from '../../../../launch-module/services/auth/auth.service';
+import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-user-edit-profil',
@@ -45,11 +47,14 @@ export class UserEditProfilComponent {
   @ViewChild('containerProfilPicture') profilPictureRef!: ElementRef;
   @ViewChild('containerBtProfilPicture') btProfilPictureRef!: ElementRef;
 
-  constructor(private userService: UserService,
-    private fb: FormBuilder,
-    private electronService: ElectronService,
-    private authService: AuthService
-  ) { }
+  constructor(private readonly userService: UserService,
+    private readonly fb: FormBuilder,
+    private readonly electronService: ElectronService,
+    private readonly authService: AuthService,
+    private readonly userParametersService: UserParametersService
+  ) { 
+    this.userParametersService.initAllClickedValue(MenuType.PROFIL);
+  }
 
   ngOnInit(): void {
     this.initForm();

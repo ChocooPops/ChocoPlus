@@ -13,6 +13,8 @@ import { UnauthorizedError } from '../abstract-components/unauthorized-error-abs
 import { HttpErrorResponse } from '@angular/common/http';
 import { InputResearchSeriesComponent } from '../input-search-components/input-research-series/input-research-series.component';
 import { SimpleModel } from '../../../../common-module/models/simple-model';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-news',
@@ -23,12 +25,17 @@ import { SimpleModel } from '../../../../common-module/models/simple-model';
 })
 export class SettingModifyNewsComponent extends UnauthorizedError {
 
+  protected override menuType: MenuType = MenuType.MODIFY_NEWS_HOME;
+
   newsList: NewsModel[] | undefined = undefined;
   private subscription: Subscription = new Subscription();
   private messageDeleting: string = "Enregistrer les modifications ?";
 
-  constructor(private newsService: NewsService) {
-    super();
+  constructor(private readonly newsService: NewsService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editionParametersService);
+    this.toggleUnderParameter();
     this.newsService.setNewsEdit();
   }
 

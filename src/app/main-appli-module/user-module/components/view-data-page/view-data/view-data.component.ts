@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { GraphComponent } from '../graph/graph.component';
+import { UserParametersService } from '../../../service/user-parameters/user-parameters.service';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-view-data',
@@ -11,6 +13,10 @@ import { GraphComponent } from '../graph/graph.component';
 export class ViewDataComponent {
 
   loadData: boolean = false;
+
+  constructor(private readonly userParametersService: UserParametersService) {
+    this.userParametersService.initAllClickedValue(MenuType.META_DATA);
+  }
 
   onClick(): void {
     this.loadData = true;

@@ -10,6 +10,9 @@ import { take } from 'rxjs';
 import { InputResearchMovieComponent } from '../input-search-components/input-research-movie/input-research-movie.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { InputResearchSeriesComponent } from '../input-search-components/input-research-series/input-research-series.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { CategoryService } from '../../services/category/category.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-add-category',
@@ -21,6 +24,14 @@ import { InputResearchSeriesComponent } from '../input-search-components/input-r
 export class SettingAddCategoryComponent extends SettingCategoryAbstraction {
 
   private message: string = 'Cette action ajoutera une nouvelle catégorie';
+  protected override menuType: MenuType = MenuType.ADD_CATEGORY;
+
+  constructor(categoryService: CategoryService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(categoryService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   onClickAddCategory(): void {
     this.popup.setMessage(this.message, undefined);

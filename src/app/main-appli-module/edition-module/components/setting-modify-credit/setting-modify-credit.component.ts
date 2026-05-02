@@ -15,6 +15,8 @@ import { InputResearchCreditComponent } from '../input-search-components/input-r
 import { MediaCreditModel } from '../../../media-module/models/media-credit.interface';
 import { ButtonRemoveComponent } from '../button-remove/button-remove.component';
 import { ButtonSaveComponent } from '../button-save/button-save.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-credit',
@@ -25,15 +27,19 @@ import { ButtonSaveComponent } from '../button-save/button-save.component';
 })
 export class SettingModifyCreditComponent extends SettingCreditAbstraction {
 
+  protected override menuType: MenuType = MenuType.MODIFY_CREDIT;
+
   private readonly messageDelete: string = 'Cette action supprimera définitvement le crédit associé';
   private readonly messageModify: string = 'Cette action enregistrera les modifications faites au crédit associé';
   private typeOperation !: number;
 
   constructor(creditService: CreditService,
     tmdbOperationService: TmdbOperationService,
+    editionParametersService: EditionParametersService,
     private readonly route: ActivatedRoute
   ) {
-    super(creditService, tmdbOperationService)
+    super(creditService, tmdbOperationService, editionParametersService);
+    this.toggleUnderParameter();
   }
 
   setCreditWantedToModify(credit: MediaCreditModel) {

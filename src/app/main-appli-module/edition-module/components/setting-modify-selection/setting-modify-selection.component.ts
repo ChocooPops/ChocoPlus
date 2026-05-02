@@ -15,6 +15,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { InputResearchSeriesComponent } from '../input-search-components/input-research-series/input-research-series.component';
 import { EditionSelectionService } from '../../services/edition-selection/edition-selection.service';
 import { ActivatedRoute } from '@angular/router';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-license',
@@ -25,14 +27,18 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SettingModifySelectionComponent extends SettingSelectionAbstraction {
 
+  protected override menuType: MenuType = MenuType.MODIFY_SELECTION;
+
   private messageModify: string = 'Cette action enregistrera les modifications faites sur la sélection';
   private messageDelete: string = 'Cette action supprimera définitivement la sélection'
   private typeOperation !: number;
 
   constructor(editionSelectionService: EditionSelectionService,
-    private route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    editionParametersService: EditionParametersService
   ) {
-    super(editionSelectionService);
+    super(editionSelectionService, editionParametersService);
+    this.toggleUnderParameter();
   }
 
   setEditSelectionBySelectionWanted(selection: SelectionModel) {

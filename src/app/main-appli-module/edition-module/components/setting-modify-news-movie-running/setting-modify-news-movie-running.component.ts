@@ -9,6 +9,9 @@ import { ButtonRemoveComponent } from '../button-remove/button-remove.component'
 import { take } from 'rxjs';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditNewsVideoRunningService } from '../../services/edit-news-video-running/edit-news-video-running.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-news-movie-running',
@@ -19,8 +22,17 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class SettingModifyNewsMovieRunningComponent extends SettingNewsVideoRunning {
 
+  protected override menuType: MenuType = MenuType.MODIFY_NEW_MOVIES;
+
   protected override mediaType: MediaTypeModel = MediaTypeModel.MOVIE;
   private message: string = "Enregistrer les modifications ?";
+
+  constructor(editNewsVideoRunningService: EditNewsVideoRunningService, 
+    editionParametersService: EditionParametersService
+  ) {
+    super(editNewsVideoRunningService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   public saveNewsMovie(): void {
     this.popup.setDisplayButton(true);

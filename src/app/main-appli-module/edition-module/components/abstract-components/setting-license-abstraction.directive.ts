@@ -7,6 +7,7 @@ import { Subscription, take } from "rxjs";
 import { MediaModel } from "../../../media-module/models/media.interface";
 import { UnauthorizedError } from "./unauthorized-error-abstract.directive";
 import { SelectionService } from "../../../media-module/services/selection/selection.service";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive({})
 export abstract class SettingLicenseAbstraction extends UnauthorizedError {
@@ -23,9 +24,10 @@ export abstract class SettingLicenseAbstraction extends UnauthorizedError {
     subscription: Subscription = new Subscription;
 
     constructor(protected editionLicenseService: EditionLicenseService,
-        private selectionService: SelectionService
+        private selectionService: SelectionService,
+        editionParametersService: EditionParametersService
     ) {
-        super();
+        super(editionParametersService);
     }
 
     ngOnInit(): void {

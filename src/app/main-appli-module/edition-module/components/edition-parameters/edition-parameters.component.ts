@@ -33,7 +33,7 @@ export class EditionParametersComponent {
   }
 
   onClickUnderParameter(idParam: number, idUnderParam: number): void {
-    this.editionParametersService.toggleIfUnderParameterIsClickedById(idParam, idUnderParam);
+    this.editionParametersService.navigateByUrlFromUnderParameters(idParam, idUnderParam);
   }
 
 }

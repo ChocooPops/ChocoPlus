@@ -12,6 +12,7 @@ import { EditSeasonModel } from "../../models/series/edit-season.interface";
 import { TmdbOperationService } from "../../services/tmdb-operation/tmdb-operation.service";
 import { AiButtonComponent } from "../ai-button/ai-button.component";
 import { MediaCreditModel } from "../../../media-module/models/media-credit.interface";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive({})
 export abstract class SettingSeriesAbstraction extends UnauthorizedError {
@@ -48,9 +49,10 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
     protected maxLength: number = 1000;
 
     constructor(protected editionSeriesService: EditionSeriesService,
-        protected tmdbOperationService: TmdbOperationService
+        protected tmdbOperationService: TmdbOperationService,
+        editionParametersService: EditionParametersService
     ) {
-        super();
+        super(editionParametersService);
         this.typeSelectionPosters = this.editionSeriesService.getAllTypeSelectionPoster();
         this.typeInfoDisplayed = this.editionSeriesService.getTypeInfoDisplayed();
     }

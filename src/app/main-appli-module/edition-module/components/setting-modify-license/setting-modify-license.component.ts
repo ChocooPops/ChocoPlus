@@ -18,6 +18,8 @@ import { InputResearchSeriesComponent } from '../input-search-components/input-r
 import { EditionLicenseService } from '../../services/edition-license/edition-license.service';
 import { ActivatedRoute } from '@angular/router';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-license',
@@ -28,15 +30,19 @@ import { SelectionService } from '../../../media-module/services/selection/selec
 })
 export class SettingModifyLicenseComponent extends SettingLicenseAbstraction {
 
+  protected override menuType: MenuType = MenuType.MODIFY_LICENSE;
+
   private messageDeletete: string = 'Cette action supprimera définitivement la license';
   private messageModify: string = 'Cette action enregistrera lees modifications faites sur la license';
   private typeOperation!: number;
 
   constructor(editionLicenseService: EditionLicenseService,
     private route: ActivatedRoute,
-    selectionService: SelectionService
+    selectionService: SelectionService,
+    editionParametersService: EditionParametersService
   ) {
-    super(editionLicenseService, selectionService);
+    super(editionLicenseService, selectionService, editionParametersService);
+    this.toggleUnderParameter();
   }
 
   setEditLicenseWanted(license: LicenseModel): void {

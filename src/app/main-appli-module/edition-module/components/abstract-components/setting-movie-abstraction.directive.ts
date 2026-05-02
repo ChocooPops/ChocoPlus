@@ -11,6 +11,7 @@ import { UnauthorizedError } from "./unauthorized-error-abstract.directive";
 import { EditMovieModel } from "../../models/edit-movie.interface";
 import { MediaTypeModel } from "../../../media-module/models/media-type.enum";
 import { MediaCreditModel } from "../../../media-module/models/media-credit.interface";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive({})
 export abstract class SettingMovieAbstraction extends UnauthorizedError {
@@ -44,9 +45,10 @@ export abstract class SettingMovieAbstraction extends UnauthorizedError {
     protected maxLenght: number = 1000;
 
     constructor(protected readonly editionMovieService: EditionMovieService,
-        protected readonly tmdbOperationService: TmdbOperationService
+        protected readonly tmdbOperationService: TmdbOperationService,
+        editionParametersService: EditionParametersService
     ) {
-        super();
+        super(editionParametersService);
         this.typeSelectionPosters = this.editionMovieService.getAllTypeSelectionPoster();
     }
 

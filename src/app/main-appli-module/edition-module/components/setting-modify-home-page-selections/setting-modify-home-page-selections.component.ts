@@ -8,6 +8,10 @@ import { take } from 'rxjs';
 import { PopupComponent } from '../popup/popup.component';
 import { ButtonRemoveComponent } from '../button-remove/button-remove.component';
 import { ButtonSaveComponent } from '../button-save/button-save.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { SelectionService } from '../../../media-module/services/selection/selection.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { EditionSelectionPageService } from '../../services/edition-selection-page/edition-selection-page.service';
 
 @Component({
   selector: 'app-modify-home-page',
@@ -18,7 +22,16 @@ import { ButtonSaveComponent } from '../button-save/button-save.component';
 })
 export class SettingModifyHomePageSelectionsComponent extends SettingSelectionPageAbstract {
 
+  protected override menuType: MenuType = MenuType.MODIFY_HOME_PAGE_SELECTION;
   private message: string = "Cette action modifera la liste des sélections dans la page d'accueil";
+
+  constructor(editionSelectionPageService: EditionSelectionPageService,
+    selectionService: SelectionService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editionSelectionPageService, selectionService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   onClickSaveNewSelectionIntoHomePage(): void {
     this.popup.setMessage(this.message, undefined);

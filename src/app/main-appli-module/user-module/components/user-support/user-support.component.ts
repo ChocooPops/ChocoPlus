@@ -7,6 +7,8 @@ import { SupportService } from '../../service/support/support.service';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { NgClass } from '@angular/common';
 import { PopupComponent } from '../../../edition-module/components/popup/popup.component';
+import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-user-support',
@@ -41,9 +43,12 @@ export class UserSupportComponent {
 
   subscription !: Subscription;
 
-  constructor(private fb: FormBuilder,
-    private supportService: SupportService
-  ) { }
+  constructor(private readonly fb: FormBuilder,
+    private readonly supportService: SupportService,
+    private readonly userParametersService: UserParametersService
+  ) { 
+    this.userParametersService.initAllClickedValue(MenuType.USER_SUPPORT);
+  }
 
   ngOnDestroy(): void {
     if (this.subscription) {

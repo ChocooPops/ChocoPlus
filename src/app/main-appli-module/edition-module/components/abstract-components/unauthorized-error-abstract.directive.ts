@@ -2,6 +2,8 @@ import { Directive, ViewChild } from "@angular/core";
 import { PopupComponent } from "../popup/popup.component";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MessageReturnedModel } from "../../../../common-module/models/message-returned.interface";
+import { MenuType } from "../../../menu-module/model/menu-type.enum";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive({})
 export abstract class UnauthorizedError {
@@ -14,6 +16,10 @@ export abstract class UnauthorizedError {
     protected messageSendEmail: string = "Voulez-vous envoyé vos ajouts à l'admin ?";
 
     displayLoader: boolean = false;
+
+    protected menuType!: MenuType;
+
+    constructor(private readonly editionParametersService: EditionParametersService) { }
 
     protected displayPopupOnError(error: HttpErrorResponse, option: number): void {
         if (error.status === 401) {
@@ -42,6 +48,10 @@ export abstract class UnauthorizedError {
             this.popup.setMessage(message.message, message.state);
             this.popup.setEndTask(true);
         }
+    }
+
+    protected toggleUnderParameter(): void {
+        this.editionParametersService.toggleIfUnderParameterIsClickedByType(this.menuType);
     }
 
 }

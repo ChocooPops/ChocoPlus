@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MediaSelectedService {
 
+  private readonly LIMIT_CACHE: number = 15;
   private readonly apiUrlMedia: string = `${environment.apiUrlMedia}`;
   private readonly apiUrlMediaInfo: string = 'media-info';
   private mediaInfoMap: Map<number, MediaInfoModel> = new Map();
@@ -17,7 +18,7 @@ export class MediaSelectedService {
   private mediaSelectedSubject: BehaviorSubject<MediaModel | undefined> = new BehaviorSubject<MediaModel | undefined>(undefined);
   private mediaSelected$: Observable<MediaModel | undefined> = this.mediaSelectedSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   selectMedia(media: MediaModel): void {
     this.mediaSelectedSubject.next(media);
@@ -48,10 +49,20 @@ export class MediaSelectedService {
         };
 
         this.mediaInfoMap.set(mediaId, mediaInfo);
+        if (this.mediaInfoMap.size > this.LIMIT_CACHE) {
+          this.deleteFirstKey();
+        }
         return mediaInfo;
       }),
       catchError(() => of(null))
     );
+  }
+
+  private deleteFirstKey(): void {
+    const firstKey = this.mediaInfoMap.keys().next().value;
+    if (firstKey) {
+      this.mediaInfoMap.delete(firstKey);
+    }
   }
 
 }

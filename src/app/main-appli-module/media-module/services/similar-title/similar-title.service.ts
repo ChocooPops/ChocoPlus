@@ -12,6 +12,7 @@ import { SeriesService } from '../series/series.service';
 })
 export class SimilarTitleService {
 
+  private readonly LIMIT_CACHE: number = 15;
   private readonly apiUrlSimilarTitle: string = `${environment.apiUrlSimilarTitle}`;
   private similarMediaMap: Map<number, MediaModel[]> = new Map();
 
@@ -37,9 +38,19 @@ export class SimilarTitleService {
           }
         })
         this.similarMediaMap.set(idMedia, medias);
+        if (this.similarMediaMap.size > this.LIMIT_CACHE) {
+          this.deleteFirstKey();
+        }
         return medias;
       })
     )
+  }
+
+  private deleteFirstKey(): void {
+    const firstKey = this.similarMediaMap.keys().next().value;
+    if (firstKey) {
+      this.similarMediaMap.delete(firstKey);
+    }
   }
 
 }

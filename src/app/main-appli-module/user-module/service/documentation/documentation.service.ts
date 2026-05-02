@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class DocumentationService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
   private apiUrlDoc: string = `${environment.apiUrlDocumentation}`
 
   public getMainDocumentation(): Observable<Blob> {

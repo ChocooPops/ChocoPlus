@@ -11,6 +11,9 @@ import { take } from 'rxjs';
 import { InputTextEditionComponent } from '../input-text-edition/input-text-edition.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { InputResearchSeriesComponent } from '../input-search-components/input-research-series/input-research-series.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionSelectionService } from '../../services/edition-selection/edition-selection.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-add-selection',
@@ -22,6 +25,14 @@ import { InputResearchSeriesComponent } from '../input-search-components/input-r
 export class SettingAddSelectionComponent extends SettingSelectionAbstraction {
 
   private message: string = 'Cette action ajoutera une nouvelle sélection';
+  protected override menuType: MenuType = MenuType.ADD_SELECTION;
+
+  constructor(editionSelectionService: EditionSelectionService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editionSelectionService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   public onClickAddSelection(): void {
     this.popup.setMessage(this.message, undefined);

@@ -14,6 +14,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { InputResearchSeriesComponent } from '../input-search-components/input-research-series/input-research-series.component';
 import { CategoryService } from '../../services/category/category.service';
 import { ActivatedRoute } from '@angular/router';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-category',
@@ -24,14 +26,18 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SettingModifyCategoryComponent extends SettingCategoryAbstraction {
 
+  protected override menuType: MenuType = MenuType.MODIFY_CATEGORY;
+
   private messageModify: string = 'Cette action enregistrera les modifications faites sur la catégorie';
   private messageDelete: string = 'Cette action supprimera définitivement la catégorie';
   private typeOperation !: number;
 
   constructor(categoryService: CategoryService,
-    private route: ActivatedRoute
+    editionParametersService: EditionParametersService,
+    private readonly route: ActivatedRoute
   ) {
-    super(categoryService);
+    super(categoryService, editionParametersService);
+    this.toggleUnderParameter();
   }
 
   setEditCategorieByResearched(category: CategorySimpleModel) {

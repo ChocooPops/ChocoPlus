@@ -9,6 +9,9 @@ import { ButtonSaveComponent } from '../button-save/button-save.component';
 import { take } from 'rxjs';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditNewsVideoRunningService } from '../../services/edit-news-video-running/edit-news-video-running.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-news-series-running',
@@ -19,8 +22,17 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class SettingModifyNewsSeriesRunningComponent extends SettingNewsVideoRunning {
 
+  protected override menuType: MenuType = MenuType.MODIFY_NEW_SERIES;
+
   protected override mediaType: MediaTypeModel = MediaTypeModel.SERIES;
   private message: string = "Enregistrer les modifications ?";
+
+  constructor(editNewsVideoRunningService: EditNewsVideoRunningService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editNewsVideoRunningService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   public saveNewsSeries(): void {
     this.popup.setDisplayButton(true);

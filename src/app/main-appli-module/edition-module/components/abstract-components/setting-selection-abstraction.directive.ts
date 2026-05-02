@@ -6,6 +6,7 @@ import { Subscription } from "rxjs";
 import { AiButtonComponent } from "../ai-button/ai-button.component";
 import { EditionSelectionService } from "../../services/edition-selection/edition-selection.service";
 import { UnauthorizedError } from "./unauthorized-error-abstract.directive";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive()
 export abstract class SettingSelectionAbstraction extends UnauthorizedError {
@@ -21,8 +22,10 @@ export abstract class SettingSelectionAbstraction extends UnauthorizedError {
 
     protected subscription: Subscription = new Subscription();
 
-    constructor(protected editionSelectionService: EditionSelectionService) {
-        super();
+    constructor(protected editionSelectionService: EditionSelectionService,
+        editionParametersService: EditionParametersService
+    ) {
+        super(editionParametersService);
     }
 
     ngOnInit(): void {

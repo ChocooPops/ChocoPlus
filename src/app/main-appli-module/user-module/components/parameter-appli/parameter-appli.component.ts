@@ -3,6 +3,8 @@ import { ParameterAppliService } from '../../service/parameter-appli/parameter-a
 import { InputRadioButtonComponent } from '../../../edition-module/components/input-radio-button/input-radio-button.component';
 import { ParamaterAppliModel } from '../../dto/parameter-appli.interface';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
+import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-parameter-appli',
@@ -21,8 +23,10 @@ export class ParameterAppliComponent {
   radioButtonOtherOption: ParamaterAppliModel[] = [];
 
   constructor(private readonly parameterAppliService: ParameterAppliService,
-    private readonly compressedPosterService: CompressedPosterService
+    private readonly compressedPosterService: CompressedPosterService,
+    private readonly userParametersService: UserParametersService
   ) {
+    this.userParametersService.initAllClickedValue(MenuType.PARAM_APPLI);
     this.parameterAppliService.initRadioButton();
     this.radioButtonPosterFilm = this.parameterAppliService.getRadioButtonForPosterFilm();
     this.radioButtonPosterLicense = this.parameterAppliService.getRadioButtonForPosterLicense();

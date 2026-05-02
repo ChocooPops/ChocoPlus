@@ -10,6 +10,8 @@ import { LicenseModel } from '../../../license-module/model/license.interface';
 import { SimpleModel } from '../../../../common-module/models/simple-model';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { UnauthorizedError } from '../abstract-components/unauthorized-error-abstract.directive';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-order-license',
@@ -20,6 +22,8 @@ import { UnauthorizedError } from '../abstract-components/unauthorized-error-abs
 })
 export class SettingModifyOrderLicenseComponent extends UnauthorizedError {
 
+  protected override menuType: MenuType = MenuType.MODIFY_ORDER_LICENSE;
+
   groupLicenseType: string = 'groupLicenseType';
   messageModify: string = "Cette action modifera l'ordre d'affichage des licenses";
   subscription: Subscription = new Subscription();
@@ -27,8 +31,11 @@ export class SettingModifyOrderLicenseComponent extends UnauthorizedError {
   radioButton: SimpleModel[] = [];
   licenseType: boolean | undefined;
 
-  constructor(private editionLicenseOrderService: EditionLicenseOrderService) { 
-    super();
+  constructor(private readonly editionLicenseOrderService: EditionLicenseOrderService,
+    editionParametersService: EditionParametersService
+  ) { 
+    super(editionParametersService);
+    this.toggleUnderParameter();
   }
 
   ngOnInit(): void {

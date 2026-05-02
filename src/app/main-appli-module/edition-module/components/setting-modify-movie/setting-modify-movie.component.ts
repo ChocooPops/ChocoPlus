@@ -26,6 +26,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { EditMovieModel } from '../../models/edit-movie.interface';
 import { MovieModel } from '../../../media-module/models/movie-model';
 import { CreditsTableComponent } from '../credits-table/credits-table.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-movie',
@@ -36,15 +38,19 @@ import { CreditsTableComponent } from '../credits-table/credits-table.component'
 })
 export class SettingModifyMovieComponent extends SettingMovieAbstraction {
 
+  protected override menuType: MenuType = MenuType.MODIFY_MOVIE;
+
   private messageDelete: string = 'Cette action supprimera définitivement le film';
   private messageModify: string = 'Cette action enregistrera les modifications faites au film';
   private typeOperation !: number;
 
   constructor(editionMovieService: EditionMovieService,
     private readonly route: ActivatedRoute,
-    tmdbOperationService: TmdbOperationService
+    tmdbOperationService: TmdbOperationService,
+    editionParametersService: EditionParametersService
   ) {
-    super(editionMovieService, tmdbOperationService)
+    super(editionMovieService, tmdbOperationService, editionParametersService);
+    this.toggleUnderParameter();
   }
 
   setMovieWantedToModifyIt(media: MovieModel) {

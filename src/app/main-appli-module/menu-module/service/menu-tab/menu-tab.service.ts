@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MenuTabModel } from '../../model/menu-tab.interface';
+import { MenuType } from '../../model/menu-type.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class MenuTabService {
     {
       id: 1,
       name: "Accueil",
+      type: MenuType.HOME,
       route: "home",
       srcImage: `${this.rootImage}/home.svg`,
       isClicked: false
@@ -20,6 +22,7 @@ export class MenuTabService {
     {
       id: 2,
       name: "Rechercher",
+      type: MenuType.SEARCH,
       route: "search",
       srcImage: `${this.rootImage}/research.svg`,
       isClicked: false
@@ -27,6 +30,7 @@ export class MenuTabService {
     {
       id: 3,
       name: "Film",
+      type: MenuType.MOVIES,
       route: "movies",
       srcImage: `${this.rootImage}/movie.svg`,
       isClicked: false
@@ -34,6 +38,7 @@ export class MenuTabService {
     {
       id: 4,
       name: "Série",
+      type: MenuType.SERIES,
       route: "series",
       srcImage: `${this.rootImage}/serie.svg`,
       isClicked: false
@@ -41,6 +46,7 @@ export class MenuTabService {
     {
       id: 5,
       name: "Catalogue",
+      type: MenuType.CATALOG,
       route: "catalog",
       srcImage: `${this.rootImage}/catalog.svg`,
       isClicked: false
@@ -48,6 +54,7 @@ export class MenuTabService {
     {
       id: 6,
       name: "Ma liste",
+      type: MenuType.MYLIST,
       route: "my-list",
       srcImage: `${this.rootImage}/mylist.svg`,
       isClicked: false
@@ -55,6 +62,7 @@ export class MenuTabService {
     {
       id: 7,
       name: "Editer",
+      type: MenuType.EDITION,
       route: "edition",
       srcImage: `${this.rootImage}/edition.svg`,
       isClicked: false
@@ -64,6 +72,7 @@ export class MenuTabService {
   private plusTab: MenuTabModel = {
     id: 10,
     name: "Plus",
+    type: MenuType.PLUS,
     route: "",
     srcImage: "icon/arrow-2.svg",
     isClicked: false

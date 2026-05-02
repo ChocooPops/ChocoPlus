@@ -5,6 +5,8 @@ import { ManagerJellyfinService } from '../../services/manager-jellyfin/manager-
 import { take } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { JsonViewerComponent } from '../json-viewer/json-viewer.component';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-setting-manager-jellyfin',
@@ -15,12 +17,17 @@ import { JsonViewerComponent } from '../json-viewer/json-viewer.component';
 })
 export class SettingManagerJellyfinComponent extends UnauthorizedError {
 
+  protected override menuType: MenuType = MenuType.PARAM_JELLYFIN;
+
   private type!: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   private message: string = 'Voulez-vous vraiment exécuter cet appel ?';
   public object: any | undefined = undefined;
 
-  constructor(private managerJellyfinService: ManagerJellyfinService) {
-    super();
+  constructor(private managerJellyfinService: ManagerJellyfinService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editionParametersService);
+    this.toggleUnderParameter();
   }
 
   public emitActionData(): void {

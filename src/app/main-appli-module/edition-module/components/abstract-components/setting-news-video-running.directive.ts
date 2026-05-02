@@ -6,6 +6,7 @@ import { Subscription, take } from "rxjs";
 import { MediaTypeModel } from "../../../media-module/models/media-type.enum";
 import { MediaModel } from "../../../media-module/models/media.interface";
 import { SimpleModel } from "../../../../common-module/models/simple-model";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive({})
 export abstract class SettingNewsVideoRunning extends UnauthorizedError {
@@ -14,8 +15,10 @@ export abstract class SettingNewsVideoRunning extends UnauthorizedError {
     protected subscription: Subscription = new Subscription();
     protected mediaType!: MediaTypeModel;
 
-    constructor(protected editNewsVideoRunningService: EditNewsVideoRunningService) {
-        super();
+    constructor(protected editNewsVideoRunningService: EditNewsVideoRunningService,
+        editionParametersService: EditionParametersService
+    ) {
+        super(editionParametersService);
     }
 
     ngOnInit(): void {

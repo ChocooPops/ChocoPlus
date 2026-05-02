@@ -4,6 +4,7 @@ import { SelectionModel } from "../../../media-module/models/selection.interface
 import { Subscription, take } from "rxjs";
 import { EditionSelectionPageService } from "../../services/edition-selection-page/edition-selection-page.service";
 import { SelectionService } from "../../../media-module/services/selection/selection.service";
+import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
 
 @Directive({})
 export abstract class SettingSelectionPageAbstract extends UnauthorizedError {
@@ -12,9 +13,10 @@ export abstract class SettingSelectionPageAbstract extends UnauthorizedError {
     protected subscription: Subscription = new Subscription();
 
     constructor(protected editionSelectionPageService: EditionSelectionPageService,
-        protected selectionService: SelectionService
+        protected selectionService: SelectionService,
+        editionParametersService: EditionParametersService
     ) {
-        super();
+        super(editionParametersService);
     }
 
     ngOnInit(): void {

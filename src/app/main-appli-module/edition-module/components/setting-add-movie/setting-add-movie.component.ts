@@ -21,6 +21,10 @@ import { InputPosterHorizontalEditionComponent } from '../input-poster-horizonta
 import { HttpErrorResponse } from '@angular/common/http';
 import { EditMovieModel } from '../../models/edit-movie.interface';
 import { CreditsTableComponent } from '../credits-table/credits-table.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionMovieService } from '../../services/edition-movie/edition-movie.service';
+import { TmdbOperationService } from '../../services/tmdb-operation/tmdb-operation.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-add-movie',
@@ -32,6 +36,15 @@ import { CreditsTableComponent } from '../credits-table/credits-table.component'
 export class SettingAddMovieComponent extends SettingMovieAbstraction {
 
   private message: string = 'Cette action ajoutera un nouveau film';
+  protected override menuType: MenuType = MenuType.ADD_MOVIE;
+
+  constructor(editionMovieService: EditionMovieService,
+    tmdbOperationService: TmdbOperationService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editionMovieService, tmdbOperationService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   public onClickAddMovie(): void {
     this.popup.setMessage(this.message, undefined);

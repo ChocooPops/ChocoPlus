@@ -10,6 +10,8 @@ import { ActionUserComponent } from '../action-user/action-user.component';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
 import { PopupComponent } from '../../../../edition-module/components/popup/popup.component';
 import { DetailUserComponent } from '../detail-user/detail-user.component';
+import { UserParametersService } from '../../../service/user-parameters/user-parameters.service';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-users-manage',
@@ -34,7 +36,10 @@ export class UsersManageComponent {
   @ViewChild('inputSelect') refSelect !: ElementRef;
   @ViewChild(PopupComponent) popupRef !: PopupComponent;
 
-  constructor(private usersManageService: UsersManageService) {
+  constructor(private readonly usersManageService: UsersManageService,
+    private readonly userParametersService: UserParametersService
+  ) {
+    this.userParametersService.initAllClickedValue(MenuType.MANAGEMENT_USER)
     this.options = this.usersManageService.getOptionUser();
   }
 

@@ -10,6 +10,10 @@ import { ButtonRemoveComponent } from '../button-remove/button-remove.component'
 import { ButtonSaveComponent } from '../button-save/button-save.component';
 import { AiButtonComponent } from '../ai-button/ai-button.component';
 import { InputNumberEditionComponent } from "../input-number-edition/input-number-edition.component";
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { CreditService } from '../../../media-module/services/credit/credit.service';
+import { TmdbOperationService } from '../../services/tmdb-operation/tmdb-operation.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-add-credit',
@@ -21,6 +25,15 @@ import { InputNumberEditionComponent } from "../input-number-edition/input-numbe
 export class SettingAddCreditComponent extends SettingCreditAbstraction {
   
   private message: string = 'Cette action ajoutera un nouveau crédit';
+  protected override menuType: MenuType = MenuType.ADD_CREDIT;
+
+  constructor(creditService: CreditService,
+    tmdbOperationService: TmdbOperationService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(creditService, tmdbOperationService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   public onClickAddCredit(): void {
     this.popup.setMessage(this.message, undefined);

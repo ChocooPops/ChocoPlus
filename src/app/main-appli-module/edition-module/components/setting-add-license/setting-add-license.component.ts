@@ -13,6 +13,10 @@ import { MessageReturnedModel } from '../../../../common-module/models/message-r
 import { take } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { InputResearchSeriesComponent } from '../input-search-components/input-research-series/input-research-series.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionLicenseService } from '../../services/edition-license/edition-license.service';
+import { SelectionService } from '../../../media-module/services/selection/selection.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-add-license',
@@ -24,6 +28,15 @@ import { InputResearchSeriesComponent } from '../input-search-components/input-r
 export class SettingAddLicenseComponent extends SettingLicenseAbstraction {
 
   private message: string = 'Cette action ajoutera une nouvelle license';
+  protected override menuType: MenuType = MenuType.ADD_LICENSE;
+
+  constructor(editionLicenseService: EditionLicenseService,
+    selectionService: SelectionService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editionLicenseService, selectionService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   onClickAddLicense(): void {
     this.popup.setMessage(this.message, undefined);

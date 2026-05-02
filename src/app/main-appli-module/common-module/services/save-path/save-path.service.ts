@@ -12,19 +12,18 @@ export class SavePathService {
   private currentIndex = -1;
   private pendingIndexChange: number | null = null;
 
-  private canGoBack$ = new BehaviorSubject<boolean>(false).asObservable();
-  private canGoForward$ = new BehaviorSubject<boolean>(false).asObservable();
-
   private canGoBackSubject = new BehaviorSubject<boolean>(false);
   private canGoForwardSubject = new BehaviorSubject<boolean>(false);
+
+  private canGoBack$ = this.canGoBackSubject.asObservable();
+  private canGoForward$ = this.canGoForwardSubject.asObservable();
 
   private oldPath = '';
   private id: number | undefined;
 
-  constructor(private readonly router: Router) {
-    this.canGoBack$ = this.canGoBackSubject.asObservable();
-    this.canGoForward$ = this.canGoForwardSubject.asObservable();
+  private readonly SEARCH_PATH = '/main-app/search';
 
+  constructor(private readonly router: Router) {
     this.router.events
       .pipe(filter(event =>
         event instanceof NavigationEnd ||
@@ -47,8 +46,17 @@ export class SavePathService {
           this.pendingIndexChange = null;
         } else if (this.history[this.currentIndex] !== url) {
           this.history = this.history.slice(0, this.currentIndex + 1);
-          this.history.push(url);
-          this.currentIndex = this.history.length - 1;
+
+          const isSearchUrl = url.startsWith(this.SEARCH_PATH);
+          const previousUrl = this.history[this.currentIndex];
+          const previousIsSearchUrl = previousUrl?.startsWith(this.SEARCH_PATH);
+
+          if (isSearchUrl && previousIsSearchUrl) {
+            this.history[this.currentIndex] = url;
+          } else {
+            this.history.push(url);
+            this.currentIndex = this.history.length - 1;
+          }
         }
 
         this.updateStates();

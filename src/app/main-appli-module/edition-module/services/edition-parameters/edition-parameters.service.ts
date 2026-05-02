@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { EditionParameterModel } from '../../models/editionParamater.interface';
 import { Router } from '@angular/router';
 import { MenuTabModel } from '../../../menu-module/model/menu-tab.interface';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -27,18 +28,21 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Modifer les news d'accueil",
+          type: MenuType.MODIFY_NEWS_HOME,
           route: 'modify-news',
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modifer les news des films",
+          type: MenuType.MODIFY_NEW_MOVIES,
           route: 'modify-news-movie-running',
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modifer les news des séries",
+          type: MenuType.MODIFY_NEW_SERIES,
           route: 'modify-news-series-running',
           isClicked: false
         }
@@ -52,12 +56,14 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Ajouter une catégorie",
+          type: MenuType.ADD_CATEGORY,
           route: "add-category",
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modifier une catégorie",
+          type: MenuType.MODIFY_CATEGORY,
           route: "modify-category",
           isClicked: false
         }
@@ -72,12 +78,14 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Ajouter un film",
+          type: MenuType.ADD_MOVIE,
           route: "add-movie",
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modifier un film",
+          type: MenuType.MODIFY_MOVIE,
           route: "modify-movie",
           isClicked: false
         }
@@ -91,12 +99,14 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Ajouter une série",
+          type: MenuType.ADD_SERIES,
           route: "add-series",
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modifier une séries",
+          type: MenuType.MODIFY_SERIES,
           route: "modify-series",
           isClicked: false
         }
@@ -110,12 +120,14 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Ajouter un crédit",
+          type: MenuType.ADD_CREDIT,
           route: "add-credit",
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modificer un crédit",
+          type: MenuType.MODIFY_CREDIT,
           route: "modify-credit",
           isClicked: false
         }
@@ -129,12 +141,14 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Créer une sélection",
+          type: MenuType.ADD_SELECTION,
           route: "create-selection",
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modifier une sélection",
+          type: MenuType.MODIFY_SELECTION,
           route: "modify-selection",
           isClicked: false
         }
@@ -148,18 +162,21 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Créer une licence",
+          type: MenuType.ADD_LICENSE,
           route: "create-license",
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modifier une licence",
+          type: MenuType.MODIFY_LICENSE,
           route: "modify-license",
           isClicked: false
         },
         {
           id: this.getId(),
           name: "Modifier l'ordre des licenses",
+          type: MenuType.MODIFY_ORDER_LICENSE,
           route: "modify-license-order",
           isClicked: false
         }
@@ -173,6 +190,7 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Page d'accueil",
+          type: MenuType.MODIFY_HOME_PAGE_SELECTION,
           route: "modify-home-page",
           isClicked: false
         }
@@ -186,6 +204,7 @@ export class EditionParametersService {
         {
           id: this.getId(),
           name: "Paramètre Jellyfin",
+          type: MenuType.PARAM_JELLYFIN,
           route: 'manager-jellyfin',
           isClicked: false
         }
@@ -202,18 +221,31 @@ export class EditionParametersService {
     this.editionParameters[index].isClicked = !this.editionParameters[index].isClicked;
   }
 
-  public toggleIfUnderParameterIsClickedById(idParam: number, idUnderParam: number): void {
-    for (let editionParameter of this.editionParameters) {
-      for (let underParameter of editionParameter.underParameter) {
-        underParameter.isClicked = false;
-      }
-    }
+  public navigateByUrlFromUnderParameters(idParam: number, idUnderParam: number): void {
+    // for (let editionParameter of this.editionParameters) {
+    //   for (let underParameter of editionParameter.underParameter) {
+    //     underParameter.isClicked = false;
+    //   }
+    // }
     const indexParam = this.editionParameters.findIndex(param => param.id === idParam);
     const indexUnderParam = this.editionParameters[indexParam].underParameter.findIndex(param => param.id === idUnderParam)
-    this.editionParameters[indexParam].underParameter[indexUnderParam].isClicked = !this.editionParameters[indexParam].underParameter[indexUnderParam].isClicked;
+    //this.editionParameters[indexParam].underParameter[indexUnderParam].isClicked = !this.editionParameters[indexParam].underParameter[indexUnderParam].isClicked;
 
     const route: string = this.editionParameters[indexParam].underParameter[indexUnderParam].route;
     this.router.navigateByUrl(`${this.rootRouter}/${route}`);
+  }
+
+  public toggleIfUnderParameterIsClickedByType(type: MenuType): void {
+    for (let editionParameter of this.editionParameters) {
+      for (let underParameter of editionParameter.underParameter) {
+        if (underParameter.type === type) {
+          underParameter.isClicked = true;
+          editionParameter.isClicked = true;
+        } else {
+          underParameter.isClicked = false;
+        }
+      }
+    }
   }
 
   public openSpecifiqParametersById(idParam: number, idUnderParam: number): string {

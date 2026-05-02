@@ -25,6 +25,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { InputDateComponent } from '../input-date/input-date.component';
 import { InputTimeEditionComponent } from '../input-time-edition/input-time-edition.component';
 import { CreditsTableComponent } from '../credits-table/credits-table.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionSeriesService } from '../../services/edition-series/edition-series.service';
+import { TmdbOperationService } from '../../services/tmdb-operation/tmdb-operation.service';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-add-series',
@@ -36,6 +40,15 @@ import { CreditsTableComponent } from '../credits-table/credits-table.component'
 export class SettingAddSeriesComponent extends SettingSeriesAbstraction {
 
   private message: string = 'Cette action ajoutera une nouvelle série';
+  protected override menuType: MenuType = MenuType.ADD_SERIES;
+
+  constructor(editionSeriesService: EditionSeriesService,
+    tmdbOperationService: TmdbOperationService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editionSeriesService, tmdbOperationService, editionParametersService);
+    this.toggleUnderParameter();
+  }
 
   onClickAddSeries(): void {
     this.popup.setMessage(this.message, undefined);

@@ -26,18 +26,18 @@
                 <p [ngClass]="'margin-bottom-text'"> <span class="legend">Production & Réalisation: </span> 
                     @for (crew of crews; track $index) {
                         @if ($index !== crews.length - 1) {
-                            <span class="content" (click)="setFilterCredit(crew)">{{ crew.fullName}} <span class="character-job">({{crew.job}})</span> </span>, 
+                            <span class="content" (click)="setFilterCredit(crew)">{{ crew.fullName}}<!-- <span class="character-job">({{crew.job}})</span> --></span>, 
                         } @else {
-                            <span class="content" (click)="setFilterCredit(crew)">{{ crew.fullName}} <span class="character-job">({{crew.job}})</span></span>
+                            <span class="content" (click)="setFilterCredit(crew)">{{ crew.fullName}}<!-- <span class="character-job">({{crew.job}})</span> --></span>
                         }
                     }
                 </p>
                 <p [ngClass]="'margin-bottom-text'"> <span class="legend">Acteurs: </span> 
                     @for (cast of casts; track $index) {
                         @if ($index !== casts.length - 1) {
-                            <span class="content" (click)="setFilterCredit(cast)">{{ cast.fullName}} <span class="character-job">({{cast.character}})</span></span>, 
+                            <span class="content" (click)="setFilterCredit(cast)">{{ cast.fullName}}<!-- <span class="character-job">({{cast.character}})</span> --></span>, 
                         } @else {
-                            <span class="content" (click)="setFilterCredit(cast)">{{ cast.fullName}} <span class="character-job">({{cast.character}})</span></span>
+                            <span class="content" (click)="setFilterCredit(cast)">{{ cast.fullName}}<!-- <span class="character-job">({{cast.character}})</span> --></span>
                         }
                     }
                 </p>

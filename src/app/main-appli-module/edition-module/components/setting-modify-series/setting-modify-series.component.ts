@@ -30,6 +30,8 @@ import { SeriesModel } from '../../../media-module/models/series/series.interfac
 import { InputDateComponent } from '../input-date/input-date.component';
 import { InputTimeEditionComponent } from '../input-time-edition/input-time-edition.component';
 import { CreditsTableComponent } from '../credits-table/credits-table.component';
+import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 
 @Component({
   selector: 'app-setting-modify-series',
@@ -40,15 +42,19 @@ import { CreditsTableComponent } from '../credits-table/credits-table.component'
 })
 export class SettingModifySeriesComponent extends SettingSeriesAbstraction {
 
+  protected override menuType: MenuType = MenuType.MODIFY_SERIES;
+
   private messageDelete: string = 'Cette action supprimera définitevement la série';
   private messageModify: string = 'Cette action enregistrera les modifications faites au film';
   private typeOperation !: number;
 
   constructor(editionSeriesService: EditionSeriesService,
     tmdbOperationService: TmdbOperationService,
-    private route: ActivatedRoute
+    editionParametersService: EditionParametersService,
+    private readonly route: ActivatedRoute
   ) {
-    super(editionSeriesService, tmdbOperationService)
+    super(editionSeriesService, tmdbOperationService, editionParametersService);
+    this.toggleUnderParameter();
   }
 
   setSeriesWantedToModifyIt(media: SeriesModel) {

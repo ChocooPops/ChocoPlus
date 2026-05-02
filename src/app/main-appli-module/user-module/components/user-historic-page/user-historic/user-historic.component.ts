@@ -3,6 +3,8 @@ import { CategoryPieChartComponent } from '../category-pie-chart/category-pie-ch
 import { WatchTimeStatsComponent } from '../watch-time-stats/watch-time-stats.component';
 import { WatchingChartComponent } from '../watching-chart/watching-chart.component';
 import { TopMediaComponent } from '../top-media/top-media.component';
+import { UserParametersService } from '../../../service/user-parameters/user-parameters.service';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-user-historic',
@@ -21,6 +23,10 @@ export class UserHistoricComponent {
 
   private dragging: 'col' | 'row' | null = null;
   private activeDivider: HTMLElement | null = null;
+
+  constructor(private readonly userParametersService: UserParametersService) {
+    this.userParametersService.initAllClickedValue(MenuType.HISTORIC);
+  }
 
   onDividerMouseDown(event: MouseEvent, type: 'col' | 'row'): void {
     event.preventDefault();
