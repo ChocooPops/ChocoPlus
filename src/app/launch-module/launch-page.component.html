@@ -7,8 +7,10 @@
         <div class="container-loading">
             <div class="little-spinner"></div>
         </div>
-        }@else {
+        }@else if (isGoodVersion) {
         <router-outlet></router-outlet>
+        }@else {
+        <app-bad-version [version]="lastVersion" (onContinue)="setGoodVersion()"></app-bad-version>
         }
     </div>
 </div>

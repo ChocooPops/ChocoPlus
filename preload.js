@@ -18,6 +18,10 @@ contextBridge.exposeInMainWorld('electron', {
 
   onChocoPlayerStatus: (callback) => ipcRenderer.on('choco-player-status', (_event, data) => callback(data)),
   
+  getVersion: () => ipcRenderer.invoke('get-version'),
+  
+  openExternal: (url) => ipcRenderer.invoke('open-external', url),
+
   apiUrl: apiUrl,
   headerSecret: headerSecret,
   headerName: headerName

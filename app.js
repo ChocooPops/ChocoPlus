@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, session } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, session, shell } = require('electron');
 const path = require('path');
 const url = require('url');
 const keytar = require('keytar');
@@ -167,6 +167,18 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.handle('get-version', () => {
+  return app.getVersion()
+});
+
+ipcMain.handle('open-external', async (_event, url) => {
+  if (typeof url !== 'string' || !url.startsWith('http')) {
+    throw new Error('URL invalide');
+  }
+
+  await shell.openExternal(url);
 });
 
 ipcMain.handle('open-file-dialog', async () => {

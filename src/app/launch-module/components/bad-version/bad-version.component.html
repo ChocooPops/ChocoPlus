@@ -1,0 +1,8 @@
+<div class="container-popup">
+    <p> Votre version est obsolète </p>
+    <img [src]="srcIcon" class="ask-img">
+    <div class="container-button">
+        <p class="continue" (click)="onClickContinue()">Continuer</p>
+        <p class="download" (click)="onClickDowload()">Télécharger la {{ version.num }} </p>
+    </div>
+</div>
