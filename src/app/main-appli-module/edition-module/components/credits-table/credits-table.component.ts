@@ -23,7 +23,6 @@ export class CreditsTableComponent {
 
   openDropdown: string | null = null;
   MediaType = MediaTypeModel;
-
   
   constructor(private readonly elementRef: ElementRef) { }
 
@@ -67,7 +66,6 @@ export class CreditsTableComponent {
       });
     });
   }
-
 
 
   toggleDropdown(key: string, event: MouseEvent): void {

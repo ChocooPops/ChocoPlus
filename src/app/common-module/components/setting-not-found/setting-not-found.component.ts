@@ -11,13 +11,13 @@ import { UserParametersService } from '../../../main-appli-module/user-module/se
 })
 export class SettingNotFoundComponent {
 
+  srcImage: string = "icon/not-found.svg";
+
   constructor(private readonly editionParametersService: EditionParametersService,
     private readonly userParametersService: UserParametersService
   ) {
     this.editionParametersService.resetAllUnderParameterIsClicked();
     this.userParametersService.resetAllUserParametersIsClicked();
   }
-
-  srcImage: string = "icon/not-found.svg";
 
 }

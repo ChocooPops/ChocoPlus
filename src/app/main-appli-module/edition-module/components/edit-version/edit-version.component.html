@@ -1,0 +1,55 @@
+<div class="ct-wrap">
+  <table class="ct-table">
+    <thead>
+      <tr>
+        <th>Numéro de version<div class="ct-resize-handle"></div>
+        </th>
+        <th>Système d'exploitation<div class="ct-resize-handle"></div>
+        </th>
+        <th>Lien<div class="ct-resize-handle"></div>
+        </th>
+        <th>Date de création<div class="ct-resize-handle"></div>
+        </th>
+        <th>Date de dernière modification<div class="ct-resize-handle"></div>
+        </th>
+        <th class="ct-action-col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (version of versions; track version.id; let i = $index) {
+      <tr>
+        <td>
+          <input class="ct-input" type="text" placeholder="—" [(ngModel)]="version.num" />
+        </td>
+        <td>
+          <input class="ct-input" type="text" placeholder="—" [(ngModel)]="version.os" disabled />
+        </td>
+        <td>
+          <input class="ct-input" type="text" placeholder="—" [(ngModel)]="version.link" />
+        </td>
+        <td>
+          <input class="ct-input" type="text" placeholder="—" [value]="formatDate(version.createdAt)" disabled />
+        </td>
+        <td>
+          <input class="ct-input" type="text" placeholder="—" [value]="formatDate(version.updatedAt)" disabled />
+        </td>
+        <td class="ct-action-cell">
+          @if (loadingStates[i]) {
+          <span class="ct-spinner"></span>
+          } @else {
+          <button class="ct-save-btn" (click)="saveVersion(version, i)" title="Enregistrer les modifications">
+            <img [src]="srcIconSave">
+            Enregistrer
+          </button>
+          }
+          @if (feedbackStates[i]; as fb) {
+          <span class="ct-feedback" [class.ct-feedback--success]="fb.state" [class.ct-feedback--error]="!fb.state">
+            {{ fb.message }}
+          </span>
+          }
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

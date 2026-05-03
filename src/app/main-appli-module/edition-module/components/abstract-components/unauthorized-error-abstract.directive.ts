@@ -17,7 +17,7 @@ export abstract class UnauthorizedError {
 
     displayLoader: boolean = false;
 
-    protected menuType!: MenuType;
+    protected abstract menuType: MenuType;
 
     constructor(private readonly editionParametersService: EditionParametersService) { }
 

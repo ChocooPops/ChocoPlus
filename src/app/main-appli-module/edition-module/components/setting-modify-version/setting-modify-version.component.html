@@ -1,0 +1,19 @@
+<app-popup (emitActionData)="emitActionData()"></app-popup>
+
+<div class="containerSettingSelected">
+    <div class="containerFieldToFill">
+        <div class="container-title-reset">
+            <p> Gestionnaire des versions </p>
+            <div class="container-reset" (click)="onClickReset()">
+                <img [src]="srcReset">
+            </div>
+        </div>
+        @if(versions) {
+            <app-edit-version [versions]="versions"></app-edit-version>
+        }@else {
+        <div class="container-laoder-content">
+            <div class="little-spinner"></div>
+        </div>
+        }
+    </div>
+</div>

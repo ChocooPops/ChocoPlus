@@ -16,8 +16,8 @@ export class EditionParametersComponent {
   editionParameters: EditionParameterModel[] = [];
   srcImageArrow: string = "icon/arrow.svg";
 
-  constructor(private editionParametersService: EditionParametersService,
-    private router: Router
+  constructor(private readonly editionParametersService: EditionParametersService,
+    private readonly router: Router
   ) {
     this.editionParameters = this.editionParametersService.getAllEditionParameters();
   }

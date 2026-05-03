@@ -5,4 +5,6 @@ export interface VersionModel {
     num: string,
     os: OS,
     link: string,
+    createdAt: Date,
+    updatedAt: Date
 }

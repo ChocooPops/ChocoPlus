@@ -60,6 +60,7 @@ export class LaunchPageComponent {
           });
         }),
       error: (error: HttpErrorResponse) => {
+        this.isGoodVersion = true;
         if (error.status === 401) {
           this.router.navigate(['login'], { relativeTo: this.route });
         } else {

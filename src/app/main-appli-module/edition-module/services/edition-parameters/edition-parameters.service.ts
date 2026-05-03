@@ -22,6 +22,27 @@ export class EditionParametersService {
   private editionParameters: EditionParameterModel[] = [
     {
       id: this.getId(),
+      name: "Paramètres avancés",
+      isClicked: false,
+      underParameter: [
+        {
+          id: this.getId(),
+          name: "Version",
+          type: MenuType.VERSION,
+          route: 'version',
+          isClicked: false
+        },
+        {
+          id: this.getId(),
+          name: "Paramètre Jellyfin",
+          type: MenuType.PARAM_JELLYFIN,
+          route: 'manager-jellyfin',
+          isClicked: false
+        }
+      ]
+    },
+    {
+      id: this.getId(),
       name: "Gestion des news",
       isClicked: false,
       underParameter: [
@@ -192,20 +213,6 @@ export class EditionParametersService {
           name: "Page d'accueil",
           type: MenuType.MODIFY_HOME_PAGE_SELECTION,
           route: "modify-home-page",
-          isClicked: false
-        }
-      ]
-    },
-    {
-      id: this.getId(),
-      name: "Paramètres avancés",
-      isClicked: false,
-      underParameter: [
-        {
-          id: this.getId(),
-          name: "Paramètre Jellyfin",
-          type: MenuType.PARAM_JELLYFIN,
-          route: 'manager-jellyfin',
           isClicked: false
         }
       ]

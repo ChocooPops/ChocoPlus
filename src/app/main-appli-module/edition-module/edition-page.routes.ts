@@ -17,6 +17,9 @@ import { SettingModifyNewsSeriesRunningComponent } from "./components/setting-mo
 import { SettingModifyHomePageSelectionsComponent } from "./components/setting-modify-home-page-selections/setting-modify-home-page-selections.component";
 import { SettingModifyCreditComponent } from "./components/setting-modify-credit/setting-modify-credit.component";
 import { SettingAddCreditComponent } from "./components/setting-add-credit/setting-add-credit.component";
+import { SettingModifyVersionComponent } from "./components/setting-modify-version/setting-modify-version.component";
+import { IsAdminGuard } from "../../common-module/guards/is-admin.user.guard";
+import { UnauthorizedPageComponent } from "../../common-module/components/unauthorized-page/unauthorized-page.component";
 
 export const editionRoutes: Routes = [
     {
@@ -106,8 +109,18 @@ export const editionRoutes: Routes = [
         component: SettingModifyHomePageSelectionsComponent
     },
     {
+        path: 'version',
+        canActivate: [IsAdminGuard],
+        component: SettingModifyVersionComponent
+    },
+    {
         path: 'manager-jellyfin',
+        canActivate: [IsAdminGuard],
         loadComponent: () => import('./components/setting-manager-jellyfin/setting-manager-jellyfin.component').then(m => m.SettingManagerJellyfinComponent)
+    },
+    {
+        path: 'unauthorized',
+        component: UnauthorizedPageComponent,
     },
     {
         path: '**',
