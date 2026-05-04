@@ -27,6 +27,13 @@ export class EditionParametersService {
       underParameter: [
         {
           id: this.getId(),
+          name: "Médiathèque",
+          type: MenuType.LIBRARY,
+          route: 'library',
+          isClicked: false
+        },
+        {
+          id: this.getId(),
           name: "Version",
           type: MenuType.VERSION,
           route: 'version',
@@ -276,39 +283,19 @@ export class EditionParametersService {
     return this.editionParameters[indexParam].underParameter[indexUnderParam].route;
   }
 
-  public navigateToModifyMovie(idMovie: number): void {
-    const indexParam: number = this.editionParameters[2].id;
-    const indexUnderParam: number = this.editionParameters[2].underParameter[1].id;
-    const route: string = this.openSpecifiqParametersById(indexParam, indexUnderParam);
-    this.router.navigate([`${this.rootRouter}/${route}`, idMovie]);
-  }
-
-  public navigateToModifySeries(idSeries: number): void {
-    const indexParam: number = this.editionParameters[3].id;
-    const indexUnderParam: number = this.editionParameters[3].underParameter[1].id;
-    const route: string = this.openSpecifiqParametersById(indexParam, indexUnderParam);
-    this.router.navigate([`${this.rootRouter}/${route}`, idSeries]);
-  }
-
-  public navigateToModifyCategory(idCategory: number): void {
-    const indexParam: number = this.editionParameters[1].id;
-    const indexUnderParam: number = this.editionParameters[1].underParameter[1].id;
-    const route: string = this.openSpecifiqParametersById(indexParam, indexUnderParam);
-    this.router.navigate([`${this.rootRouter}/${route}`, idCategory]);
-  }
-
-  public navigateToModifySelection(idSelection: number): void {
-    const indexParam: number = this.editionParameters[4].id;
-    const indexUnderParam: number = this.editionParameters[4].underParameter[1].id;
-    const route: string = this.openSpecifiqParametersById(indexParam, indexUnderParam);
-    this.router.navigate([`${this.rootRouter}/${route}`, idSelection]);
-  }
-
-  public navigateToModifyLicense(idLicense: number): void {
-    const indexParam: number = this.editionParameters[5].id;
-    const indexUnderParam: number = this.editionParameters[5].underParameter[1].id;
-    const route: string = this.openSpecifiqParametersById(indexParam, indexUnderParam);
-    this.router.navigate([`${this.rootRouter}/${route}`, idLicense]);
+  public navigateToEditionByType(idMovie: number, type: MenuType): void {
+    let menu!: MenuTabModel;
+    for (let editionParameter of this.editionParameters) {
+      for (let underParameter of editionParameter.underParameter) {
+        if (underParameter.type === type) {
+          menu = underParameter;
+          break;
+        }
+      }
+    }
+    if (menu) {
+      this.router.navigate([`${this.rootRouter}/${menu.route}`, idMovie]);
+    }
   }
 
   public navigateToUnderParametersClicked(): void {

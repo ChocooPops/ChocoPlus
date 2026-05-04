@@ -63,8 +63,8 @@ export class MediaHorizontalBackgroundComponent {
 
   private init(): void {
     this.srcPoster = this.compressedPosterService.getPosterMedia(SelectionType.SPECIAL_POSTER, this.media, ScalePoster.SCALE_ORIGINAL);
-    this.srcLogo = this.compressedPosterService.getLogoForMediaPresentation(this.media, ScalePoster.SCALE_ORIGINAL);
-    this.srcBackground = this.compressedPosterService.getBackgroundForMediaPresentation(this.media, ScalePoster.SCALE_ORIGINAL);
+    this.srcLogo = this.compressedPosterService.getLogoForMediaPresentation(this.media);
+    this.srcBackground = this.compressedPosterService.getBackgroundForMediaPresentation(this.media);
     this.title = this.media.title;
 
     if (!this.srcPoster) {

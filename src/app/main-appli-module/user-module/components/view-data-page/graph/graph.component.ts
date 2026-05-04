@@ -15,6 +15,7 @@ import { EditionParametersService } from '../../../../edition-module/services/ed
 import { UserModel } from '../../../dto/user.model';
 import { RoleModel } from '../../../../../common-module/models/role.enum';
 import { UserService } from '../../../service/user/user.service';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-graph',
@@ -329,15 +330,15 @@ export class GraphComponent {
     if (this.nodeClicked) {
       const node: GraphNode = this.nodeClicked[0];
       if (node.mediaType === MediaTypeModel.MOVIE) {
-        this.editionParametersService.navigateToModifyMovie(node.id);
+        this.editionParametersService.navigateToEditionByType(node.id, MenuType.MODIFY_MOVIE);
       } else if (node.mediaType === MediaTypeModel.SERIES) {
-        this.editionParametersService.navigateToModifySeries(node.id);
+        this.editionParametersService.navigateToEditionByType(node.id, MenuType.MODIFY_SERIES);
       } else if (node.color === this.graphService.getColorCategory()) {
-        this.editionParametersService.navigateToModifyCategory(node.id);
+        this.editionParametersService.navigateToEditionByType(node.id, MenuType.MODIFY_CATEGORY);
       } else if (node.color === this.graphService.getColorSelection()) {
-        this.editionParametersService.navigateToModifySelection(node.id);
+        this.editionParametersService.navigateToEditionByType(node.id, MenuType.MODIFY_SELECTION);
       } else if (node.color === this.graphService.getColorLicense()) {
-        this.editionParametersService.navigateToModifyLicense(node.id);
+        this.editionParametersService.navigateToEditionByType(node.id, MenuType.MODIFY_LICENSE);
       }
     }
   }

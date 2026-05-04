@@ -25,6 +25,7 @@ export const environment = {
     apiUrlDocumentation: apiUrl + '/documentation',
     apiUrlCredit: apiUrl + '/credit',
     apiUrlVersion: apiUrl + '/version',
+    apiUrlLibrary: apiUrl + '/library',
     access_token: 'access_token',
     HEADER_SECRET_API: headerSecret,
     HEADER_NAME_FIELD_SECRET_API: headerName

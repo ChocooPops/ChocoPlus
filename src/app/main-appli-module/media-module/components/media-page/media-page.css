@@ -65,6 +65,7 @@ p {
 
 .container-movie-placement {
     display: block;
+    width: 100%;
 }
 
 .container-poster {
@@ -181,9 +182,57 @@ p {
 
 .margin-bottom-text {
     margin-bottom: 3px;
+    position: relative;
+    display: flex;
+    max-width: 100%;
+    gap: 3px;
+    flex-wrap: wrap;
+
+    p, span {
+        flex-shrink: 0;
+    }
+}
+
+.info-tooltip {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  width: max-content;
+  max-width: 600px;
+  background-color: rgba(20, 20, 20, 0.95);
+  border: 1px solid #333;
+  border-radius: 5px;
+  padding: 8px 12px;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  p {
+    margin: 0;
+    color: #ccc !important;
+  }
+}
+
+.container-job-transparent {
+    cursor: pointer;
+    position: relative;
+    width: max-content;
+}
+
+.container-job-transparent:hover .info-tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
 }
 
 @media (max-width: 1920px) {
+
+    .info-tooltip {
+        top: -34px;
+        border-radius: 3px;
+    }
 
     .container-form-movie {
         gap: 15px;

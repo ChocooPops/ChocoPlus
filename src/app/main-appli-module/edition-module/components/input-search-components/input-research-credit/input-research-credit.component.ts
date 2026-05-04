@@ -28,7 +28,7 @@ export class InputResearchCreditComponent extends InputResearchAbstract<MediaCre
   }
 
   getPathPosterByMovie(credit: MediaCreditModel): string {
-    let srcPoster = this.compressedPosterService.getCreditPoster(credit, ScalePoster.SCALE_300h);
+    let srcPoster = this.compressedPosterService.getCreditPoster(credit, ScalePoster.SCALE_100h);
     if (srcPoster) {
       return srcPoster;
     } else {

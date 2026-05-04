@@ -11,20 +11,9 @@ import { FormatMediaPageModel } from '../../../../models/format-media-page-enum'
 @Component({
   selector: 'app-series-vertical-page',
   standalone: true,
-  imports: [
-    NgClass,
-    EpisodePosterVerticalViewComponent,
-    EpisodePosterVerticalViewLoadingComponent,
-    SimilarPosterHorizontalComponent,
-    SimilarPosterHorizontalLoadingComponent,
-    DatePipe,
-  ],
+  imports: [NgClass, EpisodePosterVerticalViewComponent, EpisodePosterVerticalViewLoadingComponent, SimilarPosterHorizontalComponent, SimilarPosterHorizontalLoadingComponent, DatePipe],
   templateUrl: './series-page.component.html',
-  styleUrls: [
-    './series-page.component.css',
-    '../../../../../common-module/styles/animation.css',
-    '../../media-page.css',
-  ],
+  styleUrls: ['./series-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css'],
 })
 export class SeriesVerticalPageComponent extends SeriesPageAbstraction {
 

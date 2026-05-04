@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { EditionParametersService } from '../../../../edition-module/services/edition-parameters/edition-parameters.service';
 import { MediaTypeModel } from '../../../models/media-type.enum';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 
 @Component({
   selector: 'app-modify-button',
@@ -35,9 +36,9 @@ export class ModifyButtonComponent {
   onClick(): void {
     if (this.idMedia && this.mediaType) {
       if (this.mediaType === MediaTypeModel.MOVIE) {
-        this.editionParametersService.navigateToModifyMovie(this.idMedia);
+        this.editionParametersService.navigateToEditionByType(this.idMedia, MenuType.MODIFY_MOVIE);
       } else if (this.mediaType === MediaTypeModel.SERIES) {
-        this.editionParametersService.navigateToModifySeries(this.idMedia);
+        this.editionParametersService.navigateToEditionByType(this.idMedia, MenuType.MODIFY_SERIES);
       }
     }
   }
