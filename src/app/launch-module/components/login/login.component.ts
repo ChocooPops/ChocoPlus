@@ -3,14 +3,16 @@ import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormPageDirectiveAbstract } from '../form-page.directive';
 import { ButtonFormComponent } from '../button-form/button-form.component';
 import { LoginModel } from '../../models/login.model';
-import { UserModel } from '../../../main-appli-module/user-module/dto/user.model';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, forkJoin, switchMap, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { UserModel } from '../../../main-appli-module/user-module/dto/user.model';
+import { VersionModel } from '../../models/version.interface';
+import { BadVersionComponent } from '../bad-version/bad-version.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonFormComponent],
+  imports: [ReactiveFormsModule, ButtonFormComponent, BadVersionComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css', '../../styles/form.css', '../../styles/input-form.css']
 })
@@ -27,6 +29,9 @@ export class LoginComponent extends FormPageDirectiveAbstract {
   srcImageKey: string = this.srcNotVisible;
   type: 'password' | 'text' = 'password';
   activateSubmit: boolean = true;
+
+  isGoodVersion: boolean = true;
+  lastVersion!: VersionModel;
 
   override ngOnInit(): void {
     this.formGroup = this.fb.group({
@@ -58,7 +63,13 @@ export class LoginComponent extends FormPageDirectiveAbstract {
   private verifAuthLogin(login: LoginModel): void {
     this.message = 'Chargement ...';
     this.authService.fetchLogin(login).pipe(
-      switchMap(() => this.userService.fetchCurrentUser()),
+      switchMap(() =>
+        forkJoin({
+          user: this.userService.fetchCurrentUser(),
+          version: this.versionService.fetchLastVersion(),
+          currentVersion: this.versionService.getCurrentVersion()
+        })
+      ),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0) {
           this.message = "Aucune connexion";
@@ -73,14 +84,27 @@ export class LoginComponent extends FormPageDirectiveAbstract {
         return throwError(() => error);
       })
     ).subscribe({
-      next: (user: UserModel) => {
+      next: (result: {
+        user: UserModel,
+        version: VersionModel | null,
+        currentVersion: string
+      }) => {
         const img: string[] = [];
-        img.push(user.profilPhoto);
+        img.push(result.user.profilPhoto);
+
         this.imagePreloaderService.preloadImages(img).finally(() => {
-          this.router.navigateByUrl('preload-stream-app');
+          if (result.version) {
+            this.lastVersion = result.version;
+            this.isGoodVersion = this.versionService.isVersionGreater(result.currentVersion, this.lastVersion.num);
+            if (this.isGoodVersion) {
+              this.navigateToStreamApp();
+            }
+          } else {
+            this.navigateToStreamApp();
+          }
         })
       }
-    })
+    });
   }
 
   navigateToRegisterPage(): void {
@@ -91,6 +115,10 @@ export class LoginComponent extends FormPageDirectiveAbstract {
     this.router.navigateByUrl('preload-offline-app');
   }
 
+  navigateToStreamApp(): void {
+    this.router.navigateByUrl('preload-stream-app');
+  }
+
   onChangeVisibilityOfKeyAccess(): void {
     if (this.type === 'password') {
       this.type = 'text';
@@ -99,6 +127,10 @@ export class LoginComponent extends FormPageDirectiveAbstract {
       this.type = 'password';
       this.srcImageKey = this.srcNotVisible;
     }
+  }
+
+  setGoodVersion(): void {
+    this.isGoodVersion = true;
   }
 
 }

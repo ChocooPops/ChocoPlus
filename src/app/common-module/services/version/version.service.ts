@@ -16,6 +16,7 @@ export class VersionService {
 
   private id: number = 0;
   private currentVersion!: string;
+  private lastVersion: VersionModel | null = null;
   private readonly currentOs: OS = OS.WINDOWS;
   private readonly apiUrlVersion: string = `${environment.apiUrlVersion}`;
 
@@ -44,9 +45,13 @@ export class VersionService {
   }
 
   public fetchLastVersion(): Observable<VersionModel | null> {
+    if (this.lastVersion) {
+      return of(this.lastVersion);      
+    }
     return this.http.get<any>(`${this.apiUrlVersion}/${this.currentOs.toLowerCase()}`).pipe(
       map((data: VersionModel) => {
-        return data;
+        this.lastVersion = data;
+        return this.lastVersion;
       }),
       catchError((error) => {
         return of(null)

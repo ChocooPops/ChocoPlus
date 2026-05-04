@@ -1,4 +1,9 @@
 <div class="container-login">
+    
+    @if (!isGoodVersion) {
+        <app-bad-version [version]="lastVersion" (onContinue)="setGoodVersion()"></app-bad-version>
+    }
+
     <p class="label">S'identifier</p>
 
     <form [formGroup]="formGroup">

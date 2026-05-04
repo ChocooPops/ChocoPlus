@@ -5,6 +5,7 @@ import { AuthService } from "../services/auth/auth.service"
 import { TypeButtonModel } from "../models/type-button.model";
 import { UserService } from "../../main-appli-module/user-module/service/user/user.service";
 import { ImagePreloaderService } from "../../common-module/services/image-preloader/image-preloader.service";
+import { VersionService } from "../../common-module/services/version/version.service";
 
 @Directive({})
 export abstract class FormPageDirectiveAbstract {
@@ -19,11 +20,12 @@ export abstract class FormPageDirectiveAbstract {
     protected showLoaderTimeout: any;
     protected isLoading: boolean = false;
 
-    constructor(protected fb: FormBuilder,
-        protected router: Router,
-        protected authService: AuthService,
-        protected userService: UserService,
-        protected imagePreloaderService: ImagePreloaderService
+    constructor(protected readonly fb: FormBuilder,
+        protected readonly router: Router,
+        protected readonly authService: AuthService,
+        protected readonly userService: UserService,
+        protected readonly imagePreloaderService: ImagePreloaderService,
+        protected readonly versionService: VersionService
     ) { }
 
     abstract ngOnInit(): void;

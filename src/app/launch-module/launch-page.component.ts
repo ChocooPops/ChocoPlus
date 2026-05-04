@@ -7,7 +7,7 @@ import { UserService } from '../main-appli-module/user-module/service/user/user.
 import { ImagePreloaderService } from '../common-module/services/image-preloader/image-preloader.service';
 import { UserModel } from '../main-appli-module/user-module/dto/user.model';
 import { AuthService } from './services/auth/auth.service';
-import { VersionService } from '../common-module/services/service/version.service';
+import { VersionService } from '../common-module/services/version/version.service';
 import { VersionModel } from './models/version.interface';
 import { BadVersionComponent } from './components/bad-version/bad-version.component';
 
@@ -48,9 +48,7 @@ export class LaunchPageComponent {
         }) => {
           if (result.version) {
             this.lastVersion = result.version;
-            if (this.versionService.isVersionGreater(currentVersion, this.lastVersion.num)) {
-              this.isGoodVersion = true;
-            }
+            this.isGoodVersion = this.versionService.isVersionGreater(currentVersion, this.lastVersion.num);
           }
           this.imagePreloaderService.preloadImages([result.user.profilPhoto]).finally(() => {
             if (this.isGoodVersion) {

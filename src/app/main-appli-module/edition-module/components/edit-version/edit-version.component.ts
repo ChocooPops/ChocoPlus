@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { VersionModel } from '../../../../launch-module/models/version.interface';
 import { FormsModule } from '@angular/forms';
-import { VersionService } from '../../../../common-module/services/service/version.service';
+import { VersionService } from '../../../../common-module/services/version/version.service';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 
 interface FeedbackState {

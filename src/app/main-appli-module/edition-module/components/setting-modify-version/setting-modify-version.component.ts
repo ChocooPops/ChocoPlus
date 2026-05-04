@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { VersionService } from '../../../../common-module/services/service/version.service';
+import { VersionService } from '../../../../common-module/services/version/version.service';
 import { VersionModel } from '../../../../launch-module/models/version.interface';
 import { UnauthorizedError } from '../abstract-components/unauthorized-error-abstract.directive';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';

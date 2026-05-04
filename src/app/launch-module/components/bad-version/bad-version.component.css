@@ -16,6 +16,7 @@
   height: 350px;
   width: 330px;
   box-sizing: border-box;
+  z-index: 99999;
 }
 
 p {

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { VersionModel } from '../../models/version.interface';
 import { Router } from '@angular/router';
-import { VersionService } from '../../../common-module/services/service/version.service';
+import { VersionService } from '../../../common-module/services/version/version.service';
 
 @Component({
   selector: 'app-bad-version',
