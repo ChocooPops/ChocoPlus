@@ -1,7 +1,7 @@
 <div class="watching-chart-container">
 
   <div class="header">
-    <h2>Statistiques de Visionnage</h2>
+    <h2>{{ 'USER.HISTORIC.VIEWING_STAT' | translate }}</h2>
     <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
       @if(loading) {
       <img [src]="srcLoading">
@@ -13,32 +13,32 @@
 
   <div class="filters">
     <div class="filter-group">
-      <label>Date de début</label>
+      <label>{{ 'USER.HISTORIC.START_DATE' | translate }}</label>
       <input type="date" [value]="startDate" (change)="onStartDateChange($event)" [disabled]="loading"
         class="date-input">
     </div>
 
     <div class="filter-group">
-      <label>Période</label>
+      <label>{{ 'USER.HISTORIC.PERIOD' | translate }}</label>
       <div class="filter-buttons">
         @for(option of periodOptions; track option) {
         <button class="filter-btn" [class.active]="selectedPeriod === option.value" [disabled]="loading"
           (click)="onPeriodChange(option.value)">
           <span class="btn-icon">{{ option.icon }}</span>
-          <span class="btn-label">{{ option.label }}</span>
+          <span class="btn-label">{{ option.label | translate }}</span>
         </button>
         }
       </div>
     </div>
 
     <div class="filter-group">
-      <label>Type</label>
+      <label>{{ 'USER.HISTORIC.TYPE' | translate }}</label>
       <div class="filter-buttons">
         @for(option of contentOptions; track option) {
         <button class="filter-btn" [class.active]="selectedContent === option.value" [disabled]="loading"
           (click)="onContentChange(option.value)">
           <span class="btn-icon">{{ option.icon }}</span>
-          <span class="btn-label">{{ option.label }}</span>
+          <span class="btn-label">{{ option.label | translate }}</span>
         </button>
         }
       </div>
@@ -47,12 +47,12 @@
 
   <div class="loading" [style.display]="loading ? 'flex' : 'none'">
     <div class="spinner"></div>
-    <p>Chargement...</p>
+    <p>{{'LAUNCH.MESSAGE.LOADING' | translate }}</p>
   </div>
 
   <div class="error" [style.display]="error && !loading ? 'flex' : 'none'">
-    <p>{{ error }}</p>
-    <button (click)="loadData()">Réessayer</button>
+    <p>{{ error | translate }}</p>
+    <button (click)="loadData()">{{'LAUNCH.MESSAGE.TRY_AGAIN' | translate }}</button>
   </div>
 
   <div class="chart-wrapper" [style.display]="!loading && !error && stats && stats.data.length > 0 ? 'block' : 'none'">
@@ -61,6 +61,6 @@
   </div>
 
   <div class="empty" [style.display]="!loading && !error && stats && stats.data.length === 0 ? 'flex' : 'none'">
-    <p>Aucune donnée pour cette période</p>
+    <p>{{ 'USER.HISTORIC.ANY_DATA_PERIOD' | translate }}</p>
   </div>
 </div>

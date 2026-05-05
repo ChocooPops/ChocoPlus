@@ -6,11 +6,12 @@ import { GeometricDimensionSelectionModel } from '../../../models/geometric-dime
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { MediaCreditModel } from '../../../models/media-credit.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-credit-poster',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './credit-poster.component.html',
   styleUrl: './credit-poster.component.css',
 })

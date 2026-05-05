@@ -45,9 +45,9 @@
                     </div>
                     } @else if (media.mediaType === MediaType.SERIES) {
                     @if(nbSeasons > 1) {
-                    <p> {{ nbSeasons }} Saisons </p>
+                    <p> {{ nbSeasons }} {{ 'MEDIA_PAGE.SEASONS' | translate }} </p>
                     } @else {
-                    <p> {{ nbSeasons }} Saison </p>
+                    <p> {{ nbSeasons }} {{ 'MEDIA_PAGE.SEASON' | translate }} </p>
                     }
                     }
                 </div>

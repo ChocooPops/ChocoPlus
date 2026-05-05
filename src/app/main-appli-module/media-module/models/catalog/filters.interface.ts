@@ -4,7 +4,6 @@ import { Operation } from "./operation.enum";
 
 export interface FILTERS {
     id: number,
-    title: string,
     typeData: FilterType | JobModel,
     operation: Operation,
     value: {

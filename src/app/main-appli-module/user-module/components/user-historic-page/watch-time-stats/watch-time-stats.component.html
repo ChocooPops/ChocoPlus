@@ -1,6 +1,6 @@
 <div class="watch-time-container">
     <div class="header">
-        <h2>Temps de Visionnage</h2>
+        <h2>{{'USER.HISTORIC.VIEWING_TIME' | translate}}</h2>
         <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
             @if(loading) {
             <img [src]="srcLoading">
@@ -12,26 +12,26 @@
 
     <div class="loading" [style.display]="loading ? 'flex' : 'none'">
         <div class="spinner"></div>
-        <p>Chargement...</p>
+        <p>{{'LAUNCH.MESSAGE.LOADING' | translate }}</p>
     </div>
 
     <div class="error" [style.display]="error && !loading ? 'flex' : 'none'">
-        <p>{{ error }}</p>
-        <button (click)="loadStats()">Réessayer</button>
+        <p>{{ error | translate }}</p>
+        <button (click)="loadStats()">{{'LAUNCH.MESSAGE.TRY_AGAIN' | translate }}</button>
     </div>
 
     <div class="content" [style.display]="!loading && !error && stats ? 'block' : 'none'">
         <div class="stat-card total-card">
             <div class="card-icon">🎬</div>
             <div class="card-content">
-                <div class="card-label">Total</div>
+                <div class="card-label">{{'USER.HISTORIC.TOTAL' | translate }}</div>
                 <div class="card-value">
                     {{ stats ? formatTime(stats.total.totalHours, stats.total.totalMinutes, stats.total.totalSeconds) :
                     '0min' }}
                 </div>
                 @if(stats && stats.total.contentCount) {
                 <div class="card-details">
-                    {{ stats.total.contentCount || 0 }} contenu{{ (stats.total.contentCount || 0) > 1 ? 's' : '' }}
+                    {{ stats.total.contentCount || 0 }} {{ (stats.total.contentCount || 0) > 1 ? ('CONTENTS' | translate | lowercase) : ('CONTENT' | translate | lowercase) }}
                 </div>
                 }
             </div>
@@ -40,14 +40,14 @@
         <div class="stat-card movie-card">
             <div class="card-icon">🎥</div>
             <div class="card-content">
-                <div class="card-label">Films</div>
+                <div class="card-label">{{'MOVIES' | translate}}</div>
                 <div class="card-value">
                     {{ stats ? formatTime(stats.movies.totalHours, stats.movies.totalMinutes, stats.movies.totalSeconds)
                     : '0min' }}
                 </div>
                 @if(stats && stats.movies) {
                 <div class="card-details">
-                    {{ stats.movies.contentCount || 0 }} film{{ (stats.movies.contentCount || 0) > 1 ? 's' : '' }}
+                    {{ stats.movies.contentCount || 0 }} {{ (stats.movies.contentCount || 0) > 1 ? ('MOVIES' | translate | lowercase) : ('MOVIE' | translate | lowercase) }}
                 </div>
                 }
             </div>
@@ -56,17 +56,17 @@
         <div class="stat-card series-card">
             <div class="card-icon">📺</div>
             <div class="card-content">
-                <div class="card-label">Séries</div>
+                <div class="card-label">{{'SERIES' | translate}}</div>
                 <div class="card-value">
                     {{ stats ? formatTime(stats.series.totalHours, stats.series.totalMinutes, stats.series.totalSeconds)
                     : '0min' }}
                 </div>
                 <div class="card-details">
                     @if(stats && stats.series) {
-                    {{ stats.series.episodeCount || 0 }} épisode{{ (stats.series.episodeCount || 0) > 1 ? 's' : '' }}
+                    {{ stats.series.episodeCount || 0 }} {{ (stats.series.episodeCount || 0) > 1 ? ('EPISODES' | translate | lowercase) : ('EPISODE' | translate | lowercase) }}
                     @if(stats && stats.series.contentCount > 0) {
                     <span>
-                        · {{ stats.series.contentCount }} série{{ stats.series.contentCount > 1 ? 's' : '' }}
+                        · {{ stats.series.contentCount }} {{ stats.series.contentCount > 1 ? ('MOVIES' | translate | lowercase) : ('MOVIE' | translate | lowercase) }}
                     </span>
                     }
                     }

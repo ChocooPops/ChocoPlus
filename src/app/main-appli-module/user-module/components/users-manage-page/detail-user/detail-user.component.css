@@ -65,6 +65,7 @@ p {
 }
 
 .container-detail-type {
+  flex-shrink: 0;
   height: 100%;
   width: 85px;
   transition:

@@ -1,6 +1,6 @@
 @defer (on immediate) {
 <div class="container-prelaod">
-    <p> Bienvenue {{ pseudo | titlecase }} </p>
+    <p> {{ 'LAUNCH.WELCOME' | translate }} {{ pseudo | titlecase }} </p>
     @if(transitionPP) {
     <img [src]="srcPP" (click)="onClickProfil()" (error)="errorPpUser()">
     }@else {

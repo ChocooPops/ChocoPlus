@@ -3,7 +3,7 @@
         <img class="close" [src]="srcClose" (click)="onClose()">
 
         @if(!isSend) {
-            <p class="title"> Code de Vérification </p>
+            <p class="title"> {{ 'LAUNCH.VERIFICATION_CODE' | translate }} </p>
 
             <form [formGroup]="otpForm" class="otp-container" (paste)="onPaste($event)" (keydown.enter)="onValidateCode()">
                 @for(ctrl of controls; track ctrl; let i = $index) {
@@ -13,11 +13,11 @@
             </form>
 
             <div class="container-button">
-                <button (click)="onSendNewCode()"> Renvoyer à nouveau </button>
-                <button (click)="onValidateCode()"> Valider </button>
+                <button (click)="onSendNewCode()"> {{ 'LAUNCH.RESEND_CODE' | translate }} </button>
+                <button (click)="onValidateCode()"> {{ 'LAUNCH.CONFIRM' | translate }} </button>
             </div>
         } @else {
-            <p class="title" style="margin-top: 10px;">Votre demande d'inscription a été envoyée à l'administrateur </p>
+            <p class="title" style="margin-top: 10px;"> {{ 'LAUNCH.REGISTRATION_REQUEST_SEND_TO_ADMINISTRATOR' | translate }}  </p>
             <img [src]="srcImage" class="ask-img">
         }
     </div>

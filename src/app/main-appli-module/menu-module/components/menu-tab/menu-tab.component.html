@@ -3,7 +3,7 @@
         @if(menuTab.srcImage != undefined) {
         <img [src]="menuTab.srcImage">
         }
-        <p> {{menuTab.name}} </p>
+        <p> {{ menuTab.name | translate }} </p>
     </div>
     @if(activateUnderline) {
     <div class="ligne"></div>

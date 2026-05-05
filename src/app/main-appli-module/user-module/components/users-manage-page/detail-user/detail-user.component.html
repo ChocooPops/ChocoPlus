@@ -3,11 +3,11 @@
     <div class="container-menu">
         <div class="container-detail-type" (click)="displayInfoUser()"
             [ngClass]="{'detail-false' : detailType, 'detail-true' : !detailType, 'info' : true}">
-            <p> Info </p>
+            <p> {{ 'USER.USER_MANAGEMENT.INFO' | translate }} </p>
         </div>
         <div class="container-detail-type" (click)="displayStats()"
             [ngClass]="{'detail-false' : !detailType, 'detail-true' : detailType, 'stats' : true}">
-            <p> Stats </p>
+            <p> {{ 'USER.USER_MANAGEMENT.STATS' | translate }} </p>
         </div>
     </div>
 
@@ -30,29 +30,29 @@
                         <input placeholder="Id" [formControlName]="formControlId">
                     </div>
                     <div class="container-input">
-                        <label>Adresse email : </label>
+                        <label>{{ 'USER.USER_MANAGEMENT.EMAIL' | translate }}</label>
                         <input placeholder="Adresse mail" [formControlName]="formControlEmail">
                     </div>
                 </div>
 
                 <div class="container-inputs">
                     <div class="container-input">
-                        <label>Prénom : </label>
+                        <label>{{ 'USER.USER_MANAGEMENT.FIRST_NAME' | translate }}</label>
                         <input placeholder="Prénom" [formControlName]="formControlFirstName">
                     </div>
                     <div class="container-input">
-                        <label>Nom : </label>
+                        <label>{{ 'USER.USER_MANAGEMENT.LAST_NAME' | translate }}</label>
                         <input placeholder="Nom" [formControlName]="formControlLastName">
                     </div>
                 </div>
 
                 <div class="container-inputs">
                     <div class="container-input">
-                        <label>Pseudo : </label>
+                        <label>{{ 'USER.USER_MANAGEMENT.PSEUDO' | translate }}</label>
                         <input placeholder="Pseudo" [formControlName]="formControlPseudo">
                     </div>
                     <div class="container-input">
-                        <label>Date de naissance : </label>
+                        <label>{{ 'USER.USER_MANAGEMENT.DATE_BIRTH' | translate }}</label>
                         <input type="date" [formControlName]="formControlDateBorn">
                     </div>
                 </div>

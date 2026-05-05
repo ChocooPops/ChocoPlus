@@ -1,6 +1,6 @@
 <div class="container-list" [style.margin-left.vw]="marginLeft">
     @if (title && title !== "") {
-        <p> {{ title }} </p>
+        <p> {{ title | translate }} </p>
     }
     <div class="container-poster" [style.gap.vw]="gap">
         @if(mediaList) {

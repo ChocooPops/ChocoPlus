@@ -2,11 +2,12 @@ import { Component, ElementRef, Input, HostListener, Output, EventEmitter } from
 import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
 import { FilterChoiceModel } from '../../../media-module/models/catalog/filter-choice.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sort',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './sort.component.html',
   styleUrl: './sort.component.css'
 })

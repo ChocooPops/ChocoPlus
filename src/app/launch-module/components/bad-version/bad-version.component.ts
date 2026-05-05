@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { VersionModel } from '../../models/version.interface';
 import { Router } from '@angular/router';
 import { VersionService } from '../../../common-module/services/version/version.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bad-version',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './bad-version.component.html',
   styleUrl: './bad-version.component.css'
 })

@@ -11,11 +11,12 @@ import { PaginationPosterService } from '../../../services/pagination-poster/pag
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { StartButtonComponent } from '../../button/start-button/start-button.component';
 import { DatePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-episode-poster-horizontal-view',
   standalone: true,
-  imports: [StartButtonComponent, DatePipe],
+  imports: [StartButtonComponent, DatePipe, TranslatePipe],
   templateUrl: './episode-poster-horizontal-view.component.html',
   styleUrl: './episode-poster-horizontal-view.component.css',
 })

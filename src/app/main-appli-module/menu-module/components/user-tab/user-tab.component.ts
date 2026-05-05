@@ -15,11 +15,12 @@ import { StreamService } from '../../../video-playing-module/services/stream/str
 import { ChocoPlayerModel } from '../../../video-playing-module/models/choco-player.interface';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-tab',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './user-tab.component.html',
   styleUrl: './user-tab.component.css'
 })

@@ -1,4 +1,4 @@
-<h2>Titres similaires</h2>
+<h2> {{ 'MEDIA_PAGE.SIMILAR_TITLES' | translate }} </h2>
 <div class="container-medias" [style.gap.vw]="gap">
 @for (item of similarTab; track $index) {
     <div class="media-poster" [ngClass]="'container-animation-gradient-little'" [style.height.vw]="height" [style.width.vw]="width">

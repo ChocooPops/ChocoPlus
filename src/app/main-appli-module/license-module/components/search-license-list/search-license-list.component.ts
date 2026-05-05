@@ -8,11 +8,12 @@ import { ImagePreloaderService } from '../../../../common-module/services/image-
 import { LicenseService } from '../../service/license/licence.service';
 import { PaginationLicenseService } from '../../service/pagination-license/pagination-license.service';
 import { SearchLicenseLoadingComponent } from '../../../main-page-module/search-components/search-license-loading/search-license-loading.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-license-list',
   standalone: true,
-  imports: [SearchLicenseComponent, SearchLicenseLoadingComponent],
+  imports: [SearchLicenseComponent, SearchLicenseLoadingComponent, TranslatePipe],
   templateUrl: './search-license-list.component.html',
   styleUrl: './search-license-list.component.css'
 })

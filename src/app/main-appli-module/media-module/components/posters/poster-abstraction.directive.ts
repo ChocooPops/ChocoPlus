@@ -39,7 +39,7 @@ export class PosterAbstraction {
     dimension !: DimensionModel;
     duration !: string;
     quality !: string;
-    nbSeason !: string;
+    nbSeason !: number;
     seasons !: SeasonModel[];
 
     constructor(protected mediaSelectedService: MediaSelectedService,
@@ -62,11 +62,7 @@ export class PosterAbstraction {
         } else if (this.media.mediaType === MediaTypeModel.SERIES) {
             const nb: number = (this.media as SeriesModel).seasons.length;
             this.seasons = (this.media as SeriesModel).seasons;
-            if (nb > 1) {
-                this.nbSeason = `${nb} Saisons`;
-            } else {
-                this.nbSeason = `${nb} Saison`;
-            }
+            this.nbSeason = nb;
         }
         this.srcPoster = this.compressedPosterService.getPosterMedia(this.typePoster, this.media);
         if (this.typePoster === SelectionType.NORMAL_POSTER) {

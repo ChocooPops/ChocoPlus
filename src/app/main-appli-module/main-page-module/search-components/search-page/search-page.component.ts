@@ -16,18 +16,21 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
 import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-page',
   standalone: true,
-  imports: [MediaPageComponent, GridListComponent, SearchLicenseListComponent, MenuTmpComponent, ReactiveFormsModule],
+  imports: [MediaPageComponent, TranslatePipe, GridListComponent, SearchLicenseListComponent, MenuTmpComponent, ReactiveFormsModule],
   templateUrl: './search-page.component.html',
   styleUrl: './search-page.component.css'
 })
 export class SearchPageComponent {
 
+  placeHolder = 'SEARCH_PAGE.PLACEHOLDER_RESEARCH_MOVIE_SERIES';
+  title = 'SEARCH_PAGE.RESULT';
+
   private abortController = new AbortController();
-  title: string = 'Résultat';
   format!: FormatPosterModel;
   srcImageResearch: string = 'icon/research.svg';
   mediaWanted: MediaModel[] | undefined = undefined;

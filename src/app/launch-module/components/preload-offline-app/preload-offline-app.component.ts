@@ -9,18 +9,22 @@ import { SkyService } from '../../../game-module/services/sky/sky.service';
 import { TreeService } from '../../../game-module/services/tree/tree.service';
 import { ButtonFormComponent } from '../button-form/button-form.component';
 import { TypeButtonModel } from '../../models/type-button.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-preload-offline-app',
   standalone: true,
-  imports: [ButtonFormComponent],
+  imports: [ButtonFormComponent, TranslatePipe],
   templateUrl: './preload-offline-app.component.html',
   styleUrl: './preload-offline-app.component.css'
 })
 export class PreloadOfflineAppComponent {
 
-  messageOffline: string = 'Mode hors ligne';
-  messageLoading: string = 'Chargement des sprites ...';
+  nameButtonLogin = "LAUNCH.LOGIN";
+  nameButtonRegister = "LAUNCH.CREATE_ACCOUNT";
+  messageOffline = 'LAUNCH.OFFLINE_MODE';
+  messageLoading = 'LAUNCH.MESSAGE.LOADING_SPRITES';
+
   message: string = this.messageOffline;
   srcLoading: string = 'game/cat_loading.gif';
   srcFix: string = 'game/cat_fix.png';
@@ -28,8 +32,6 @@ export class PreloadOfflineAppComponent {
   transitionLoad: boolean = false;
   transitionActivating: boolean = false;
   TypeButton = TypeButtonModel;
-  nameButtonLogin: string = "S'identifier";
-  nameButtonRegister: string = "Créer un compte";
 
   constructor(private router: Router,
     private characterService: CharacterService,

@@ -5,7 +5,7 @@
         @if(messages) {
         <div class="container-message">
             @for(message of messages; track message) {
-            <p> {{ message }}</p>
+            <p> {{ message | translate }}</p>
             }
             <div class="last-message">
                 <img [src]="srcImage">

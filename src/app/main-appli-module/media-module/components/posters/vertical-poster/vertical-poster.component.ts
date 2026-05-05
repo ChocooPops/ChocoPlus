@@ -6,11 +6,12 @@ import { ModifyButtonComponent } from '../../button/modify-button/modify-button.
 import { MylistButtonComponent } from '../../button/mylist-button/mylist-button.component';
 import { SelectionType } from '../../../models/selection-type.enum';
 import { TitleCasePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vertical-poster',
   standalone: true,
-  imports: [NgClass, StartButtonComponent, MylistButtonComponent, ModifyButtonComponent, TitleCasePipe],
+  imports: [NgClass, TranslatePipe, StartButtonComponent, MylistButtonComponent, ModifyButtonComponent, TitleCasePipe],
   templateUrl: './vertical-poster.component.html',
   styleUrls: ['./vertical-poster.component.css', '../../../../common-module/styles/animation.css']
 })

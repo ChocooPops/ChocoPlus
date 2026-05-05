@@ -8,18 +8,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UserModel } from '../../../main-appli-module/user-module/dto/user.model';
 import { VersionModel } from '../../models/version.interface';
 import { BadVersionComponent } from '../bad-version/bad-version.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonFormComponent, BadVersionComponent],
+  imports: [ReactiveFormsModule, ButtonFormComponent, BadVersionComponent, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css', '../../styles/form.css', '../../styles/input-form.css']
 })
 export class LoginComponent extends FormPageDirectiveAbstract {
 
-  placeHolderEmail: string = 'Email';
-  placeHolderAccessKey: string = "Saisissez votre clef d'accès";
+  placeHolderEmail = 'LAUNCH.PLACEHOLDER.EMAIL';
+  placeHolderAccessKey = 'LAUNCH.PLACEHOLDER.KEY';
 
   formControlEmail: string = 'inputEmail';
   formControlAccessKey: string = 'inputAccessKey';
@@ -54,14 +55,14 @@ export class LoginComponent extends FormPageDirectiveAbstract {
         }
         this.verifAuthLogin(login);
       } else {
-        this.message = 'Formulaire incorrect';
+        this.message = 'LAUNCH.MESSAGE.INVALID_FORM';
         this.activateSubmit = true;
       }
     }
   }
 
   private verifAuthLogin(login: LoginModel): void {
-    this.message = 'Chargement ...';
+    this.message = 'LAUNCH.MESSAGE.LOADING';
     this.authService.fetchLogin(login).pipe(
       switchMap(() =>
         forkJoin({
@@ -72,13 +73,13 @@ export class LoginComponent extends FormPageDirectiveAbstract {
       ),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 0) {
-          this.message = "Aucune connexion";
+          this.message = "LAUNCH.MESSAGE.NO_CONNECTION";
         } else if (error.status === 404) {
-          this.message = 'pseudo ou mot de passe incorrect';
+          this.message = 'LAUNCH.MESSAGE.INCORRECT_USERNAME';
         } else if (error.status === 401) {
-          this.message = "L'utilisateur n'est pas activé ou a été désactivé";
+          this.message = "LAUNCH.MESSAGE.INCORRECT_USERNAME";
         } else {
-          this.message = 'Erreur';
+          this.message = 'LAUNCH.MESSAGE.ERROR';
         }
         this.activateSubmit = true;
         return throwError(() => error);

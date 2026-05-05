@@ -7,7 +7,7 @@
         <div class="container-image-research">
             <img [src]="srcImageResearch">
         </div>
-        <input type="text" formControlName="inputValue" placeholder="Rechercher un film, une série ..." />
+        <input type="text" formControlName="inputValue" [placeholder]="placeHolder | translate" />
     </form>
 
     @if(!displayMediaWanted) {

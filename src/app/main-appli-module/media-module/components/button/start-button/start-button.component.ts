@@ -12,11 +12,12 @@ import { SeriesService } from '../../../services/series/series.service';
 import { firstValueFrom, take } from 'rxjs';
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
 import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-start-button',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './start-button.component.html',
   styleUrls: ['./start-button.component.css', '../../../../common-module/styles/movie-button.css']
 })

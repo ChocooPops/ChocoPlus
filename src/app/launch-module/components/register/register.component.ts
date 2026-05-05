@@ -6,11 +6,12 @@ import { RegisterModel } from '../../models/register.model';
 import { MessageReturnedModel } from '../../../common-module/models/message-returned.interface';
 import { take } from 'rxjs';
 import { OptComponent } from '../opt/opt.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonFormComponent, OptComponent],
+  imports: [ReactiveFormsModule, ButtonFormComponent, OptComponent, TranslatePipe],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css', '../../styles/form.css', '../../styles/input-form.css']
 })
@@ -18,10 +19,10 @@ export class RegisterComponent extends FormPageDirectiveAbstract {
 
   isSend: boolean = false;
 
-  placeHolderPseudo: string = 'Pseudo';
-  placeHolderFirstName: string = 'Prénom';
-  placeHolderLastName: string = 'Nom';
-  placeHolderEmail: string = 'Email';
+  placeHolderPseudo = 'LAUNCH.PLACEHOLDER.PSEUDO';
+  placeHolderFirstName = 'LAUNCH.PLACEHOLDER.FIRST_NAME';
+  placeHolderLastName = 'LAUNCH.PLACEHOLDER.LAST_NAME';
+  placeHolderEmail = 'LAUNCH.PLACEHOLDER.EMAIL';
 
   formControlPseudo: string = 'inputPseudo';
   formControlFirstName: string = 'inputFirstName';
@@ -51,7 +52,7 @@ export class RegisterComponent extends FormPageDirectiveAbstract {
         dateBorn: this.formGroup.get(this.formControlDateBorn)?.value,
         email: this.formGroup.get(this.formControlEmail)?.value
       }
-      this.message = 'Chargement ...';
+      this.message = 'LAUNCH.MESSAGE.LOADING';
       this.authService.fetchSendVerificationCode(register).pipe(take(1)).subscribe({
         next: (message: MessageReturnedModel) => {
           this.message = message.message;
@@ -61,11 +62,11 @@ export class RegisterComponent extends FormPageDirectiveAbstract {
           }
         },
         error: () => {
-          this.message = 'Aucune connexion'
+          this.message = 'LAUNCH.MESSAGE.NO_CONNECTION';
         }
       })
     } else {
-      this.message = 'Formulaire incorrect';
+      this.message = 'LAUNCH.MESSAGE.INVALID_FORM';
     }
   }
 
@@ -78,14 +79,14 @@ export class RegisterComponent extends FormPageDirectiveAbstract {
   }
 
   onSendNewCode(): void {
-    this.message = 'Chargement ...';
+    this.message = 'LAUNCH.MESSAGE.LOADING';
     this.authService.fetchReSendVerificationCode(this.email).pipe(take(1)).subscribe((data: MessageReturnedModel) => {
       this.message = data.message;
     })
   }
 
   onValidate(code: number): void {
-    this.message = 'Chargement ...';
+    this.message = 'LAUNCH.MESSAGE.LOADING';
     this.authService.fetchValidateVerificationCode(code, this.email).pipe(take(1)).subscribe((data: MessageReturnedModel) => {
       this.message = data.message;
       this.isSend = data.state;

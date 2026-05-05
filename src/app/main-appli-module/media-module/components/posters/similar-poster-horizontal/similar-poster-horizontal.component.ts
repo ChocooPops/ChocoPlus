@@ -9,11 +9,12 @@ import { MediaModel } from '../../../models/media.interface';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { MovieModel } from '../../../models/movie-model';
 import { SeriesModel } from '../../../models/series/series.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-similar-poster-horizontal',
   standalone: true,
-  imports: [MylistButtonComponent, StartButtonComponent, DatePipe],
+  imports: [MylistButtonComponent, StartButtonComponent, DatePipe, TranslatePipe],
   templateUrl: './similar-poster-horizontal.component.html',
   styleUrl: './similar-poster-horizontal.component.css'
 })
@@ -28,7 +29,7 @@ export class SimilarPosterHorizontalComponent {
   srcPoster: string | undefined = undefined;
   srcLogo: string | undefined = undefined;
   MediaType = MediaTypeModel;
-  nbSeason !: string;
+  nbSeason !: number;
 
   constructor(private compressedPosterService: CompressedPosterService,
     private verifTimerShowService: VerifTimerShowService) { }
@@ -43,12 +44,7 @@ export class SimilarPosterHorizontalComponent {
       this.quality = (this.media as MovieModel).quality || 'any quality';
       this.date = (this.media as MovieModel).date || new Date();
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
-      const nb: number = (this.media as SeriesModel).seasons.length;
-      if (nb > 1) {
-        this.nbSeason = `${nb} Saisons`;
-      } else {
-        this.nbSeason = `${nb} Saison`;
-      }
+      this.nbSeason = (this.media as SeriesModel).seasons.length;
     }
   }
 

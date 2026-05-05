@@ -3,11 +3,12 @@ import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-similar-poster-vertical-loading',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './similar-poster-vertical-loading.component.html',
   styleUrls: ['.././similar-poster-vertical/similar-poster-vertical.component.css', '../../../../common-module/styles/animation.css'],
 })

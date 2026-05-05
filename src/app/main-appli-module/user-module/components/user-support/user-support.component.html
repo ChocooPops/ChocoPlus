@@ -2,21 +2,19 @@
 
 <div class="container">
     <div class="container-info">
-        <p>Vous êtes témoin d’un dysfonctionnement, alertez-nous pour qu’ils soient corriger le plus plus rapidement
-            possible.</p>
-        <p>Vous voulez regarder un film ou une série non disponible sur la plateforme, n’hésitez pas à nous envoyer une
-            liste du contenu que vous souhaiter regarder.</p>
+        <p>{{ 'USER.USER_SUPPORT.INFO_1' | translate }}</p>
+        <p>{{ 'USER.USER_SUPPORT.INFO_2' | translate }}</p>
     </div>
 
     <div class="container-form">
         <div class="container-input">
-            <p class="label">Sujet principal :</p>
+            <p class="label">{{ 'USER.USER_SUPPORT.PRINCIPAL_SUBJECT' | translate }}</p>
             <div class="selection" #inputSubject
                 [ngClass]="{'border-radius' : !displaySubject, 'border-radius-top' : displaySubject}">
                 @if(currentForm.subject) {
                 <p class="input" (click)="onSubjectClick()"> {{ currentForm.subject }} </p>
                 } @else {
-                <p class="input" (click)="onSubjectClick()"> -- Sélectionnez un sujet -- </p>
+                <p class="input" (click)="onSubjectClick()"> {{ 'USER.USER_SUPPORT.SELECT_SUBJECT' | translate }} </p>
                 }
                 <img [src]="srcArrow" class="arrow">
                 @if(displaySubject) {
@@ -32,13 +30,13 @@
         </div>
 
         <div class="container-input">
-            <p class="label">Thème ou Zone concernée :</p>
+            <p class="label">{{ 'USER.USER_SUPPORT.TOPIC_AREA' | translate }}</p>
             <div class="selection" #inputTheme
                 [ngClass]="{'border-radius' : !displayTheme, 'border-radius-top' : displayTheme}">
                 @if(currentForm.areaConcerned) {
                 <p class="input" (click)="onThemeClick()"> {{ currentForm.areaConcerned }} </p>
                 } @else {
-                <p class="input" (click)="onThemeClick()"> -- Sélectionnez un thème -- </p>
+                <p class="input" (click)="onThemeClick()"> {{ 'USER.USER_SUPPORT.SELECT_TOPIC' | translate }} </p>
                 }
                 <img [src]="srcArrow" class="arrow">
                 @if(displayTheme) {
@@ -54,19 +52,19 @@
         </div>
 
         <div class="container-input" style="height: 50%;">
-            <p class="label">Message :</p>
+            <p class="label">{{ 'USER.USER_SUPPORT.MESSAGE' | translate }}</p>
             <form [formGroup]="formGroup">
                 <textarea rows="7" [formControlName]="formControlMessage"></textarea>
-                <p style="color: #aaa;">{{ currentLength }}/{{ maxLength}} caractères</p>
+                <p style="color: #aaa;">{{ currentLength }}/{{ maxLength}} {{ 'MAXIMUM_CHARACTERS' | translate }}</p>
             </form>
         </div>
 
         <div class="container-button">
             <div class="button" (click)="resetForm()">
-                <p>Annuler</p>
+                <p>{{ 'BUTTON.CANCEL' | translate }}</p>
             </div>
             <div class="button" (click)="sendForm()">
-                <p>Envoyer</p>
+                <p>{{ 'BUTTON.SEND' | translate }}</p>
             </div>
         </div>
 

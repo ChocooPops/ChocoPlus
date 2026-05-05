@@ -1,4 +1,4 @@
-<p class="parcourir" [style.margin-left.vw]="marginLeft">Parcourir</p>
+<p class="parcourir" [style.margin-left.vw]="marginLeft"> {{ 'SEARCH_PAGE.BROWSE' | translate}} </p>
 <div class="container-list-license" [style.gap.vw]="gap" [style.padding-left.vw]="marginLeft">
     @if(licenseSearchList) {
     @for(licenseSearch of licenseSearchList; track licenseSearch.id) {

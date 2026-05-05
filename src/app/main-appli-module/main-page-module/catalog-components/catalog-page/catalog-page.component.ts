@@ -25,11 +25,13 @@ import { FilterChoiceModel } from '../../../media-module/models/catalog/filter-c
 import { FILTERS } from '../../../media-module/models/catalog/filters.interface';
 import { OtherFiltersComponent } from '../other-filters/other-filters.component';
 import { FilterType } from '../../../media-module/models/catalog/filter-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
+import { JoinPipe } from '../../../../common-module/pipe/join.pipe';
 
 @Component({
   selector: 'app-catalog-page',
   standalone: true,
-  imports: [OtherFiltersComponent, MediaPageComponent, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
+  imports: [JoinPipe, OtherFiltersComponent, TranslatePipe, MediaPageComponent, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
   templateUrl: './catalog-page.component.html',
   styleUrl: './catalog-page.component.css'
 })

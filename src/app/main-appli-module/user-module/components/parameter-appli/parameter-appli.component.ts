@@ -5,11 +5,12 @@ import { ParamaterAppliModel } from '../../dto/parameter-appli.interface';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-parameter-appli',
   standalone: true,
-  imports: [InputRadioButtonComponent],
+  imports: [InputRadioButtonComponent, TranslatePipe],
   templateUrl: './parameter-appli.component.html',
   styleUrl: './parameter-appli.component.css'
 })

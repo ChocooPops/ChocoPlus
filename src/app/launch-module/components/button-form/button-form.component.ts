@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TypeButtonModel } from '../../models/type-button.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-button-form',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './button-form.component.html',
   styleUrl: './button-form.component.css'
 })

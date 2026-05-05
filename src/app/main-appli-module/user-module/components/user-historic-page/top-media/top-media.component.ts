@@ -6,13 +6,14 @@ import { MediaTypeFilter } from '../../../dto/user-historic/media-type-filter.ty
 import { FilterOption } from '../../../dto/user-historic/filter-option.interface';
 import { ScalePoster } from '../../../../common-module/models/scale-poster.enum';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-top-media',
   templateUrl: './top-media.component.html',
   styleUrls: ['./top-media.component.scss'],
-  imports: [],
+  imports: [TranslatePipe],
 })
 export class TopMediaComponent {
   @Input() userId!: number;
@@ -21,9 +22,9 @@ export class TopMediaComponent {
   selectedMediaType: MediaTypeFilter = 'all';
 
   filterOptions: FilterOption[] = [
-    { value: 'all', label: 'Tout', icon: '🎬' },
-    { value: 'MOVIE', label: 'Films', icon: '🎥' },
-    { value: 'SERIES', label: 'Séries', icon: '📺' },
+    { value: 'all', label: 'ALL', icon: '🎬' },
+    { value: 'MOVIE', label: 'MOVIES', icon: '🎥' },
+    { value: 'SERIES', label: 'SERIES', icon: '📺' },
   ];
 
   topMediaData: TopMediaResponse | null = null;
@@ -41,8 +42,8 @@ export class TopMediaComponent {
   srcLoading: string = 'icon/sablier.svg';
 
   constructor(
-    private userHistoricService: UserHistoricService,
-    private compressedPosterService: CompressedPosterService,
+    private readonly userHistoricService: UserHistoricService,
+    private readonly compressedPosterService: CompressedPosterService,
   ) {}
 
   ngOnInit(): void {
@@ -144,7 +145,7 @@ export class TopMediaComponent {
           }, 100);
         },
         error: (err) => {
-          this.error = 'Erreur lors du chargement du top 10';
+          this.error = 'USER.HISTORIC.ERROR_TOP';
           this.loading = false;
         },
       });

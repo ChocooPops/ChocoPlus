@@ -5,7 +5,7 @@
     <app-menu-tmp></app-menu-tmp>
     <div class="container-list">
         <div class="container-title" [style.margin-left.vw]="marginLeft" [style.width]="width">
-            <p>Catalogue</p>
+            <p> {{ 'MENU.MAIN.CATALOG' | translate }} </p>
             <div class="container-options">
                 <app-other-filters (onFilterCreated)="onFilterCreated($event)"></app-other-filters>
                 <app-filter [filter]="decadeFilter" (onClicked)="onSelectedDecadeFilter($event)"></app-filter>
@@ -23,7 +23,7 @@
         <div class="container-filters" [style.margin-left.vw]="marginLeft">
             @for (FILTER of FILTERS; track FILTER.id) {
                 <div class="container-filter">
-                    <p> {{ FILTER.title }} </p>
+                    <p> <span> {{ FILTER.typeData | translate }} </span> <span> {{ FILTER.operation | translate }} </span> <span> {{ FILTER.value | join:' ou ' }} </span> </p>
                     @if (FILTER.typeData !== TypeData.MEDIA) {
                         <img [src]="srcYellowCross" (click)="deleteFilter(FILTER)">
                     }

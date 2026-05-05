@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { MenuTabModel } from '../../model/menu-tab.interface';
 import { Router, ActivatedRoute } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-menu-tab',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './menu-tab.component.html',
   styleUrl: './menu-tab.component.css',
 })
@@ -18,8 +19,8 @@ export class MenuTabComponent {
   @Input()
   activateUnderline: boolean = true;
 
-  constructor(private router: Router,
-    private route: ActivatedRoute
+  constructor(private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) { }
 
   public onClick() {

@@ -9,11 +9,12 @@ import { NgClass } from '@angular/common';
 import { PopupComponent } from '../../../edition-module/components/popup/popup.component';
 import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-support',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, PopupComponent],
+  imports: [ReactiveFormsModule, NgClass, PopupComponent, TranslatePipe],
   templateUrl: './user-support.component.html',
   styleUrl: './user-support.component.css'
 })

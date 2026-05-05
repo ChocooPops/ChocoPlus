@@ -2,21 +2,21 @@
 
 <div class="container-button">
     <div class="button" (click)="setAnimation('wave')">
-        <p>Vague</p>
+        <p>{{ 'LAUNCH.GRAPH.WAVE' | translate }}</p>
     </div>
     <div class="button" (click)="setAnimation('chaos')">
-        <p>Chaos</p>
+        <p>{{ 'LAUNCH.GRAPH.CHAOS' | translate }}</p>
     </div>
     <div class="button" (click)="setAnimation('pulse')">
-        <p>Battement</p>
+        <p>{{ 'LAUNCH.GRAPH.PULSE' | translate }}</p>
     </div>
     <div class="button" (click)="setAnimation('expand')">
-        <p>Expansion</p>
+        <p>{{ 'LAUNCH.GRAPH.EXPENSION' | translate }}</p>
     </div>
     <div class="button" (click)="joinAnimation()">
-        <p>Rassemblement</p>
+        <p>{{ 'LAUNCH.GRAPH.GATHERING' | translate }}</p>
     </div>
     <div class="button" (click)="setAnimation('none')">
-        <p>Stop</p>
+        <p>{{ 'LAUNCH.GRAPH.STOP' | translate }}</p>
     </div>
 </div>

@@ -9,7 +9,7 @@
     <div class="container-under-menu" [ngClass]="class" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="container-option" (click)="onClickConnection()">
             <img [src]="srcConnection">
-            <p>Connexion</p>
+            <p> {{ 'OFFLINE.LOGIN' | translate }} </p>
         </div>
     </div>
 </div>

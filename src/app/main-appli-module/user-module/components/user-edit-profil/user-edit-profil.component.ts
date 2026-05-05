@@ -11,15 +11,18 @@ import { ElectronService } from '../../../../common-module/services/electron/ele
 import { AuthService } from '../../../../launch-module/services/auth/auth.service';
 import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-edit-profil',
   standalone: true,
-  imports: [ReactiveFormsModule, EditProfilPictureComponent, PopupComponent],
+  imports: [TranslatePipe, ReactiveFormsModule, EditProfilPictureComponent, PopupComponent],
   templateUrl: './user-edit-profil.component.html',
   styleUrls: ['./user-edit-profil.component.css', '../../../common-module/styles/animation.css']
 })
 export class UserEditProfilComponent {
+
+  messageDeleting = 'USER.MANAGE_PROFIL.MESSAGE_DELETE_PROFIL_1 \n USER.MANAGE_PROFIL.MESSAGE_DELETE_PROFIL_2';
 
   @ViewChild(PopupComponent) popupRef !: PopupComponent;
   profilPhoto: string | undefined = undefined;
@@ -38,7 +41,6 @@ export class UserEditProfilComponent {
   displayEditProfilPicture: boolean = false;
 
   changeUserWhenSubscription!: boolean;
-  messageDeleting: string = 'Voulez vraiment supprimer votre compte ? \n Cette opération est définitive.';
 
   count: number = 0;
   maxCount: number = 5;

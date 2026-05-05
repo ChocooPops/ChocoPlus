@@ -1,24 +1,19 @@
-import {
-  Component,
-  Input,
-  ElementRef,
-  HostListener,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, Input, ElementRef, HostListener, Output, EventEmitter } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { FiltersChoicesModel } from '../../../media-module/models/catalog/filters-choices.interface';
 import { FILTERS } from '../../../media-module/models/catalog/filters.interface';
 import { Operation } from '../../../media-module/models/catalog/operation.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filter',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.css',
 })
 export class FilterComponent {
+
   @Input() filter!: FiltersChoicesModel;
   @Output() onClicked = new EventEmitter<FILTERS>();
   srcArrow: string = 'icon/arrow-2.svg';
@@ -68,7 +63,6 @@ export class FilterComponent {
     } else {
       this.pendingFilter = {
         id: this.pendingFilter?.id ?? FilterComponent.nextId++,
-        title: '',
         typeData: this.filter.type,
         operation: Operation.CONTAIN,
         value: selectedChoices.map((f) => ({ name: f.name, value: f.value })),

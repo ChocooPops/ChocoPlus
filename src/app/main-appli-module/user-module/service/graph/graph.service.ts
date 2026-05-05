@@ -301,31 +301,31 @@ export class GraphService {
     }
     const legends: LegendModel[] = [
       {
-        name: "Categorie",
+        name: "CATEGORY",
         color: this.colorYellowCategory,
         effective: this.graphWithMovieAndCategory.nodes.filter((item: GraphNode) => item.color === this.colorYellowCategory).length,
         isVisible: true
       },
       {
-        name: "Film",
+        name: "MOVIE",
         color: this.colorBlackMovie,
         effective: this.graphWithMovieAndCategory.nodes.filter((item: GraphNode) => item.color === this.colorBlackMovie).length,
         isVisible: true
       },
       {
-        name: "Series",
+        name: "SERIES",
         color: this.colorWhiteSeries,
         effective: this.graphWithMovieAndCategory.nodes.filter((item: GraphNode) => item.color === this.colorWhiteSeries).length,
         isVisible: true
       },
       {
-        name: "Selections",
+        name: "SELECTIONS",
         color: this.colorBlueSelection,
         effective: this.graphWithMovieAndCategory.nodes.filter((item: GraphNode) => item.color === this.colorBlueSelection).length,
         isVisible: true
       },
       {
-        name: "License",
+        name: "LICENSE",
         color: this.colorGreenLicense,
         effective: this.graphWithMovieAndCategory.nodes.filter((item: GraphNode) => item.color === this.colorGreenLicense).length,
         isVisible: true
@@ -447,8 +447,8 @@ export class GraphService {
       }
     }
     this.legendsSubject.next([
-      this.createNewLegend('Film', this.colorBlackMovie, this.graphMovieWithNullPoster.nodes.filter((item) => item.color === this.colorBlackMovie).length),
-      this.createNewLegend('Series', this.colorWhiteSeries, this.graphMovieWithNullPoster.nodes.filter((item) => item.color === this.colorWhiteSeries).length),
+      this.createNewLegend('MOVIE', this.colorBlackMovie, this.graphMovieWithNullPoster.nodes.filter((item) => item.color === this.colorBlackMovie).length),
+      this.createNewLegend('SERIES', this.colorWhiteSeries, this.graphMovieWithNullPoster.nodes.filter((item) => item.color === this.colorWhiteSeries).length),
     ]);
     this.updateGraphSubject(this.graphMovieWithNullPoster);
   }
@@ -467,8 +467,8 @@ export class GraphService {
       }
     }
     this.legendsSubject.next([
-      this.createNewLegend('Film', this.colorBlackMovie, this.graphLessSimilarTitlesMovies.nodes.filter((item) => item.color === this.colorBlackMovie).length),
-      this.createNewLegend('Series', this.colorWhiteSeries, this.graphLessSimilarTitlesMovies.nodes.filter((item) => item.color === this.colorWhiteSeries).length),
+      this.createNewLegend('MOVIE', this.colorBlackMovie, this.graphLessSimilarTitlesMovies.nodes.filter((item) => item.color === this.colorBlackMovie).length),
+      this.createNewLegend('SERIES', this.colorWhiteSeries, this.graphLessSimilarTitlesMovies.nodes.filter((item) => item.color === this.colorWhiteSeries).length),
     ]);
     this.updateGraphSubject(this.graphLessSimilarTitlesMovies);
   }
@@ -487,8 +487,8 @@ export class GraphService {
       }
     }
     this.legendsSubject.next([
-      this.createNewLegend('Film', this.colorBlackMovie, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorBlackMovie).length),
-      this.createNewLegend('Episode', this.colorPinkEpisode, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorPinkEpisode).length),
+      this.createNewLegend('MOVIE', this.colorBlackMovie, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorBlackMovie).length),
+      this.createNewLegend('EPISODE', this.colorPinkEpisode, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorPinkEpisode).length),
     ]);
     this.updateGraphSubject(this.graphMediaPathDontExist);
   }

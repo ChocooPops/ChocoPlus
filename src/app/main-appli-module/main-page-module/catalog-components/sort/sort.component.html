@@ -1,6 +1,6 @@
 <div class="container-sort" (click)="openFilter()" [ngClass]="{'is-Open': isOpen}">
     <div class="sort-selected">
-        <p> Trie par {{ getSortSelected() }} </p>
+        <p> Trie par {{ getSortSelected() | translate }} </p>
         <img [src]="srcArrow">
     </div>
     @if(isOpen) {
@@ -10,7 +10,7 @@
         @for (s of sorts; track s.id) {
         @if (s.value) {
         <div class="sort" (click)="onClickFilter(s.id)" [ngClass]="{'selected' : s.isSelected === 1}">
-            <p> {{ s.name }} </p>
+            <p> {{ s.name | translate }} </p>
         </div>
         }
         }

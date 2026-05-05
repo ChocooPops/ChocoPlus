@@ -6,11 +6,13 @@ import { FILTERS } from '../../../media-module/models/catalog/filters.interface'
 import { CreditService } from '../../../media-module/services/credit/credit.service';
 import { Subscription } from 'rxjs';
 import { JobModel } from '../../../media-module/models/job.eum';
+import { TranslatePipe } from '@ngx-translate/core';
+import { CapitalizePipe } from '../../../../common-module/pipe/capitalize.pipe';
 
 @Component({
   selector: 'app-other-filters',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe, CapitalizePipe],
   templateUrl: './other-filters.component.html',
   styleUrl: './other-filters.component.css',
 })
@@ -127,7 +129,6 @@ export class OtherFiltersComponent {
     if (this.selected.type && this.selected.op && this.tags.length > 0) {
       const filter: FILTERS = {
         id: this.nextId++,
-        title: `${this.selected.type} ${this.selected.op}`,
         typeData: this.selected.type,
         operation: this.selected.op,
         value: this.tags.map((t) => ({ name: t, value: t })),

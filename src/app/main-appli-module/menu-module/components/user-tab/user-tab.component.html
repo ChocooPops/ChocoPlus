@@ -12,24 +12,24 @@
     <div class="container-under-menu" [ngClass]="class" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
         <div class="container-option" (click)="onClickReset()">
             <img [src]="srcReset">
-            <p>Reset</p>
+            <p>{{ 'MENU.OTHER.RESET' | translate }}</p>
         </div>
         <div class="container-option" (click)="onClickRandomMovie()">
             <img [src]="srcRandom">
-            <p>Start random movie</p>
+            <p>{{ 'MENU.OTHER.START_RANDOM_MOVIE' | translate }}</p>
         </div>
         <div class="container-option" (click)="onClickRandomSeries()">
             <img [src]="srcRandom">
-            <p>Start random series</p>
+            <p>{{ 'MENU.OTHER.START_RANDOM_SERIE' | translate }}</p>
         </div>
         @for(userTab of userMenu; track userTab.id) {
         <div class="container-option" (click)="onNavigateToUserTab(userTab.id)">
             <img [src]="userTab.srcImage">
-            <p> {{ userTab.name}} </p>
+            <p> {{ userTab.name | translate }} </p>
         </div>
         }
         <div class="container-deco" (click)="onClickDeconnexion()">
-            <p>Déconnexion</p>
+            <p>{{ 'MENU.OTHER.LOGOUT' | translate }}</p>
         </div>
     </div>
 </div>

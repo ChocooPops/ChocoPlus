@@ -28,7 +28,7 @@ export class FiltersCatalogService {
   }
 
   private decadeFilter: FiltersChoicesModel = {
-    name: 'Décennie',
+    name: 'DECADE',
     type: FilterType.DECADE,
     filters: [
       {
@@ -101,24 +101,24 @@ export class FiltersCatalogService {
   };
 
   private categoryFilter: FiltersChoicesModel = {
-    name: 'Categorie',
+    name: 'CATEGORY',
     type: FilterType.CATEGORY,
     filters: []
   };
 
   private mediaTypeFilter: FiltersChoicesModel = {
-    name: 'Média',
+    name: 'MEDIA',
     type: FilterType.MEDIA,
     filters: [
     {
       id: this.getId(),
-      name: 'TOUT',
+      name: 'ALL',
       value: MediaTypeModel.ALL,
       isSelected: 2,
     },
     {
       id: this.getId(),
-      name: 'FILM',
+      name: 'MOVIES',
       value: MediaTypeModel.MOVIE,
       isSelected: 0,
     },
@@ -134,31 +134,31 @@ export class FiltersCatalogService {
   private sortFilter: FilterChoiceModel[] = [
     {
       id: this.getId(),
-      name: 'Titre',
+      name: 'FILTER.SORT_TITLE',
       value: SortCatalog.TITLE,
       isSelected: 0,
     },
     {
       id: this.getId(),
-      name: 'Date de sortie',
+      name: 'FILTER.SORT_RELEASE_DATE',
       value: SortCatalog.RELEASE_DATE,
       isSelected: 0,
     },
     {
       id: this.getId(),
-      name: "Date d'ajout",
+      name: "FILTER.SORT_ADDED_DATE",
       value: SortCatalog.ADDED_DATE,
       isSelected: 0,
     },
     {
       id: this.getId(),
-      name: 'Durée',
+      name: 'FILTER.SORT_DURATION',
       value: SortCatalog.DURATION,
       isSelected: 0,
     },
     {
       id: this.getId(),
-      name: 'Aléatoire',
+      name: 'FILTER.SORT_SHUFFLE',
       value: SortCatalog.SHUFFLE,
       isSelected: 1,
     },
@@ -190,18 +190,16 @@ export class FiltersCatalogService {
     const filters: FILTERS[] = [ 
             {
               id: -1,
-              title: '',
               typeData: FilterType.MEDIA,
               operation: Operation.CONTAIN,
               value: [
                 {
-                  name: 'TOUT',
+                  name: 'ALL',
                   value: MediaTypeModel.ALL
                 }
             ]
           }
       ]
-    filters[0].title = this.getTitleByFilter(filters[0]);
     return filters;
   }
 
@@ -251,7 +249,6 @@ export class FiltersCatalogService {
   }
   public onSelectedMediaTypeFilter(filtre: FILTERS): void {
     const filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
-    filtre.title = this.getTitleByFilter(filtre);
     filtres[0] = filtre;
     this.FILTERS_SUBJECT.next(filtres);
     this.mediaTypeFilter.filters.forEach((el) => {
@@ -265,7 +262,6 @@ export class FiltersCatalogService {
 
   public addFilters(filtre: FILTERS): void {
     const filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
-    filtre.title = this.getTitleByFilter(filtre);
     filtres.push(filtre);
     this.FILTERS_SUBJECT.next(filtres);
   }
@@ -304,31 +300,9 @@ export class FiltersCatalogService {
     return sort;
   }
 
-  private getTitleByFilter(filtre: FILTERS): string {
-    let type: string = filtre.typeData;
-    let operation: string = filtre.operation;
-    let values: string = filtre.value.map((item) => item.name).join(' OU ');
-    if (filtre.typeData === FilterType.DECADE) {
-      type = "Décennie";
-    } else if (filtre.typeData === FilterType.CATEGORY) {
-      type = "Catégorie";
-    } else if (filtre.typeData === FilterType.MEDIA) {
-      type = "Média";
-    }
-
-    if (filtre.operation === Operation.CONTAIN) {
-      operation = "contient";
-    } else if (filtre.operation === Operation.NOT_CONTAIN) {
-      operation = "ne contient pas";
-    }
-
-    return `${type} ${operation} ${values}`
-  }
-
   public setFilterFromMediaPage(filtres: FILTERS[]): void {
     const filtresSubject: FILTERS[] = this.FILTERS_SUBJECT.value.slice(0, 1);
     filtres.forEach((filtre: FILTERS) => {
-      filtre.title = this.getTitleByFilter(filtre);
       filtresSubject.push(filtre);
     });
     this.FILTERS_SUBJECT.next(filtresSubject);

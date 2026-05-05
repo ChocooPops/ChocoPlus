@@ -12,11 +12,12 @@ import { PopupComponent } from '../../../../edition-module/components/popup/popu
 import { DetailUserComponent } from '../detail-user/detail-user.component';
 import { UserParametersService } from '../../../service/user-parameters/user-parameters.service';
 import { MenuType } from '../../../../menu-module/model/menu-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-users-manage',
   standalone: true,
-  imports: [NgClass, UpperCasePipe, TitleCasePipe, ActionUserComponent, PopupComponent, DetailUserComponent],
+  imports: [NgClass, TranslatePipe, UpperCasePipe, TitleCasePipe, ActionUserComponent, PopupComponent, DetailUserComponent],
   templateUrl: './users-manage.component.html',
   styleUrls: ['./users-manage.component.css']
 })
@@ -132,7 +133,7 @@ export class UsersManageComponent {
     this.popupRef.resetPopup();
     this.popupRef.setDisplayButton(true);
     this.popupRef.setDisplayPopup(true);
-    this.popupRef.setMessage("Voulez-vous vraiment supprimer l'utilisateur suivant : \n " + this.getUserNameById(userId), undefined);
+    this.popupRef.setMessage("USER.USER_MANAGEMENT.WARNING_DELETE_USER \n " + this.getUserNameById(userId), undefined);
     this.currentUserId = userId;
   }
 
@@ -145,7 +146,7 @@ export class UsersManageComponent {
         this.popupRef.setEndTask(true);
       });
     } else {
-      this.popupRef.setMessage("Erreur avec l'id de l'utilisateur", false);
+      this.popupRef.setMessage("USER.USER_MANAGEMENT.ERROR_ID", false);
       this.popupRef.setEndTask(true);
     }
     this.currentUserId = undefined;

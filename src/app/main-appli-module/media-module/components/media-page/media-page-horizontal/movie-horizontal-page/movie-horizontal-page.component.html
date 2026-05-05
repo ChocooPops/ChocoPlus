@@ -3,9 +3,9 @@
         @if (mediaInfoLoaded) {
         <div class="container-info">
             @if(description !== '') {
-            <p> <span class="legend">Description: </span> {{ description }} </p>
+            <p> <span class="legend">{{'MEDIA_PAGE.DESCRIPTION' | translate}}: </span> {{ description }} </p>
             }
-            <p [ngClass]="'margin-bottom-text'"> <span class="legend">Genres: </span>
+            <p [ngClass]="'margin-bottom-text'"> <span class="legend">{{'MEDIA_PAGE.CATEGORY' | translate}}: </span>
                 @for (genre of genres; track $index) {
                 @if ($index !== genres.length - 1) {
                 <span class="content" (click)="setFilterCategory(genre)">{{ genre.name}}</span>, 
@@ -14,7 +14,7 @@
                 }
                 }
             </p>
-            <p [ngClass]="'margin-bottom-text'"> <span class="legend">Un film: </span>
+            <p [ngClass]="'margin-bottom-text'"> <span class="legend">{{'MEDIA_PAGE.KEY_WORDS' | translate}}: </span>
                 @for (keyWord of keyWords; track $index) {
                 @if ($index !== keyWords.length - 1) {
                 <span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord}}</span>, 

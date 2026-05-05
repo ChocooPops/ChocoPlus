@@ -1,4 +1,4 @@
-<h2>Episodes</h2>
+<h2> {{ 'MEDIA_PAGE.EPISODES' | translate }} </h2>
 <div class="container-episodes" [style.gap.vw]="gap">
     @for (episode of episodes; track episode.id; let idx = $index) {
     <div class="container-episode" [style.max-width.vw]="width">

@@ -4,17 +4,17 @@
     <app-opt [isSend]="isSend" (close)="onClosePopup()" (sendNewCode)="onSendNewCode()" (validate)="onValidate($event)"></app-opt>
     }
 
-    <p class="label"> Créer un compte</p>
+    <p class="label"> {{ "LAUNCH.CREATE_ACCOUNT" | translate }}</p>
 
     <form [formGroup]="formGroup">
-        <input [formControlName]="formControlPseudo" [placeholder]="placeHolderPseudo" type="text">
-        <input [formControlName]="formControlFirstName" [placeholder]="placeHolderFirstName" type="text">
-        <input [formControlName]="formControlLastName" [placeholder]="placeHolderLastName" type="text">
+        <input [formControlName]="formControlPseudo" [placeholder]="placeHolderPseudo | translate" type="text">
+        <input [formControlName]="formControlFirstName" [placeholder]="placeHolderFirstName | translate" type="text">
+        <input [formControlName]="formControlLastName" [placeholder]="placeHolderLastName | translate" type="text">
         <input [formControlName]="formControlDateBorn" type="date">
-        <input [formControlName]="formControlEmail" [placeholder]="placeHolderEmail" type="text">
+        <input [formControlName]="formControlEmail" [placeholder]="placeHolderEmail | translate" type="text">
 
         <div class="container-message">
-            <p> {{ message }}</p>
+            <p> {{ message | translate}}</p>
         </div>
 
         <app-button-form [name]="nameButtonRegister" [type]="TypeButtonModel.SUBMIT"

@@ -9,7 +9,7 @@
     }
 
     <div class="container-title">
-        <p>Edition du profil</p>
+        <p>{{ 'USER.MANAGE_PROFIL.EDIT_PROFIL_TITLE' | translate }}</p>
         <div class="barre"></div>
     </div>
 
@@ -28,7 +28,7 @@
 
         <form [formGroup]="formGroupInfo">
             <div class="container-input">
-                <label>Pseudo : </label>
+                <label>{{ 'USER.MANAGE_PROFIL.PSEUDO' | translate }}</label>
                 <div class="container-relative">
                     <input [formControlName]="formControlPseudo" placeholder="Pseudo">
                     <div class="button-edit">
@@ -38,7 +38,7 @@
             </div>
 
             <div class="container-input">
-                <label>Date de naissance : </label>
+                <label>{{ 'USER.MANAGE_PROFIL.DATE_BIRTH' | translate }}</label>
                 <div class="container-relative">
                     <input type="date" [formControlName]="formControlDateBorn">
                     <div class="button-edit">
@@ -53,7 +53,7 @@
     
     <form [formGroup]="formGroupPassWord">
         <div class="container-input">
-            <label>Mots de passe actuel</label>
+            <label>{{ 'USER.MANAGE_PROFIL.CURRENT_PASSWORD' | translate }}</label>
             <div class="container-relative">
                 <input [formControlName]="formControlCurrentPassWord" [type]="typeCurrentMdp">
                 <div class="button-edit" (click)="onClickCurrentMdp()">
@@ -64,7 +64,7 @@
 
         <div class="containe-edition">
             <div class="container-input">
-                <label>Nouveau mots de passe</label>
+                <label>{{ 'USER.MANAGE_PROFIL.NEW_PASSWORD' | translate }}</label>
                 <div class="container-relative">
                     <input [formControlName]="formControlNewPassWord" [type]="typeNewMdp">
                     <div class="button-edit" (click)="onClickNewMdp()">
@@ -74,7 +74,7 @@
             </div>
 
             <div class="container-input">
-                <label>Confirmation du nouveau mots de passe</label>
+                <label>{{ 'USER.MANAGE_PROFIL.CONFIRM_NEW_PASSWORD' | translate }}</label>
                 <div class="container-relative">
                     <input [formControlName]="formControlReNewPassWord" [type]="typeReNewMdp">
                     <div class="button-edit" (click)="onClickReNewMdp()">
@@ -91,13 +91,13 @@
         <div class="barre"></div>
         <div class="container-button">
             <div class="button" (click)="onClickSave()">
-                <p>Sauvegarder</p>
+                <p> {{ 'BUTTON.SAVE' | translate }} </p>
             </div>
             <div class="button" (click)="onClickCancel()">
-                <p>Annuler</p>
+                <p> {{ 'BUTTON.CANCEL' | translate }} </p>
             </div>
             <div class="button" (click)="onClickDelete()">
-                <p>Supprimer le profil</p>
+                <p> {{ 'BUTTON.DELETE_PROFIL' | translate }} </p>
             </div>
         </div>
     </div>

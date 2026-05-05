@@ -45,7 +45,7 @@ export class UsersManageService {
         return of({
           id: -1,
           state: false,
-          message: "Erreur avec le serveur"
+          message: "ERROR"
         })
       })
     )
@@ -63,7 +63,7 @@ export class UsersManageService {
         return of({
           id: -1,
           state: false,
-          message: "Erreur avec le serveur"
+          message: "ERROR"
         })
       })
     )
@@ -81,25 +81,25 @@ export class UsersManageService {
   private optionUser: SimpleModel[] = [
     {
       id: this.getId(),
-      name: "Tous les utilisateurs",
+      name: "USER.USER_MANAGEMENT.ALL_USER",
       value: null,
       state: true,
     },
     {
       id: this.getId(),
-      name: "Utilisateurs activés",
+      name: "USER.USER_MANAGEMENT.USER_ACTIVATED",
       value: [RoleModel.ADMIN, RoleModel.USER, RoleModel.FAMILY],
       state: false
     },
     {
       id: this.getId(),
-      name: "Utilisateurs suspendus",
+      name: "USER.USER_MANAGEMENT.USER_SUSPENDED",
       value: [RoleModel.SUSPENDED],
       state: false
     },
     {
       id: this.getId(),
-      name: "Demande d'inscription",
+      name: "USER.USER_MANAGEMENT.REGISTRATION_REQUEST",
       value: [RoleModel.NOT_ACTIVATE],
       state: false
     }
@@ -108,27 +108,27 @@ export class UsersManageService {
   private actionUser: SimpleModel[] = [
     {
       id: this.getId(),
-      name: "Devenir administrateur",
+      name: "USER.USER_MANAGEMENT.BECOME_ADMIN",
       value: RoleModel.ADMIN
     },
     {
       id: this.getId(),
-      name: "Devenir un utilisateur classique",
+      name: "USER.USER_MANAGEMENT.BECOME_USER",
       value: RoleModel.USER
     },
     {
       id: this.getId(),
-      name: "Devenir un membre de la famille",
+      name: "USER.USER_MANAGEMENT.BECOME_FAMILY",
       value: RoleModel.FAMILY
     },
     {
       id: this.getId(),
-      name: "Suspendre le compte",
+      name: "USER.USER_MANAGEMENT.SUSPEND_ACCOUNT",
       value: RoleModel.SUSPENDED
     },
     {
       id: this.getId(),
-      name: "Désactiver le compte",
+      name: "USER.USER_MANAGEMENT.DEACTIVATE_ACCOUNT",
       value: RoleModel.NOT_ACTIVATE
     }
   ]

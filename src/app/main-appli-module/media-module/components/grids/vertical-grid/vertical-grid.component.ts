@@ -1,14 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { GridAbstraction } from '../grid-abstraction.directive';
 import { VerticalPosterComponent } from '../../posters/vertical-poster/vertical-poster.component';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { PosterLoadingComponent } from '../../posters/poster-loading/poster-loading.component';
 import { SettingNotFoundComponent } from '../../../../../common-module/components/setting-not-found/setting-not-found.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vertical-grid',
   standalone: true,
-  imports: [VerticalPosterComponent, PosterLoadingComponent, SettingNotFoundComponent],
+  imports: [VerticalPosterComponent, PosterLoadingComponent, SettingNotFoundComponent, TranslatePipe],
   templateUrl: './vertical-grid.component.html',
   styleUrls: ['./vertical-grid.component.css', '../grid-poster.style.css']
 })

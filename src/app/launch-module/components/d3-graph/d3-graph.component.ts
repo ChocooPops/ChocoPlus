@@ -1,10 +1,11 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-d3-graph',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './d3-graph.component.html',
   styleUrls: ['./d3-graph.component.css']
 })

@@ -8,11 +8,12 @@ import { MenuTabModel } from '../../../menu-module/model/menu-tab.interface';
 import { NgClass } from '@angular/common';
 import { RoleModel } from '../../../../common-module/models/role.enum';
 import { TitleCasePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-params',
   standalone: true,
-  imports: [DatePipe, NgClass, TitleCasePipe],
+  imports: [DatePipe, NgClass, TitleCasePipe, TranslatePipe],
   templateUrl: './user-params.component.html',
   styleUrl: './user-params.component.css'
 })

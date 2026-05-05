@@ -3,11 +3,12 @@ import { NgClass } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-episode-poster-horizontal-view-loading',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './episode-poster-horizontal-view-loading.component.html',
   styleUrls: [
     './episode-poster-horizontal-view-loading.component.css',

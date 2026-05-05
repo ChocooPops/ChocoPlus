@@ -7,11 +7,12 @@ import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/simila
 import { EpisodePosterVerticalViewComponent } from '../../../posters/episode-poster-vertical-view/episode-poster-vertical-view.component';
 import { EpisodePosterVerticalViewLoadingComponent } from '../../../posters/episode-poster-vertical-view-loading/episode-poster-vertical-view-loading.component';
 import { FormatMediaPageModel } from '../../../../models/format-media-page-enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-series-vertical-page',
   standalone: true,
-  imports: [NgClass, EpisodePosterVerticalViewComponent, EpisodePosterVerticalViewLoadingComponent, SimilarPosterHorizontalComponent, SimilarPosterHorizontalLoadingComponent, DatePipe],
+  imports: [NgClass, EpisodePosterVerticalViewComponent, EpisodePosterVerticalViewLoadingComponent, SimilarPosterHorizontalComponent, SimilarPosterHorizontalLoadingComponent, DatePipe, TranslatePipe],
   templateUrl: './series-page.component.html',
   styleUrls: ['./series-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css'],
 })

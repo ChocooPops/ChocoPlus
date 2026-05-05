@@ -1,0 +1,269 @@
+{
+    "LAUNCH": {
+        "WELCOME": "Bienvenue",
+        "CREATE_ACCOUNT": "Créer un compte",
+        "LOGIN": "S'identifier",
+        "OFFLINE_MODE": "Mode hors ligne",
+        "VERIFICATION_CODE": "Code de Vérification",
+        "RESEND_CODE": "Renvoyer à nouveau",
+        "REGISTRATION_REQUEST_SEND_TO_ADMINISTRATOR": "Votre demande d'inscription a été envoyée à l'administrateur",
+        "CONFIRM": "Valider",
+        "BAD_VERSION": "Votre version est obsolète",
+        "CONTINUE": "Continuer",
+        "DOWNLOAD_VERSION": "Télécharger la ",
+        "LOGOUT": "Se déconnecter",
+
+        "PLACEHOLDER": {
+            "EMAIL": "Email",
+            "KEY": "Saisissez votre clef d'accès",
+            "PSEUDO" : "Pseudo",
+            "FIRST_NAME": "Prénom",
+            "LAST_NAME": "Nom"
+        },
+
+        "MESSAGE": {
+            "LOADING_SPRITES": "Chargement des sprites ...",
+            "INVALID_FORM": "Formulaire incorrect",
+            "LOADING": "Chargement ...",
+            "TRY_AGAIN": "Réessayer",
+            "NO_CONNECTION": "Aucune connexion",
+            "INCORRECT_USERNAME": "pseudo ou mot de passe incorrect",
+            "USER_DISABLED": "L'utilisateur n'est pas activé ou a été désactivé",
+            "ERROR": "Erreur"
+        },
+
+        "GRAPH": {
+            "WAVE": "Vague",
+            "CHAOS": "Chaos",
+            "PULSE": "Battement",
+            "EXPENSION": "Expansion",
+            "GATHERING": "Rassemblement",
+            "STOP": "Arreter"
+        }
+    },
+
+    "OFFLINE": {
+        "LOGIN": "Connexion"
+    },
+
+    "MENU": {
+        "MAIN" : {
+            "HOME": "Accueil",
+            "SEARCH": "Recherche",
+            "MOVIE": "Film",
+            "SERIES": "Série",
+            "CATALOG": "Catalogue",
+            "MYLIST": "Ma liste",
+            "EDITION": "Editer",
+            "MORE": "Plus"
+        },
+
+        "USER" : {
+            "HISTORIC": "Historique",
+            "MANAGE_PROFIL": "Gérer le profil",
+            "DOCUMENTATION": "Documentation",
+            "USER_SUPPORT": "Support utilisateur",
+            "APP_SETTINGS": "Paramètres de l'application",
+            "VIEW_METADAT": "Visualiser les metadonnées",
+            "USER_MANAGEMENT" : "Gestion des utilisateurs"
+        },
+
+        "EDIT": {
+
+        },
+
+        "OTHER": {
+            "RESET": "Reset",
+            "START_RANDOM_MOVIE": "Start random movie",
+            "START_RANDOM_SERIE": "Start random serie",
+            "LOGOUT": "Déconnexion"
+        }
+    },
+
+    "MEDIA_PAGE": {
+        "SERIES": "Series",
+        "SEASON": "Saison",
+        "SEASONS": "Saisons",
+        "PRODUCTION_DIRECTION": "Production & Réalisation",
+        "ACTORS": "Acteurs",
+        "CATEGORY": "Genre",
+        "KEY_WORDS": "Un film",
+        "SEASONS_EPISODES": "Saisons / Episodes",
+        "SIMILAR_TITLES": "Titres similaires",
+        "EPISODES": "Episodes",
+        "CASTING": "Casting",
+        "DESCRIPTION": "Description"
+    },
+
+    "SEARCH_PAGE": {
+        "RESULT": "Résultat",
+        "BROWSE": "Parcourir",
+        "PLACEHOLDER_RESEARCH_MOVIE_SERIES": "Rechercher un film, une série ..."
+    },
+
+    "MYLIST_PAGE" : "Votre liste",
+
+    "USER": {
+        "HISTORIC": {
+            "TOP_TITLE": "Top 10 du contenu le plus regardé",
+            "ERROR_TOP": "Erreur lors du chargement du top 10",
+            "ANY_MEDIA": "Aucun média visionné",
+            "VIEWING_TIME": "Temps de Visionnage",
+            "TOTAL": "TOTAL",
+            "ERROR_STAT": "Erreur lors du chargement des statistiques",
+            "VIEWING_STAT": "Statistiques de Visionnage",
+            "ERROR_DATA": "Erreur lors du chargement des données",
+            "ANY_DATA_PERIOD": "Aucune donnée pour cette période",
+            "ANY_DATA_AVAILABLE": "Aucune donnée de visionnage disponible",
+            "START_DATE": "Date de début",
+            "PERIOD": "Période",
+            "TYPE": "type",
+            "FAVORITE_CATEGORIES": "Catégories Préférées",
+            "CALCULATION_METHOD": "Mode de calcul",
+            "SIMPLE": "SIMPLE",
+            "SIMPLE_DESCRIPTION": "Comptage basique des contenus par catégorie",
+            "WEIGHTED": "Pondéré",
+            "WEIGHTED_DESCRIPTION": "Prend en compte la progression de visionnage",
+            "BY_TIME": "Par Temps",
+            "BY_TIME_DESCRIPTION": "Basé sur le temps réel de visionnage",
+            "MODE": "MODE",
+            "VIEWING": "de visionnage"
+        },
+        "MANAGE_PROFIL": {
+            "EDIT_PROFIL_TITLE": "Edition du profil",
+            "PSEUDO": "Pseudo : ",
+            "DATE_BIRTH": "Date de naissance : ",
+            "CURRENT_PASSWORD": "Mots de passe actuel",
+            "NEW_PASSWORD": "Nouveau mots de passe",
+            "CONFIRM_NEW_PASSWORD": "Confirmation du nouveau mots de passe",
+            "MESSAGE_DELETE_PROFIL_1": "Voulez vraiment supprimer votre compte ?",
+            "MESSAGE_DELETE_PROFIL_2": "Cette opération est définitive.",
+            "CHOOSE_ICON": "Choisissez votre îcone"
+        },
+        "USER_SUPPORT": {
+            "INFO_1": "Vous êtes témoin d’un dysfonctionnement, alertez-nous pour qu’ils soient corriger le plus plus rapidement possible.",
+            "INFO_2": "Vous voulez regarder un film ou une série non disponible sur la plateforme, n’hésitez pas à nous envoyer une liste du contenu que vous souhaiter regarder.",
+            "PRINCIPAL_SUBJECT": "Sujet principal :",
+            "SELECT_SUBJECT": "-- Sélectionnez un sujet --",
+            "TOPIC_AREA": "Thème ou Zone concernée :",
+            "SELECT_TOPIC": "-- Sélectionnez un thème --",
+            "MESSAGE": "Message :"
+        },
+        "APP_SETTINGS": {
+            "MOVIE_TV_POSTERS": "Poster des films & séries",
+            "LICENSE_POSTERS": "Poster des licenses",
+            "POSTER_FORMAT": "Format des affiches",
+            "OTHER_OPTIONS": "Autres options",
+            "ORIGINAL_QUALITY": "Qualité originale",
+            "VERTICAL": "Vertical",
+            "HORIZONTAL": "Horizontal",
+            "QUALITY_VERTICAL_POSTERS": "Qualité des posters verticaux",
+            "QUALITY_HORIZONTAL_POSTERS": "Qualité des poster horizontaux",
+            "QUALITY_SPECIAL_POSTERS": "Qualité des posters spéciaux",
+            "LOGO_QUALITY_INTO_POSTERS": "Qualité des logos dans les posters",
+            "QUALITY_BACKGROUND_TOP_PAGE": "Qualité des arrières plans à l'en-tête de la page",
+            "LOGO_QUALITY_TOP_PAGE": "Qualité des logos à l'en-tête de la page",
+            "BACKGROUND_QUALITY": "Qualité des arrières plans",
+            "LOGO_QUALITY_INTO_BACKGROUND": "Qualité des logos dans l'arrière plan",
+            "QUALITY_SEASON_POSTERS": "Qualité des posters des saisons",
+            "QUALITY_EPISODE_POSTERS": "Qualité des posters des épisodes",
+            "QUALITY_CREDIT_POSTERS": "Qualité des posters des credits",
+            "QUALITY_ICON_LICENS": "Qualité des icons",
+            "QUALITY_LOGO_LICENSE": "Qualité des logos",
+            "QUALITY_BACKGROUND_LICENSE": "Qualité des arrières plans",
+            "HOME_PAGE": "Page d'accueil",
+            "MOVIE_PAGE": "Page des films",
+            "SERIES_PAGE": "Page des séries",
+            "CATALOG_PAGE": "Page du catalogue",
+            "SEARCH_PAGE": "Page de recherche",
+            "LICENSE_PAGE": "Page des licenses",
+            "MYLIST_PAGE": "Page MyList",
+            "DYNAMIC_MEDIA_PAGE": "Page dynamique des médias",
+            "EDITION_PAGE": "Page d'édition",
+            "USER_PAGE": "Page de l'utilisateur",
+            "LAST_PAGE_VISITED": "Dernière page visitée",
+            "LAUNCH_PAGE": "Page de démarrage"
+        },
+        "VIEW_METADATA": {
+            "WARNING_MESSAGE": "La visualisation de la base de donnée peut consommer énormément de ressource pour les ordinateurs les moins performant",
+            "OVERVIEW": "Aperçu",
+            "NODE_LABEL": "Etiquette",
+            "NODE_INFO": "Information du Noeud",
+            "NAME": "Nom",
+            "HEADCOUNT": "Effectif",
+            "LINKS": "Liens"
+        },
+        "USER_MANAGEMENT": {
+            "ALL_USER": "Tous les utilisateurs",
+            "USER_ACTIVATED": "Utilisateurs activés",
+            "USER_SUSPENDED": "Utilisateurs suspendus",
+            "REGISTRATION_REQUEST": "Demande d'inscription",
+            "BECOME_ADMIN": "Devenir administrateur",
+            "BECOME_USER": "Devenir un utilisateur classique",
+            "BECOME_FAMILY": "Devenir un membre de la famille",
+            "SUSPEND_ACCOUNT": "Suspendre le compte",
+            "DEACTIVATE_ACCOUNT": "Désactiver le compte",
+            "INFO": "Info",
+            "STATS": "Stats",
+            "EMAIL": "Adresse email : ",
+            "DATE_BIRTH": "Date de naissance : ",
+            "PSEUDO" : "Pseudo : ",
+            "FIRST_NAME": "Prénom : ",
+            "LAST_NAME": "Nom : ",
+            "WARNING_DELETE_USER": "Voulez-vous vraiment supprimer l'utilisateur suivant :",
+            "ERROR_ID": "Erreur avec l'id de l'utilisateur"
+        }
+    },
+
+    "FILTER": {
+        "OTHER_FILTER": "Ajouter un autre filtre",
+        "PLACEHOLDER_DATA_TYPE": "Type de donnée",
+        "PLACEHOLDER_OPERATION": "Opération",
+        "PLACEHOLDER_VALUE": "Valeurs...",
+        "SORT_TITLE": "Titre",
+        "SORT_RELEASE_DATE": "Date de sortie",
+        "SORT_ADDED_DATE": "Date d'ajout",
+        "SORT_DURATION": "Durée",
+        "SORT_SHUFFLE": "Aléatoire"
+    },
+
+    "BUTTON": {
+        "PLAY": "Lecture",
+        "MODIFY": "Modifier",
+        "MYLIST": "Favoris",
+        "OPEN_VLC": "Ouvrir dans VLC",
+        "CANCEL": "Annuler",
+        "SAVE": "Sauvegarder",
+        "DELETE_PROFIL": "Supprimer le profil",
+        "SEND": "Envoyer",
+        "LOAD_GRAPH": "Charger le graphe",
+        "DETAILS": "Détails",
+        "ACTION": "Action",
+        "DELETE": "Supprimer"
+    },
+
+    "DECADE": "Décennie",
+    "CATEGORY": "Categorie",
+    "MEDIA": "Média",
+    "ALL": "Tout",
+    "MOVIES": "Films",
+    "SERIES": "Séries",
+    "MOVIE": "film",
+    "SERIE": "série",
+    "CONTENTS": "Contenus",
+    "CONTENT": "contenu",
+    "CONTAIN": "contient",
+    "EPISODES": "Episodes",
+    "EPISODE": "épisode",
+    "SELECTIONS": "Sélections",
+    "LICENSE": "Licence",
+    "NOT CONTAIN": "ne contient pas",
+
+    "DAY": "Jour",
+    "WEEK": "Semaine",
+    "MONTH": "Mois",
+    "YEAR": "Année",
+    "HOURS": "heures",
+
+    "MAXIMUM_CHARACTERS": "caractères"
+}

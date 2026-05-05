@@ -6,13 +6,16 @@ import { UserCategoryPreferences } from '../../../dto/user-historic/user-categor
 import { CategoryByTime } from '../../../dto/user-historic/category-by-time';
 import { CalculationMode } from '../../../dto/user-historic/calculate-mode.type';
 import { ModeOption } from '../../../dto/user-historic/mode-option.interface';
+import { TranslatePipe } from '@ngx-translate/core';
+import { TitleCasePipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-category-pie-chart',
   templateUrl: './category-pie-chart.component.html',
   styleUrls: ['./category-pie-chart.component.scss'],
-  imports: []
+  imports: [TranslatePipe, TitleCasePipe]
 })
 export class CategoryPieChartComponent {
 
@@ -37,20 +40,20 @@ export class CategoryPieChartComponent {
   modeOptions: ModeOption[] = [
     {
       value: 'simple',
-      label: 'Simple',
-      description: 'Comptage basique des contenus par catégorie',
+      label: 'USER.HISTORIC.SIMPLE',
+      description: 'USER.HISTORIC.SIMPLE_DESCRIPTION',
       icon: '📊'
     },
     {
       value: 'weighted',
-      label: 'Pondéré',
-      description: 'Prend en compte la progression de visionnage',
+      label: 'USER.HISTORIC.WEIGHTED',
+      description: 'USER.HISTORIC.WEIGHTED_DESCRIPTION',
       icon: '⚖️'
     },
     {
       value: 'by-time',
-      label: 'Par Temps',
-      description: 'Basé sur le temps réel de visionnage',
+      label: 'USER.HISTORIC.BY_TIME',
+      description: 'USER.HISTORIC.BY_TIME_DESCRIPTION',
       icon: '⏱️'
     }
   ];
@@ -60,7 +63,9 @@ export class CategoryPieChartComponent {
   loading: boolean = true;
   error: string | null = null;
 
-  constructor(private userHistoricService: UserHistoricService) {}
+  constructor(private readonly userHistoricService: UserHistoricService,
+    private readonly translateService: TranslateService
+  ) {}
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -104,7 +109,7 @@ export class CategoryPieChartComponent {
           }
         },
         error: (err: any) => {
-          this.error = 'Erreur lors du chargement des données';
+          this.error = 'USER.HISTORIC.ERROR_DATA';
           this.loading = false;
         }
       });
@@ -248,20 +253,6 @@ export class CategoryPieChartComponent {
     this.addLegend(svg, width, chartHeight);
   }
 
-  private getTooltipText(d: any): string {
-    const category = d.data;
-    let tooltip = `${category.categoryName}\n${category.count} contenus\n${category.percentage.toFixed(1)}%`;
-    
-    if (this.selectedMode === 'by-time' && this.categoryDataByTime) {
-      const timeData = this.categoryDataByTime.find(c => c.categoryId === category.categoryId);
-      if (timeData) {
-        tooltip += `\n${timeData.total_time_hours.toFixed(1)} heures`;
-      }
-    }
-    
-    return tooltip;
-  }
-
   private addLegend(svg: any, width: number, chartHeight: number): void {
     if (!this.categoryData) return;
 
@@ -341,7 +332,7 @@ export class CategoryPieChartComponent {
           ${category.categoryName}
         </div>
         <div style="font-size: 13px;">
-          ${category.count} contenu${category.count > 1 ? 's' : ''}
+          ${category.count} ${category.count > 1 ? (this.translateService.instant('CONTENTS') as string).toLocaleLowerCase() : (this.translateService.instant('CONTENT') as string).toLocaleLowerCase()}
         </div>
         <div style="font-size: 13px; font-weight: 700;">
           ${category.percentage.toFixed(1)}%
@@ -353,7 +344,7 @@ export class CategoryPieChartComponent {
       if (timeData) {
         content += `
           <div style="font-size: 12px; margin-top: 5px; opacity: 0.9;">
-            ⏱️ ${timeData.total_time_hours.toFixed(1)}h de visionnage
+            ⏱️ ${timeData.total_time_hours.toFixed(1)}h ${(this.translateService.instant('USER.HISTORIC.VIEWING') as string).toLocaleLowerCase()}
           </div>
         `;
       }

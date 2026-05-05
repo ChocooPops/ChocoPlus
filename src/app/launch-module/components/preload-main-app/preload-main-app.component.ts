@@ -9,11 +9,12 @@ import { ElectronService } from '../../../common-module/services/electron/electr
 import { LoadOpeningPageService } from '../../services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../models/page.enum';
 import { TitleCasePipe } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-preload-main-appli',
   standalone: true,
-  imports: [ButtonFormComponent, TitleCasePipe],
+  imports: [ButtonFormComponent, TitleCasePipe, TranslatePipe],
   templateUrl: './preload-main-app.component.html',
   styleUrls: ['./preload-main-app.component.css', '../../../common-module/styles/loader.css']
 })
@@ -25,7 +26,7 @@ export class PreloadMainAppComponent {
   activateLoader: boolean = false;
   transitionPP: boolean = false;
   TypeButton = TypeButtonModel;
-  nameButtonLogin = 'Se déconnecter';
+  nameButtonLogin = 'LAUNCH.LOGOUT';
 
   constructor(private userService: UserService,
     private authService: AuthService,

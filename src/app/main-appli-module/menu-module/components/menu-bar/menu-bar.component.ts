@@ -32,8 +32,8 @@ export class MenuBarComponent {
   private resizeSubscription!: Subscription;
 
   constructor(
-    private menuTabService: MenuTabService,
-    private scrollEventService: ScrollEventService) {
+    private readonly menuTabService: MenuTabService,
+    private readonly scrollEventService: ScrollEventService) {
     this.menuTabs = this.menuTabService.getAllMenuTab();
     this.plusTab = this.menuTabService.getMenuTab();
   }

@@ -27,8 +27,14 @@
                 <p> {{ duration }} </p>
                 <p class="quality"> {{ quality}} </p>
                 }@else if (media.mediaType === MediaType.SERIES) {
-                <p> {{ nbSeason }} </p>
-                <p class="quality"> Series </p>
+                <p> {{ nbSeason }} <span>
+                    @if (nbSeason > 1) {
+                        {{ 'MEDIA_PAGE.SEASONS' | translate }}
+                    } @else {
+                        {{ 'MEDIA_PAGE.SEASON' | translate }}
+                    }
+                </span></p>
+                <p class="quality"> {{ 'MEDIA_PAGE.SERIES' | translate }} </p>
                 }
             </div>
         </div>

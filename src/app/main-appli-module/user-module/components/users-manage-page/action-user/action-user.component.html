@@ -7,7 +7,7 @@
         <div class="point"
             [ngClass]="{'point-yellow' :  action.value === RoleModel.ADMIN, 'point-green' :  action.value === RoleModel.USER, 'point-blue' :  action.value === RoleModel.FAMILY, 'point-red' :  action.value === RoleModel.SUSPENDED, 'point-grey' :  action.value === RoleModel.NOT_ACTIVATE}">
         </div>
-        <p> {{ action.name }} </p>
+        <p> {{ action.name | translate }} </p>
     </div>
     }
 </div>

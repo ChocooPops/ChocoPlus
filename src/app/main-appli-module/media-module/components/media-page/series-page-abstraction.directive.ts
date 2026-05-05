@@ -285,7 +285,6 @@ export abstract class SeriesPageAbstraction {
     const filters: FILTERS[] = [
       {
         id: -2,
-        title: '',
         typeData: FilterType.CATEGORY,
         operation: Operation.CONTAIN,
         value: [
@@ -304,7 +303,6 @@ export abstract class SeriesPageAbstraction {
     const filters: FILTERS[] = [
       {
         id: id--,
-        title: '',
         typeData: FilterType.CREDIT,
         operation: Operation.CONTAIN,
         value: [
@@ -321,7 +319,6 @@ export abstract class SeriesPageAbstraction {
     const filters: FILTERS[] = [
       {
         id: -2,
-        title: '',
         typeData: FilterType.KEY_WORD,
         operation: Operation.CONTAIN,
         value: [

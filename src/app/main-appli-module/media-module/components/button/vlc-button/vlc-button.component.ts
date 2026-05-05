@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { ExecutionVLCService } from '../../../services/execution-vlc/execution-vlc.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vlc-button',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './vlc-button.component.html',
   styleUrls: ['./vlc-button.component.css', '../../../../common-module/styles/movie-button.css']
 })
@@ -16,7 +17,7 @@ export class VlcButtonComponent {
 
   srcImage: string = "icon/vlcInput.svg";
 
-  constructor(private executionVLCService: ExecutionVLCService) { }
+  constructor(private readonly executionVLCService: ExecutionVLCService) { }
 
   async onClick(): Promise<void> {
     if (this.jellyfinId != undefined) {

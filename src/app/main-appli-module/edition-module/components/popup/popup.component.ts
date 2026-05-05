@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { HostListener, ElementRef } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-popup',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './popup.component.html',
   styleUrls: ['./popup.component.css', '../../../common-module/styles/animation.css', '../../../../common-module/styles/loader.css']
 })
@@ -52,7 +53,7 @@ export class PopupComponent {
 
   public setMessage(message: string | undefined, state: boolean | undefined): void {
     if (message) {
-      this.messages = message.split('\n').filter(m => m.trim() !== '');
+      this.messages = message.split('\n').map((item) => item.trim()).filter(m => m !== '');
     } else {
       this.messages = undefined;
     }

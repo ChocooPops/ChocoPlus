@@ -6,11 +6,12 @@ import { SimilarPosterVerticalLoadingComponent } from '../../../posters/similar-
 import { FormatMediaPageModel } from '../../../../models/format-media-page-enum';
 import { CreditPosterComponent } from '../../../posters/credit-poster/credit-poster.component';
 import { CreditPosterLoadingComponent } from '../../../posters/credit-poster-loading/credit-poster-loading.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-movie-horizontal-page',
   standalone: true,
-  imports: [NgClass, CreditPosterComponent, CreditPosterLoadingComponent, SimilarPosterVerticalComponent, SimilarPosterVerticalLoadingComponent],
+  imports: [NgClass, TranslatePipe, CreditPosterComponent, CreditPosterLoadingComponent, SimilarPosterVerticalComponent, SimilarPosterVerticalLoadingComponent],
   templateUrl: './movie-horizontal-page.component.html',
   styleUrls: ['./movie-horizontal-page.component.css', '../../../../../common-module/styles/animation.css']
 })

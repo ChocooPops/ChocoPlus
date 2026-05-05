@@ -1,6 +1,6 @@
 <div class="top-media-container">
     <div class="header">
-        <h2>Top 10 du contenu le plus regardé</h2>
+        <h2>{{'USER.HISTORIC.TOP_TITLE' | translate }}</h2>
         <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
             @if(loading) {
             <img [src]="srcLoading">
@@ -15,7 +15,7 @@
         <button class="filter-btn" [class.active]="selectedMediaType === option.value" [disabled]="loading"
             (click)="onFilterChange(option.value)">
             <span class="filter-icon">{{ option.icon }}</span>
-            <span class="filter-label">{{ option.label }}</span>
+            <span class="filter-label">{{ option.label | translate  }}</span>
         </button>
         }
     </div>
@@ -23,14 +23,14 @@
     @if(loading) {
     <div class="loading">
         <div class="spinner"></div>
-        <p>Chargement...</p>
+        <p>{{'LAUNCH.MESSAGE.LOADING' | translate }}</p>
     </div>
     }
 
     @if (error && !loading) {
     <div class="error">
-        <p>{{ error }}</p>
-        <button (click)="loadData()">Réessayer</button>
+        <p>{{ error | translate }}</p>
+        <button (click)="loadData()">{{'LAUNCH.MESSAGE.TRY_AGAIN' | translate }}</button>
     </div>
     }
 
@@ -79,7 +79,7 @@
 
     <div class="empty"
         [style.display]="!loading && !error && ((topMediaData?.topMedia ?? []).length === 0) ? 'flex' : 'none'">
-        <p>Aucun média visionné</p>
+        <p>{{'USER.HISTORIC.ANY_MEDIA' | translate }}</p>
     </div>
 
     <div style="visibility: hidden;">

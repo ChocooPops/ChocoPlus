@@ -2,14 +2,14 @@
 
     <div class="container-zone-concerned">
         <div class="title">
-            <p> Poster des films & séries </p>
+            <p> {{ 'USER.APP_SETTINGS.MOVIE_TV_POSTERS' | translate }} </p>
             <div class="container-reset" (click)="onClickResetMediaParameters()">
                 <img [src]="srcReset">
             </div>
         </div>
         @for(param of radioButtonPosterFilm; track param.id) {
         <div class="container-param">
-            <p class="title-param"> {{ param.name }} </p>
+            <p class="title-param"> {{ param.name | translate }} </p>
             <app-input-radio-button [radioButton]="param.radioButton"
                 (changeEmit)="onChangePosterFilm(param.id, $event)"></app-input-radio-button>
         </div>
@@ -18,14 +18,14 @@
 
     <div class="container-zone-concerned">
         <div class="title">
-            <p> Poster des licenses </p>
+            <p> {{ 'USER.APP_SETTINGS.LICENSE_POSTERS' | translate }} </p>
             <div class="container-reset" (click)="onClickResetLicenseParameters()">
                 <img [src]="srcReset">
             </div>
         </div>
         @for(param of radioButtonPosterLicense; track param.id) {
         <div class="container-param">
-            <p class="title-param"> {{ param.name }} </p>
+            <p class="title-param"> {{ param.name | translate}} </p>
             <app-input-radio-button [radioButton]="param.radioButton"
                 (changeEmit)="onChangePosterLicense(param.id, $event)"></app-input-radio-button>
         </div>
@@ -34,11 +34,11 @@
 
     <div class="container-zone-concerned">
         <div class="title">
-            <p> Format des affiches </p>
+            <p> {{ 'USER.APP_SETTINGS.POSTER_FORMAT' | translate }} </p>
         </div>
         @for(param of radioButtonPosterFormat; track param.id) {
         <div class="container-param">
-            <p class="title-param"> {{ param.name }} </p>
+            <p class="title-param"> {{ param.name | translate}} </p>
             <app-input-radio-button [radioButton]="param.radioButton"
                 (changeEmit)="onChangePosterFormat(param.id, $event)"></app-input-radio-button>
         </div>
@@ -47,11 +47,11 @@
 
     <div class="container-zone-concerned">
         <div class="title">
-            <p> Autres options </p>
+            <p> {{ 'USER.APP_SETTINGS.OTHER_OPTIONS' | translate }} </p>
         </div>
         @for(param of radioButtonOtherOption; track param.id) {
         <div class="container-param">
-            <p class="title-param"> {{ param.name }} </p>
+            <p class="title-param"> {{ param.name | translate }} </p>
             <app-input-radio-button [radioButton]="param.radioButton"
                 (changeEmit)="onChangeOpeningPage(param.id, $event)"></app-input-radio-button>
         </div>

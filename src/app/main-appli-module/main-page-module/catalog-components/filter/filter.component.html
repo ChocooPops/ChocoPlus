@@ -1,6 +1,6 @@
 <div class="container-filter" (click)="openFilter()" [ngClass]="{'is-Open': isOpen}">
     <div class="filter-selected">
-        <p> {{ filter.name }} </p>
+        <p> {{ filter.name | translate}} </p>
         <img [src]="srcArrow">
     </div>
     @if(isOpen) {
@@ -10,7 +10,7 @@
         @for (f of filter.filters; track f.id) {
         @if (f.value && f.isSelected !== 2) {
         <div class="filter" (click)="onClickFilter($event, f.id)" [ngClass]="{'selected' : f.isSelected === 1}">
-            <p> {{ f.name }} </p>
+            <p> {{ f.name | translate }} </p>
         </div>
         }
         }

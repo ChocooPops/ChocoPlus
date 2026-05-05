@@ -1,6 +1,6 @@
 <div class="category-pie-chart-container">
   <div class="header">
-    <h2>Catégories Préférées</h2>
+    <h2>{{ 'USER.HISTORIC.FAVORITE_CATEGORIES' | translate }}</h2>
     <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
       @if(loading) {
       <img [src]="srcLoading">
@@ -12,8 +12,8 @@
 
   <div class="mode-selector">
     <div class="mode-label">
-      <span class="label-text">Mode de calcul</span>
-      <span class="mode-description">{{ getCurrentModeDescription() }}</span>
+      <span class="label-text">{{ 'USER.HISTORIC.CALCULATION_METHOD' | translate }}</span>
+      <span class="mode-description">{{ getCurrentModeDescription() | translate }}</span>
     </div>
 
     <div class="mode-buttons">
@@ -21,7 +21,7 @@
       <button class="mode-btn" [class.active]="selectedMode === mode.value" [disabled]="loading"
         (click)="onModeChange(mode.value)">
         <span class="mode-icon">{{ mode.icon }}</span>
-        <span class="mode-label">{{ mode.label }}</span>
+        <span class="mode-label">{{ mode.label | translate }}</span>
       </button>
       }
     </div>
@@ -29,27 +29,27 @@
 
   <div class="stats-summary" [style.display]="!loading && !error && categoryData ? 'flex' : 'none'">
     <div class="stat-item">
-      <span class="stat-label">Total</span>
+      <span class="stat-label">{{ 'USER.HISTORIC.TOTAL' | translate | titlecase }}</span>
       <span class="stat-value">{{ categoryData?.totalWatched || 0 }}</span>
     </div>
     <div class="stat-item" [style.display]="selectedMode === 'weighted' ? 'block' : 'none'">
-      <span class="stat-label">Mode</span>
-      <span class="stat-value">Pondéré</span>
+      <span class="stat-label">{{ 'USER.HISTORIC.MODE' | translate | titlecase }}</span>
+      <span class="stat-value">{{ 'USER.HISTORIC.WEIGHTED' | translate | titlecase }}</span>
     </div>
     <div class="stat-item" [style.display]="selectedMode === 'by-time' ? 'block' : 'none'">
-      <span class="stat-label">Mode</span>
-      <span class="stat-value">Temps</span>
+      <span class="stat-label">{{ 'USER.HISTORIC.MODE' | translate | titlecase }}</span>
+      <span class="stat-value">{{ 'USER.HISTORIC.BY_TIME' | translate | titlecase }}</span>
     </div>
   </div>
 
   <div class="loading" [style.display]="loading ? 'flex' : 'none'">
     <div class="spinner"></div>
-    <p>Chargement...</p>
+    <p>{{'LAUNCH.MESSAGE.LOADING' | translate }}</p>
   </div>
 
   <div class="error" [style.display]="error && !loading ? 'flex' : 'none'">
-    <p>{{ error }}</p>
-    <button (click)="loadData()">Réessayer</button>
+    <p>{{ error | translate }}</p>
+    <button (click)="loadData()">{{'LAUNCH.MESSAGE.TRY_AGAIN' | translate }}</button>
   </div>
 
   <div class="content" [style.display]="!loading && !error && categoryData ? 'block' : 'none'">
@@ -58,7 +58,7 @@
 
   <div class="empty"
     [style.display]="!loading && !error && (categoryData?.categories?.length === 0) ? 'block' : 'none'">
-    <p>Aucune donnée de visionnage disponible</p>
+    <p>{{ 'USER.HISTORIC.ANY_DATA_AVAILABLE' | translate }}</p>
   </div>
 
   <div class="height-tmp">

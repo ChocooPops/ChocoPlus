@@ -7,11 +7,12 @@ import { CompressedPosterService } from '../../../../common-module/services/comp
 import { SelectionType } from '../../../models/selection-type.enum';
 import { StartButtonComponent } from '../../button/start-button/start-button.component';
 import { MylistButtonComponent } from '../../button/mylist-button/mylist-button.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-similar-poster-vertical',
   standalone: true,
-  imports: [StartButtonComponent, MylistButtonComponent],
+  imports: [StartButtonComponent, MylistButtonComponent, TranslatePipe],
   templateUrl: './similar-poster-vertical.component.html',
   styleUrl: './similar-poster-vertical.component.css',
 })

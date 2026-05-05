@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SimpleModel } from '../../../../common-module/models/simple-model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-radio-button',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './input-radio-button.component.html',
   styleUrl: './input-radio-button.component.css'
 })

@@ -5,6 +5,8 @@ import { PeriodType } from '../../../dto/user-historic/period.type';
 import { ContentType } from '../../../dto/user-historic/content.type';
 import { DataPoint } from '../../../dto/user-historic/data-point.interface';
 import { WatchingStatsResponse } from '../../../dto/user-historic/watching-stats-response.interface';
+import { TranslatePipe } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 interface FilterOption {
   value: PeriodType | ContentType;
@@ -17,7 +19,7 @@ interface FilterOption {
   selector: 'app-watching-chart',
   templateUrl: './watching-chart.component.html',
   styleUrls: ['./watching-chart.component.scss'],
-  imports: []
+  imports: [TranslatePipe]
 })
 export class WatchingChartComponent {
   @ViewChild('chartContainer', { static: false }) chartContainer!: ElementRef;
@@ -30,23 +32,25 @@ export class WatchingChartComponent {
   srcLoading: string = 'icon/sablier.svg';
 
   periodOptions: FilterOption[] = [
-    { value: 'day', label: 'Jour', icon: '📅' },
-    { value: 'week', label: 'Semaine', icon: '📆' },
-    { value: 'month', label: 'Mois', icon: '🗓️' },
-    { value: 'year', label: 'Année', icon: '📊' },
+    { value: 'day', label: 'DAY', icon: '📅' },
+    { value: 'week', label: 'WEEK', icon: '📆' },
+    { value: 'month', label: 'MONTH', icon: '🗓️' },
+    { value: 'year', label: 'YEAR', icon: '📊' },
   ];
 
   contentOptions: FilterOption[] = [
-    { value: 'all', label: 'Tout', icon: '🎬' },
-    { value: 'movies', label: 'Films', icon: '🎥' },
-    { value: 'series', label: 'Séries', icon: '📺' },
+    { value: 'all', label: 'ALL', icon: '🎬' },
+    { value: 'movies', label: 'MOVIES', icon: '🎥' },
+    { value: 'series', label: 'SERIES', icon: '📺' },
   ];
 
   stats: WatchingStatsResponse | null = null;
   loading: boolean = true;
   error: string | null = null;
 
-  constructor(private userHistoricService: UserHistoricService) {
+  constructor(private readonly userHistoricService: UserHistoricService,
+    private readonly translateService: TranslateService
+  ) {
     const date = new Date();
     date.setFullYear(date.getFullYear() - 1);
     this.startDate = date.toISOString().split('T')[0];
@@ -92,8 +96,7 @@ export class WatchingChartComponent {
           }
         },
         error: (err) => {
-          console.error('Error loading watching stats:', err);
-          this.error = 'Erreur lors du chargement des données';
+          this.error = 'USER.HISTORIC.ERROR_DATA';
           this.loading = false;
         }
       });
@@ -223,15 +226,15 @@ export class WatchingChartComponent {
     let content = `
       <div style="line-height: 1.5;">
         <div style="font-weight: 700; margin-bottom: 5px;">${d.period}</div>
-        <div>${d.hours.toFixed(1)} heures</div>
+        <div>${d.hours.toFixed(1)} ${(this.translateService.instant("HOURS") as string).toLowerCase()}</div>
     `;
 
     if (this.selectedContent === 'all' || this.selectedContent === 'movies') {
-      content += `<div>${d.movies} film${d.movies > 1 ? 's' : ''}</div>`;
+      content += `<div>${d.movies} ${d.movies > 1 ? (this.translateService.instant("MOVIES") as string).toLowerCase() : (this.translateService.instant("MOVIE") as string).toLowerCase()}</div>`;
     }
 
     if (this.selectedContent === 'all' || this.selectedContent === 'series') {
-      content += `<div>${d.episodeCount} épisode${d.episodeCount > 1 ? 's' : ''}</div>`;
+      content += `<div>${d.episodeCount} ${d.episodeCount > 1 ? (this.translateService.instant("EPISODES") as string).toLowerCase() : (this.translateService.instant("EPISODE") as string).toLowerCase()}</div>`;
     }
 
     content += '</div>';

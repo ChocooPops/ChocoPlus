@@ -22,8 +22,9 @@ import { MediaPageComponent } from '../../../media-module/components/media-page/
 })
 export class MyListPageComponent {
 
+  title = 'MYLIST_PAGE';
+
   private abortController = new AbortController();
-  title: string = 'Votre Liste';
   medias: MediaModel[] | undefined = undefined;
   format !: FormatPosterModel;
   subscription: Subscription = new Subscription();

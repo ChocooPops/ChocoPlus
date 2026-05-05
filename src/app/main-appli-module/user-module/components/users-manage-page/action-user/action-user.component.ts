@@ -6,11 +6,12 @@ import { NgClass } from '@angular/common';
 import { SimpleModel } from '../../../../../common-module/models/simple-model';
 import { UsersManageService } from '../../../service/users-manage/users-manage.service';
 import { RoleModel } from '../../../../../common-module/models/role.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-action-user',
   standalone: true,
-  imports: [TitleCasePipe, UpperCasePipe, NgClass],
+  imports: [TitleCasePipe, UpperCasePipe, NgClass, TranslatePipe],
   templateUrl: './action-user.component.html',
   styleUrls: ['./action-user.component.css']
 })

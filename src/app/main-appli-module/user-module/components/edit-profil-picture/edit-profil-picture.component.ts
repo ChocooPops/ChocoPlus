@@ -4,11 +4,12 @@ import { ProfilPictureService } from '../../service/profil-picture/profil-pictur
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { ProfilPictureModel } from '../../dto/profil-picture.interface';
 import { UserService } from '../../service/user/user.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-profil-picture',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './edit-profil-picture.component.html',
   styleUrls: ['./edit-profil-picture.component.css', '../../../../common-module/styles/loader.css']
 })

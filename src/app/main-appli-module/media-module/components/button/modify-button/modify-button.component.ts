@@ -3,11 +3,12 @@ import { NgClass } from '@angular/common';
 import { EditionParametersService } from '../../../../edition-module/services/edition-parameters/edition-parameters.service';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { MenuType } from '../../../../menu-module/model/menu-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-modify-button',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './modify-button.component.html',
   styleUrl: '../../../../common-module/styles/movie-button.css'
 })
@@ -23,7 +24,7 @@ export class ModifyButtonComponent {
   srcImageLeave: String = "icon/modifyLeave.svg"
   modify: String = "icon/modify.svg";
 
-  constructor(private editionParametersService: EditionParametersService) { }
+  constructor(private readonly editionParametersService: EditionParametersService) { }
 
   onMouseEnter(): void {
     this.isHover = true;

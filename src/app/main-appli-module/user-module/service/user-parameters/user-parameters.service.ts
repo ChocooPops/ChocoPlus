@@ -14,7 +14,7 @@ export class UserParametersService {
   private userTabMenu: MenuTabModel[] = [
     {
       id: 1,
-      name: 'Historique',
+      name: 'MENU.USER.HISTORIC',
       type: MenuType.HISTORIC,
       route: `${this.rootRouter}/historic`,
       srcImage: `${this.rootImage}/historic.svg`,
@@ -22,7 +22,7 @@ export class UserParametersService {
     },
     {
       id: 2,
-      name: 'Gérer le profil',
+      name: 'MENU.USER.MANAGE_PROFIL',
       type: MenuType.PROFIL,
       route: `${this.rootRouter}/edit-profil`,
       srcImage: `${this.rootImage}/edit-profil.svg`,
@@ -30,7 +30,7 @@ export class UserParametersService {
     },
     {
       id: 7,
-      name: 'Documentation',
+      name: 'MENU.USER.DOCUMENTATION',
       type: MenuType.DOCUMENTATION,
       route: `${this.rootRouter}/documentation`,
       srcImage: `${this.rootImage}/documentation.svg`,
@@ -38,7 +38,7 @@ export class UserParametersService {
     },
     {
       id: 3,
-      name: 'Support utilisateur',
+      name: 'MENU.USER.USER_SUPPORT',
       type: MenuType.USER_SUPPORT,
       route: `${this.rootRouter}/support`,
       srcImage: `${this.rootImage}/support-user.svg`,
@@ -46,7 +46,7 @@ export class UserParametersService {
     },
     {
       id: 4,
-      name: "Paramètres de l'application",
+      name: "MENU.USER.APP_SETTINGS",
       type: MenuType.PARAM_APPLI,
       route: `${this.rootRouter}/parameter-appli`,
       srcImage: `${this.rootImage}/parameter.svg`,
@@ -54,7 +54,7 @@ export class UserParametersService {
     },
     {
       id: 5,
-      name: 'Visualiser les metadonnées',
+      name: 'MENU.USER.VIEW_METADAT',
       type: MenuType.META_DATA,
       route: `${this.rootRouter}/view-data`,
       srcImage: `${this.rootImage}/view-data.svg`,
@@ -62,7 +62,7 @@ export class UserParametersService {
     },
     {
       id: 6,
-      name: 'Gestion des utilisateurs',
+      name: 'MENU.USER.USER_MANAGEMENT',
       type: MenuType.MANAGEMENT_USER,
       route: `${this.rootRouter}/manage-users`,
       srcImage: `${this.rootImage}/manage-users.svg`,

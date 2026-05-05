@@ -24,7 +24,7 @@
                 <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
                 }
                 <div class="margin-bottom-text">
-                     <span class="legend">Production & Réalisation: </span>
+                     <span class="legend">{{'MEDIA_PAGE.PRODUCTION_DIRECTION' | translate}}: </span>
                         @for (crew of crews; track $index) {
                             <div class="container-job-transparent">
                                 <p class="info-tooltip">{{ crew.job }}</p>
@@ -39,7 +39,7 @@
                         }
                 </div>
                 <div class="margin-bottom-text">
-                    <span class="legend">Acteurs: </span> 
+                    <span class="legend">{{'MEDIA_PAGE.ACTORS' | translate}}: </span> 
                         @for (cast of casts; track $index) {
                             <div class="container-job-transparent">
                                 <p class="info-tooltip"> {{ cast.character }} </p>
@@ -52,7 +52,7 @@
                         }
                 </div>
                 <div class="margin-bottom-text">
-                    <span class="legend">Genres: </span> 
+                    <span class="legend">{{'MEDIA_PAGE.CATEGORY' | translate}}: </span> 
                     @for (genre of genres; track $index) {
                         @if ($index !== genres.length - 1) {
                             <span><span class="content" (click)="setFilterCategory(genre)">{{ genre.name}}</span>,</span>
@@ -62,7 +62,7 @@
                     }
                 </div>
                 <div class="margin-bottom-text">
-                    <span class="legend">Un film: </span> 
+                    <span class="legend">{{'MEDIA_PAGE.KEY_WORDS' | translate}}: </span> 
                     @for (keyWord of keyWords; track $index) {
                         @if ($index !== keyWords.length - 1) {
                             <span><span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord}}</span>,</span>
@@ -92,7 +92,7 @@
         </div>
 
         <div class="container-same-title">
-            <p [ngClass]="'color-white-dark'">Titres similaires</p>
+            <p [ngClass]="'color-white-dark'">{{'MEDIA_PAGE.SIMILAR_TITLES' | translate}}</p>
         </div>
     </div>
 

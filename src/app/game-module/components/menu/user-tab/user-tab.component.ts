@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-tab',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './user-tab.component.html',
   styleUrl: './user-tab.component.css'
 })

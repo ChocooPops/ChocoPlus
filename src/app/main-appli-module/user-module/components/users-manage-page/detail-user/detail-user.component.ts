@@ -4,11 +4,12 @@ import { NgClass } from '@angular/common';
 import { UserHistoricComponent } from '../../user-historic-page/user-historic/user-historic.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-detail-user',
   standalone: true,
-  imports: [NgClass, UserHistoricComponent, ReactiveFormsModule],
+  imports: [NgClass, UserHistoricComponent, ReactiveFormsModule, TranslatePipe],
   templateUrl: './detail-user.component.html',
   styleUrls: ['./detail-user.component.css']
 })

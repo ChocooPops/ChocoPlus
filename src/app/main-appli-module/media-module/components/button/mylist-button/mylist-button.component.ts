@@ -4,11 +4,12 @@ import { Subject, take, takeUntil, filter } from 'rxjs';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
 import { UserService } from '../../../../user-module/service/user/user.service';
 import { MediaModel } from '../../../models/media.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-mylist-button',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './mylist-button.component.html',
   styleUrl: '../../../../common-module/styles/movie-button.css'
 })
@@ -30,7 +31,7 @@ export class MylistButtonComponent {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   ngOnInit(): void {
     this.userService.getMyListChanged().pipe(

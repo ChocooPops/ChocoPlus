@@ -13,7 +13,7 @@ export class MenuTabService {
   private menuTabs: MenuTabModel[] = [
     {
       id: 1,
-      name: "Accueil",
+      name: "MENU.MAIN.HOME",
       type: MenuType.HOME,
       route: "home",
       srcImage: `${this.rootImage}/home.svg`,
@@ -21,7 +21,7 @@ export class MenuTabService {
     },
     {
       id: 2,
-      name: "Rechercher",
+      name: "MENU.MAIN.SEARCH",
       type: MenuType.SEARCH,
       route: "search",
       srcImage: `${this.rootImage}/research.svg`,
@@ -29,7 +29,7 @@ export class MenuTabService {
     },
     {
       id: 3,
-      name: "Film",
+      name: "MENU.MAIN.MOVIE",
       type: MenuType.MOVIES,
       route: "movies",
       srcImage: `${this.rootImage}/movie.svg`,
@@ -37,7 +37,7 @@ export class MenuTabService {
     },
     {
       id: 4,
-      name: "Série",
+      name: "MENU.MAIN.SERIES",
       type: MenuType.SERIES,
       route: "series",
       srcImage: `${this.rootImage}/serie.svg`,
@@ -45,7 +45,7 @@ export class MenuTabService {
     },
     {
       id: 5,
-      name: "Catalogue",
+      name: "MENU.MAIN.CATALOG",
       type: MenuType.CATALOG,
       route: "catalog",
       srcImage: `${this.rootImage}/catalog.svg`,
@@ -53,7 +53,7 @@ export class MenuTabService {
     },
     {
       id: 6,
-      name: "Ma liste",
+      name: "MENU.MAIN.MYLIST",
       type: MenuType.MYLIST,
       route: "my-list",
       srcImage: `${this.rootImage}/mylist.svg`,
@@ -61,7 +61,7 @@ export class MenuTabService {
     },
     {
       id: 7,
-      name: "Editer",
+      name: "MENU.MAIN.EDITION",
       type: MenuType.EDITION,
       route: "edition",
       srcImage: `${this.rootImage}/edition.svg`,
@@ -71,7 +71,7 @@ export class MenuTabService {
 
   private plusTab: MenuTabModel = {
     id: 10,
-    name: "Plus",
+    name: "MENU.MAIN.MORE",
     type: MenuType.PLUS,
     route: "",
     srcImage: "icon/arrow-2.svg",

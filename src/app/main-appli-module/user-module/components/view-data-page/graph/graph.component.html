@@ -2,7 +2,7 @@
     <svg #svgGraph width="100%" height="100%"></svg>
     <div class="container-overview">
         <div class="title">
-            <p> Overview </p>
+            <p> {{'USER.VIEW_METADATA.OVERVIEW' | translate }} </p>
             <img class="img-button" [src]="srcImageName" [ngClass]="{'img-border' : labelsVisible}"
                 (click)="toggleLabels()">
             <form [formGroup]="formGroup">
@@ -10,12 +10,12 @@
                 <img [src]="srcImageSearch" class="img-search">
             </form>
         </div>
-        <p> Node label </p>
+        <p> {{'USER.VIEW_METADATA.NODE_LABEL' | translate }}</p>
         <div class="container-legends">
             @for(legend of legends; track legend) {
             <div class="container-legend">
                 <div class="legend" [style.background-color]="legend.color">
-                    <p> {{legend.name }} ({{ legend.effective }})</p>
+                    <p> {{legend.name | translate | titlecase}} ({{ legend.effective }})</p>
                 </div>
                 <div class="container-is-visible" (click)="onClickVisibilityLegends(legend)">
                     @if(legend.isVisible) {
@@ -30,7 +30,7 @@
         @if(nodeClicked && nodeClicked.length > 0) {
         <div class="container-node-clicked">
             <div class="title">
-                <p> Information du Noeud </p>
+                <p> {{'USER.VIEW_METADATA.NODE_INFO' | translate }}</p>
                 <img class="img-button" [src]="srcImageGraph" [ngClass]="{'img-border' : isNewGraph}"
                     (click)="createNewGraphAccordingToNodeClicked()">
                 <img class="img-button-edit" [src]="srcEdition" (click)="onClickEdit()">
@@ -44,15 +44,15 @@
                 </div>
             </div>
             <div class="container-field">
-                <p>Name</p>
+                <p>{{'USER.VIEW_METADATA.NAME' | translate }}</p>
                 <p> {{ nodeClicked[0].name }} </p>
             </div>
             <div class="container-field">
-                <p>Effectif</p>
+                <p>{{'USER.VIEW_METADATA.HEADCOUNT' | translate }}</p>
                 <p> {{ nodeClicked.length - 1 }} </p>
             </div>
             <div class="container-field">
-                <p>links</p>
+                <p>{{'USER.VIEW_METADATA.LINKS' | translate }}</p>
                 <div class="container-field-link">
                     @for (node of nodeClicked; track $index) {
                     @if($index !== 0) {

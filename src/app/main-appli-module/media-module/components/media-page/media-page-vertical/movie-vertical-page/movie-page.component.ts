@@ -17,11 +17,12 @@ import { SimilarPosterHorizontalLoadingComponent } from '../../../posters/simila
 import { FormatMediaPageModel } from '../../../../models/format-media-page-enum';
 import { FiltersCatalogService } from '../../../../services/filters-catalog/filters-catalog.service';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-movie-vertical-page',
   standalone: true,
-  imports: [DatePipe, SimilarPosterHorizontalLoadingComponent, SimilarPosterHorizontalComponent, NgClass],
+  imports: [TranslatePipe, DatePipe, SimilarPosterHorizontalLoadingComponent, SimilarPosterHorizontalComponent, NgClass],
   templateUrl: './movie-page.component.html',
   styleUrls: ['./movie-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css']
 })

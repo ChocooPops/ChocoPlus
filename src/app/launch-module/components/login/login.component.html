@@ -4,19 +4,19 @@
         <app-bad-version [version]="lastVersion" (onContinue)="setGoodVersion()"></app-bad-version>
     }
 
-    <p class="label">S'identifier</p>
+    <p class="label"> {{ 'LAUNCH.LOGIN' | translate }} </p>
 
     <form [formGroup]="formGroup">
-        <input [formControlName]="formControlEmail" [placeholder]="placeHolderEmail" type="text">
+        <input [formControlName]="formControlEmail" [placeholder]="placeHolderEmail | translate" type="text">
         <div class="container-textarea">
-            <input [formControlName]="formControlAccessKey" [placeholder]="placeHolderAccessKey"
+            <input [formControlName]="formControlAccessKey" [placeholder]="placeHolderAccessKey | translate"
                 (keydown.enter)="onSubmit()" [type]="type">
             <div class="container-image" (click)="onChangeVisibilityOfKeyAccess()">
                 <img [src]="srcImageKey">
             </div>
         </div>
         <div class="container-message">
-            <p> {{ message }} </p>
+            <p> {{ message | translate }} </p>
         </div>
 
         <app-button-form [name]="nameButtonLogin" [type]="TypeButtonModel.SUBMIT"

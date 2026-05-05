@@ -16,11 +16,13 @@ import { UserModel } from '../../../dto/user.model';
 import { RoleModel } from '../../../../../common-module/models/role.enum';
 import { UserService } from '../../../service/user/user.service';
 import { MenuType } from '../../../../menu-module/model/menu-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-graph',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule, OtherModeComponent],
+  imports: [NgClass, ReactiveFormsModule, OtherModeComponent, TranslatePipe, TitleCasePipe],
   templateUrl: './graph.component.html',
   styleUrl: './graph.component.css'
 })

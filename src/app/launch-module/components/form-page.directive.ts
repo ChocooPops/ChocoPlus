@@ -11,9 +11,9 @@ import { VersionService } from "../../common-module/services/version/version.ser
 export abstract class FormPageDirectiveAbstract {
 
     protected formGroup !: FormGroup;
-    protected nameButtonLogin: string = "S'identifier";
-    protected nameButtonRegister: string = "Créer un compte";
-    protected nameButtonOffLine: string = "Mode hors ligne";
+    protected nameButtonLogin = 'LAUNCH.LOGIN';
+    protected nameButtonRegister = "LAUNCH.CREATE_ACCOUNT";
+    protected nameButtonOffLine = "LAUNCH.OFFLINE_MODE";
     protected TypeButtonModel = TypeButtonModel;
     protected message: string = '';
 

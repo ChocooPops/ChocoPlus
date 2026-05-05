@@ -26,67 +26,67 @@ export class ParameterAppliService {
   private radioButtonPosterFilm: ParamaterAppliModel[] = [
     {
       id: this.getId(),
-      name: "Qualité des posters verticaux",
+      name: "USER.APP_SETTINGS.QUALITY_VERTICAL_POSTERS",
       radioButton: this.getRadioButtonForVerticalScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des poster horizontaux",
+      name: "USER.APP_SETTINGS.QUALITY_HORIZONTAL_POSTERS",
       radioButton: this.getRadioButtonForHorizontalScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des posters spéciaux",
+      name: "USER.APP_SETTINGS.QUALITY_SPECIAL_POSTERS",
       radioButton: this.getRadioButtonForVerticalScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des logos dans les posters",
+      name: "USER.APP_SETTINGS.LOGO_QUALITY_INTO_POSTERS",
       radioButton: this.getRadioButtonForLogoScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des arrières plans à l'en-tête de la page",
+      name: "USER.APP_SETTINGS.QUALITY_BACKGROUND_TOP_PAGE",
       radioButton: this.getRadioButtonForHorizontalScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des logos à l'en-tête de la page",
+      name: "USER.APP_SETTINGS.LOGO_QUALITY_TOP_PAGE",
       radioButton: this.getRadioButtonForLogoScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des arrières plans",
+      name: "USER.APP_SETTINGS.BACKGROUND_QUALITY",
       radioButton: this.getRadioButtonForHorizontalScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des logos dans l'arrière plan",
+      name: "USER.APP_SETTINGS.LOGO_QUALITY_INTO_BACKGROUND",
       radioButton: this.getRadioButtonForLogoScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des posters des saisons",
+      name: "USER.APP_SETTINGS.QUALITY_SEASON_POSTERS",
       radioButton: this.getRadioButtonForSeasonPoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des posters des épisodes",
+      name: "USER.APP_SETTINGS.QUALITY_EPISODE_POSTERS",
       radioButton: this.getRadioButtonForEpisodePoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des posters des credits",
+      name: "USER.APP_SETTINGS.QUALITY_CREDIT_POSTERS",
       radioButton: this.getRadioButtonForCreditPoster(),
       call: null
     }
@@ -95,19 +95,19 @@ export class ParameterAppliService {
   private radioButtonPosterLicense: ParamaterAppliModel[] = [
     {
       id: this.getId(),
-      name: "Qualité des icons",
+      name: "USER.APP_SETTINGS.QUALITY_ICON_LICENS",
       radioButton: this.getRadioButtonForHorizontalScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des logos",
+      name: "USER.APP_SETTINGS.QUALITY_LOGO_LICENSE",
       radioButton: this.getRadioButtonForHorizontalScale(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Qualité des arrières plans",
+      name: "USER.APP_SETTINGS.QUALITY_BACKGROUND_LICENSE",
       radioButton: this.getRadioButtonForHorizontalScale(),
       call: null
     }
@@ -116,49 +116,49 @@ export class ParameterAppliService {
   private radioButtonFormatPoster: ParamaterAppliModel[] = [
     {
       id: this.getId(),
-      name: "Page d'accueil",
+      name: "USER.APP_SETTINGS.HOME_PAGE",
       radioButton: this.getRadioButtonForAllFormatPoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Page des films",
+      name: "USER.APP_SETTINGS.MOVIE_PAGE",
       radioButton: this.getRadioButtonForAllFormatPoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Page des séries",
+      name: "USER.APP_SETTINGS.SERIES_PAGE",
       radioButton: this.getRadioButtonForAllFormatPoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Page du catalogue",
+      name: "USER.APP_SETTINGS.CATALOG_PAGE",
       radioButton: this.getRadioButtonForAllFormatPoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Page de recherche",
+      name: "USER.APP_SETTINGS.SEARCH_PAGE",
       radioButton: this.getRadioButtonForAllFormatPoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Page des licenses",
+      name: "USER.APP_SETTINGS.LICENSE_PAGE",
       radioButton: this.getRadioButtonForAllFormatPoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Page MyList",
+      name: "USER.APP_SETTINGS.MYLIST_PAGE",
       radioButton: this.getRadioButtonForAllFormatPoster(),
       call: null
     },
     {
       id: this.getId(),
-      name: "Page dynamique des médias",
+      name: "USER.APP_SETTINGS.DYNAMIC_MEDIA_PAGE",
       radioButton: this.getRadioButtonForMediaFormat(),
       call: null
     }
@@ -167,59 +167,59 @@ export class ParameterAppliService {
   private radioButtonOtherOption: ParamaterAppliModel[] = [
     {
       id: this.getId(),
-      name: "Page de démarrage",
+      name: "USER.APP_SETTINGS.LAUNCH_PAGE",
       radioButton: [
         {
           id: this.getId(),
-          name: "Page d'accueil",
+          name: "USER.APP_SETTINGS.HOME_PAGE",
           value: PageModel.PAGE_HOME,
           state: false
         },
         {
           id: this.getId(),
-          name: "Page de recherche",
+          name: "USER.APP_SETTINGS.SEARCH_PAGE",
           value: PageModel.PAGE_RESEARCH,
           state: false
         },
         {
           id: this.getId(),
-          name: "Page des films",
+          name: "USER.APP_SETTINGS.MOVIE_PAGE",
           value: PageModel.PAGE_MOVIE,
           state: false
         },
         {
           id: this.getId(),
-          name: "Page des séries",
+          name: "USER.APP_SETTINGS.SERIES_PAGE",
           value: PageModel.PAGE_SERIES,
           state: false
         },
         {
           id: this.getId(),
-          name: "Page du catalogue",
+          name: "USER.APP_SETTINGS.CATALOG_PAGE",
           value: PageModel.PAGE_CATALOG,
           state: false
         },
         {
           id: this.getId(),
-          name: "Page mylist",
+          name: "USER.APP_SETTINGS.MYLIST_PAGE",
           value: PageModel.PAGE_MYLIST,
           state: false
         },
         {
           id: this.getId(),
-          name: "Page d'édition",
+          name: "USER.APP_SETTINGS.EDITION_PAGE",
           value: PageModel.PAGE_EDITION,
           state: false
         },
         {
           id: this.getId(),
-          name: "Page de l'utilisateur",
+          name: "USER.APP_SETTINGS.USER_PAGE",
           value: PageModel.PAGE_USER,
           state: false
         },
         {
           id: this.getId(),
-          name: "Dernière page visitée",
+          name: "USER.APP_SETTINGS.LAST_PAGE_VISITED",
           value: PageModel.DEFAULT_PAGE,
           state: false
         },
@@ -417,7 +417,7 @@ export class ParameterAppliService {
       },
       {
         id: this.getId(),
-        name: "Qualité originale",
+        name: "USER.APP_SETTINGS.ORIGINAL_QUALITY",
         value: ScalePoster.SCALE_ORIGINAL,
         state: false
       }
@@ -470,7 +470,7 @@ export class ParameterAppliService {
       },
       {
         id: this.getId(),
-        name: "Qualité originale",
+        name: "USER.APP_SETTINGS.ORIGINAL_QUALITY",
         value: ScalePoster.SCALE_ORIGINAL,
         state: false
       }
@@ -505,7 +505,7 @@ export class ParameterAppliService {
       },
       {
         id: this.getId(),
-        name: "Qualité originale",
+        name: "USER.APP_SETTINGS.ORIGINAL_QUALITY",
         value: ScalePoster.SCALE_ORIGINAL,
         state: false
       }
@@ -516,13 +516,13 @@ export class ParameterAppliService {
     return [
       {
         id: this.getId(),
-        name: "Vertical",
+        name: "USER.APP_SETTINGS.VERTICAL",
         value: FormatPosterModel.VERTICAL,
         state: false
       },
       {
         id: this.getId(),
-        name: "Horizontal",
+        name: "USER.APP_SETTINGS.HORIZONTAL",
         value: FormatPosterModel.HORIZONTAL,
         state: false
       }
@@ -533,13 +533,13 @@ export class ParameterAppliService {
     return [
       {
         id: this.getId(),
-        name: "Vertical",
+        name: "USER.APP_SETTINGS.VERTICAL",
         value: FormatMediaPageModel.VERTICAL,
         state: false
       },
       {
         id: this.getId(),
-        name: "Horizontal",
+        name: "USER.APP_SETTINGS.HORIZONTAL",
         value: FormatMediaPageModel.HORIZONTAL,
         state: false
       }
@@ -568,7 +568,7 @@ export class ParameterAppliService {
       },
       {
         id: this.getId(),
-        name: "Qualité originale",
+        name: "USER.APP_SETTINGS.ORIGINAL_QUALITY",
         value: ScalePoster.SCALE_ORIGINAL,
         state: false
       }
@@ -603,7 +603,7 @@ export class ParameterAppliService {
       },
       {
         id: this.getId(),
-        name: "Qualité originale",
+        name: "USER.APP_SETTINGS.ORIGINAL_QUALITY",
         value: ScalePoster.SCALE_ORIGINAL,
         state: false
       }
@@ -632,7 +632,7 @@ export class ParameterAppliService {
       },
       {
         id: this.getId(),
-        name: "Qualité originale",
+        name: "USER.APP_SETTINGS.ORIGINAL_QUALITY",
         value: ScalePoster.SCALE_ORIGINAL,
         state: false
       }

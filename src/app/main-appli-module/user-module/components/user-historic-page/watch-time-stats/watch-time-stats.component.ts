@@ -1,13 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { WatchTimeStats } from '../../../dto/user-historic/watch-time-stats.interface';
 import { UserHistoricService } from '../../../service/user-historic/user-historic.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LowerCasePipe } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-watch-time-stats',
   templateUrl: './watch-time-stats.component.html',
   styleUrls: ['./watch-time-stats.component.scss'],
-  imports: [],
+  imports: [TranslatePipe, LowerCasePipe],
 })
 export class WatchTimeStatsComponent implements OnInit {
   @Input() userId!: number;
@@ -18,7 +20,7 @@ export class WatchTimeStatsComponent implements OnInit {
   srcReset: string = 'icon/modify.svg';
   srcLoading: string = 'icon/sablier.svg';
 
-  constructor(private userHistoricService: UserHistoricService) {}
+  constructor(private readonly userHistoricService: UserHistoricService) {}
 
   ngOnInit(): void {
     this.loadStats();
@@ -34,7 +36,7 @@ export class WatchTimeStatsComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Erreur lors du chargement des statistiques';
+        this.error = 'USER.HISTORIC.ERROR_STAT';
         this.loading = false;
       },
     });

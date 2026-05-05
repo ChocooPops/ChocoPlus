@@ -4,11 +4,12 @@ import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-credit-poster-loading',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './credit-poster-loading.component.html',
   styleUrls: ['./credit-poster-loading.component.css', '../credit-poster/credit-poster.component.css', '../../../../common-module/styles/animation.css'],
 })

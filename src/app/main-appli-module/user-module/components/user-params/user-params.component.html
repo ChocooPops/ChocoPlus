@@ -17,7 +17,7 @@
         <div class="container-param"
             [ngClass]="{'current-param' : param.isClicked, 'not-current-param' : !param.isClicked}"
             (click)="onNavigateUserTab(param.id)">
-            <p> {{ param.name }} </p>
+            <p> {{ param.name | translate }} </p>
         </div>
         }
     </div>

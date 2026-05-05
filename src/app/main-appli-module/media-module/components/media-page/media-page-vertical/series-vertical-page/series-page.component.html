@@ -5,12 +5,12 @@
             <p>{{ date | date:'yyyy' }}</p>
             }
             @if(series.seasons.length > 1) {
-            <p> {{ series.seasons.length }} Saisons </p>
+            <p> {{ series.seasons.length }} {{ 'MEDIA_PAGE.SEASONS' | translate }} </p>
             }@else {
-            <p> {{ series.seasons.length }} Saison </p>
+            <p> {{ series.seasons.length }} {{ 'MEDIA_PAGE.SEASON' | translate }} </p>
             }
             <div class="container-quality">
-                <p> Series </p>
+                <p> {{ 'MEDIA_PAGE.SERIES' | translate }} </p>
             </div>
         </div>
         <div class="container-movie-placement">
@@ -20,7 +20,7 @@
                 <p [ngClass]="'margin-bottom-title'"> {{ description }} </p>
                 }
                 <div class="margin-bottom-text">
-                     <span class="legend">Production & Réalisation: </span>
+                     <span class="legend"> {{'MEDIA_PAGE.PRODUCTION_DIRECTION' | translate}}: </span>
                         @for (crew of crews; track $index) {
                             <div class="container-job-transparent">
                                 <p class="info-tooltip">{{ crew.job }}</p>
@@ -35,7 +35,7 @@
                         }
                 </div>
                 <div class="margin-bottom-text">
-                    <span class="legend">Acteurs: </span> 
+                    <span class="legend">{{'MEDIA_PAGE.ACTORS' | translate}}: </span> 
                         @for (cast of casts; track $index) {
                             <div class="container-job-transparent">
                                 <p class="info-tooltip"> {{ cast.character }} </p>
@@ -48,7 +48,7 @@
                         }
                 </div>
                 <div class="margin-bottom-text">
-                    <span class="legend">Genres: </span> 
+                    <span class="legend">{{'MEDIA_PAGE.CATEGORY' | translate}}: </span> 
                     @for (genre of genres; track $index) {
                         @if ($index !== genres.length - 1) {
                             <span><span class="content" (click)="setFilterCategory(genre)">{{ genre.name}}</span>,</span>
@@ -58,7 +58,7 @@
                     }
                 </div>
                 <div class="margin-bottom-text">
-                    <span class="legend">Un film: </span> 
+                    <span class="legend">{{'MEDIA_PAGE.KEY_WORDS' | translate}}: </span> 
                     @for (keyWord of keyWords; track $index) {
                         @if ($index !== keyWords.length - 1) {
                             <span><span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord}}</span>,</span>
@@ -84,10 +84,9 @@
 
         <div class="container-same-title">
             <p (click)="onClickTypeSeasonsEpisodes()" [ngClass]="{'color-white-dark' : type, 'color-grey-dark' :!type}">
-                Saisons / Episodes</p>
+                {{'MEDIA_PAGE.SEASONS_EPISODES' | translate}}</p>
             <p (click)="onClickTypeSimilarTitles()" [ngClass]="{'color-white-dark' : !type, 'color-grey-dark' :type}">
-                Titres
-                similaires</p>
+                {{'MEDIA_PAGE.SIMILAR_TITLES' | translate}} </p>
         </div>
     </div>
 
