@@ -2,7 +2,7 @@
     <div class="containerMainSelection" (click)="onClick()"
         [ngClass]="{'borderRadiusEveryWhere' : !isClick, 'borderRadiusBottom' : isClick}">
         <div class="containerSelectedType">
-            <p> {{nameSelectedType}}</p>
+            <p> {{nameSelectedType | translate | titlecase }}</p>
         </div>
         <div class="containerArrow">
             <img [src]="srcArrow">
@@ -12,7 +12,7 @@
     <div class="containerListTypeSelection">
         @for(typeSelectionPoster of getSelectionNotSelected(); track typeSelectionPoster.id) {
         <div class="containerTypeSelection" (click)="onClickSelection(typeSelectionPoster.type)">
-            <p>{{typeSelectionPoster.name}}</p>
+            <p>{{typeSelectionPoster.name | translate}}</p>
         </div>
         }
 

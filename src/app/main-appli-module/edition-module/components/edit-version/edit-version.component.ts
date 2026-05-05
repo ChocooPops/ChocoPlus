@@ -3,6 +3,7 @@ import { VersionModel } from '../../../../launch-module/models/version.interface
 import { FormsModule } from '@angular/forms';
 import { VersionService } from '../../../../common-module/services/version/version.service';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface FeedbackState {
   message: string;
@@ -12,7 +13,7 @@ interface FeedbackState {
 @Component({
   selector: 'app-edit-version',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   templateUrl: './edit-version.component.html',
   styleUrl: './edit-version.component.css'
 })
@@ -72,7 +73,7 @@ export class EditVersionComponent {
       error: () => {
         this.loadingStates[index] = false;
         this.feedbackStates[index] = {
-          message: 'Une erreur est survenue.',
+          message: 'EDITION.ADVANCED_SETTINGS.ERROR',
           state: false
         };
         this.scheduleFeedbackClear(index);

@@ -22,12 +22,10 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
     @ViewChild('otherTitles') otherTitlesRef!: ElementRef;
     @ViewChild('buttonOtherLanguage') buttonOtherLanguageRef!: ElementRef;
 
-    protected exTextLogo: string = "ex : Logo de la série";
-    protected exTestBackgroundImage: string = "ex : Plan iconique de la série";
-    protected placeHolderActor: string = "ex : Bryan Cranston";
-    protected placeHolderTitle: string = "ex : Breaking Bad";
-    protected placeHolderDirector: string = "ex : Vince Gilligan";
-    protected placeHolderJellyfinId: string = "ex : gh0f55a6c3f269f79tc6d91fb55z3179"
+    protected exTextLogo: string = "EDITION.SERIES.PLACEHOLDER_LOGO";
+    protected exTestBackgroundImage: string = "EDITION.SERIES.PLACEHOLDER_BACK";
+    protected placeHolderTitle: string = "EDITION.SERIES.PLACEHOLDER_TITLE";
+    protected placeHolderJellyfinId: string = "EDITION.SERIES.PLACEHOLDER_JELLYFIN";
 
     protected editSeries !: EditSeriesModel;
     protected editSeasons !: EditSeasonModel[];
@@ -48,8 +46,8 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
 
     protected maxLength: number = 1000;
 
-    constructor(protected editionSeriesService: EditionSeriesService,
-        protected tmdbOperationService: TmdbOperationService,
+    constructor(protected readonly editionSeriesService: EditionSeriesService,
+        protected readonly tmdbOperationService: TmdbOperationService,
         editionParametersService: EditionParametersService
     ) {
         super(editionParametersService);

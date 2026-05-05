@@ -30,6 +30,9 @@ export class EditEpisodeComponent {
   maxLength: number = 500;
   isHovering !: boolean;
 
+  placeHolderTitle = "EDITION.MEDIA.TITLE";
+  placeHolderDescription = "EDITION.MEDIA.DESCRIPTION";
+
   onChangeJellyfinId(jellyfinId: string): void {
     this.changeJellyfinId.emit(jellyfinId);
   }

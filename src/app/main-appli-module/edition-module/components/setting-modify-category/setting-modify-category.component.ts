@@ -16,11 +16,12 @@ import { CategoryService } from '../../services/category/category.service';
 import { ActivatedRoute } from '@angular/router';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-category',
   standalone: true,
-  imports: [PopupComponent, InputResearchSeriesComponent, InputTextEditionComponent, ButtonSaveComponent, ButtonRemoveComponent, InputResearchCategoryComponent, SelectionOverviewComponent, InputResearchMovieComponent],
+  imports: [TranslatePipe, PopupComponent, InputResearchSeriesComponent, InputTextEditionComponent, ButtonSaveComponent, ButtonRemoveComponent, InputResearchCategoryComponent, SelectionOverviewComponent, InputResearchMovieComponent],
   templateUrl: './setting-modify-category.component.html',
   styleUrls: ['./setting-modify-category.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
@@ -28,8 +29,8 @@ export class SettingModifyCategoryComponent extends SettingCategoryAbstraction {
 
   protected override menuType: MenuType = MenuType.MODIFY_CATEGORY;
 
-  private messageModify: string = 'Cette action enregistrera les modifications faites sur la catégorie';
-  private messageDelete: string = 'Cette action supprimera définitivement la catégorie';
+  private messageModify = 'EDITION.CATEGORY.MESSAGE_MODIFY';
+  private messageDelete = 'EDITION.CATEGORY.MESSAGE_DELETE';
   private typeOperation !: number;
 
   constructor(categoryService: CategoryService,

@@ -28,13 +28,13 @@ export class EditionMediaService {
     return [
       {
         id: 300,
-        name: 'Oui',
+        name: 'YES',
         value: true,
         state: false
       },
       {
         id: 400,
-        name: 'Non',
+        name: 'NO',
         value: false,
         state: true
       }
@@ -59,17 +59,17 @@ export class EditionMediaService {
   protected readonly typeSelectionPoster: EditTypePoster[] = [
     {
       id: 1,
-      name: "Affiche Normal",
+      name: "EDITION.NORMAL_POSTER",
       type: SelectionType.NORMAL_POSTER
     },
     {
       id: 2,
-      name: "Affiche Special",
+      name: "EDITION.SPECIAL_POSTER",
       type: SelectionType.SPECIAL_POSTER
     },
     {
       id: 3,
-      name: "Affiche License",
+      name: "EDITION.LICENSE_POSTER",
       type: SelectionType.LICENSE_POSTER
     }
   ]
@@ -78,7 +78,7 @@ export class EditionMediaService {
     return this.radioButtonHorizontalSameAsBack$;
   }
 
-  public getSelectionPosterById(type: SelectionType): String {
+  public getSelectionPosterById(type: SelectionType): string {
     return this.typeSelectionPoster.find((t) => t.type === type)?.name || "";
   }
 

@@ -25,17 +25,18 @@ import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionMovieService } from '../../services/edition-movie/edition-movie.service';
 import { TmdbOperationService } from '../../services/tmdb-operation/tmdb-operation.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-add-movie',
   standalone: true,
-  imports: [NgClass, CreditsTableComponent, InputDateComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, PopupComponent, AiButtonComponent, ButtonRemoveComponent, InputTextEditionComponent, InputTimeEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputKeywordsEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputImageEditionComponent, ButtonSaveComponent, InputLanguageTitleComponent],
+  imports: [TranslatePipe, NgClass, CreditsTableComponent, InputDateComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, PopupComponent, AiButtonComponent, ButtonRemoveComponent, InputTextEditionComponent, InputTimeEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputKeywordsEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputImageEditionComponent, ButtonSaveComponent, InputLanguageTitleComponent],
   templateUrl: './setting-add-movie.component.html',
   styleUrls: ['./setting-add-movie.component.css', '../../styles/edition.css']
 })
 export class SettingAddMovieComponent extends SettingMovieAbstraction {
 
-  private message: string = 'Cette action ajoutera un nouveau film';
+  private message = 'EDITION.MOVIE.MESSAGE_ADD';
   protected override menuType: MenuType = MenuType.ADD_MOVIE;
 
   constructor(editionMovieService: EditionMovieService,

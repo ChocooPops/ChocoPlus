@@ -79,7 +79,7 @@ export class EditionSeriesService extends EditionMediaService {
     });
   }
 
-  public getOldSelectedPoster(idPoster: number, idSelection: number): String {
+  public getOldSelectedPoster(idPoster: number, idSelection: number): string {
     const editSeries = this.editSeriesSubject.getValue();
     const indexPoster = editSeries.posters.findIndex(poster => poster.id === idPoster);
     const indexSelection = editSeries.posters[indexPoster].typePoster.findIndex(selection => selection.id === idSelection);

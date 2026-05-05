@@ -9,11 +9,12 @@ import { ScalePoster } from '../../../common-module/models/scale-poster.enum';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { EditNewsSeriesRunningComponent } from '../edit-news-series-running/edit-news-series-running.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-new-video-running',
   standalone: true,
-  imports: [InputTimeEditionComponent, ButtonDeleteComponent, NgClass, EditNewsSeriesRunningComponent],
+  imports: [TranslatePipe, InputTimeEditionComponent, ButtonDeleteComponent, NgClass, EditNewsSeriesRunningComponent],
   templateUrl: './edit-new-video-running.component.html',
   styleUrls: ['./edit-new-video-running.component.css', '../../styles/edition.css']
 })

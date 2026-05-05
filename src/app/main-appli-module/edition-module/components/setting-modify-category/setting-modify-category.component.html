@@ -2,26 +2,26 @@
 
 <div class="containerSettingSelected">
     <div class="containerFieldToFill">
-        <p> Rechercher une license : <span>*</span></p>
+        <p> {{ 'EDITION.CATEGORY.SEARCH_CATEGORY' | translate }} <span>*</span></p>
         <app-input-research-category
             (addContentResearched)="setEditCategorieByResearched($event)"></app-input-research-category>
     </div>
 
     @if(editCategory.id >= 0) {
     <div class="containerFieldToFill">
-        <p>Nom de la catégorie <span>*</span></p>
+        <p>{{ 'EDITION.CATEGORY.CATEGORY_NAME' | translate }} <span>*</span></p>
         <app-input-text-edition [text]="editCategory.name" [placeHolder]="exCategory"
             (onInputChange)="onChangeNameCategory($event)"></app-input-text-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Nom de la selection <span>*</span></p>
+        <p>{{ 'EDITION.CATEGORY.SELECTION_NAME' | translate }} <span>*</span></p>
         <app-input-text-edition [text]="editCategory.nameSelection" [placeHolder]="exNameSelectionCategory"
             (onInputChange)="onChangeNameSelectionCategory($event)"></app-input-text-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p> Ajouter un film dans la sélection <span>*</span> </p>
+        <p>{{ 'EDITION.CATEGORY.ADD_MOVIE_INTO_CATGEORY' | translate }} <span>*</span> </p>
         <app-input-research-movie (addContentResearched)="addMovieIntoCaregorie($event)"></app-input-research-movie>
     </div>
     <div class="containerFieldToFill">
@@ -31,7 +31,7 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p> Ajouter une série dans la catégorie <span>*</span> </p>
+        <p>{{ 'EDITION.CATEGORY.ADD_SERIES_INTO_CATGEORY' | translate }} <span>*</span> </p>
         <app-input-research-series (addContentResearched)="addSeriesIntoCaregorie($event)"></app-input-research-series>
     </div>
     <div class="containerFieldToFill">

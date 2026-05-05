@@ -17,14 +17,14 @@ export abstract class SettingLicenseAbstraction extends UnauthorizedError {
     mediasIntoLicense: SelectionModel[] = [];
     allSelectionsIntoLicense: SelectionModel[] = [];
 
-    placeHolderInputText: string = 'ex : Studio Ghibli';
-    placeHolderInputButton: string = 'ex : Image illustrant le Studio Ghibli';
-    placeHolderInputBack: string = 'ex : Plan culte du Studio Ghibli';
-    placeHolderInputLogo: string = 'ex : Logo du Studio Ghibli';
+    placeHolderInputText = 'EDITION.LICENSE.PLACEHOLDER_NAME';
+    placeHolderInputButton = 'EDITION.LICENSE.PLACEHOLDER_ICON';
+    placeHolderInputBack = 'EDITION.LICENSE.PLACEHOLDER_BACK';
+    placeHolderInputLogo = 'EDITION.LICENSE.PLACEHOLDER_LOGO';
     subscription: Subscription = new Subscription;
 
-    constructor(protected editionLicenseService: EditionLicenseService,
-        private selectionService: SelectionService,
+    constructor(protected readonly editionLicenseService: EditionLicenseService,
+        private readonly selectionService: SelectionService,
         editionParametersService: EditionParametersService
     ) {
         super(editionParametersService);

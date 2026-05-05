@@ -20,11 +20,12 @@ import { ActivatedRoute } from '@angular/router';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-license',
   standalone: true,
-  imports: [InputResearchLicenseComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchMovieComponent, InputResearchSelectionComponent, SelectionOverviewComponent, InputImageEditionComponent, InputRadioButtonComponent, InputTextEditionComponent],
+  imports: [TranslatePipe, InputResearchLicenseComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchMovieComponent, InputResearchSelectionComponent, SelectionOverviewComponent, InputImageEditionComponent, InputRadioButtonComponent, InputTextEditionComponent],
   templateUrl: './setting-modify-license.component.html',
   styleUrls: ['./setting-modify-license.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
@@ -32,8 +33,8 @@ export class SettingModifyLicenseComponent extends SettingLicenseAbstraction {
 
   protected override menuType: MenuType = MenuType.MODIFY_LICENSE;
 
-  private messageDeletete: string = 'Cette action supprimera définitivement la license';
-  private messageModify: string = 'Cette action enregistrera lees modifications faites sur la license';
+  private messageDeletete = 'EDITION.LICENSE.MESSAGE_DELETE';
+  private messageModify = 'EDITION.LICENSE.MESSAGE_MODIFY';
   private typeOperation!: number;
 
   constructor(editionLicenseService: EditionLicenseService,

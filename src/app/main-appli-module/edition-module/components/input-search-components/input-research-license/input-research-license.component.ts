@@ -6,22 +6,23 @@ import { NgClass } from '@angular/common';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { ScalePoster } from '../../../../common-module/models/scale-poster.enum';
 import { LicenseService } from '../../../../license-module/service/license/licence.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-research-license',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass],
+  imports: [ReactiveFormsModule, NgClass, TranslatePipe],
   templateUrl: './input-research-license.component.html',
   styleUrls: ['./input-research-license.component.css', '../../../styles/search.css']
 })
 export class InputResearchLicenseComponent extends InputResearchAbstract<LicenseModel> {
 
-  protected override placeHolder: string = 'Rechercher une license';
+  protected override placeHolder = 'EDITION.SEARCH.LICENSE_SEARCH';
 
   constructor(fb: FormBuilder,
     elementRef: ElementRef,
-    private LicenseService: LicenseService,
-    private compressedPosterService: CompressedPosterService
+    private readonly LicenseService: LicenseService,
+    private readonly compressedPosterService: CompressedPosterService
   ) {
     super(fb, elementRef);
   }

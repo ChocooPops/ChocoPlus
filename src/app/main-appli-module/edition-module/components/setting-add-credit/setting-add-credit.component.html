@@ -4,7 +4,7 @@
     <div class="container-profil">
 
         <div class="containerFieldToFill">
-            <p>Poster du crédit <span class="yellow">**</span></p>
+            <p>{{ 'EDITION.CREDIT.POSTER_CREDIT' | translate}} <span class="yellow">**</span></p>
             <app-input-image-edition [exText]="exTextPoster" [srcImageAdded]="editCredit.srcPoster"
                 (inputChange)="onInputSrcPoster($event)"></app-input-image-edition>
         </div>
@@ -22,7 +22,7 @@
             </div>
 
             <div class="containerFieldToFill">
-                <p>Nom complet <span class="yellow">*</span></p>
+                <p>{{ 'EDITION.CREDIT.FULL_NAME' | translate}} <span class="yellow">*</span></p>
                 <div class="container-flex">
                     <app-input-text-edition [text]="editCredit.fullName" (onInputChange)="onInputFullName($event)"
                         [placeHolder]="placeholderTextFullName"
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="containerFieldToFill">
-                <p>Nom complet orignal <span class="yellow">**</span></p>
+                <p>{{ 'EDITION.CREDIT.ORIGINAL_FULL_NAME' | translate}} <span class="yellow">**</span></p>
                 <app-input-text-edition [text]="editCredit.originalFullName" (onInputChange)="onInputOriginalFullName($event)"
                     [placeHolder]="placeholderTextOriginalFullName"></app-input-text-edition>
             </div>

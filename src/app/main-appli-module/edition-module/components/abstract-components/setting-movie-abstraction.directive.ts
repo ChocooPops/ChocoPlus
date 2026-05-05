@@ -21,12 +21,10 @@ export abstract class SettingMovieAbstraction extends UnauthorizedError {
     @ViewChild('otherTitles') otherTitlesRef!: ElementRef;
     @ViewChild('buttonOtherLanguage') buttonOtherLanguageRef!: ElementRef;
 
-    protected exTextLogo: string = "ex : Logo du film";
-    protected exTestBackgroundImage: string = "ex : Plan iconique du film";
-    protected placeHolderActor: string = "ex : Al Pacino";
-    protected placeHolderTitle: string = "ex : Le Labyrinthe de Pan";
-    protected placeHolderDirector: string = "ex : Guillermo Del Toro";
-    protected placeHolderJellyfinId: string = "ex : gh0f55a6c3f269f79tc6d91fb55z3179"
+    protected exTextLogo: string = "EDITION.MOVIE.PLACEHOLDER_LOGO";
+    protected exTestBackgroundImage: string = "EDITION.MOVIE.PLACEHOLDER_BACK";
+    protected placeHolderTitle: string = "EDITION.MOVIE.PLACEHOLDER_TITLE";
+    protected placeHolderJellyfinId: string = "EDITION.MOVIE.PLACEHOLDER_JELLYFIN";
 
     protected editMovie !: EditMovieModel;
     protected typeSelectionPosters !: SimpleModel[];

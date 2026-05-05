@@ -1,11 +1,11 @@
 .fin {
     z-index: 99;
     position: relative;
-    padding-block: 25px;
+    padding-block: 35px;
     width: 100%;
     height: auto;
     background-color: black;
-    font-size: 12px;
+    font-size: 11px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,26 +14,19 @@
     gap: 10px;
 }
 
-.flexBoxBlabla {
-    display: flex;
-    gap: 25px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+.logo {
+  height: 25px;
+  margin-bottom: 8px;
 }
 
-.flexBoxReseau {
-    display: flex;
-    gap: 25px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-
-    img {
-        width: 25px;
-    }
+.info {
+  margin-bottom: 4px;
 }
 
-.companieName {
-    height: 25px;
+.info span {
+  margin: 0 3px;
+}
+
+.legal span {
+  margin: 0 3px;
 }

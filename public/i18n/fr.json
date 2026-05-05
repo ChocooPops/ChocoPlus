@@ -69,11 +69,47 @@
         },
 
         "EDIT": {
+            "ADVANCED_SETTINGS": "Paramètres avancés",
+            "MEDIA_LIBRARY": "Médiathèque",
+            "VERSION": "Version",
+            "JELLYFIN_PARAMETERS": "Paramètre Jellyfin",
 
+            "NEWS_MANAGEMENT": "Gestion des news",
+            "MODIFY_NEWS_HOME": "Modifer les news d'accueil",
+            "MODIFY_NEW_MOVIES": "Modifer les news des films",
+            "MODIFY_NEW_SERIES": "Modifer les news des séries",
+
+            "CATEGORY_MANAGEMENT": "Gestion de vos catégories",
+            "ADD_CATEGORY": "Ajouter une catégorie",
+            "MODIFY_CATEGORY": "Modifier une catégorie",
+
+            "MOVIE_MANAGEMENT": "Gestion des films",
+            "ADD_MOVIE": "Ajouter un film",
+            "MODIFY_MOVIE": "Modifier un film",
+
+            "SERIES_MANAGEMENT": "Gestion des séries",
+            "ADD_SERIES": "Ajouter une série",
+            "MODIFY_SERIES": "Modifier une séries",
+
+            "CREDIT_MANAGEMENT": "Gestions des crédits",
+            "ADD_CREDIT": "Ajouter un crédit",
+            "MODIFY_CREDIT": "Modificer un crédit",
+
+            "SELECTION_MANAGEMENT": "Gérer les sélections personnalisées",
+            "ADD_SELECTION": "Créer une sélection",
+            "MODIFY_SELECTION": "Modifier une sélection",
+
+            "LICENSE_MANAGEMENT": "Gérer vos licences personnalisées",
+            "ADD_LICENSE": "Créer une licence",
+            "MODIFY_LICENSE": "Modifier une licence",
+            "MODIFY_ORDER_LICENSE": "Modifier l'ordre des licenses",
+
+            "HOME_PAGE_MANAGEMENT": "Gérer la création de page",
+            "MODIFY_HOME_PAGE_SELECTION": "Page d'accueil"
         },
 
         "OTHER": {
-            "RESET": "Reset",
+            "RESET": "Réinitialiser",
             "START_RANDOM_MOVIE": "Start random movie",
             "START_RANDOM_SERIE": "Start random serie",
             "LOGOUT": "Déconnexion"
@@ -81,9 +117,6 @@
     },
 
     "MEDIA_PAGE": {
-        "SERIES": "Series",
-        "SEASON": "Saison",
-        "SEASONS": "Saisons",
         "PRODUCTION_DIRECTION": "Production & Réalisation",
         "ACTORS": "Acteurs",
         "CATEGORY": "Genre",
@@ -227,27 +260,219 @@
         "SORT_SHUFFLE": "Aléatoire"
     },
 
+    "EDITION": {
+        "START_SHOW": "Début",
+        "END_SHOW": "Fin",
+        "SEASON_LIST": "Liste des saisons",
+        "EX_OVERVIEW_FINAL": "Exemple de l’aperçu final",
+        "PLACEHOLDER_CATEGORY": "ex : Drame",
+        "INSERT_IMAGE": "Insérer une image",
+        "PLACEHOLDER_KEY_WORD": "ex : Mort & Résurrection",
+        "PLACEHOLDER_HORIZONTAL_POSTER": "Plan iconique du média",
+        "PLACEHOLDER_VERITCAL_POSTER": "ex : Affiche de cinéma",
+        "PLACEHOLDER_TEXAREA_MOVIE_DEFAULT": "Le film se déroule ...",
+        "NORMAL_POSTER": "Affiche normal",
+        "SPECIAL_POSTER": "Affiche spécial",
+        "LICENSE_POSTER": "Affiche License",
+
+        "UNAUTHORIZED" : {
+            "ADD": "Vous n'êtes pas autorisé à ajouter des données.",
+            "MODIFY": "Vous n'êtes pas autorisé à modifier des données.",
+            "DELETE": "Vous n'êtes pas autorisé à supprimer des données.",
+            "SEND_MAIL": "Voulez-vous envoyé vos ajouts à l'admin ?"
+        },
+
+        "ADVANCED_SETTINGS" : {
+            "MANAGER_VERSION": "Gestionnaire des versions",
+            "ERROR": "Une erreur est survenue.",
+            "VERSION_NUMBER": "Numéro de version",
+            "OPERATING_SYSTEM": "Système d'exploitation",
+            "LINK": "Lien",
+            "CREATED_DATE": "Date de création",
+            "UPDATED_DATE": "Date de dernière modification",
+            "ELEMENTS": "éléments",
+            "PROPERTIES": "propriétés",
+            "LOADING_JSON": "Chargement du JSON...",
+            "VISIBLE_LINES": "lignes visibles",
+            "TOTAL": "total",
+            "EXPAND_ALL": "Tout développer",
+            "CALLAPSE_ALL": "Tout replier",
+            "LEVEL_1": "Niveau 1",
+            "LEVEL_2": "Niveau 2",
+            "LEVEL_3": "Niveau 3"
+        },
+
+        "SEARCH": {
+            "CATEGORY_SEARCH": "Rechercher une catégorie",
+            "CREDIT_SEARCH": "Rechercher un acteur/réalisateur ...",
+            "LICENSE_SEARCH": "Rechercher une license",
+            "MOVIE_SEARCH": "Rechercher un film",
+            "SELECTION_SEARCH": "Rechercher une sélection",
+            "SERIES_SEARCH": "Rechercher une série"
+        },
+
+        "NEWS": {
+            "ADD_MOVIE_INTO_NEWS": "Ajouter un film comme news",
+            "ADD_SERIES_INTO_NEWS": "Ajouter une série comme news",
+            "MESSAGE_MODIFY": "Enregistrer les modifications ?"
+        },
+
+        "CREDIT": {
+            "POSTER_CREDIT": "Poster du crédit",
+            "FULL_NAME": "Nom complet",
+            "ORIGINAL_FULL_NAME": "Nom complet orignal",
+            "ORIGINAL_NAME": "Nom original",
+            "CHARACTER": "Personnage",
+            "INDEX": "INDICE",
+            "ROLE": "Rôle",
+            "ORDER": "ORDRE",
+            "ADD_ROW_CREDIT": "+ Ajouter une ligne",
+            "EPISODE_COUNT": "Nombre d'épisodes",
+            "SEARCH_CREDIT": "Chercher le crédit à modifier",
+            "MESSAGE_ADD": "Cette action ajoutera un nouveau crédit",
+            "MESSAGE_MODIFY": "Cette action enregistrera les modifications faites au crédit associé",
+            "MESSAGE_DELETE": "Cette action supprimera définitvement le crédit associé",
+            "PLACEHOLDER_TMDB": "ex: 8596",
+            "PLACEHOLDER_FULLNAME": "ex: Hiroshi Kamiya",
+            "PLACEHOLDER_ORIGINAL_FULLNAME": "ex: 神谷浩史",
+            "PLACEHOLDER_POSTER": "ex: Photo de Bryan Cranston"
+        },
+
+        "CATEGORY": {
+            "SEARCH_CATEGORY": "Rechercher une catégorie :",
+            "CATEGORY_NAME": "Nom de la catégorie",
+            "SELECTION_NAME": "Nom de la selection",
+            "ADD_MOVIE_INTO_CATGEORY": "Ajouter un film dans la sélection",
+            "ADD_SERIES_INTO_CATGEORY": "Ajouter une série dans la catégorie",
+            "MESSAGE_MODIFY": "Cette action enregistrera les modifications faites sur la catégorie",
+            "MESSAGE_ADD": "Cette action ajoutera une nouvelle catégorie",
+            "MESSAGE_DELETE": "Cette action supprimera définitivement la catégorie",
+            "PLACEHOLDER_NAME_CATEGORY": "ex : Science Fiction",
+            "PLACEHOLDER_NAME_SELECTION": "ex : Film de Science Fiction"
+        },
+
+        "LICENSE": {
+            "SEARCH_LICENSE": "Rechercher une license :",
+            "LICENSE_LOCATION": "Emplacement de la License",
+            "LICENSE_NAME": "Nom de la License",
+            "LICENSE_ICON_POSTER": "Illustration du bouton renvoyant sur la licence",
+            "LICENSE_BACKGROUND_POSTER": "Image en arrière-plan de la page",
+            "LICENSE_LOGO_POSTER": "Logo de la licence",
+            "ADD_MOVIE_INTO_LICENSE": "Ajouter un film dans la licence",
+            "ADD_SERIES_INTO_LICENSE": "Ajouter une série dans la licence",
+            "ADD_SELECTION_INTO_LICENSE": "Ajouter une sélection dans votre licence",
+            "MESSAGE_ADD": "Cette action ajoutera une nouvelle license",
+            "MESSAGE_MODIFY": "Cette action enregistrera lees modifications faites sur la license",
+            "MESSAGE_DELETE": "Cette action supprimera définitivement la license",
+            "MESSAGE_MODIFY_ORDER": "Cette action modifera l'ordre d'affichage des licenses",
+            "SELECT_LICENSE_TYPE": "Sélectionnez le type de license à modifier :",
+            "PLACEHOLDER_NAME": "ex : Studio Ghibli",
+            "PLACEHOLDER_ICON": "ex : Image illustrant le Studio Ghibli",
+            "PLACEHOLDER_BACK": "ex : Image illustrant le Studio Ghibli",
+            "PLACEHOLDER_LOGO": "ex : Logo du Studio Ghibli"
+        },
+
+        "SELECTION": {
+            "SEARCH_SELECTION": "Rechercher une sélection :",
+            "SELECTION_TYPE": "Type de sélection",
+            "INFO_1": "Les sélections normales sont représentées par de plus petite affiche. Elles sont créées",
+            "INFO_2": "automatiquement à partir de vos catégories mais vous pouvez aussi en créer pour qu’elles soient plus spécifiques",
+            "INFO_3": "Les sélections spéciales sont représentées par de plus grande affiche,",
+            "INFO_4": "à la différence des sélections normale elles ne sont pas crée automatiquement dans l’interface de streaming",
+            "SELECTION_NAME": "Nom de la sélection normale",
+            "ADD_MOVIE_INTO_SELECTION": "Ajouter un film dans la sélection",
+            "ADD_SERIES_INTO_SELECTION": "Ajouter une série dans la sélection",
+            "MESSAGE_ADD": "Cette action ajoutera une nouvelle sélection",
+            "MESSAGE_MODIFY": "Cette action enregistrera les modifications faites sur la sélection",
+            "MESSAGE_DELETE": "Cette action supprimera définitivement la sélection",
+            "NORMAL_SELECTION": "Sélection normale",
+            "SPECIAL_SELECTION": "Sélection spéciale",
+            "PLACEHOLDER_NAME": "ex : Sélection spéciale sur les Polars"
+        },
+
+        "PAGE_SELECTION": {
+            "SEARCH_SELECTION": "Rechercher une sélection",
+            "MESSAGE_MODIFY_HOME_PAGE": "Cette action modifera la liste des sélections dans la page d'accueil"
+        },
+
+        "MOVIE": {
+            "SEARCH_MOVIE": "Chercher le film à modifier",
+            "PLACEHOLDER_LOGO": "ex : Logo du film",
+            "PLACEHOLDER_BACK": "ex : Plan iconique du film",
+            "PLACEHOLDER_TITLE": "ex : Le Labyrinthe de Pan",
+            "PLACEHOLDER_JELLYFIN": "ex : gh0f55a6c3f269f79tc6d91fb55z3179",
+            "RELEASE_DATE": "Date de sortie du film",
+            "TIME_SLOT": "Intervalle de présentation du film",
+            "LOGO_POSTER": "Logo du film",
+            "POSTER_BACKGROUND": "Image de l'arrière plan du film",
+            "MESSAGE_ADD": "Cette action ajoutera un nouveau film",
+            "MESSAGE_MODIFY": "Cette action supprimera définitivement le film",
+            "MESSAGE_DELETE": "Cette action enregistrera les modifications faites au film"
+        },
+
+        "SERIES": {
+            "SEARCH_SERIES": "Chercher la série à modifier",
+            "PLACEHOLDER_SEASON_POSTER": "ex : Saison 1 de Breaking Bad",
+            "PLACEHOLDER_SEASON": "ex : Saison 1",
+            "PLACEHOLDER_LOGO": "ex : Logo de la série",
+            "PLACEHOLDER_BACK": "ex : Plan iconique de la série",
+            "PLACEHOLDER_TITLE": "ex : Breaking Bad",
+            "PLACEHOLDER_JELLYFIN": "ex : gh0f55a6c3f269f79tc6d91fb55z3179",
+            "RELEASE_DATE_SERIES": "Date d'apparition de la série",
+            "TIME_SLOT_SERIES": "Intervalle de présentation de la série",
+            "LOGO_POSTER": "Logo de la série",
+            "POSTER_BACKGROUND": "Image de l'arrière plan de la série",
+            "MAIN_INFO": "Information principale",
+            "INFO_SEASONS": "Information sur les saisons",
+            "SEASON_NAME": "Nom de la série",
+            "MESSAGE_ADD": "Cette action ajoutera une nouvelle série",
+            "MESSAGE_MODIFY": "Cette action enregistrera les modifications faites à la série",
+            "MESSAGE_DELETE": "Cette action supprimera définitevement la série"
+        },
+
+        "MEDIA": {
+            "TITLE": "Titre",
+            "CREDITS": "Credits",
+            "CATEGORIES": "Categories",
+            "KEY_WORDS": "Mots clés",
+            "DESCRIPTION": "Description",
+            "POSTER_VERTICAL": "Affiches",
+            "POSTER_HORIZONTAL": "Affiches horizontal",
+            "SAME_POSTER": "Poster horizontal identique au background ?"
+        }
+    },
+
     "BUTTON": {
         "PLAY": "Lecture",
         "MODIFY": "Modifier",
         "MYLIST": "Favoris",
         "OPEN_VLC": "Ouvrir dans VLC",
         "CANCEL": "Annuler",
-        "SAVE": "Sauvegarder",
+        "SAVE": "Enregistrer",
         "DELETE_PROFIL": "Supprimer le profil",
         "SEND": "Envoyer",
         "LOAD_GRAPH": "Charger le graphe",
         "DETAILS": "Détails",
         "ACTION": "Action",
-        "DELETE": "Supprimer"
+        "DELETE": "Supprimer",
+        "RESET": "Réinitialiser",
+        "CONFIRM": "Valider"
+    },
+
+    "FOOTER": {
+        "VERSION": "Version",
+        "BUILD": "Build",
+        "RIGHT_RESERVED": "Tous droits réservés"
     },
 
     "DECADE": "Décennie",
     "CATEGORY": "Categorie",
     "MEDIA": "Média",
+    "SERIES": "Series",
+    "SEASON": "Saison",
+    "SEASONS": "Saisons",
     "ALL": "Tout",
     "MOVIES": "Films",
-    "SERIES": "Séries",
     "MOVIE": "film",
     "SERIE": "série",
     "CONTENTS": "Contenus",
@@ -265,5 +490,11 @@
     "YEAR": "Année",
     "HOURS": "heures",
 
-    "MAXIMUM_CHARACTERS": "caractères"
+    "MAXIMUM_CHARACTERS": "caractères",
+    "MAXIMUM_WORDS": "mots",
+
+    "YES": "Oui",
+    "NO": "Non",
+
+    "POSTER": "Affiche"
 }

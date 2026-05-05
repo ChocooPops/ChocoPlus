@@ -6,7 +6,6 @@ import { LicenseModel } from "../../../license-module/model/license.interface";
 import { CategorySimpleModel } from "../../models/category/categorySimple.model";
 import { MovieModel } from "../../../media-module/models/movie-model";
 import { SeriesModel } from "../../../media-module/models/series/series.interface";
-import { EditCreditModel } from "../../models/edit-credit.interface";
 import { MediaCreditModel } from "../../../media-module/models/media-credit.interface";
 
 @Directive({})

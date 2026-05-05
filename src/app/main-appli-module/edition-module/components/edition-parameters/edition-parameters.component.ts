@@ -3,11 +3,12 @@ import { EditionParametersService } from '../../services/edition-parameters/edit
 import { EditionParameterModel } from '../../models/editionParamater.interface';
 import { NgClass } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edition-parameters',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './edition-parameters.component.html',
   styleUrl: './edition-parameters.component.css'
 })

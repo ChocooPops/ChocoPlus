@@ -3,7 +3,7 @@
 <div class="containerSettingSelected">
 
     <div class="containerFieldToFill">
-        <p>Chercher la série à modifier <span class="yellow">*</span> : </p>
+        <p>{{ 'EDITION.SERIES.SEARCH_SERIES' | translate }} <span class="yellow">*</span> : </p>
         <app-input-research-series
             (addContentResearched)="setSeriesWantedToModifyIt($event)"></app-input-research-series>
     </div>
@@ -16,7 +16,7 @@
 
     @if(!typeInfoDisplayed) {
     <div class="containerFieldToFill">
-        <p>Title <span class="yellow">*</span></p>
+        <p>{{ 'EDITION.MEDIA.TITLE' | translate }} <span class="yellow">*</span></p>
         <div class="container-flex">
             <div class="container-input">
                 <app-input-text-edition [text]="editSeries.title" [placeHolder]="placeHolderTitle"
@@ -48,20 +48,20 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Date d'apparition de la série <span class="yellow">**</span></p>
+        <p>{{ 'EDITION.SERIES.RELEASE_DATE_SERIES' | translate }} <span class="yellow">**</span></p>
         <app-input-date [date]="editSeries.date" (onInputChange)="onInputDate($event)"></app-input-date>
     </div>
 
     <div class="containerFieldToFill" [ngClass]="{'NgClass' : true}">
-        <p>Intervalle de présentation du film <span class="yellow">**</span></p>
+        <p>{{ 'EDITION.SERIES.TIME_SLOT_SERIES' | translate }} <span class="yellow">**</span></p>
         <div class="containerAllInputTimer">
             <div class="containerInputTimer">
-                <p>Début :</p>
+                <p>{{ 'EDITION.START_SHOW' | translate }} :</p>
                 <app-input-time-edition [time]="editSeries.startShow"
                     (onInputChange)="modifyStartShow($event)"></app-input-time-edition>
             </div>
             <div class="containerInputTimer">
-                <p>Fin :</p>
+                <p>{{ 'EDITION.END_SHOW' | translate }} :</p>
                 <app-input-time-edition [time]="editSeries.endShow"
                     (onInputChange)="modifyEndShow($event)"></app-input-time-edition>
             </div>
@@ -69,36 +69,36 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Credits <span class="yellow">**</span></p>
+        <p>{{ 'EDITION.MEDIA.CREDITS' | translate }} <span class="yellow">**</span></p>
         <app-credits-table [credits]="editSeries.credits" [mediaType]="mediaType" (onCreditChanged)="onInputCredits($event)"></app-credits-table>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Category <span class="yellow">**</span></p>
+        <p>{{ 'EDITION.MEDIA.CATEGORIES' | translate }} <span class="yellow">**</span></p>
         <app-input-categories-edition (onChangeCategory)="onInputCategory($event)"
             [categoriesSelected]="editSeries.categories"></app-input-categories-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Key Words <span class="yellow">**</span></p>
+        <p>{{ 'EDITION.MEDIA.KEY_WORDS' | translate }} <span class="yellow">**</span></p>
         <app-input-keywords-edition [keyWords]="editSeries.keyWords"
             (onInputChange)="onInputKeyWords($event)"></app-input-keywords-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Description <span class="yellow">**</span></p>
+        <p>{{ 'EDITION.MEDIA.DESCRIPTION' | translate }} <span class="yellow">**</span></p>
         <app-input-text-area-edition [text]="editSeries.description" (onInputChange)="onInputDescription($event)"
             [maxLength]="maxLength"></app-input-text-area-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Logo du film <span class="yellow">**</span></p>
+        <p>{{ 'EDITION.SERIES.LOGO_POSTER' | translate }} <span class="yellow">**</span></p>
         <app-input-image-edition [srcImageAdded]="editSeries.logo" (inputChange)="onInputLogo($event)"
             [exText]="exTextLogo" [typeInputImage]="2"></app-input-image-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Poster <span class="yellow">*</span></p>
+        <p>{{ 'EDITION.MEDIA.POSTER_VERTICAL' | translate }} <span class="yellow">*</span></p>
         <app-input-poster-edition (fillPoster)="fillPoster($event)" (removeSelection)="removeSelection($event)"
             (addNewSelection)="addNewSelection($event)" (removePoster)="deletePoster($event)"
             (addNewPoster)="addNewPoster()" [posters]="editSeries.posters"
@@ -106,16 +106,16 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Image second-plan du film <span class="yellow">**</span></p>
+        <p>{{ 'EDITION.SERIES.POSTER_BACKGROUND' | translate }} <span class="yellow">**</span></p>
         <app-input-image-edition [srcImageAdded]="editSeries.backgroundImage"
             (inputChange)="onInputBackgroundImage($event)" [exText]="exTestBackgroundImage"
             [typeInputImage]="3"></app-input-image-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Poster Horizontal <span class="yellow">*</span></p>
+        <p>{{ 'EDITION.MEDIA.POSTER_HORIZONTAL' | translate }} <span class="yellow">*</span></p>
         <div class="container-radio-button-and-poster">
-            <p> Poster Horizontal identique au background ?</p>
+            <p> {{ 'EDITION.MEDIA.SAME_POSTER' | translate }} </p>
             <app-input-radio-button [radioButton]="buttonHorizontalSameAsBack" [group]="groupPosterHorizontalBack"
                 (changeEmit)="modifyStateHorizontalPoster($event)"></app-input-radio-button>
         </div>
@@ -138,7 +138,7 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Episodes <span class="yellow">*</span></p>
+        <p>{{ 'EPISODES' | translate }} <span class="yellow">*</span></p>
         @for(episode of editSeasons[seasonIndexSelected].episodes; track episode.id; let episodeIndex = $index) {
         <div class="container-episode">
             <app-edit-episode [episode]="episode"

@@ -32,11 +32,12 @@ import { InputTimeEditionComponent } from '../input-time-edition/input-time-edit
 import { CreditsTableComponent } from '../credits-table/credits-table.component';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-series',
   standalone: true,
-  imports: [NgClass, CreditsTableComponent, InputTimeEditionComponent, InputDateComponent, InputResearchSeriesComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
+  imports: [TranslatePipe, NgClass, CreditsTableComponent, InputTimeEditionComponent, InputDateComponent, InputResearchSeriesComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
   templateUrl: './setting-modify-series.component.html',
   styleUrls: ['./setting-modify-series.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
@@ -44,8 +45,8 @@ export class SettingModifySeriesComponent extends SettingSeriesAbstraction {
 
   protected override menuType: MenuType = MenuType.MODIFY_SERIES;
 
-  private messageDelete: string = 'Cette action supprimera définitevement la série';
-  private messageModify: string = 'Cette action enregistrera les modifications faites au film';
+  private messageDelete = 'EDITION.SERIES.MESSAGE_DELETE';
+  private messageModify = 'EDITION.SERIES.MESSAGE_MODIFY';
   private typeOperation !: number;
 
   constructor(editionSeriesService: EditionSeriesService,

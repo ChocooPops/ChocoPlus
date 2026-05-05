@@ -17,17 +17,18 @@ import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionLicenseService } from '../../services/edition-license/edition-license.service';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-add-license',
   standalone: true,
-  imports: [InputResearchSelectionComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, InputRadioButtonComponent, InputTextEditionComponent, InputImageEditionComponent, ButtonSaveComponent, InputResearchMovieComponent, SelectionOverviewComponent, InputResearchSelectionComponent, PopupComponent],
+  imports: [TranslatePipe, InputResearchSelectionComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, InputRadioButtonComponent, InputTextEditionComponent, InputImageEditionComponent, ButtonSaveComponent, InputResearchMovieComponent, SelectionOverviewComponent, InputResearchSelectionComponent, PopupComponent],
   templateUrl: './setting-add-license.component.html',
   styleUrls: ['./setting-add-license.component.css', '../../styles/edition.css']
 })
 export class SettingAddLicenseComponent extends SettingLicenseAbstraction {
 
-  private message: string = 'Cette action ajoutera une nouvelle license';
+  private message = 'EDITION.LICENSE.MESSAGE_ADD';
   protected override menuType: MenuType = MenuType.ADD_LICENSE;
 
   constructor(editionLicenseService: EditionLicenseService,

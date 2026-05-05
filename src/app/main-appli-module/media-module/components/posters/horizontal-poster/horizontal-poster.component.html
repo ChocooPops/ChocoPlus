@@ -30,13 +30,13 @@
             } @else if(media.mediaType === MediaType.SERIES) {
             <p class="duration"> {{ nbSeason }} <span>
                 @if (nbSeason > 1) {
-                    {{ 'MEDIA_PAGE.SEASONS' | translate }}
+                    {{ 'SEASONS' | translate }}
                 }@else {
-                    {{ 'MEDIA_PAGE.SEASON' | translate }}
+                    {{ 'SEASON' | translate }}
                 }
             </span></p>
             <div class="container-quality">
-                <p class="quality" [ngClass]="'text'"> {{ "MEDIA_PAGE.SERIES" | translate }} </p>
+                <p class="quality" [ngClass]="'text'"> {{ "SERIES" | translate }} </p>
             </div>
             }
         </div>

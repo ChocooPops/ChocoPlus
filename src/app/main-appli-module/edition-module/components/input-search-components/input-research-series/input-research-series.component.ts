@@ -8,17 +8,18 @@ import { SelectionType } from '../../../../media-module/models/selection-type.en
 import { ScalePoster } from '../../../../common-module/models/scale-poster.enum';
 import { NgClass } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-research-series',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule],
+  imports: [NgClass, ReactiveFormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './input-research-series.component.html',
   styleUrls: ['./input-research-series.component.css', '../../../styles/search.css']
 })
 export class InputResearchSeriesComponent extends InputResearchAbstract<SeriesModel> {
 
-  protected override placeHolder: string = 'Rechercher une série';
+  protected override placeHolder = 'EDITION.SEARCH.SERIES_SEARCH';
 
   constructor(fb: FormBuilder,
     elementRef: ElementRef,

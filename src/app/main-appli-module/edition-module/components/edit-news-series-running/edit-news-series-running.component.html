@@ -1,12 +1,12 @@
 <div class="container-series">
 
     <div class="containerFieldToFill">
-        <p> Liste des saisons </p>
+        <p> {{ 'EDITION.SEASON_LIST' | translate }} </p>
         <div class="container-seasons">
             @for (season of series.seasons; track season; let idx = $index) {
             <div class="container-season-name" (click)="onClickSeason(idx)"
                 [ngClass]="{'button-on-focus' : season.isClicked, 'button-dont-focus' : !season.isClicked}">
-                <p> {{ season.name }} </p>
+                <p> {{ 'SEASON' | translate }} {{ season.seasonNumber }} </p>
             </div>
             }
         </div>

@@ -10,10 +10,10 @@ export abstract class UnauthorizedError {
 
     @ViewChild(PopupComponent) popup !: PopupComponent;
 
-    protected messageUnauthorizedAdd: string = "Vous n'êtes pas autorisé à ajouter des données.";
-    protected messageUnauthorizedModify: string = "Vous n'êtes pas autorisé à modifier des données.";
-    protected messageUnauthorizedDelete: string = "Vous n'êtes pas autorisé à supprimer des données.";
-    protected messageSendEmail: string = "Voulez-vous envoyé vos ajouts à l'admin ?";
+    protected messageUnauthorizedAdd = "EDITION.UNAUTHORIZED.ADD";
+    protected messageUnauthorizedModify = "EDITION.UNAUTHORIZED.MODIFY";
+    protected messageUnauthorizedDelete = "EDITION.UNAUTHORIZED.DELETE";
+    protected messageSendEmail = "EDITION.UNAUTHORIZED.SEND_MAIL";
 
     displayLoader: boolean = false;
 

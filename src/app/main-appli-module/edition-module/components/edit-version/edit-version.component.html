@@ -2,17 +2,17 @@
   <table class="ct-table">
     <thead>
       <tr>
-        <th>Numéro de version<div class="ct-resize-handle"></div>
+        <th>{{ 'EDITION.ADVANCED_SETTINGS.VERSION_NUMBER' | translate }}<div class="ct-resize-handle"></div>
         </th>
-        <th>Système d'exploitation<div class="ct-resize-handle"></div>
+        <th>{{ 'EDITION.ADVANCED_SETTINGS.OPERATING_SYSTEM' | translate }}<div class="ct-resize-handle"></div>
         </th>
-        <th>Lien<div class="ct-resize-handle"></div>
+        <th>{{ 'EDITION.ADVANCED_SETTINGS.LINK' | translate }}<div class="ct-resize-handle"></div>
         </th>
-        <th>Date de création<div class="ct-resize-handle"></div>
+        <th>{{ 'EDITION.ADVANCED_SETTINGS.CREATED_DATE' | translate }}<div class="ct-resize-handle"></div>
         </th>
-        <th>Date de dernière modification<div class="ct-resize-handle"></div>
+        <th>{{ 'EDITION.ADVANCED_SETTINGS.UPDATED_DATE' | translate }}<div class="ct-resize-handle"></div>
         </th>
-        <th class="ct-action-col">Action</th>
+        <th class="ct-action-col">{{ 'BUTTON.ACTION' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -39,12 +39,12 @@
           } @else {
           <button class="ct-save-btn" (click)="saveVersion(version, i)" title="Enregistrer les modifications">
             <img [src]="srcIconSave">
-            Enregistrer
+            {{ 'BUTTON.SAVE' | translate }}
           </button>
           }
           @if (feedbackStates[i]; as fb) {
           <span class="ct-feedback" [class.ct-feedback--success]="fb.state" [class.ct-feedback--error]="!fb.state">
-            {{ fb.message }}
+            {{ fb.message | translate }}
           </span>
           }
         </td>

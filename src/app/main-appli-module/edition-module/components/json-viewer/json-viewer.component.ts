@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface JsonNode {
   key: string;
@@ -17,13 +19,15 @@ interface JsonNode {
 @Component({
   selector: 'app-json-viewer',
   standalone: true,
-  imports: [CommonModule, ScrollingModule],
+  imports: [CommonModule, ScrollingModule, TranslatePipe],
   templateUrl: './json-viewer.component.html',
   styleUrl: './json-viewer.component.css',
 })
 export class JsonViewerComponent implements OnInit, OnChanges {
   @Input() data: any;
   @Input() maxInitialDepth: number = 1;
+
+  constructor(private readonly translateService: TranslateService) { }
 
   allNodes: Map<string, JsonNode> = new Map();
   visibleNodes: JsonNode[] = [];
@@ -104,13 +108,13 @@ export class JsonViewerComponent implements OnInit, OnChanges {
     if (node.type === 'number') return String(node.value);
     if (node.type === 'array') {
       return node.isExpanded
-        ? `[ // ${node.childCount} éléments`
-        : `[...] // ${node.childCount} éléments`;
+        ? `[ // ${node.childCount} ${(this.translateService.instant('EDITION.ADVANCED_SETTINGS.ELEMENTS') as string).toLowerCase()}`
+        : `[...] // ${node.childCount} ${(this.translateService.instant('EDITION.ADVANCED_SETTINGS.ELEMENTS') as string).toLowerCase()}`;
     }
     if (node.type === 'object') {
       return node.isExpanded
-        ? `{ // ${node.childCount} propriétés`
-        : `{...} // ${node.childCount} propriétés`;
+        ? `{ // ${node.childCount} ${(this.translateService.instant('EDITION.ADVANCED_SETTINGS.PROPERTIES') as string).toLowerCase()}`
+        : `{...} // ${node.childCount} ${(this.translateService.instant('EDITION.ADVANCED_SETTINGS.PROPERTIES') as string).toLowerCase()}`;
     }
     return String(node.value);
   }

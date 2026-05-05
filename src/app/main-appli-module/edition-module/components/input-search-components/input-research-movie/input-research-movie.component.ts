@@ -7,17 +7,18 @@ import { CompressedPosterService } from '../../../../common-module/services/comp
 import { ScalePoster } from '../../../../common-module/models/scale-poster.enum';
 import { MovieService } from '../../../../media-module/services/movie/movie.service';
 import { MovieModel } from '../../../../media-module/models/movie-model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-research-movie',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass],
+  imports: [ReactiveFormsModule, NgClass, TranslatePipe],
   templateUrl: './input-research-movie.component.html',
   styleUrls: ['./input-research-movie.component.css', '../../../styles/search.css']
 })
 export class InputResearchMovieComponent extends InputResearchAbstract<MovieModel> {
 
-  protected override placeHolder: string = 'Rechercher un film';
+  protected override placeHolder = 'EDITION.SEARCH.MOVIE_SEARCH';
 
   constructor(fb: FormBuilder,
     elementRef: ElementRef,

@@ -3,7 +3,7 @@
 <div class="containerSettingSelected">
 
     <div class="containerFieldToFill">
-        <p> Sélectionnez le type de license à modifier : </p>
+        <p> {{ 'EDITION.LICENSE.SELECT_LICENSE_TYPE' | translate }} </p>
         <app-input-radio-button (changeEmit)="modifyLicenseType($event)" [radioButton]="radioButton"
             [group]="groupLicenseType"></app-input-radio-button>
     </div>

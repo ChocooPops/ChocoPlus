@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, Output, ViewChild, ElementRef } from '@
 import { NgClass } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SimpleChanges } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-text-edition',
   standalone: true,
-  imports: [NgClass, ReactiveFormsModule],
+  imports: [NgClass, ReactiveFormsModule, TranslatePipe],
   templateUrl: './input-text-edition.component.html',
   styleUrl: './input-text-edition.component.css'
 })

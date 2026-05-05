@@ -7,11 +7,12 @@ import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { Subscription, take } from 'rxjs';
 import { EditVersionComponent } from '../edit-version/edit-version.component';
 import { PopupComponent } from '../popup/popup.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-version',
   standalone: true,
-  imports: [EditVersionComponent, PopupComponent],
+  imports: [EditVersionComponent, PopupComponent, TranslatePipe],
   templateUrl: './setting-modify-version.component.html',
   styleUrls: ['./setting-modify-version.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })

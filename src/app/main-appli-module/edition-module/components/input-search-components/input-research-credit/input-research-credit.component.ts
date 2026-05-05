@@ -6,17 +6,18 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MediaCreditModel } from '../../../../media-module/models/media-credit.interface';
 import { ScalePoster } from '../../../../common-module/models/scale-poster.enum';
 import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-research-credit',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass],
+  imports: [ReactiveFormsModule, NgClass, TranslatePipe],
   templateUrl: './input-research-credit.component.html',
   styleUrls: ['./input-research-credit.component.css', '../../../styles/search.css']
 })
 export class InputResearchCreditComponent extends InputResearchAbstract<MediaCreditModel> {
   
-  protected override placeHolder: string = 'Rechercher un acteur/réalisateur ...';
+  protected override placeHolder = 'EDITION.SEARCH.CREDIT_SEARCH';
 
   constructor(
     fb: FormBuilder,

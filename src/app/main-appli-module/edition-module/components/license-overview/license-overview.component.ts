@@ -7,11 +7,12 @@ import { NgClass } from '@angular/common';
 import { HomeLicenseComponent } from '../../../license-module/components/home-license/home-license.component';
 import { SearchLicenseComponent } from '../../../license-module/components/search-license/search-license.component';
 import { PaginationLicenseService } from '../../../license-module/service/pagination-license/pagination-license.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-license-overview',
   standalone: true,
-  imports: [SearchLicenseComponent, NgClass, ButtonMoveComponent, HomeLicenseComponent, ButtonMoveComponent],
+  imports: [TranslatePipe, SearchLicenseComponent, NgClass, ButtonMoveComponent, HomeLicenseComponent, ButtonMoveComponent],
   templateUrl: './license-overview.component.html',
   styleUrls: ['./license-overview.component.css', '../../../common-module/styles/animation.css']
 })

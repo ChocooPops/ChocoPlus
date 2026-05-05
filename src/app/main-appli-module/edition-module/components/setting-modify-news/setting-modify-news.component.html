@@ -2,11 +2,11 @@
 
 <div class="containerSettingSelected">
     <div class="containerFieldToFill">
-        <p> Ajouter un film comme news <span>*</span></p>
+        <p> {{ 'EDITION.NEWS.ADD_MOVIE_INTO_NEWS' | translate }} <span>*</span></p>
         <app-input-research-movie (addContentResearched)="onAddMediaIntoNews($event)"></app-input-research-movie>
     </div>
     <div class="containerFieldToFill">
-        <p> Ajouter une série comme news <span>*</span></p>
+        <p> {{ 'EDITION.NEWS.ADD_SERIES_INTO_NEWS' | translate }} <span>*</span></p>
         <app-input-research-series (addContentResearched)="onAddMediaIntoNews($event)"></app-input-research-series>
     </div>
 

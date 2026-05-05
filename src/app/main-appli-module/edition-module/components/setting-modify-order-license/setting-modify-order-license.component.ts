@@ -12,11 +12,12 @@ import { MessageReturnedModel } from '../../../../common-module/models/message-r
 import { UnauthorizedError } from '../abstract-components/unauthorized-error-abstract.directive';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-order-license',
   standalone: true,
-  imports: [ButtonSaveComponent, ButtonRemoveComponent, LicenseOverviewComponent, PopupComponent, InputRadioButtonComponent],
+  imports: [TranslatePipe, ButtonSaveComponent, ButtonRemoveComponent, LicenseOverviewComponent, PopupComponent, InputRadioButtonComponent],
   templateUrl: './setting-modify-order-license.component.html',
   styleUrls: ['./setting-modify-order-license.component.css', '../../styles/edition.css']
 })
@@ -25,7 +26,7 @@ export class SettingModifyOrderLicenseComponent extends UnauthorizedError {
   protected override menuType: MenuType = MenuType.MODIFY_ORDER_LICENSE;
 
   groupLicenseType: string = 'groupLicenseType';
-  messageModify: string = "Cette action modifera l'ordre d'affichage des licenses";
+  messageModify = "EDITION.LICENSE.MESSAGE_MODIFY_ORDER";
   subscription: Subscription = new Subscription();
   licenses: LicenseModel[] = [];
   radioButton: SimpleModel[] = [];

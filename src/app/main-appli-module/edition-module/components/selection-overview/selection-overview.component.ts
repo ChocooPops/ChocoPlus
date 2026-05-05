@@ -10,11 +10,12 @@ import { Subscription } from 'rxjs';
 import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
 import { SelectionType } from '../../../media-module/models/selection-type.enum';
 import { PaginationPosterService } from '../../../media-module/services/pagination-poster/pagination-poster.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-selection-overview',
   standalone: true,
-  imports: [ButtonMoveComponent, ButtonDeleteComponent, NgClass, VerticalPosterComponent, SpecialPosterComponent, LicensePosterComponent],
+  imports: [TranslatePipe, ButtonMoveComponent, ButtonDeleteComponent, NgClass, VerticalPosterComponent, SpecialPosterComponent, LicensePosterComponent],
   templateUrl: './selection-overview.component.html',
   styleUrls: ['./selection-overview.component.css', '../../../common-module/styles/animation.css']
 })

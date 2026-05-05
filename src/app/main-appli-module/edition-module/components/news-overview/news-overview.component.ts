@@ -11,11 +11,12 @@ import { ButtonMoveComponent } from '../button-move/button-move.component';
 import { ButtonOrientationComponent } from '../button-orientation/button-orientation.component';
 import { SimpleModel } from '../../../../common-module/models/simple-model';
 import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-news-overview',
   standalone: true,
-  imports: [NewsComponent, ButtonDeleteComponent, ButtonMoveComponent, ButtonOrientationComponent, NgClass],
+  imports: [TranslatePipe, NewsComponent, ButtonDeleteComponent, ButtonMoveComponent, ButtonOrientationComponent, NgClass],
   templateUrl: './news-overview.component.html',
   styleUrl: './news-overview.component.css'
 })

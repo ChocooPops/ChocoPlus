@@ -2,17 +2,17 @@
   <table class="ct-table">
     <thead>
       <tr>
-        <th>Indice<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.CREDIT.INDEX' | translate}}<div class="ct-resize-handle"></div></th>
         <th>Tmdb Id<div class="ct-resize-handle"></div></th>
-        <th>Nom complet<div class="ct-resize-handle"></div></th>
-        <th>Nom original<div class="ct-resize-handle"></div></th>
-        <th>Personnage<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.CREDIT.FULL_NAME' | translate}}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.CREDIT.ORIGINAL_NAME' | translate}}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.CREDIT.CHARACTER' | translate}}<div class="ct-resize-handle"></div></th>
         @if (mediaType === MediaType.SERIES) {
-        <th>Nombre d'épisodes<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.CREDIT.EPISODE_COUNT' | translate}}<div class="ct-resize-handle"></div></th>
         }
-        <th>Rôle<div class="ct-resize-handle"></div></th>
-        <th>Poster<div class="ct-resize-handle"></div></th>
-        <th>Ordre<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.CREDIT.ROLE' | translate}}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'POSTER' | translate}}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.CREDIT.ORDER' | translate}}<div class="ct-resize-handle"></div></th>
         <th></th>
       </tr>
     </thead>
@@ -69,6 +69,6 @@
   </table>
 
   <div class="ct-footer">
-    <button class="ct-btn-add" (click)="addCredit()">+ Ajouter une ligne</button>
+    <button class="ct-btn-add" (click)="addCredit()">{{ 'EDITION.CREDIT.ADD_ROW_CREDIT' | translate}}</button>
   </div>
 </div>

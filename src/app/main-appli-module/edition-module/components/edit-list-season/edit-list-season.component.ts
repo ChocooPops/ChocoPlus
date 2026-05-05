@@ -3,11 +3,12 @@ import { ButtonAddComponent } from '../button-add/button-add.component';
 import { EditSeasonModel } from '../../models/series/edit-season.interface';
 import { NgClass } from '@angular/common';
 import { ButtonDeleteComponent } from '../button-delete/button-delete.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-list-season',
   standalone: true,
-  imports: [ButtonAddComponent, NgClass, ButtonDeleteComponent],
+  imports: [ButtonAddComponent, NgClass, ButtonDeleteComponent, TranslatePipe],
   templateUrl: './edit-list-season.component.html',
   styleUrl: './edit-list-season.component.css'
 })

@@ -13,17 +13,18 @@ import { InputResearchSeriesComponent } from '../input-search-components/input-r
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { CategoryService } from '../../services/category/category.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-add-category',
   standalone: true,
-  imports: [InputTextEditionComponent, InputResearchSeriesComponent, PopupComponent, InputResearchMovieComponent, SelectionOverviewComponent, ButtonSaveComponent, ButtonRemoveComponent],
+  imports: [TranslatePipe, InputTextEditionComponent, InputResearchSeriesComponent, PopupComponent, InputResearchMovieComponent, SelectionOverviewComponent, ButtonSaveComponent, ButtonRemoveComponent],
   templateUrl: './setting-add-category.component.html',
   styleUrls: ['./setting-add-category.component.css', '../../styles/edition.css']
 })
 export class SettingAddCategoryComponent extends SettingCategoryAbstraction {
 
-  private message: string = 'Cette action ajoutera une nouvelle catégorie';
+  private message = 'EDITION.CATEGORY.MESSAGE_ADD';
   protected override menuType: MenuType = MenuType.ADD_CATEGORY;
 
   constructor(categoryService: CategoryService,

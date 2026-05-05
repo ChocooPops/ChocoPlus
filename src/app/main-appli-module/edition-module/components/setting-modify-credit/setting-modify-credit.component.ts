@@ -17,11 +17,12 @@ import { ButtonRemoveComponent } from '../button-remove/button-remove.component'
 import { ButtonSaveComponent } from '../button-save/button-save.component';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-credit',
   standalone: true,
-  imports: [PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchCreditComponent, InputTextEditionComponent, InputNumberEditionComponent, InputImageEditionComponent, AiButtonComponent],
+  imports: [TranslatePipe, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchCreditComponent, InputTextEditionComponent, InputNumberEditionComponent, InputImageEditionComponent, AiButtonComponent],
   templateUrl: './setting-modify-credit.component.html',
   styleUrls: ['./setting-modify-credit.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
@@ -29,8 +30,8 @@ export class SettingModifyCreditComponent extends SettingCreditAbstraction {
 
   protected override menuType: MenuType = MenuType.MODIFY_CREDIT;
 
-  private readonly messageDelete: string = 'Cette action supprimera définitvement le crédit associé';
-  private readonly messageModify: string = 'Cette action enregistrera les modifications faites au crédit associé';
+  private readonly messageDelete = 'EDITION.CREDIT.MESSAGE_DELETE';
+  private readonly messageModify = 'EDITION.CREDIT.MESSAGE_MODIFY';
   private typeOperation !: number;
 
   constructor(creditService: CreditService,

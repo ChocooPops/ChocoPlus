@@ -6,11 +6,13 @@ import { SelectionType } from '../../../media-module/models/selection-type.enum'
 import { EditTypePoster } from '../../models/edit-type-movie.interface';
 import { EditionSeriesService } from '../../services/edition-series/edition-series.service';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-input-selection-type',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe, TitleCasePipe],
   templateUrl: './input-selection-type.component.html',
   styleUrl: './input-selection-type.component.css'
 })
@@ -18,12 +20,12 @@ export class InputSelectionTypeComponent {
 
   @Input() mediaType!: MediaTypeModel;
   srcArrow: String = 'icon/arrow.svg';
-  nameSelectedType !: String;
+  nameSelectedType !: string;
   isClick: boolean = false;
 
-  constructor(private editionMovieService: EditionMovieService,
-    private editionSeriesService: EditionSeriesService,
-    private elementRef: ElementRef
+  constructor(private readonly editionMovieService: EditionMovieService,
+    private readonly editionSeriesService: EditionSeriesService,
+    private readonly elementRef: ElementRef
   ) { }
 
   @Input()

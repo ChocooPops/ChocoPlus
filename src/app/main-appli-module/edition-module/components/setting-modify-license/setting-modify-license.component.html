@@ -2,48 +2,48 @@
 
 <div class="containerSettingSelected">
     <div class="containerFieldToFill">
-        <p>Chercher une license : <span>*</span></p>
+        <p> {{ 'EDITION.LICENSE.SEARCH_LICENSE' | translate }} <span>*</span></p>
         <app-input-research-license (addContentResearched)="setEditLicenseWanted($event)"></app-input-research-license>
     </div>
 
     @if(editLicense.id >= 0) {
     <div class="containerFieldToFill">
-        <p>Emplacement de la License <span>*</span></p>
+        <p> {{ 'EDITION.LICENSE.LICENSE_LOCATION' | translate }} <span>*</span></p>
         <app-input-radio-button (changeEmit)="modifyLicensePosition($event)"
             [radioButton]="radioButtonLocationLicense"></app-input-radio-button>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Nom de la License <span>*</span></p>
+        <p> {{ 'EDITION.LICENSE.LICENSE_NAME' | translate }} <span>*</span></p>
         <app-input-text-edition [text]="editLicense.name" [placeHolder]="placeHolderInputText"
             (onInputChange)="modifyNameLicense($event)"></app-input-text-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Illustration du bouton renvoyant sur la licence <span>**</span></p>
+        <p> {{ 'EDITION.LICENSE.LICENSE_ICON_POSTER' | translate }} <span>**</span></p>
         <app-input-image-edition (inputChange)="onModifyImageLicense($event)" [srcImageAdded]="editLicense.srcIcon"
             [typeInputImage]="3" [exText]="placeHolderInputButton"></app-input-image-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Image en arrière-plan de la page <span>**</span></p>
+        <p> {{ 'EDITION.LICENSE.LICENSE_BACKGROUND_POSTER' | translate }} <span>**</span></p>
         <app-input-image-edition (inputChange)="onModifyBackgroundImageLicense($event)"
             [srcImageAdded]="editLicense.srcBackground" [typeInputImage]="3"
             [exText]="placeHolderInputBack"></app-input-image-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Logo de la licence <span>**</span></p>
+        <p> {{ 'EDITION.LICENSE.LICENSE_LOGO_POSTER' | translate }} <span>**</span></p>
         <app-input-image-edition (inputChange)="onModifyLogoLicense($event)" [srcImageAdded]="editLicense.srcLogo"
             [typeInputImage]="2" [exText]="placeHolderInputLogo"></app-input-image-edition>
     </div>
 
     <div class="containerFieldToFill">
-        <p>Ajouter un film dans la licence <span>*</span></p>
+        <p> {{ 'EDITION.LICENSE.ADD_MOVIE_INTO_LICENSE' | translate }} <span>*</span></p>
         <app-input-research-movie (addContentResearched)="addMediaIntoSelection($event)"></app-input-research-movie>
     </div>
     <div class="containerFieldToFill">
-        <p>Ajouter une série dans la licence <span>*</span></p>
+        <p> {{ 'EDITION.LICENSE.ADD_SERIES_INTO_LICENSE' | translate }} <span>*</span></p>
         <app-input-research-series (addContentResearched)="addMediaIntoSelection($event)"></app-input-research-series>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Ajouter une sélection dans votre licence <span>*</span></p>
+        <p> {{ 'EDITION.LICENSE.ADD_SELECTION_INTO_LICENSE' | translate }} <span>*</span></p>
         <app-input-research-selection (addContentResearched)="addMediaSelection($event)"></app-input-research-selection>
     </div>
 

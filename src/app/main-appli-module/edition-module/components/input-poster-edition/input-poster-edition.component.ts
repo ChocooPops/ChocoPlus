@@ -36,7 +36,7 @@ export class InputPosterEditionComponent {
   @Output()
   fillPoster = new EventEmitter<any[]>()
 
-  exText: string = "ex : Affiche de cinéma";
+  exText: string = "EDITION.PLACEHOLDER_VERITCAL_POSTER";
   srcRemove: string = "icon/delete.svg";
 
   onClickAddNewPoster() {

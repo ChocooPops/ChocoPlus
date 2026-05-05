@@ -1,9 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-button-remove',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './button-remove.component.html',
   styleUrl: './button-remove.component.css'
 })

@@ -15,11 +15,12 @@ import { InputResearchSeriesComponent } from '../input-search-components/input-r
 import { SimpleModel } from '../../../../common-module/models/simple-model';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-news',
   standalone: true,
-  imports: [PopupComponent, InputResearchSeriesComponent, InputResearchMovieComponent, ButtonRemoveComponent, ButtonSaveComponent, NewsOverviewComponent],
+  imports: [PopupComponent, TranslatePipe, InputResearchSeriesComponent, InputResearchMovieComponent, ButtonRemoveComponent, ButtonSaveComponent, NewsOverviewComponent],
   templateUrl: './setting-modify-news.component.html',
   styleUrls: ['./setting-modify-news.component.css', '../../../../common-module/styles/loader.css', '../../styles/edition.css']
 })
@@ -29,7 +30,7 @@ export class SettingModifyNewsComponent extends UnauthorizedError {
 
   newsList: NewsModel[] | undefined = undefined;
   private subscription: Subscription = new Subscription();
-  private messageDeleting: string = "Enregistrer les modifications ?";
+  private messageDeleting = "EDITION.NEWS.MESSAGE_MODIFY";
 
   constructor(private readonly newsService: NewsService,
     editionParametersService: EditionParametersService

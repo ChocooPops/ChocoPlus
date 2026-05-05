@@ -8,14 +8,14 @@
             <div class="container-arrow" (click)="setFocus()">
                 <img [src]="srcArow" [ngClass]="{'rotate-pos': displayResearch, 'rotate-neg': !displayResearch}">
             </div>
-            <app-input-text-edition (keydown.enter)="onEnterKey()" [placeHolder]="placeHolder"
+            <app-input-text-edition (keydown.enter)="onEnterKey()" [placeHolder]="placeHolder | translate"
                 (onFocus)="onChangeFocus($event)" (onInputChange)="onInputChange($event)"
                 [type]="2"></app-input-text-edition>
             @if(displayResearch) {
             <div class="container-categories-searched">
                 @for (category of categoriesSearched; track category.id) {
                 <div class="container-category-searched" (click)="onClick(category)">
-                    <p> {{ category.name }} </p>
+                    <p> {{ category.name |translate }} </p>
                 </div>
                 }
             </div>

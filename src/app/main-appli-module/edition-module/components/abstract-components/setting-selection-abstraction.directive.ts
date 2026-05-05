@@ -13,7 +13,7 @@ export abstract class SettingSelectionAbstraction extends UnauthorizedError {
 
     @ViewChild(AiButtonComponent) aiButton !: AiButtonComponent;
 
-    placeHolderNameSelection: string = "ex : Sélection spéciale sur les Polars";
+    placeHolderNameSelection = "EDITION.SELECTION.PLACEHOLDER_NAME";
     radioButtonTypeSelection: SimpleModel[] = [];
     groupTypeSelection: string = "groupTypeSelection";
     groupPosition: string = "groupPosition";

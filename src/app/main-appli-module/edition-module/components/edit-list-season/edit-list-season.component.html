@@ -8,7 +8,7 @@
             @if(season.name) {
             <p> {{ season.name }} </p>
             } @else {
-            <p> Saison {{ season.seasonNumber}} </p>
+            <p> {{ 'SEASON' | translate }} {{ season.seasonNumber}} </p>
             }
         </div>
     </div>

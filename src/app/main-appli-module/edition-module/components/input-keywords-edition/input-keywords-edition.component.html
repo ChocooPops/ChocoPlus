@@ -3,7 +3,7 @@
     <app-container-word [word]="keyWord" (removeWordEmit)="removeKeyword($event)"></app-container-word>
     }
     <div class="containerInputKeyWord" (keydown)="onEnterKey($event)">
-        <app-input-text-edition [placeHolder]="placeHolder" [type]="2"
+        <app-input-text-edition [placeHolder]="placeHolder | translate" [type]="2"
             (onInputChange)="onInputKeyWord($event)"></app-input-text-edition>
         <app-button-add (click)="onClick()"></app-button-add>
     </div>

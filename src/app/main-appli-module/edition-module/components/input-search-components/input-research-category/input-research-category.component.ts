@@ -4,22 +4,23 @@ import { CategorySimpleModel } from '../../../models/category/categorySimple.mod
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { CategoryService } from '../../../services/category/category.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-research-category',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass],
+  imports: [ReactiveFormsModule, NgClass, TranslatePipe],
   templateUrl: './input-research-category.component.html',
   styleUrls: ['./input-research-category.component.css', '../../../styles/search.css']
 })
 export class InputResearchCategoryComponent extends InputResearchAbstract<CategorySimpleModel> {
 
-  protected override placeHolder: string = 'Rechercher une catégorie';
+  protected override placeHolder = 'EDITION.SEARCH.CATEGORY_SEARCH';
 
   constructor(
     fb: FormBuilder,
     elementRef: ElementRef,
-    private categoryService: CategoryService
+    private readonly categoryService: CategoryService
   ) {
     super(fb, elementRef);
   }

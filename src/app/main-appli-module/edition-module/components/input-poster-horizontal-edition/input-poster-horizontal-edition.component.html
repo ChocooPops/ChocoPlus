@@ -3,7 +3,7 @@
     <div class="container-poster">
         <app-input-image-edition [displayRemoveButton]="false" [srcImageAdded]="poster.srcPoster"
             [srcImageAdded]="poster.srcPoster" (inputChange)="onClickFillPoster(poster.id, $event)"
-            (deleteImage)="onClickRemove(poster.id)" [typeInputImage]="3" [exText]="ex"></app-input-image-edition>
+            (deleteImage)="onClickRemove(poster.id)" [typeInputImage]="3" [exText]="placeholder"></app-input-image-edition>
         @if(posters.length > 1) {
         <div class="containerBtRemove" (click)="onClickRemove(poster.id)">
             <img [src]="srcRemove">

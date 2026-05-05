@@ -5,23 +5,24 @@ import { CategoryService } from '../../services/category/category.service';
 import { CategorySimpleModel } from '../../models/category/categorySimple.model';
 import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-categories-edition',
   standalone: true,
-  imports: [InputTextEditionComponent, ContainerWordComponent, NgClass],
+  imports: [InputTextEditionComponent, ContainerWordComponent, NgClass, TranslatePipe],
   templateUrl: './input-categories-edition.component.html',
   styleUrl: './input-categories-edition.component.css'
 })
 export class InputCategoriesEditionComponent {
 
+  placeHolder = 'EDITION.PLACEHOLDER_CATEGORY';
   @ViewChild("refInput") refInput !: ElementRef;
   @Input() categoriesSelected: CategorySimpleModel[] = [];
   @Output() onChangeCategory = new EventEmitter<CategorySimpleModel[]>();
   @ViewChild(InputTextEditionComponent) inputText !: InputTextEditionComponent;
   categoriesSearched: CategorySimpleModel[] = [];
   displayResearch: boolean = false;
-  placeHolder: string = 'ex : Drame';
   srcArow: string = 'icon/arrow.svg';
   subscription: Subscription = new Subscription();
 

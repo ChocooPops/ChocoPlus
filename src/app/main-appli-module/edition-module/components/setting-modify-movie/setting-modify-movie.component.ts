@@ -28,11 +28,12 @@ import { MovieModel } from '../../../media-module/models/movie-model';
 import { CreditsTableComponent } from '../credits-table/credits-table.component';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-movie',
   standalone: true,
-  imports: [ButtonSaveComponent, CreditsTableComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputDateComponent, PopupComponent, ButtonRemoveComponent, NgClass, InputTimeEditionComponent, InputRadioButtonComponent, InputImageEditionComponent, InputPosterEditionComponent, InputTextAreaEditionComponent, InputKeywordsEditionComponent, InputCategoriesEditionComponent, InputTextEditionComponent, InputResearchMovieComponent],
+  imports: [TranslatePipe, ButtonSaveComponent, CreditsTableComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputDateComponent, PopupComponent, ButtonRemoveComponent, NgClass, InputTimeEditionComponent, InputRadioButtonComponent, InputImageEditionComponent, InputPosterEditionComponent, InputTextAreaEditionComponent, InputKeywordsEditionComponent, InputCategoriesEditionComponent, InputTextEditionComponent, InputResearchMovieComponent],
   templateUrl: './setting-modify-movie.component.html',
   styleUrls: ['./setting-modify-movie.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
@@ -40,8 +41,8 @@ export class SettingModifyMovieComponent extends SettingMovieAbstraction {
 
   protected override menuType: MenuType = MenuType.MODIFY_MOVIE;
 
-  private messageDelete: string = 'Cette action supprimera définitivement le film';
-  private messageModify: string = 'Cette action enregistrera les modifications faites au film';
+  private messageDelete = 'EDITION.MOVIE.MESSAGE_DELETE';
+  private messageModify = 'EDITION.MOVIE.MESSAGE_MODIFY';
   private typeOperation !: number;
 
   constructor(editionMovieService: EditionMovieService,

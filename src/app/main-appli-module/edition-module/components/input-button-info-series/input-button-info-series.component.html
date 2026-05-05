@@ -2,12 +2,12 @@
 
     <div class="button" (click)="onChangeTypeInfo(false)"
         [ngClass]="{'button-on-focus' : !typeInfo, 'button-dont-focus' : typeInfo}">
-        <p> Information principale</p>
+        <p> {{ 'EDITION.SERIES.MAIN_INFO' | translate }} </p>
     </div>
 
     <div class="button" (click)="onChangeTypeInfo(true)"
         [ngClass]="{'button-on-focus' : typeInfo, 'button-dont-focus' : !typeInfo}">
-        <p> Information sur les saisons </p>
+        <p> {{ 'EDITION.SERIES.INFO_SEASONS' | translate }} </p>
     </div>
 
 </div>

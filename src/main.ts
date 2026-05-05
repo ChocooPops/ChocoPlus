@@ -7,23 +7,19 @@ bootstrapApplication(AppComponent, appConfig)
   .then(appRef => {
     const translate = appRef.injector.get(TranslateService);
 
-    // // langues dispo
-    // translate.addLangs(['en', 'fr']);
-    // translate.setDefaultLang('en');
+    translate.addLangs(['en', 'fr']);
+    translate.setDefaultLang('en');
 
-    // // 🔥 détection langue
-    // let lang = 'en';
+    let lang = 'en';
 
-    // lang = navigator.language;
+    lang = navigator.language;
 
-    // // normalisation (fr-FR → fr)
-    // lang = lang.split('-')[0];
+    lang = lang.split('-')[0];
 
-    // // sécurité
-    // if (!['en', 'fr'].includes(lang)) {
-    //   lang = 'en';
-    // }
+    if (!['en', 'fr'].includes(lang)) {
+      lang = 'en';
+    }
 
-    // translate.use(lang);
+    translate.use(lang);
   })
   .catch((err) => console.error(err));

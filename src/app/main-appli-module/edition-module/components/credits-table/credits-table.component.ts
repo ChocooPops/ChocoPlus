@@ -3,11 +3,12 @@ import { MediaCreditModel } from '../../../media-module/models/media-credit.inte
 import { JobModel } from '../../../media-module/models/job.eum';
 import { FormsModule } from '@angular/forms';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-credits-table',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   templateUrl: './credits-table.component.html',
   styleUrl: './credits-table.component.css',
 })

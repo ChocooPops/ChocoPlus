@@ -30,8 +30,8 @@ export class EditionMovieService extends EditionMediaService {
   private editMovie$: Observable<EditMovieModel> = this.editMovieSubject.asObservable();
 
   constructor(http: HttpClient,
-    private verifTimerShowService: VerifTimerShowService,
-    private movieService: MovieService,
+    private readonly verifTimerShowService: VerifTimerShowService,
+    private readonly movieService: MovieService,
   ) {
     super(http);
   }
@@ -64,7 +64,7 @@ export class EditionMovieService extends EditionMediaService {
     });
   }
 
-  public getOldSelectedPoster(idPoster: number, idSelection: number): String {
+  public getOldSelectedPoster(idPoster: number, idSelection: number): string {
     const editMovie = this.editMovieSubject.getValue();
     const indexPoster = editMovie.posters.findIndex(poster => poster.id === idPoster);
     const indexSelection = editMovie.posters[indexPoster].typePoster.findIndex(selection => selection.id === idSelection);

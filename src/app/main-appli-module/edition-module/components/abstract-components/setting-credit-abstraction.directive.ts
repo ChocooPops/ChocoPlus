@@ -13,10 +13,10 @@ export abstract class SettingCreditAbstraction extends UnauthorizedError {
     @ViewChild('buttonSearchTmdbId') buttonSearchTmdbId !: AiButtonComponent;
     @ViewChild('buttonSearchFullName') buttonSearchFullName !: AiButtonComponent;
 
-    protected placeholderTextTmdbId: string = 'ex: 8596';
-    protected placeholderTextFullName: string = 'ex: Hiroshi Kamiya';
-    protected placeholderTextOriginalFullName: string = 'ex: 神谷浩史';
-    protected exTextPoster: string = 'ex: Photo de Bryan Cranston';
+    protected placeholderTextTmdbId = 'EDITION.CREDIT.PLACEHOLDER_TMDB';
+    protected placeholderTextFullName = 'EDITION.CREDIT.PLACEHOLDER_FULLNAME';
+    protected placeholderTextOriginalFullName = 'EDITION.CREDIT.PLACEHOLDER_ORIGINAL_FULLNAME';
+    protected exTextPoster = 'EDITION.CREDIT.PLACEHOLDER_POSTER';
     protected editCredit!: EditCreditModel;
 
     protected subscriptionMain: Subscription = new Subscription();

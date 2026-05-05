@@ -12,11 +12,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditNewsVideoRunningService } from '../../services/edit-news-video-running/edit-news-video-running.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-news-series-running',
   standalone: true,
-  imports: [PopupComponent, InputResearchSeriesComponent, EditNewVideoRunningComponent, ButtonRemoveComponent, ButtonSaveComponent],
+  imports: [TranslatePipe, PopupComponent, InputResearchSeriesComponent, EditNewVideoRunningComponent, ButtonRemoveComponent, ButtonSaveComponent],
   templateUrl: './setting-modify-news-series-running.component.html',
   styleUrls: ['./setting-modify-news-series-running.component.css', '../../../../common-module/styles/loader.css', '../../styles/edition.css']
 })
@@ -25,7 +26,7 @@ export class SettingModifyNewsSeriesRunningComponent extends SettingNewsVideoRun
   protected override menuType: MenuType = MenuType.MODIFY_NEW_SERIES;
 
   protected override mediaType: MediaTypeModel = MediaTypeModel.SERIES;
-  private message: string = "Enregistrer les modifications ?";
+  private message = "EDITION.NEWS.MESSAGE_MODIFY";
 
   constructor(editNewsVideoRunningService: EditNewsVideoRunningService,
     editionParametersService: EditionParametersService

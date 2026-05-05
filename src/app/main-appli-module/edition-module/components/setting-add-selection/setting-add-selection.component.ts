@@ -14,17 +14,18 @@ import { InputResearchSeriesComponent } from '../input-search-components/input-r
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionSelectionService } from '../../services/edition-selection/edition-selection.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-add-selection',
   standalone: true,
-  imports: [SelectionOverviewComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputRadioButtonComponent, InputResearchMovieComponent, InputTextEditionComponent],
+  imports: [TranslatePipe, SelectionOverviewComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputRadioButtonComponent, InputResearchMovieComponent, InputTextEditionComponent],
   templateUrl: './setting-add-selection.component.html',
   styleUrls: ['./setting-add-selection.component.css', '../../styles/edition.css']
 })
 export class SettingAddSelectionComponent extends SettingSelectionAbstraction {
 
-  private message: string = 'Cette action ajoutera une nouvelle sélection';
+  private message = 'EDITION.SELECTION.MESSAGE_ADD';
   protected override menuType: MenuType = MenuType.ADD_SELECTION;
 
   constructor(editionSelectionService: EditionSelectionService,

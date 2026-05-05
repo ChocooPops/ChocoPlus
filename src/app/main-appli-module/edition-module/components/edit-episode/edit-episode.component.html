@@ -16,10 +16,10 @@
             <app-input-image-edition (inputChange)="onChangePoster($event)" [typeInputImage]="4"
                 [srcImageAdded]="episode.srcPoster"></app-input-image-edition>
             <div class="container-info">
-                <app-input-text-edition (onInputChange)="onChangeTitle($event)" [placeHolder]="'Titre'"
+                <app-input-text-edition (onInputChange)="onChangeTitle($event)" [placeHolder]="placeHolderTitle"
                     [text]="episode.name"></app-input-text-edition>
                 <app-input-text-area-edition (onInputChange)="onChangeDescritpion($event)" [mode]="true"
-                    [placeHolder]="'Description'" [maxLength]="maxLength"
+                    [placeHolder]="placeHolderDescription" [maxLength]="maxLength"
                     [text]="episode.description"></app-input-text-area-edition>
             </div>
             <div class="container-info">

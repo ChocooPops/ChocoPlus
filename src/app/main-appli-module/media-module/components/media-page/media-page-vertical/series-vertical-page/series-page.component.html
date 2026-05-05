@@ -5,12 +5,12 @@
             <p>{{ date | date:'yyyy' }}</p>
             }
             @if(series.seasons.length > 1) {
-            <p> {{ series.seasons.length }} {{ 'MEDIA_PAGE.SEASONS' | translate }} </p>
+            <p> {{ series.seasons.length }} {{ 'SEASONS' | translate }} </p>
             }@else {
-            <p> {{ series.seasons.length }} {{ 'MEDIA_PAGE.SEASON' | translate }} </p>
+            <p> {{ series.seasons.length }} {{ 'SEASON' | translate }} </p>
             }
             <div class="container-quality">
-                <p> {{ 'MEDIA_PAGE.SERIES' | translate }} </p>
+                <p> {{ 'SERIES' | translate }} </p>
             </div>
         </div>
         <div class="container-movie-placement">

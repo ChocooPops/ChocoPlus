@@ -17,11 +17,12 @@ import { EditionSelectionService } from '../../services/edition-selection/editio
 import { ActivatedRoute } from '@angular/router';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-modify-license',
   standalone: true,
-  imports: [SelectionOverviewComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchMovieComponent, InputTextEditionComponent, InputRadioButtonComponent, InputResearchSelectionComponent],
+  imports: [TranslatePipe, SelectionOverviewComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchMovieComponent, InputTextEditionComponent, InputRadioButtonComponent, InputResearchSelectionComponent],
   templateUrl: './setting-modify-selection.component.html',
   styleUrls: ['./setting-modify-selection.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
@@ -29,8 +30,8 @@ export class SettingModifySelectionComponent extends SettingSelectionAbstraction
 
   protected override menuType: MenuType = MenuType.MODIFY_SELECTION;
 
-  private messageModify: string = 'Cette action enregistrera les modifications faites sur la sélection';
-  private messageDelete: string = 'Cette action supprimera définitivement la sélection'
+  private messageModify = 'EDITION.SELECTION.MESSAGE_MODIFY';
+  private messageDelete = 'EDITION.SELECTION.MESSAGE_DELETE';
   private typeOperation !: number;
 
   constructor(editionSelectionService: EditionSelectionService,

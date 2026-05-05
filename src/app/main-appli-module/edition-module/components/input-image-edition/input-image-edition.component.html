@@ -4,7 +4,7 @@
     classInputActual, isDragging ? 'isDragging' : ''
   ]" class="inputImage" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()">
         @if(srcImageAdded == undefined) {
-        <p class="textExemple">Insérer une image <br> {{exText}}</p>
+        <p class="textExemple">{{ 'EDITION.INSERT_IMAGE' | translate }} <br> {{ exText | translate }}</p>
         <img class="insertPicture" [src]="srcImageInput" (error)="onErrorImage()">
         }@else {
         <img class="imageAdded" [src]="srcImageAdded" (error)="onErrorImage()">

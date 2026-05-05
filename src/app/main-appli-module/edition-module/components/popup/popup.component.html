@@ -17,10 +17,10 @@
         @if(displayButton) {
         <div class="container-buttons">
             <div class="container-button" (click)="onClickCancel()">
-                <p>Annuler</p>
+                <p>{{ 'BUTTON.CANCEL' | translate }}</p>
             </div>
             <div class="container-button" (click)="onClickValidate()">
-                <p>Valider</p>
+                <p>{{ 'BUTTON.CONFIRM' | translate }}</p>
             </div>
         </div>
         }

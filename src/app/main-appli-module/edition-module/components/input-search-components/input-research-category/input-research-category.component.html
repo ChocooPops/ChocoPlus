@@ -6,7 +6,7 @@
                 <div class="container-image-research">
                     <img [src]="srcImageresearch">
                 </div>
-                <input type="text" formControlName="inputValue" [placeholder]="placeHolder"
+                <input type="text" formControlName="inputValue" [placeholder]="placeHolder | translate"
                     (keydown.enter)="onEnterKey()" (focus)="onFocus()" />
             </div>
         </form>

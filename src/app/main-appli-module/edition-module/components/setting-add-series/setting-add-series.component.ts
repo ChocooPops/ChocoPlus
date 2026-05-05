@@ -29,17 +29,18 @@ import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionSeriesService } from '../../services/edition-series/edition-series.service';
 import { TmdbOperationService } from '../../services/tmdb-operation/tmdb-operation.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-add-series',
   standalone: true,
-  imports: [NgClass, CreditsTableComponent, InputTimeEditionComponent, InputDateComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
+  imports: [TranslatePipe, NgClass, CreditsTableComponent, InputTimeEditionComponent, InputDateComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
   templateUrl: './setting-add-series.component.html',
   styleUrls: ['./setting-add-series.component.css', '../../styles/edition.css']
 })
 export class SettingAddSeriesComponent extends SettingSeriesAbstraction {
 
-  private message: string = 'Cette action ajoutera une nouvelle série';
+  private message = 'EDITION.SERIES.MESSAGE_ADD';
   protected override menuType: MenuType = MenuType.ADD_SERIES;
 
   constructor(editionSeriesService: EditionSeriesService,

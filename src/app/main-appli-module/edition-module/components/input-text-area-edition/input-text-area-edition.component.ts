@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Output, Input, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-input-text-area-edition',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass],
+  imports: [ReactiveFormsModule, NgClass, TranslatePipe, LowerCasePipe],
   templateUrl: './input-text-area-edition.component.html',
   styleUrl: './input-text-area-edition.component.css'
 })
@@ -13,7 +15,7 @@ export class InputTextAreaEditionComponent {
 
   @Output() onInputChange = new EventEmitter<string>();
   @Input() text: string | undefined = ""
-  @Input() placeHolder: string = "Le film se déroule ..."
+  @Input() placeHolder = "EDITION.PLACEHOLDER_TEXAREA_MOVIE_DEFAULT"
   @Input() mode: boolean = false;
   @Input() maxLength!: number;
 

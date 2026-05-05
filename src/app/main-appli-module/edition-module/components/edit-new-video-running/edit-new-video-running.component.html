@@ -9,12 +9,12 @@
                 </div>
             </div>
             <div class="containerFieldToFill">
-                <p> Start Show <span>*</span></p>
+                <p> {{ 'EDITION.START_SHOW' | translate }} <span>*</span></p>
                 <app-input-time-edition (onInputChange)="onChangeStart($event)"
                     [time]="videoRunning.startShow"></app-input-time-edition>
             </div>
             <div class="containerFieldToFill">
-                <p> End Show <span>*</span></p>
+                <p> {{ 'EDITION.END_SHOW' | translate }} <span>*</span></p>
                 <app-input-time-edition (onInputChange)="onChangeEnd($event)"
                     [time]="videoRunning.endShow"></app-input-time-edition>
             </div>

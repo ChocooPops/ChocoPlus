@@ -14,17 +14,18 @@ import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { CreditService } from '../../../media-module/services/credit/credit.service';
 import { TmdbOperationService } from '../../services/tmdb-operation/tmdb-operation.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting-add-credit',
   standalone: true,
-  imports: [PopupComponent, AiButtonComponent, InputImageEditionComponent, InputTextEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputNumberEditionComponent],
+  imports: [TranslatePipe, PopupComponent, AiButtonComponent, InputImageEditionComponent, InputTextEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputNumberEditionComponent, TranslateDirective],
   templateUrl: './setting-add-credit.component.html',
   styleUrls: ['./setting-add-credit.component.css', '../../styles/edition.css']
 })
 export class SettingAddCreditComponent extends SettingCreditAbstraction {
   
-  private message: string = 'Cette action ajoutera un nouveau crédit';
+  private message = 'EDITION.CREDIT.MESSAGE_ADD';
   protected override menuType: MenuType = MenuType.ADD_CREDIT;
 
   constructor(creditService: CreditService,

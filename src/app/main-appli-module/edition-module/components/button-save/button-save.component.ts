@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-button-save',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './button-save.component.html',
   styleUrl: './button-save.component.css'
 })

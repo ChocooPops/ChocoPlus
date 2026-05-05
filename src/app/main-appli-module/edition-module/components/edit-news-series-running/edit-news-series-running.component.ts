@@ -7,11 +7,12 @@ import { Subscription, take } from 'rxjs';
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import { ScalePoster } from '../../../common-module/models/scale-poster.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-news-series-running',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './edit-news-series-running.component.html',
   styleUrls: ['./edit-news-series-running.component.css', '../../styles/edition.css']
 })

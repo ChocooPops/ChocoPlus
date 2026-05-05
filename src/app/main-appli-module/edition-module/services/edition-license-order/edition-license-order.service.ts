@@ -33,13 +33,13 @@ export class EditionLicenseOrderService {
     return [
       {
         id: 1,
-        name: 'Page de recherche',
+        name: 'USER.APP_SETTINGS.SEARCH_PAGE',
         value: false,
         state: false
       },
       {
         id: 2,
-        name: "Page d'accueil",
+        name: 'USER.APP_SETTINGS.HOME_PAGE',
         value: true,
         state: false
       }

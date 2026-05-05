@@ -17,7 +17,7 @@ export class InputPosterHorizontalEditionComponent {
   @Output() removePoster = new EventEmitter<number>();
   @Output() fillPoster = new EventEmitter<any[]>();
   srcRemove: string = "icon/delete.svg";
-  ex: string = 'Plan iconique du film';
+  placeholder: string = 'EDITION.PLACEHOLDER_HORIZONTAL_POSTER';
 
   onClickAddPoster(): void {
     this.addNewPoster.emit();

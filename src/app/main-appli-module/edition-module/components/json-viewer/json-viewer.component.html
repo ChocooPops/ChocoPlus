@@ -1,12 +1,12 @@
 <div class="json-viewer">
     <div class="json-toolbar">
-        <button (click)="expandAll()" [disabled]="loading">Tout développer</button>
-        <button (click)="collapseAll()" [disabled]="loading">Tout replier</button>
-        <button (click)="expandToLevel(1)" [disabled]="loading">Niveau 1</button>
-        <button (click)="expandToLevel(2)" [disabled]="loading">Niveau 2</button>
-        <button (click)="expandToLevel(3)" [disabled]="loading">Niveau 3</button>
+        <button (click)="expandAll()" [disabled]="loading">{{ 'EDITION.ADVANCED_SETTINGS.EXPAND_ALL' | translate }}</button>
+        <button (click)="collapseAll()" [disabled]="loading">{{ 'EDITION.ADVANCED_SETTINGS.CALLAPSE_ALL' | translate }}</button>
+        <button (click)="expandToLevel(1)" [disabled]="loading">{{ 'EDITION.ADVANCED_SETTINGS.LEVEL_1' | translate }}</button>
+        <button (click)="expandToLevel(2)" [disabled]="loading">{{ 'EDITION.ADVANCED_SETTINGS.LEVEL_2' | translate }}</button>
+        <button (click)="expandToLevel(3)" [disabled]="loading">{{ 'EDITION.ADVANCED_SETTINGS.LEVEL_3' | translate }}</button>
         <span class="json-info">
-            {{ visibleNodes.length }} lignes visibles / {{ totalNodes }} total
+            {{ visibleNodes.length }} {{ 'EDITION.ADVANCED_SETTINGS.VISIBLE_LINES' | translate }} / {{ totalNodes }} {{ 'EDITION.ADVANCED_SETTINGS.TOTAL' | translate }}
         </span>
     </div>
 
@@ -28,6 +28,6 @@
     </cdk-virtual-scroll-viewport>
 
     <div *ngIf="loading" class="loading">
-        Chargement du JSON...
+        {{ 'EDITION.ADVANCED_SETTINGS.LOADING_JSON' | translate }}
     </div>
 </div>

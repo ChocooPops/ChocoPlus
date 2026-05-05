@@ -12,18 +12,19 @@ import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { EditionSelectionPageService } from '../../services/edition-selection-page/edition-selection-page.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-modify-home-page',
   standalone: true,
-  imports: [PopupComponent, InputResearchSelectionComponent, SelectionOverviewComponent, ButtonRemoveComponent, ButtonSaveComponent],
+  imports: [TranslatePipe, PopupComponent, InputResearchSelectionComponent, SelectionOverviewComponent, ButtonRemoveComponent, ButtonSaveComponent],
   templateUrl: './setting-modify-home-page-selections.component.html',
   styleUrls: ['./setting-modify-home-page-selections.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
 export class SettingModifyHomePageSelectionsComponent extends SettingSelectionPageAbstract {
 
   protected override menuType: MenuType = MenuType.MODIFY_HOME_PAGE_SELECTION;
-  private message: string = "Cette action modifera la liste des sélections dans la page d'accueil";
+  private message = 'EDITION.PAGE_SELECTION.MESSAGE_MODIFY_HOME_PAGE';
 
   constructor(editionSelectionPageService: EditionSelectionPageService,
     selectionService: SelectionService,

@@ -18,8 +18,8 @@ export abstract class SettingCategoryAbstraction extends UnauthorizedError {
         super(editionParametersService);
     }
 
-    protected exCategory: string = 'ex : Science Fiction';
-    protected exNameSelectionCategory: string = 'ex : Film de Science Fiction';
+    protected exCategory = 'EDITION.CATEGORY.PLACEHOLDER_NAME_CATEGORY';
+    protected exNameSelectionCategory = 'EDITION.CATEGORY.PLACEHOLDER_NAME_SELECTION';
     protected editCategory !: CategoryEntirelyModel;
     protected editSelectionMovie: SelectionModel[] = [];
     protected editSelectionSeries: SelectionModel[] = [];

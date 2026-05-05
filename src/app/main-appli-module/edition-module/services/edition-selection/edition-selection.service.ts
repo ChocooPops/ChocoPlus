@@ -19,13 +19,13 @@ export class EditionSelectionService {
     return [
       {
         id: 1,
-        name: 'Sélection normale',
+        name: 'EDITION.SELECTION.NORMAL_SELECTION',
         value: SelectionType.NORMAL_POSTER,
         state: false
       },
       {
         id: 2,
-        name: 'Sélection spéciale',
+        name: 'EDITION.SELECTION.SPECIAL_SELECTION',
         value: SelectionType.SPECIAL_POSTER,
         state: false
       }

@@ -22,26 +22,26 @@ export class EditionParametersService {
   private editionParameters: EditionParameterModel[] = [
     {
       id: this.getId(),
-      name: "Paramètres avancés",
+      name: "MENU.EDIT.ADVANCED_SETTINGS",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Médiathèque",
+          name: "MENU.EDIT.MEDIA_LIBRARY",
           type: MenuType.LIBRARY,
           route: 'library',
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Version",
+          name: "MENU.EDIT.VERSION",
           type: MenuType.VERSION,
           route: 'version',
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Paramètre Jellyfin",
+          name: "MENU.EDIT.JELLYFIN_PARAMETERS",
           type: MenuType.PARAM_JELLYFIN,
           route: 'manager-jellyfin',
           isClicked: false
@@ -50,26 +50,26 @@ export class EditionParametersService {
     },
     {
       id: this.getId(),
-      name: "Gestion des news",
+      name: "MENU.EDIT.NEWS_MANAGEMENT",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Modifer les news d'accueil",
+          name: "MENU.EDIT.MODIFY_NEWS_HOME",
           type: MenuType.MODIFY_NEWS_HOME,
           route: 'modify-news',
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modifer les news des films",
+          name: "MENU.EDIT.MODIFY_NEW_MOVIES",
           type: MenuType.MODIFY_NEW_MOVIES,
           route: 'modify-news-movie-running',
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modifer les news des séries",
+          name: "MENU.EDIT.MODIFY_NEW_SERIES",
           type: MenuType.MODIFY_NEW_SERIES,
           route: 'modify-news-series-running',
           isClicked: false
@@ -78,19 +78,19 @@ export class EditionParametersService {
     },
     {
       id: this.getId(),
-      name: "Gestion de vos catégories",
+      name: "MENU.EDIT.CATEGORY_MANAGEMENT",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Ajouter une catégorie",
+          name: "MENU.EDIT.ADD_CATEGORY",
           type: MenuType.ADD_CATEGORY,
           route: "add-category",
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modifier une catégorie",
+          name: "MENU.EDIT.MODIFY_CATEGORY",
           type: MenuType.MODIFY_CATEGORY,
           route: "modify-category",
           isClicked: false
@@ -100,19 +100,19 @@ export class EditionParametersService {
 
     {
       id: this.getId(),
-      name: "Gestion des films",
+      name: "MENU.EDIT.MOVIE_MANAGEMENT",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Ajouter un film",
+          name: "MENU.EDIT.ADD_MOVIE",
           type: MenuType.ADD_MOVIE,
           route: "add-movie",
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modifier un film",
+          name: "MENU.EDIT.MODIFY_MOVIE",
           type: MenuType.MODIFY_MOVIE,
           route: "modify-movie",
           isClicked: false
@@ -121,19 +121,19 @@ export class EditionParametersService {
     },
     {
       id: this.getId(),
-      name: "Gestion des séries",
+      name: "MENU.EDIT.SERIES_MANAGEMENT",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Ajouter une série",
+          name: "MENU.EDIT.ADD_SERIES",
           type: MenuType.ADD_SERIES,
           route: "add-series",
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modifier une séries",
+          name: "MENU.EDIT.MODIFY_SERIES",
           type: MenuType.MODIFY_SERIES,
           route: "modify-series",
           isClicked: false
@@ -142,19 +142,19 @@ export class EditionParametersService {
     },
     {
       id: this.getId(),
-      name: "Gestions des crédits",
+      name: "MENU.EDIT.CREDIT_MANAGEMENT",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Ajouter un crédit",
+          name: "MENU.EDIT.ADD_CREDIT",
           type: MenuType.ADD_CREDIT,
           route: "add-credit",
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modificer un crédit",
+          name: "MENU.EDIT.MODIFY_CREDIT",
           type: MenuType.MODIFY_CREDIT,
           route: "modify-credit",
           isClicked: false
@@ -163,19 +163,19 @@ export class EditionParametersService {
     },
     {
       id: this.getId(),
-      name: "Gérer les sélections personnalisées",
+      name: "MENU.EDIT.SELECTION_MANAGEMENT",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Créer une sélection",
+          name: "MENU.EDIT.ADD_SELECTION",
           type: MenuType.ADD_SELECTION,
           route: "create-selection",
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modifier une sélection",
+          name: "MENU.EDIT.MODIFY_SELECTION",
           type: MenuType.MODIFY_SELECTION,
           route: "modify-selection",
           isClicked: false
@@ -184,26 +184,26 @@ export class EditionParametersService {
     },
     {
       id: this.getId(),
-      name: "Gérer vos licences personnalisées",
+      name: "MENU.EDIT.LICENSE_MANAGEMENT",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Créer une licence",
+          name: "MENU.EDIT.ADD_LICENSE",
           type: MenuType.ADD_LICENSE,
           route: "create-license",
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modifier une licence",
+          name: "MENU.EDIT.MODIFY_LICENSE",
           type: MenuType.MODIFY_LICENSE,
           route: "modify-license",
           isClicked: false
         },
         {
           id: this.getId(),
-          name: "Modifier l'ordre des licenses",
+          name: "MENU.EDIT.MODIFY_LICENSE",
           type: MenuType.MODIFY_ORDER_LICENSE,
           route: "modify-license-order",
           isClicked: false
@@ -212,12 +212,12 @@ export class EditionParametersService {
     },
     {
       id: this.getId(),
-      name: "Gérer la création de page",
+      name: "MENU.EDIT.HOME_PAGE_MANAGEMENT",
       isClicked: false,
       underParameter: [
         {
           id: this.getId(),
-          name: "Page d'accueil",
+          name: "MENU.EDIT.MODIFY_HOME_PAGE_SELECTION",
           type: MenuType.MODIFY_HOME_PAGE_SELECTION,
           route: "modify-home-page",
           isClicked: false

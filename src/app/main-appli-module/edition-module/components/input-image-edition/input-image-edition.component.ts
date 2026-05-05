@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-input-image-edition',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './input-image-edition.component.html',
   styleUrl: './input-image-edition.component.css'
 })
