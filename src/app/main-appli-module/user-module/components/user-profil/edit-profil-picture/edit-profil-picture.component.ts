@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { Subscription, take } from 'rxjs';
-import { ProfilPictureService } from '../../service/profil-picture/profil-picture.service';
-import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
-import { ProfilPictureModel } from '../../dto/profil-picture.interface';
-import { UserService } from '../../service/user/user.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ProfilPictureModel } from '../../../dto/profil-picture.interface';
+import { ProfilPictureService } from '../../../service/profil-picture/profil-picture.service';
+import { ImagePreloaderService } from '../../../../../common-module/services/image-preloader/image-preloader.service';
+import { UserService } from '../../../service/user/user.service';
 
 @Component({
   selector: 'app-edit-profil-picture',
   standalone: true,
   imports: [TranslatePipe],
   templateUrl: './edit-profil-picture.component.html',
-  styleUrls: ['./edit-profil-picture.component.css', '../../../../common-module/styles/loader.css']
+  styleUrls: ['./edit-profil-picture.component.css', '../../../../../common-module/styles/loader.css']
 })
 export class EditProfilPictureComponent {
 
@@ -19,9 +19,9 @@ export class EditProfilPictureComponent {
   subscription: Subscription = new Subscription();
   profilPictures: ProfilPictureModel[] | undefined = undefined;
 
-  constructor(private profilPictureService: ProfilPictureService,
-    private imagePreloaderService: ImagePreloaderService,
-    private userService: UserService
+  constructor(private readonly profilPictureService: ProfilPictureService,
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly userService: UserService
   ) { }
 
   ngOnInit(): void {

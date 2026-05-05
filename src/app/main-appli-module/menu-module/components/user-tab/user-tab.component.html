@@ -10,6 +10,17 @@
     </div>
 
     <div class="container-under-menu" [ngClass]="class" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        @if (user && user.role === Role.ADMIN) {
+            <div class="container-option" (click)="onToggleTranslationKeys()">
+                @if (isShowingKeys) {
+                    <img [src]="srcTraductionFill">
+                    <p>{{ 'MENU.OTHER.HIDE_KEYS' | translate}}</p>
+                } @else {
+                    <img [src]="srcTraductionNotFill">
+                    <p>{{ 'MENU.OTHER.SHOW_KEYS' | translate}}</p>
+                }
+            </div>
+        }
         <div class="container-option" (click)="onClickReset()">
             <img [src]="srcReset">
             <p>{{ 'MENU.OTHER.RESET' | translate }}</p>

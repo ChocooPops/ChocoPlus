@@ -1,0 +1,503 @@
+{
+    "LAUNCH": {
+        "WELCOME": "Welcome",
+        "CREATE_ACCOUNT": "Create an account",
+        "LOGIN": "Sign in",
+        "OFFLINE_MODE": "Offline mode",
+        "VERIFICATION_CODE": "Verification code",
+        "RESEND_CODE": "Resend code",
+        "REGISTRATION_REQUEST_SEND_TO_ADMINISTRATOR": "Your registration request has been sent to the administrator",
+        "CONFIRM": "Confirm",
+        "BAD_VERSION": "Your version is outdated",
+        "CONTINUE": "Continue",
+        "DOWNLOAD_VERSION": "Download version ",
+        "LOGOUT": "Log out",
+
+        "PLACEHOLDER": {
+            "EMAIL": "Email",
+            "KEY": "Enter your access key",
+            "PSEUDO": "Username",
+            "FIRST_NAME": "First name",
+            "LAST_NAME": "Last name"
+        },
+
+        "MESSAGE": {
+            "LOADING_SPRITES": "Loading sprites...",
+            "INVALID_FORM": "Invalid form",
+            "LOADING": "Loading...",
+            "TRY_AGAIN": "Try again",
+            "NO_CONNECTION": "No connection",
+            "INCORRECT_USERNAME": "Incorrect username or password",
+            "USER_DISABLED": "The user is not activated or has been disabled",
+            "ERROR": "Error"
+        },
+
+        "GRAPH": {
+            "WAVE": "Wave",
+            "CHAOS": "Chaos",
+            "PULSE": "Pulse",
+            "EXPENSION": "Expansion",
+            "GATHERING": "Gathering",
+            "STOP": "Stop"
+        }
+    },
+
+    "OFFLINE": {
+        "LOGIN": "Login"
+    },
+
+    "MENU": {
+        "MAIN": {
+            "HOME": "Home",
+            "SEARCH": "Search",
+            "MOVIE": "Movie",
+            "SERIES": "Series",
+            "CATALOG": "Catalog",
+            "MYLIST": "My List",
+            "EDITION": "Edit",
+            "MORE": "More"
+        },
+
+        "USER": {
+            "HISTORIC": "History",
+            "MANAGE_PROFIL": "Manage profile",
+            "DOCUMENTATION": "Documentation",
+            "USER_SUPPORT": "User support",
+            "APP_SETTINGS": "App settings",
+            "VIEW_METADAT": "View metadata",
+            "USER_MANAGEMENT": "User management"
+        },
+
+        "EDIT": {
+            "ADVANCED_SETTINGS": "Advanced settings",
+            "MEDIA_LIBRARY": "Media library",
+            "VERSION": "Version",
+            "JELLYFIN_PARAMETERS": "Jellyfin settings",
+
+            "NEWS_MANAGEMENT": "News management",
+            "MODIFY_NEWS_HOME": "Edit home news",
+            "MODIFY_NEW_MOVIES": "Edit movie news",
+            "MODIFY_NEW_SERIES": "Edit series news",
+
+            "CATEGORY_MANAGEMENT": "Category management",
+            "ADD_CATEGORY": "Add a category",
+            "MODIFY_CATEGORY": "Edit a category",
+
+            "MOVIE_MANAGEMENT": "Movie management",
+            "ADD_MOVIE": "Add a movie",
+            "MODIFY_MOVIE": "Edit a movie",
+
+            "SERIES_MANAGEMENT": "Series management",
+            "ADD_SERIES": "Add a series",
+            "MODIFY_SERIES": "Edit a series",
+
+            "CREDIT_MANAGEMENT": "Credit management",
+            "ADD_CREDIT": "Add a credit",
+            "MODIFY_CREDIT": "Edit a credit",
+
+            "SELECTION_MANAGEMENT": "Custom selection management",
+            "ADD_SELECTION": "Create a selection",
+            "MODIFY_SELECTION": "Edit a selection",
+
+            "LICENSE_MANAGEMENT": "Custom license management",
+            "ADD_LICENSE": "Create a license",
+            "MODIFY_LICENSE": "Edit a license",
+            "MODIFY_ORDER_LICENSE": "Edit license order",
+
+            "HOME_PAGE_MANAGEMENT": "Home page creation",
+            "MODIFY_HOME_PAGE_SELECTION": "Home page"
+        },
+
+        "OTHER": {
+            "RESET": "Reset",
+            "START_RANDOM_MOVIE": "Start random movie",
+            "START_RANDOM_SERIE": "Start random series",
+            "LOGOUT": "Logout",
+            "HIDE_KEYS": "Hide translation keys",
+            "SHOW_KEYS": "Show translation keys"
+        }
+    },
+
+    "MEDIA_PAGE": {
+        "PRODUCTION_DIRECTION": "Production & Direction",
+        "ACTORS": "Actors",
+        "CATEGORY": "Genre",
+        "KEY_WORDS": "Keywords",
+        "SEASONS_EPISODES": "Seasons / Episodes",
+        "SIMILAR_TITLES": "Similar titles",
+        "EPISODES": "Episodes",
+        "CASTING": "Cast",
+        "DESCRIPTION": "Description"
+    },
+
+    "SEARCH_PAGE": {
+        "RESULT": "Result",
+        "BROWSE": "Browse",
+        "PLACEHOLDER_RESEARCH_MOVIE_SERIES": "Search for a movie or series..."
+    },
+
+    "MYLIST_PAGE": "Your list",
+
+    "USER": {
+        "HISTORIC": {
+            "TOP_TITLE": "Top 10 most watched content",
+            "ERROR_TOP": "Error loading top 10",
+            "ANY_MEDIA": "No media watched",
+            "VIEWING_TIME": "Viewing time",
+            "TOTAL": "TOTAL",
+            "ERROR_STAT": "Error loading statistics",
+            "VIEWING_STAT": "Viewing statistics",
+            "ERROR_DATA": "Error loading data",
+            "ANY_DATA_PERIOD": "No data for this period",
+            "ANY_DATA_AVAILABLE": "No viewing data available",
+            "START_DATE": "Start date",
+            "PERIOD": "Period",
+            "TYPE": "Type",
+            "FAVORITE_CATEGORIES": "Favorite categories",
+            "CALCULATION_METHOD": "Calculation method",
+            "SIMPLE": "SIMPLE",
+            "SIMPLE_DESCRIPTION": "Basic counting of content by category",
+            "WEIGHTED": "Weighted",
+            "WEIGHTED_DESCRIPTION": "Takes viewing progress into account",
+            "BY_TIME": "By time",
+            "BY_TIME_DESCRIPTION": "Based on actual viewing time",
+            "MODE": "MODE",
+            "VIEWING": "viewing"
+        },
+        "MANAGE_PROFIL": {
+            "EDIT_PROFIL_TITLE": "Profile editing",
+            "PSEUDO": "Username: ",
+            "DATE_BIRTH": "Birth date: ",
+            "CURRENT_PASSWORD": "Current password",
+            "NEW_PASSWORD": "New password",
+            "CONFIRM_NEW_PASSWORD": "Confirm new password",
+            "MESSAGE_DELETE_PROFIL_1": "Do you really want to delete your account?",
+            "MESSAGE_DELETE_PROFIL_2": "This action is irreversible.",
+            "CHOOSE_ICON": "Choose your icon",
+            "SYSTEM_LANGUAGE": "System language: "
+        },
+        "USER_SUPPORT": {
+            "INFO_1": "If you encounter a malfunction, notify us so we can fix it as quickly as possible.",
+            "INFO_2": "If you want to watch unavailable content, feel free to send us a list of what you want to watch.",
+            "PRINCIPAL_SUBJECT": "Main subject:",
+            "SELECT_SUBJECT": "-- Select a subject --",
+            "TOPIC_AREA": "Topic or affected area:",
+            "SELECT_TOPIC": "-- Select a topic --",
+            "MESSAGE": "Message:"
+        },
+        "APP_SETTINGS": {
+            "MOVIE_TV_POSTERS": "Movie & series posters",
+            "LICENSE_POSTERS": "License posters",
+            "POSTER_FORMAT": "Poster format",
+            "OTHER_OPTIONS": "Other options",
+            "ORIGINAL_QUALITY": "Original quality",
+            "VERTICAL": "Vertical",
+            "HORIZONTAL": "Horizontal",
+            "QUALITY_VERTICAL_POSTERS": "Vertical poster quality",
+            "QUALITY_HORIZONTAL_POSTERS": "Horizontal poster quality",
+            "QUALITY_SPECIAL_POSTERS": "Special poster quality",
+            "LOGO_QUALITY_INTO_POSTERS": "Logo quality in posters",
+            "QUALITY_BACKGROUND_TOP_PAGE": "Header background quality",
+            "LOGO_QUALITY_TOP_PAGE": "Header logo quality",
+            "BACKGROUND_QUALITY": "Background quality",
+            "LOGO_QUALITY_INTO_BACKGROUND": "Logo quality in background",
+            "QUALITY_SEASON_POSTERS": "Season poster quality",
+            "QUALITY_EPISODE_POSTERS": "Episode poster quality",
+            "QUALITY_CREDIT_POSTERS": "Credit poster quality",
+            "QUALITY_ICON_LICENS": "Icon quality",
+            "QUALITY_LOGO_LICENSE": "License logo quality",
+            "QUALITY_BACKGROUND_LICENSE": "License background quality",
+            "HOME_PAGE": "Home page",
+            "MOVIE_PAGE": "Movie page",
+            "SERIES_PAGE": "Series page",
+            "CATALOG_PAGE": "Catalog page",
+            "SEARCH_PAGE": "Search page",
+            "LICENSE_PAGE": "License page",
+            "MYLIST_PAGE": "MyList page",
+            "DYNAMIC_MEDIA_PAGE": "Dynamic media page",
+            "EDITION_PAGE": "Edition page",
+            "USER_PAGE": "User page",
+            "LAST_PAGE_VISITED": "Last visited page",
+            "LAUNCH_PAGE": "Launch page"
+        },
+        "VIEW_METADATA": {
+            "WARNING_MESSAGE": "Viewing the database may consume a lot of resources on low‑performance computers",
+            "OVERVIEW": "Overview",
+            "NODE_LABEL": "Label",
+            "NODE_INFO": "Node information",
+            "NAME": "Name",
+            "HEADCOUNT": "Count",
+            "LINKS": "Links"
+        },
+        "USER_MANAGEMENT": {
+            "ALL_USER": "All users",
+            "USER_ACTIVATED": "Activated users",
+            "USER_SUSPENDED": "Suspended users",
+            "REGISTRATION_REQUEST": "Registration request",
+            "BECOME_ADMIN": "Become administrator",
+            "BECOME_USER": "Become standard user",
+            "BECOME_FAMILY": "Become family member",
+            "SUSPEND_ACCOUNT": "Suspend account",
+            "DEACTIVATE_ACCOUNT": "Deactivate account",
+            "INFO": "Info",
+            "STATS": "Stats",
+            "EMAIL": "Email address: ",
+            "DATE_BIRTH": "Birth date: ",
+            "PSEUDO": "Username: ",
+            "FIRST_NAME": "First name: ",
+            "LAST_NAME": "Last name: ",
+            "WARNING_DELETE_USER": "Do you really want to delete the following user:",
+            "ERROR_ID": "Error with user ID"
+        }
+    },
+
+    "FILTER": {
+        "OTHER_FILTER": "Add another filter",
+        "PLACEHOLDER_DATA_TYPE": "Data type",
+        "PLACEHOLDER_OPERATION": "Operation",
+        "PLACEHOLDER_VALUE": "Values...",
+        "SORT_TITLE": "Title",
+        "SORT_RELEASE_DATE": "Release date",
+        "SORT_ADDED_DATE": "Added date",
+        "SORT_DURATION": "Duration",
+        "SORT_SHUFFLE": "Shuffle"
+    },
+
+    "EDITION": {
+        "START_SHOW": "Start",
+        "END_SHOW": "End",
+        "SEASON_LIST": "Season list",
+        "EX_OVERVIEW_FINAL": "Example of final preview",
+        "PLACEHOLDER_CATEGORY": "e.g.: Drama",
+        "INSERT_IMAGE": "Insert an image",
+        "PLACEHOLDER_KEY_WORD": "e.g.: Death & Resurrection",
+        "PLACEHOLDER_HORIZONTAL_POSTER": "Iconic shot of the media",
+        "PLACEHOLDER_VERITCAL_POSTER": "e.g.: Cinema poster",
+        "PLACEHOLDER_TEXAREA_MOVIE_DEFAULT": "The movie takes place...",
+        "NORMAL_POSTER": "Normal poster",
+        "SPECIAL_POSTER": "Special poster",
+        "LICENSE_POSTER": "License poster",
+
+        "UNAUTHORIZED": {
+            "ADD": "You are not authorized to add data.",
+            "MODIFY": "You are not authorized to modify data.",
+            "DELETE": "You are not authorized to delete data.",
+            "SEND_MAIL": "Do you want to send your changes to the admin?"
+        },
+
+        "ADVANCED_SETTINGS": {
+            "MANAGER_VERSION": "Version manager",
+            "ERROR": "An error occurred.",
+            "VERSION_NUMBER": "Version number",
+            "OPERATING_SYSTEM": "Operating system",
+            "LINK": "Link",
+            "CREATED_DATE": "Creation date",
+            "UPDATED_DATE": "Last update date",
+            "ELEMENTS": "elements",
+            "PROPERTIES": "properties",
+            "LOADING_JSON": "Loading JSON...",
+            "VISIBLE_LINES": "visible lines",
+            "TOTAL": "total",
+            "EXPAND_ALL": "Expand all",
+            "CALLAPSE_ALL": "Collapse all",
+            "LEVEL_1": "Level 1",
+            "LEVEL_2": "Level 2",
+            "LEVEL_3": "Level 3"
+        },
+
+        "SEARCH": {
+            "CATEGORY_SEARCH": "Search a category",
+            "CREDIT_SEARCH": "Search an actor/director...",
+            "LICENSE_SEARCH": "Search a license",
+            "MOVIE_SEARCH": "Search a movie",
+            "SELECTION_SEARCH": "Search a selection",
+            "SERIES_SEARCH": "Search a series"
+        },
+
+        "NEWS": {
+            "ADD_MOVIE_INTO_NEWS": "Add a movie as news",
+            "ADD_SERIES_INTO_NEWS": "Add a series as news",
+            "MESSAGE_MODIFY": "Save changes?"
+        },
+
+        "CREDIT": {
+            "POSTER_CREDIT": "Credit poster",
+            "FULL_NAME": "Full name",
+            "ORIGINAL_FULL_NAME": "Original full name",
+            "ORIGINAL_NAME": "Original name",
+            "CHARACTER": "Character",
+            "INDEX": "INDEX",
+            "ROLE": "Role",
+            "ORDER": "ORDER",
+            "ADD_ROW_CREDIT": "+ Add a row",
+            "EPISODE_COUNT": "Episode count",
+            "SEARCH_CREDIT": "Search credit to edit",
+            "MESSAGE_ADD": "This action will add a new credit",
+            "MESSAGE_MODIFY": "This action will save changes to the credit",
+            "MESSAGE_DELETE": "This action will permanently delete the credit",
+            "PLACEHOLDER_TMDB": "e.g.: 8596",
+            "PLACEHOLDER_FULLNAME": "e.g.: Hiroshi Kamiya",
+            "PLACEHOLDER_ORIGINAL_FULLNAME": "e.g.: 神谷浩史",
+            "PLACEHOLDER_POSTER": "e.g.: Photo of Bryan Cranston"
+        },
+
+        "CATEGORY": {
+            "SEARCH_CATEGORY": "Search a category:",
+            "CATEGORY_NAME": "Category name",
+            "SELECTION_NAME": "Selection name",
+            "ADD_MOVIE_INTO_CATGEORY": "Add a movie to the selection",
+            "ADD_SERIES_INTO_CATGEORY": "Add a series to the category",
+            "MESSAGE_MODIFY": "This action will save changes to the category",
+            "MESSAGE_ADD": "This action will add a new category",
+            "MESSAGE_DELETE": "This action will permanently delete the category",
+            "PLACEHOLDER_NAME_CATEGORY": "e.g.: Science Fiction",
+            "PLACEHOLDER_NAME_SELECTION": "e.g.: Science Fiction Movies"
+        },
+
+        "LICENSE": {
+            "SEARCH_LICENSE": "Search a license:",
+            "LICENSE_LOCATION": "License location",
+            "LICENSE_NAME": "License name",
+            "LICENSE_ICON_POSTER": "Button illustration for the license",
+            "LICENSE_BACKGROUND_POSTER": "License background image",
+            "LICENSE_LOGO_POSTER": "License logo",
+            "ADD_MOVIE_INTO_LICENSE": "Add a movie to the license",
+            "ADD_SERIES_INTO_LICENSE": "Add a series to the license",
+            "ADD_SELECTION_INTO_LICENSE": "Add a selection to your license",
+            "MESSAGE_ADD": "This action will add a new license",
+            "MESSAGE_MODIFY": "This action will save changes to the license",
+            "MESSAGE_DELETE": "This action will permanently delete the license",
+            "MESSAGE_MODIFY_ORDER": "This action will modify the license display order",
+            "SELECT_LICENSE_TYPE": "Select the license type to edit:",
+            "PLACEHOLDER_NAME": "e.g.: Studio Ghibli",
+            "PLACEHOLDER_ICON": "e.g.: Image representing Studio Ghibli",
+            "PLACEHOLDER_BACK": "e.g.: Image representing Studio Ghibli",
+            "PLACEHOLDER_LOGO": "e.g.: Studio Ghibli logo"
+        },
+
+        "SELECTION": {
+            "SEARCH_SELECTION": "Search a selection:",
+            "SELECTION_TYPE": "Selection type",
+            "INFO_1": "Normal selections are represented by smaller posters. They are created",
+            "INFO_2": "automatically from your categories but you can also create them to be more specific",
+            "INFO_3": "Special selections are represented by larger posters,",
+            "INFO_4": "unlike normal selections they are not created automatically in the streaming interface",
+            "SELECTION_NAME": "Normal selection name",
+            "ADD_MOVIE_INTO_SELECTION": "Add a movie to the selection",
+            "ADD_SERIES_INTO_SELECTION": "Add a series to the selection",
+            "MESSAGE_ADD": "This action will add a new selection",
+            "MESSAGE_MODIFY": "This action will save changes to the selection",
+            "MESSAGE_DELETE": "This action will permanently delete the selection",
+            "NORMAL_SELECTION": "Normal selection",
+            "SPECIAL_SELECTION": "Special selection",
+            "PLACEHOLDER_NAME": "e.g.: Special selection on Crime Thrillers"
+        },
+
+        "PAGE_SELECTION": {
+            "SEARCH_SELECTION": "Search a selection",
+            "MESSAGE_MODIFY_HOME_PAGE": "This action will modify the list of selections on the home page"
+        },
+
+        "MOVIE": {
+            "SEARCH_MOVIE": "Search the movie to edit",
+            "PLACEHOLDER_LOGO": "e.g.: Movie logo",
+            "PLACEHOLDER_BACK": "e.g.: Iconic shot from the movie",
+            "PLACEHOLDER_TITLE": "e.g.: Pan's Labyrinth",
+            "PLACEHOLDER_JELLYFIN": "e.g.: gh0f55a6c3f269f79tc6d91fb55z3179",
+            "RELEASE_DATE": "Movie release date",
+            "TIME_SLOT": "Movie display interval",
+            "LOGO_POSTER": "Movie logo",
+            "POSTER_BACKGROUND": "Movie background image",
+            "MESSAGE_ADD": "This action will add a new movie",
+            "MESSAGE_MODIFY": "This action will save the changes made to the movie",
+            "MESSAGE_DELETE": "This action will permanently delete the movie"
+        },
+
+      "SERIES": {
+          "SEARCH_SERIES": "Search the series to edit",
+          "PLACEHOLDER_SEASON_POSTER": "e.g.: Season 1 of Breaking Bad",
+          "PLACEHOLDER_SEASON": "e.g.: Season 1",
+          "PLACEHOLDER_LOGO": "e.g.: Series logo",
+          "PLACEHOLDER_BACK": "e.g.: Iconic shot from the series",
+          "PLACEHOLDER_TITLE": "e.g.: Breaking Bad",
+          "PLACEHOLDER_JELLYFIN": "e.g.: gh0f55a6c3f269f79tc6d91fb55z3179",
+          "RELEASE_DATE_SERIES": "Series release date",
+          "TIME_SLOT_SERIES": "Series display interval",
+          "LOGO_POSTER": "Series logo",
+          "POSTER_BACKGROUND": "Series background image",
+          "MAIN_INFO": "Main information",
+          "INFO_SEASONS": "Season information",
+          "SEASON_NAME": "Season name",
+          "MESSAGE_ADD": "This action will add a new series",
+          "MESSAGE_MODIFY": "This action will save the changes made to the series",
+          "MESSAGE_DELETE": "This action will permanently delete the series"
+      },
+
+      "MEDIA": {
+            "TITLE": "Title",
+            "CREDITS": "Credits",
+            "CATEGORIES": "Categories",
+            "KEY_WORDS": "Keywords",
+            "DESCRIPTION": "Description",
+            "POSTER_VERTICAL": "Vertical posters",
+            "POSTER_HORIZONTAL": "Horizontal posters",
+            "SAME_POSTER": "Use the same horizontal poster as the background?"
+        }
+    },
+
+    "BUTTON": {
+        "PLAY": "Play",
+        "MODIFY": "Edit",
+        "MYLIST": "Favorites",
+        "OPEN_VLC": "Open in VLC",
+        "CANCEL": "Cancel",
+        "SAVE": "Save",
+        "DELETE_PROFIL": "Delete profile",
+        "SEND": "Send",
+        "LOAD_GRAPH": "Load graph",
+        "DETAILS": "Details",
+        "ACTION": "Action",
+        "DELETE": "Delete",
+        "RESET": "Reset",
+        "CONFIRM": "Confirm"
+    },
+
+    "FOOTER": {
+        "VERSION": "Version",
+        "BUILD": "Build",
+        "RIGHT_RESERVED": "All rights reserved"
+    },
+
+    "DECADE": "Decade",
+    "CATEGORY": "Category",
+    "MEDIA": "Media",
+    "SERIES": "Series",
+    "SEASON": "Season",
+    "SEASONS": "Seasons",
+    "ALL": "All",
+    "MOVIES": "Movies",
+    "MOVIE": "movie",
+    "SERIE": "series",
+    "CONTENTS": "Content",
+    "CONTENT": "content",
+    "CONTAIN": "contains",
+    "EPISODES": "Episodes",
+    "EPISODE": "episode",
+    "SELECTIONS": "Selections",
+    "LICENSE": "License",
+    "NOT CONTAIN": "does not contain",
+
+    "DAY": "Day",
+    "WEEK": "Week",
+    "MONTH": "Month",
+    "YEAR": "Year",
+    "HOURS": "hours",
+
+    "MAXIMUM_CHARACTERS": "characters",
+    "MAXIMUM_WORDS": "words",
+
+    "YES": "Yes",
+    "NO": "No",
+
+    "POSTER": "Poster"
+}

@@ -1,24 +1,25 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { UserModel } from '../../dto/user.model';
-import { UserService } from '../../service/user/user.service';
+import { UserModel } from '../../../dto/user.model';
+import { UserService } from '../../../service/user/user.service';
 import { Subscription, take } from 'rxjs';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { EditProfilPictureComponent } from '../edit-profil-picture/edit-profil-picture.component';
-import { UpdateUserModel } from '../../dto/update-user.interface';
-import { PopupComponent } from '../../../edition-module/components/popup/popup.component';
-import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
-import { ElectronService } from '../../../../common-module/services/electron/electron.service';
-import { AuthService } from '../../../../launch-module/services/auth/auth.service';
-import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
-import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { UpdateUserModel } from '../../../dto/update-user.interface';
+import { PopupComponent } from '../../../../edition-module/components/popup/popup.component';
+import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
+import { ElectronService } from '../../../../../common-module/services/electron/electron.service';
+import { AuthService } from '../../../../../launch-module/services/auth/auth.service';
+import { UserParametersService } from '../../../service/user-parameters/user-parameters.service';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 import { TranslatePipe } from '@ngx-translate/core';
+import { EditProfilPictureComponent } from '../edit-profil-picture/edit-profil-picture.component';
+import { LangSelectComponent } from '../lang-select/lang-select.component';
 
 @Component({
   selector: 'app-user-edit-profil',
   standalone: true,
-  imports: [TranslatePipe, ReactiveFormsModule, EditProfilPictureComponent, PopupComponent],
+  imports: [TranslatePipe, ReactiveFormsModule, EditProfilPictureComponent, PopupComponent, LangSelectComponent],
   templateUrl: './user-edit-profil.component.html',
-  styleUrls: ['./user-edit-profil.component.css', '../../../common-module/styles/animation.css']
+  styleUrls: ['./user-edit-profil.component.css', '../../../../common-module/styles/animation.css']
 })
 export class UserEditProfilComponent {
 

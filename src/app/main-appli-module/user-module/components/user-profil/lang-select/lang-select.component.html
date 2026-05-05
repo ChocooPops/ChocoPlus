@@ -1,0 +1,33 @@
+<div class="lang-select" [class.open]="isOpen">
+
+  <button class="lang-trigger" (click)="toggle()" type="button">
+    <span class="flag">{{ currentOption.flag }}</span>
+    <span class="label">{{ currentOption.label }}</span>
+    <span class="chevron">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+        <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </button>
+
+  <div class="lang-dropdown">
+    @for (lang of langs; track lang.code) {
+      <button
+        class="lang-option"
+        [class.active]="lang.code === current"
+        (click)="select(lang.code)"
+        type="button">
+        <span class="flag">{{ lang.flag }}</span>
+        <span class="label">{{ lang.label }}</span>
+        @if (lang.code === current) {
+          <span class="check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6L5 9L10 3" stroke="#FFD301" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        }
+      </button>
+    }
+  </div>
+
+</div>

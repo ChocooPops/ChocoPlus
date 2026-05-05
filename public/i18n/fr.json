@@ -112,7 +112,9 @@
             "RESET": "Réinitialiser",
             "START_RANDOM_MOVIE": "Start random movie",
             "START_RANDOM_SERIE": "Start random serie",
-            "LOGOUT": "Déconnexion"
+            "LOGOUT": "Déconnexion",
+            "HIDE_KEYS": "Masquer les clés de traductions",
+            "SHOW_KEYS": "Afficher les clés de traductions"
         }
     },
 
@@ -171,7 +173,8 @@
             "CONFIRM_NEW_PASSWORD": "Confirmation du nouveau mots de passe",
             "MESSAGE_DELETE_PROFIL_1": "Voulez vraiment supprimer votre compte ?",
             "MESSAGE_DELETE_PROFIL_2": "Cette opération est définitive.",
-            "CHOOSE_ICON": "Choisissez votre îcone"
+            "CHOOSE_ICON": "Choisissez votre îcone",
+            "SYSTEM_LANGUAGE": "Langage du système : "
         },
         "USER_SUPPORT": {
             "INFO_1": "Vous êtes témoin d’un dysfonctionnement, alertez-nous pour qu’ils soient corriger le plus plus rapidement possible.",

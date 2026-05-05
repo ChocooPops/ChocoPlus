@@ -16,6 +16,7 @@ import { ChocoPlayerModel } from '../../../video-playing-module/models/choco-pla
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 import { TranslatePipe } from '@ngx-translate/core';
+import { TranslationLanguageService } from '../../../../common-module/services/translation-language/translation-language.service';
 
 @Component({
   selector: 'app-user-tab',
@@ -26,40 +27,53 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class UserTabComponent {
 
-  subscription!: Subscription;
+  subscription: Subscription = new Subscription();
   srcReset: string = 'icon/modify.svg';
   srcRandom: string = 'icon/random.svg';
 
   user!: UserModel;
-  role = RoleModel;
+  Role = RoleModel;
   class: string = 'not-visible-under-menu';
   classArrow: string = 'arrow-not-clicked';
 
   userMenu: MenuTabModel[] = [];
   disableParamAdmin: boolean = true;
 
-  constructor(private userService: UserService,
-    private movieService: MovieService,
+  isShowingKeys: boolean = false;
+
+  srcTraductionFill: string = 'icon/traduction-fill.svg';
+  srcTraductionNotFill: string = 'icon/traduction-not-fill.svg';
+
+  constructor(private readonly userService: UserService,
+    private readonly movieService: MovieService,
     //private router: Router,
-    private electronService: ElectronService,
-    private userParametersService: UserParametersService,
-    private authService: AuthService,
-    private seriesService: SeriesService,
-    private streamService: StreamService
+    private readonly electronService: ElectronService,
+    private readonly userParametersService: UserParametersService,
+    private readonly authService: AuthService,
+    private readonly seriesService: SeriesService,
+    private readonly streamService: StreamService,
+    private readonly translationLanguageService: TranslationLanguageService
   ) {
     this.userMenu = this.userParametersService.getAllUserTabMenu();
   }
 
   ngOnInit(): void {
-    this.subscription = this.userService.getCurrentUser().subscribe((user: UserModel | undefined) => {
-      if (user) {
-        this.user = user;
-        if (this.user.role != RoleModel.ADMIN && this.disableParamAdmin) {
-          this.userMenu = this.userMenu.slice(0, this.userMenu.length - 1);
-          this.disableParamAdmin = false;
+    this.subscription.add(
+      this.userService.getCurrentUser().subscribe((user: UserModel | undefined) => {
+        if (user) {
+          this.user = user;
+          if (this.user.role != RoleModel.ADMIN && this.disableParamAdmin) {
+            this.userMenu = this.userMenu.slice(0, this.userMenu.length - 1);
+            this.disableParamAdmin = false;
+          }
         }
-      }
-    });
+      })
+    );
+    this.subscription.add(
+      this.translationLanguageService.getIsShowingKeys().subscribe((value) => {
+        this.isShowingKeys = value;
+      })
+    )
   }
 
   onMouseEnter(): void {
@@ -151,6 +165,14 @@ export class UserTabComponent {
   srcDefaultPp: string = 'pp/pp.jpg';
   errorPpUser(): void {
     this.user.profilPhoto = this.srcDefaultPp;
+  }
+
+  onToggleTranslationKeys(): void {
+    if (this.isShowingKeys) {
+      this.translationLanguageService.revertToPreviousLang();
+    } else {
+      this.translationLanguageService.showTranslationKeys();
+    }
   }
 
 }
