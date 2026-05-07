@@ -10,6 +10,11 @@
     <div class="container-profil">
 
         <div class="containerFieldToFill">
+            <p> {{ 'IDENTIFYING' | translate }} </p>
+            <app-input-number-edition [number]="editCredit.id" [disbaled]="true"></app-input-number-edition>
+        </div>
+        
+        <div class="containerFieldToFill">
             <p>{{ 'EDITION.CREDIT.POSTER_CREDIT' | translate}} <span class="yellow">**</span></p>
             <app-input-image-edition [exText]="exTextPoster" [srcImageAdded]="editCredit.srcPoster"
                 (inputChange)="onInputSrcPoster($event)"></app-input-image-edition>

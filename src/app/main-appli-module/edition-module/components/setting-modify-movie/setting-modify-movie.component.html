@@ -7,6 +7,12 @@
     </div>
 
     @if(editMovie.id >= 0) {
+        
+    <div class="containerFieldToFill">
+        <p> {{ 'IDENTIFYING' | translate }} </p>
+        <app-input-number-edition [number]="editMovie.id" [disbaled]="true"></app-input-number-edition>
+    </div>
+
     <div class="containerFieldToFill">
         <p>{{ 'EDITION.MEDIA.TITLE' | translate }} <span class="yellow">*</span></p>
         <div class="container-flex">

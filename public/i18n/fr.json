@@ -449,6 +449,7 @@
             "MEDIA_LIST": "Liste des médias",
             "MESSAGE_DELETE": "Supprimer une librairie supprimera aussi tout les médias associés. Êtes-vous sûr de vouloir procéder à cette opération ?", 
             "NEW_LIBRARY": "Nouvelle médiathèque",
+            "ADD_LIBRARY": "Ajouter une médiathèque",
             "SETUP_MEDIA_SOURCE": "Configurer une source de médias",
             "FORMATED_TITLE": "Titre formaté",
             "ABSOLUTE_PATH": "Chemin absolue",
@@ -532,5 +533,7 @@
     "RUSSIAN": "Russe",
     "KOREAN": "Coréen",
     "CHINESE": "Chinois",
-    "PORTUGUESE": "Portugais"
+    "PORTUGUESE": "Portugais",
+
+    "IDENTIFYING": "Identifiant"
 }

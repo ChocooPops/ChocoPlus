@@ -9,6 +9,11 @@
 
     @if(editSelection.id >= 0) {
     <div class="containerFieldToFill">
+        <p> {{ 'IDENTIFYING' | translate }} </p>
+        <app-input-number-edition [number]="editSelection.id" [disbaled]="true"></app-input-number-edition>
+    </div>
+
+    <div class="containerFieldToFill">
         <p> {{ 'EDITION.SELECTION.SELECTION_TYPE' | translate }} <span>*</span> </p>
         <app-input-radio-button [radioButton]="radioButtonTypeSelection" [group]="groupTypeSelection"
             (changeEmit)="changeTypeSelection($event)"></app-input-radio-button>

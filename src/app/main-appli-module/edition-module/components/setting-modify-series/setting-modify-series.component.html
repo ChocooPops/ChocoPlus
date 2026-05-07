@@ -10,6 +10,11 @@
 
     @if(editSeries.id >= 0) {
     <div class="containerFieldToFill">
+        <p> {{ 'IDENTIFYING' | translate }} </p>
+        <app-input-number-edition [number]="editSeries.id" [disbaled]="true"></app-input-number-edition>
+    </div>
+
+    <div class="containerFieldToFill">
         <app-input-button-info-series (toggleTypeInfo)="modifyTypeInfoDisplayed($event)"
             [typeInfo]="typeInfoDisplayed"></app-input-button-info-series>
     </div>

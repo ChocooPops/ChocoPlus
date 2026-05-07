@@ -17,11 +17,12 @@ import { ActivatedRoute } from '@angular/router';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputNumberEditionComponent } from '../input-number-edition/input-number-edition.component';
 
 @Component({
   selector: 'app-setting-modify-category',
   standalone: true,
-  imports: [TranslatePipe, PopupComponent, InputResearchSeriesComponent, InputTextEditionComponent, ButtonSaveComponent, ButtonRemoveComponent, InputResearchCategoryComponent, SelectionOverviewComponent, InputResearchMovieComponent],
+  imports: [TranslatePipe, InputNumberEditionComponent, PopupComponent, InputResearchSeriesComponent, InputTextEditionComponent, ButtonSaveComponent, ButtonRemoveComponent, InputResearchCategoryComponent, SelectionOverviewComponent, InputResearchMovieComponent],
   templateUrl: './setting-modify-category.component.html',
   styleUrls: ['./setting-modify-category.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })

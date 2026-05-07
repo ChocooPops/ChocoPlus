@@ -21,11 +21,12 @@ import { SelectionService } from '../../../media-module/services/selection/selec
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputNumberEditionComponent } from '../input-number-edition/input-number-edition.component';
 
 @Component({
   selector: 'app-setting-modify-license',
   standalone: true,
-  imports: [TranslatePipe, InputResearchLicenseComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchMovieComponent, InputResearchSelectionComponent, SelectionOverviewComponent, InputImageEditionComponent, InputRadioButtonComponent, InputTextEditionComponent],
+  imports: [TranslatePipe, InputNumberEditionComponent, InputResearchLicenseComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchMovieComponent, InputResearchSelectionComponent, SelectionOverviewComponent, InputImageEditionComponent, InputRadioButtonComponent, InputTextEditionComponent],
   templateUrl: './setting-modify-license.component.html',
   styleUrls: ['./setting-modify-license.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })

@@ -33,11 +33,12 @@ import { CreditsTableComponent } from '../credits-table/credits-table.component'
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputNumberEditionComponent } from '../input-number-edition/input-number-edition.component';
 
 @Component({
   selector: 'app-setting-modify-series',
   standalone: true,
-  imports: [TranslatePipe, NgClass, CreditsTableComponent, InputTimeEditionComponent, InputDateComponent, InputResearchSeriesComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
+  imports: [TranslatePipe, InputNumberEditionComponent, NgClass, CreditsTableComponent, InputTimeEditionComponent, InputDateComponent, InputResearchSeriesComponent, EditListSeasonComponent, EditEpisodeComponent, EditSeasonComponent, InputTextEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputKeywordsEditionComponent, InputRadioButtonComponent, InputCategoriesEditionComponent, InputTextAreaEditionComponent, InputPosterEditionComponent, InputPosterHorizontalEditionComponent, ButtonRemoveComponent, ButtonSaveComponent, InputImageEditionComponent, PopupComponent, InputButtonInfoSeriesComponent, ButtonAddComponent],
   templateUrl: './setting-modify-series.component.html',
   styleUrls: ['./setting-modify-series.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })

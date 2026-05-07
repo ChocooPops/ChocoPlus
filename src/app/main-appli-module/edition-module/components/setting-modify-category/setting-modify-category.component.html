@@ -9,6 +9,11 @@
 
     @if(editCategory.id >= 0) {
     <div class="containerFieldToFill">
+        <p> {{ 'IDENTIFYING' | translate }} </p>
+        <app-input-number-edition [number]="editCategory.id" [disbaled]="true"></app-input-number-edition>
+    </div>
+
+    <div class="containerFieldToFill">
         <p>{{ 'EDITION.CATEGORY.CATEGORY_NAME' | translate }} <span>*</span></p>
         <app-input-text-edition [text]="editCategory.name" [placeHolder]="exCategory"
             (onInputChange)="onChangeNameCategory($event)"></app-input-text-edition>

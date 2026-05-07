@@ -7,6 +7,12 @@
     </div>
 
     @if(editLicense.id >= 0) {
+
+    <div class="containerFieldToFill">
+        <p> {{ 'IDENTIFYING' | translate }} </p>
+        <app-input-number-edition [number]="editLicense.id" [disbaled]="true"></app-input-number-edition>
+    </div>
+
     <div class="containerFieldToFill">
         <p> {{ 'EDITION.LICENSE.LICENSE_LOCATION' | translate }} <span>*</span></p>
         <app-input-radio-button (changeEmit)="modifyLicensePosition($event)"

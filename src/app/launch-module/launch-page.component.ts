@@ -49,6 +49,8 @@ export class LaunchPageComponent {
           if (result.version) {
             this.lastVersion = result.version;
             this.isGoodVersion = this.versionService.isVersionGreater(currentVersion, this.lastVersion.num);
+          } else {
+            this.isGoodVersion = true;
           }
           this.imagePreloaderService.preloadImages([result.user.profilPhoto]).finally(() => {
             if (this.isGoodVersion) {

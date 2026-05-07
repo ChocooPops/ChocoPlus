@@ -18,11 +18,12 @@ import { ActivatedRoute } from '@angular/router';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputNumberEditionComponent } from '../input-number-edition/input-number-edition.component';
 
 @Component({
   selector: 'app-setting-modify-license',
   standalone: true,
-  imports: [TranslatePipe, SelectionOverviewComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchMovieComponent, InputTextEditionComponent, InputRadioButtonComponent, InputResearchSelectionComponent],
+  imports: [TranslatePipe, InputNumberEditionComponent, SelectionOverviewComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputResearchMovieComponent, InputTextEditionComponent, InputRadioButtonComponent, InputResearchSelectionComponent],
   templateUrl: './setting-modify-selection.component.html',
   styleUrls: ['./setting-modify-selection.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })

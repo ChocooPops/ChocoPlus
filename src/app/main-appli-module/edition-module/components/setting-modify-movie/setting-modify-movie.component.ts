@@ -29,11 +29,12 @@ import { CreditsTableComponent } from '../credits-table/credits-table.component'
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputNumberEditionComponent } from '../input-number-edition/input-number-edition.component';
 
 @Component({
   selector: 'app-setting-modify-movie',
   standalone: true,
-  imports: [TranslatePipe, ButtonSaveComponent, CreditsTableComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputDateComponent, PopupComponent, ButtonRemoveComponent, NgClass, InputTimeEditionComponent, InputRadioButtonComponent, InputImageEditionComponent, InputPosterEditionComponent, InputTextAreaEditionComponent, InputKeywordsEditionComponent, InputCategoriesEditionComponent, InputTextEditionComponent, InputResearchMovieComponent],
+  imports: [TranslatePipe, InputNumberEditionComponent, ButtonSaveComponent, CreditsTableComponent, InputPosterHorizontalEditionComponent, InputLanguageTitleComponent, AiButtonComponent, InputDateComponent, PopupComponent, ButtonRemoveComponent, NgClass, InputTimeEditionComponent, InputRadioButtonComponent, InputImageEditionComponent, InputPosterEditionComponent, InputTextAreaEditionComponent, InputKeywordsEditionComponent, InputCategoriesEditionComponent, InputTextEditionComponent, InputResearchMovieComponent],
   templateUrl: './setting-modify-movie.component.html',
   styleUrls: ['./setting-modify-movie.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })
