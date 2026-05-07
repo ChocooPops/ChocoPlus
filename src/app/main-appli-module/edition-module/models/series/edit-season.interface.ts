@@ -3,7 +3,7 @@ import { EditEpisodeModel } from "./edit-episode.interface";
 export interface EditSeasonModel {
     id: number,
     seriesId: number,
-    jellyfinId: string | undefined,
+    mediaLibraryId: string | undefined,
     name: string | undefined,
     seasonNumber: number,
     srcPoster: string | ArrayBuffer | undefined | null,

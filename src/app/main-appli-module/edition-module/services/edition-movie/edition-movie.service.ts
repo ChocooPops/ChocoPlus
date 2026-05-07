@@ -40,7 +40,7 @@ export class EditionMovieService extends EditionMediaService {
     return {
       id: -1,
       title: undefined,
-      jellyfinId: undefined,
+      mediaLibraryId: undefined,
       otherTitles: [],
       startShow: '00:00:00',
       endShow: '00:00:00',
@@ -91,8 +91,8 @@ export class EditionMovieService extends EditionMediaService {
     this.updateMovie({ title: title });
   }
 
-  public modifyJellyfinId(jellyfinId: string | undefined): void {
-    this.updateMovie({ jellyfinId: jellyfinId });
+  public modifyMediaLibraryId(mediaLibraryId: string | undefined): void {
+    this.updateMovie({ mediaLibraryId: mediaLibraryId });
   }
 
   public modifyCredits(credits: MediaCreditModel[]): void {
@@ -341,7 +341,7 @@ export class EditionMovieService extends EditionMediaService {
     const newMovie: EditMovieModel = {
       id: movie.id,
       title: movie.title,
-      jellyfinId: movie.jellyfinId,
+      mediaLibraryId: movie.mediaLibraryId,
       otherTitles: movie.otherTitles || [],
       startShow: movie.startShow || '00:00:00',
       endShow: movie.endShow || '00:00:00',

@@ -53,7 +53,7 @@
     border-radius: 1.5px;
     padding-inline: 0.31vw;
     padding-block: 1.5px;
-    border: #8C8C8C solid 1px;
+    border: 0.1px #8C8C8C solid;
     display: flex;
     justify-content: center;
     align-items: center;

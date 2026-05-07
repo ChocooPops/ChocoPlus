@@ -15,7 +15,7 @@
         @for(videoRunning of editNewsRunningVideo; track videoRunning) {
         <app-edit-new-video-running (deleteNews)="deleteMediaIntoNews($event)"
             (modifyStartShow)="modifyStartShowById($event)" (modifyEndShow)="modifyEndShowById($event)"
-            (modifySrcBackground)="modifySrcBackground($event)" (modifyJellyfinId)="modifyJellyfinId($event)"
+            (modifySrcBackground)="modifySrcBackground($event)" (modifyMediaLibraryId)="modifyMediaLibraryId($event)"
             [videoRunning]="videoRunning"></app-edit-new-video-running>
         }
     </div>

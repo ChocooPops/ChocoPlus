@@ -1,0 +1,143 @@
+<app-popup (emitActionData)="emitAction()" (emitResetPopup)="cancel()"></app-popup>
+
+<div class="lf-overlay">
+
+    <div class="lf-card" #form>
+
+        <div class="lf-header">
+            <div class="lf-header-icon">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="2" y="3" width="16" height="14" rx="2" />
+                    <path d="M6 7h8M6 10h5" />
+                </svg>
+            </div>
+            <div>
+                <h2 class="lf-title"> {{ 'EDITION.LIBRARY.NEW_LIBRARY' | translate }} </h2>
+                <p class="lf-subtitle"> {{ 'EDITION.LIBRARY.SETUP_MEDIA_SOURCE' | translate }} </p>
+            </div>
+        </div>
+
+        <div class="lf-divider"></div>
+
+        <div class="lf-body">
+
+            <div class="lf-field">
+                <label class="lf-label">
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+                        <path
+                            d="M1 3.5A1.5 1.5 0 012.5 2h3.672a1.5 1.5 0 011.06.44l.828.827A1.5 1.5 0 009.12 3.75H13.5A1.5 1.5 0 0115 5.25v7.5A1.5 1.5 0 0113.5 14h-11A1.5 1.5 0 011 12.5v-9z" />
+                    </svg>
+                    {{ 'EDITION.LIBRARY.ABSOLUTE_PATH' | translate }}
+                </label>
+                <div class="lf-input-wrap">
+                    <span class="lf-input-prefix">
+                        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor"
+                            stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M2 4.5A1.5 1.5 0 013.5 3h4.086a1.5 1.5 0 011.06.44L9.56 4.5H12.5A1.5 1.5 0 0114 6v5.5A1.5 1.5 0 0112.5 13h-9A1.5 1.5 0 012 11.5V4.5z" />
+                        </svg>
+                    </span>
+                    <input class="lf-input" type="text" placeholder="C:/Films ou /home/user/series" [(ngModel)]="path"
+                        autocomplete="off" spellcheck="false" />
+                    
+                    <button type="button" class="lf-btn-browse" (click)="onBrowse()">
+                        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor"
+                            stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="5" height="5" rx="0.75" />
+                            <rect x="9" y="2" width="5" height="5" rx="0.75" />
+                            <rect x="2" y="9" width="5" height="5" rx="0.75" />
+                            <rect x="9" y="9" width="5" height="5" rx="0.75" />
+                        </svg>
+                        {{ 'BUTTON.BROWSE' | translate }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="lf-row">
+
+                <div class="lf-field">
+                    <label class="lf-label">
+                        <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+                            <path
+                                d="M2.5 3A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11A1.5 1.5 0 0015 11.5v-7A1.5 1.5 0 0013.5 3h-11zm4.5 4.5l3.5 2-3.5 2V7.5z" />
+                        </svg>
+                        {{ 'EDITION.LIBRARY.MEDIA_TYPE' | translate }}
+                    </label>
+                    <div #selectTypeMedia class="lf-select-wrap" [class.is-open]="mediaTypeOpen">
+                        <button type="button" class="lf-select-btn" (click)="toggleMediaType()">
+                            <span class="lf-select-label" [class.is-placeholder]="!mediaType">
+                                @if (mediaType === MediaType.MOVIE) {
+                                <span class="lf-dot lf-dot-gold"></span>
+                                }
+                                @if (mediaType === MediaType.SERIES) {
+                                <span class="lf-dot lf-dot-blue"></span>
+                                }
+                                {{ selectedMediaLabel | translate }}
+                            </span>
+                            <span class="lf-arrow"></span>
+                        </button>
+                        <div class="lf-dropdown">
+                            @for (opt of mediaTypeOptions; track opt) {
+                            <div class="lf-option" [class.selected]="mediaType === opt.value"
+                                (click)="selectMediaType(opt.value)">
+                                <span class="lf-dot" [class.lf-dot-gold]="opt.value === MediaType.MOVIE"
+                                    [class.lf-dot-blue]="opt.value === MediaType.SERIES"></span>
+                                {{ opt.label | translate }}
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lf-field">
+                    <label class="lf-label">
+                        <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor">
+                            <path
+                                d="M8 1a7 7 0 100 14A7 7 0 008 1zm-.5 1.02V4H5.3a6.02 6.02 0 012.2-1.98zM7.5 5v2H4.07A5.98 5.98 0 014 7a5.98 5.98 0 01.07-1H7.5zm0 3v2H4.07A5.98 5.98 0 014 9h3.5zm0 3v1.98A6.02 6.02 0 015.3 11H7.5zm1 0h2.2a6.02 6.02 0 01-2.2 1.98V11zm0-1V9h3.43c.05.33.07.66.07 1s-.02.67-.07 1H8.5zm0-3V5h3.43C11.98 5.33 12 5.66 12 6s-.02.67-.07 1H8.5zm0-3V2.02A6.02 6.02 0 0110.7 4H8.5z" />
+                        </svg>
+                        {{ 'EDITION.LIBRARY.LANGUAGE' | translate }}
+                    </label>
+                    <div #selectLanguage class="lf-select-wrap" [class.is-open]="langOpen">
+                        <button type="button" class="lf-select-btn" (click)="toggleLang()">
+                            <span class="lf-select-label" [class.is-placeholder]="!lang">
+                                @if (selectedLangOption) {
+                                <span class="lf-flag">{{ selectedLangOption.flag }}</span>
+                                }
+                                {{ selectedLangOption ? selectedLangOption.label : 'EDITION.LIBRARY.SELECT...' | translate }}
+                            </span>
+                            <span class="lf-arrow"></span>
+                        </button>
+                        <div class="lf-dropdown">
+                            @for (opt of langOptions; track opt) {
+                            <div class="lf-option" [class.selected]="lang === opt.value"
+                                (click)="selectLang(opt.value)">
+                                <span class="lf-flag">{{ opt.flag }}</span>
+                                {{ opt.label | translate }}
+                                <span class="lf-iso-badge">{{ opt.value }}</span>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="lf-divider"></div>
+
+        <div class="lf-footer">
+            <button type="button" class="lf-btn lf-btn-cancel" (click)="cancel()">
+                {{ 'BUTTON.CANCEL' | translate }}
+            </button>
+            <button type="button" class="lf-btn lf-btn-submit" [disabled]="!isValid" (click)="submit()">
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 8.5l4 4 8-8" />
+                </svg>
+                {{ 'EDITION.LIBRARY.CREATE_MEDIA_LIBRARY' | translate }}
+            </button>
+        </div>
+
+    </div>
+</div>

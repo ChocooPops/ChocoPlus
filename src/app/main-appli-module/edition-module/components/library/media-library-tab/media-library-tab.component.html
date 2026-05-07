@@ -1,0 +1,74 @@
+<div class="ct-wrap">
+  <table class="ct-table">
+    <thead>
+      <tr>
+        <th>ID<div class="ct-resize-handle"></div></th>
+        <th>Tmdb Id<div class="ct-resize-handle"></div></th>
+        <th>{{ 'MEDIA' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.FORMATED_TITLE' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'YEAR' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.ABSOLUTE_PATH' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.DURATION' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.FRAMES' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.BYTES' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.DIMENSION' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.RESOLUTION' | translate }}<div class="ct-resize-handle"></div></th>
+        <th class="ct-action-col">{{ 'BUTTON.ACTION' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (mediaLibrary of mediaLibraries; track mediaLibrary.id; let i = $index) {
+        <tr>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="mediaLibrary.id" disabled>
+          </td>
+          <td>
+            <input class="ct-input ct-input-number" type="number" [(ngModel)]="mediaLibrary.tmdbId">
+          </td>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="mediaLibrary.type" disabled>
+          </td>
+          <td>
+            <input class="ct-input ct-input-order" type="text" [(ngModel)]="mediaLibrary.titleFormated" disabled/>
+          </td>
+          <td>
+            <input class="ct-input ct-input-number" type="number" [(ngModel)]="mediaLibrary.year" disabled/>
+          </td>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="mediaLibrary.path" disabled/>
+          </td>
+          <td>
+            <input class="ct-input ct-input-number" type="number" [(ngModel)]="mediaLibrary.duration" disabled/>
+          </td>
+          <td>
+            <input class="ct-input ct-input-number" type="number" [(ngModel)]="mediaLibrary.frames" disabled/>
+          </td>
+          <td>
+            <input class="ct-input ct-input-number" type="number" [(ngModel)]="mediaLibrary.bytes" disabled/>
+          </td>
+          <td>
+            <input class="ct-input" type="text" [value]="getDimension(mediaLibrary)" disabled/>
+          </td>
+          <td>
+            <input class="ct-input" type="text" [(ngModel)]="mediaLibrary.resolution" disabled/>
+          </td>
+          <td class="ct-action-cell">
+          @if (loadingStates[i]) {
+          <span class="ct-spinner"></span>
+          } @else {
+          <button class="ct-save-btn" (click)="saveVersion(mediaLibrary, i)" title="Enregistrer les modifications">
+            <img [src]="srcIconSave">
+            {{ 'BUTTON.MODIFY' | translate }}
+          </button>
+          }
+          @if (feedbackStates[i]; as fb) {
+          <span class="ct-feedback" [class.ct-feedback--success]="fb.state" [class.ct-feedback--error]="!fb.state">
+            {{ fb.message | translate }}
+          </span>
+          }
+        </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -52,7 +52,7 @@ export class EditNewsVideoRunningService {
           const movie: MovieModel = this.movieService.createNewMovie(item.media);
           news.push({
             id: item.id,
-            jellyfinId: item.jellyfinId,
+            mediaLibraryId: item.mediaLibraryId,
             srcBackground: item.srcBackground,
             startShow: item.startShow,
             endShow: item.endShow,
@@ -76,7 +76,7 @@ export class EditNewsVideoRunningService {
           const series: SeriesModel = this.seriesService.createNewSeries(item.media);
           news.push({
             id: item.id,
-            jellyfinId: item.jellyfinId,
+            mediaLibraryId: item.mediaLibraryId,
             srcBackground: item.srcBackground,
             startShow: item.startShow,
             endShow: item.endShow,
@@ -98,7 +98,7 @@ export class EditNewsVideoRunningService {
     if (!exists) {
       news.push({
         id: this.getId(),
-        jellyfinId: media.mediaType === MediaTypeModel.MOVIE ? media.jellyfinId : undefined,
+        mediaLibraryId: media.mediaType === MediaTypeModel.MOVIE ? media.mediaLibraryId : undefined,
         srcBackground: media.srcBackgroundImage,
         startShow: media.startShow ? media.startShow : '00:00:00',
         endShow: media.endShow ? media.endShow : '00:00:00',
@@ -139,11 +139,11 @@ export class EditNewsVideoRunningService {
     }
   }
 
-  public modifyJellyfinId(id: number, jellyfinId: string): void {
+  public modifyMediaLibraryId(id: number, mediaLibraryId: string): void {
     const news: NewsVideoRunningModel[] = this.editNewsVideoRunningSubject.value;
     const index: number = news.findIndex((item: NewsVideoRunningModel) => item.id === id);
     if (index >= 0) {
-      news[index].jellyfinId = jellyfinId;
+      news[index].mediaLibraryId = mediaLibraryId;
     }
   }
 
@@ -180,7 +180,7 @@ export class EditNewsVideoRunningService {
   private getEditNewVideoRunningFormated(): EditNewsVideoRunningModel[] {
     return this.editNewsVideoRunningSubject.value.map((news: NewsVideoRunningModel) => ({
       id: news.id,
-      jellyfinId: news.jellyfinId,
+      mediaLibraryId: news.mediaLibraryId,
       mediaId: news.media.id,
       mediaType: news.media.mediaType,
       srcBackground: news.srcBackground,

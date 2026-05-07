@@ -6,7 +6,7 @@ import { TranslationTitle } from "./translation-title.interface";
 export interface EditionMediaModel {
     id: number,
     title: string | undefined,
-    jellyfinId: string | undefined,
+    mediaLibraryId: string | undefined,
     otherTitles: TranslationTitle[],
     credits: MediaCreditModel[],
     categories: CategorySimpleModel[],

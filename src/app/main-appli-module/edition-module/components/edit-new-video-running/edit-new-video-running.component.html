@@ -3,9 +3,9 @@
     <div class="container-media">
         <div class="container-info">
             <div class="containerFieldToFill">
-                <p>Jellyfin_id <span>*</span></p>
+                <p> {{ 'EDITION.MEDIA_LIBRARY' | translate }} <span>*</span></p>
                 <div class="container-jellyfin">
-                    <p> {{ videoRunning.jellyfinId}} </p>
+                    <p> {{ videoRunning.mediaLibraryId }} </p>
                 </div>
             </div>
             <div class="containerFieldToFill">
@@ -48,8 +48,8 @@
 
     @if(series) {
     <app-edit-news-series-running class="container-series" [series]="series"
-        [currentJellyfinId]="videoRunning.jellyfinId"
-        (changeJellyfinEpisode)="onChangeJellyfinId($event)"></app-edit-news-series-running>
+        [currentMediaLibraryId]="videoRunning.mediaLibraryId"
+        (changeMediaLibraryEpisode)="onChangeMediaLibraryId($event)"></app-edit-news-series-running>
     }
 
 </div>

@@ -1,0 +1,425 @@
+:host {
+  display: block;
+}
+
+.lf-overlay {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  padding-top: 5rem;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  position: absolute;
+  z-index: 9998;
+}
+
+.lf-card {
+  height: 340px;
+  width: 640px;
+  background: #1a1a1a;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 6px;
+  animation: lf-enter 0.35s ease;
+}
+
+@keyframes lf-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lf-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 22px 18px;
+  border-radius: 6px 6px 0px 0px;
+  background: #111;
+}
+
+.lf-header-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #d4af3718;
+  border: 1.5px solid #d4af3740;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d4af37;
+}
+
+.lf-header-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.lf-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  color: #e8e6d9;
+  letter-spacing: 0.02em;
+}
+
+.lf-subtitle {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  color: #555;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.lf-divider {
+  height: 1px;
+  background: #222;
+}
+
+.lf-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.lf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.lf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.lf-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.lf-label svg {
+  color: #d4af37;
+  flex-shrink: 0;
+}
+
+.lf-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lf-input-prefix {
+  position: absolute;
+  left: 12px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.lf-input {
+  width: 100%;
+  height: 36px;
+  background: #111;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 5px 0px 0px 5px;
+  padding: 0 12px 0 36px;
+  font-size: 13px;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  color: #ccc;
+  box-sizing: border-box;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.lf-input:hover {
+  border-color: #3a3a3a;
+}
+
+.lf-input:focus {
+  border-color: #717171;
+  background: #0f0f0f;
+}
+
+.lf-input::placeholder {
+  color: #3a3a3a;
+}
+
+.lf-select-wrap {
+  position: relative;
+  height: 36px;
+}
+
+.lf-select-wrap.is-open {
+  z-index: 100;
+}
+
+.lf-select-btn {
+  width: 100%;
+  height: 36px;
+  background: #111;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.lf-select-btn:hover {
+  border-color: #3a3a3a;
+}
+
+.lf-select-wrap.is-open .lf-select-btn {
+  border-color: #717171;
+  background: #0f0f0f;
+  border-radius: 6px 6px 0 0;
+}
+
+.lf-select-label {
+  font-size: 13px;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  color: #ccc;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lf-select-label.is-placeholder {
+  color: #3a3a3a;
+}
+
+.lf-arrow {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #555;
+  transition:
+    transform 0.2s,
+    border-top-color 0.2s;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.lf-select-wrap.is-open .lf-arrow {
+  transform: rotate(180deg);
+  border-top-color: #717171;
+}
+
+.lf-dropdown {
+  display: none;
+  position: absolute;
+  top: 36px;
+  left: 0;
+  right: 0;
+  background: #0f0f0f;
+  border: 1.5px solid #717171;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  z-index: 99;
+  max-height: calc(36px * 5.5);
+  overflow-y: auto;
+  animation: lf-dd 0.15s ease;
+}
+
+.lf-dropdown::-webkit-scrollbar {
+  width: 3px;
+}
+
+.lf-dropdown::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.lf-dropdown::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+}
+
+.lf-select-wrap.is-open .lf-dropdown {
+  display: block;
+}
+
+@keyframes lf-dd {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lf-option {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  color: #999;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    color 0.12s;
+  letter-spacing: 0.02em;
+}
+
+.lf-option:hover {
+  background: #1a1a1a;
+  color: #e8e6d9;
+}
+
+.lf-option.selected {
+  background: #d4af3712;
+  color: #d4af37;
+}
+
+.lf-option + .lf-option {
+  border-top: 1px solid #1a1a1a;
+}
+
+.lf-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.lf-dot-gold {
+  background: #d4af37;
+}
+.lf-dot-blue {
+  background: #87ceeb;
+}
+
+.lf-flag {
+  font-size: 14px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.lf-iso-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  color: #444;
+  letter-spacing: 0.08em;
+}
+
+.lf-footer {
+  padding: 14px 22px 18px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.lf-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.lf-btn-cancel {
+  background: transparent;
+  border: 1.5px solid #2a2a2a;
+  color: #555;
+}
+
+.lf-btn-cancel:hover {
+  border-color: #444;
+  color: #999;
+}
+
+.lf-btn-submit {
+  background: transparent;
+  border: 1.5px solid #d4af37;
+  color: #d4af37;
+}
+
+.lf-btn-submit:hover:not(:disabled) {
+  background: #d4af3715;
+  border-color: #f4c430;
+  color: #f4c430;
+}
+
+.lf-btn-submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.lf-btn-submit:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: #444;
+  color: #444;
+}
+
+.lf-btn-browse {
+  flex-shrink: 0;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  background: #111;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 0 6px 6px 0;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+
+.lf-btn-browse:hover {
+  border-color: #717171;
+  color: #717171;
+}

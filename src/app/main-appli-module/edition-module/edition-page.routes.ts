@@ -20,7 +20,7 @@ import { SettingAddCreditComponent } from "./components/setting-add-credit/setti
 import { SettingModifyVersionComponent } from "./components/setting-modify-version/setting-modify-version.component";
 import { IsAdminGuard } from "../../common-module/guards/is-admin.user.guard";
 import { UnauthorizedPageComponent } from "../../common-module/components/unauthorized-page/unauthorized-page.component";
-import { SettingEditLibraryComponent } from "./components/setting-edit-library/setting-edit-library.component";
+import { SettingEditLibraryComponent } from "./components/library/setting-edit-library/setting-edit-library.component";
 
 export const editionRoutes: Routes = [
     {

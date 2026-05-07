@@ -19,21 +19,21 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class EditNewsSeriesRunningComponent {
 
   @Input() series !: SeriesModel;
-  @Input() currentJellyfinId !: string | undefined;
-  @Output() changeJellyfinEpisode = new EventEmitter<string>();
+  @Input() currentMediaLibraryId !: string | undefined;
+  @Output() changeMediaLibraryEpisode = new EventEmitter<string>();
   subscription !: Subscription;
   episodes: EpisodeModel[] | undefined = undefined;
 
-  constructor(private seriesService: SeriesService,
-    private compressedPosterService: CompressedPosterService
+  constructor(private readonly seriesService: SeriesService,
+    private readonly compressedPosterService: CompressedPosterService
   ) { }
 
   ngOnDestroy(): void {
     this.unsubscriptionEpisode();
   }
 
-  onChangeJellyfinEpisode(jellyfinId: string): void {
-    this.changeJellyfinEpisode.emit(jellyfinId);
+  onChangeMediaLibraryInEpisode(mediaLibraryId: string): void {
+    this.changeMediaLibraryEpisode.emit(mediaLibraryId);
   }
 
   onClickSeason(index: number): void {

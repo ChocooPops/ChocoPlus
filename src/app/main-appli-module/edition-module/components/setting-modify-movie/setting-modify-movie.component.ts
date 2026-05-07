@@ -143,12 +143,12 @@ export class SettingModifyMovieComponent extends SettingMovieAbstraction {
     }
   }
 
-  public async onClickButtonJellyfin(): Promise<void> {
-    if (this.editMovie.jellyfinId && this.editMovie.jellyfinId.trim() !== '') {
-      this.buttonSearchJellyfin.changeLoadingActivate(true);
+  public async onClickButtonMediaLibrary(): Promise<void> {
+    if (this.editMovie.mediaLibraryId && this.editMovie.mediaLibraryId.trim() !== '') {
+      this.buttonSearchMediaLibrary.changeLoadingActivate(true);
       this.unsubscribeSearchMovie();
-      this.subscriptionSearch = this.tmdbOperationService.fetchSearchMovieInfoByByJellyfinDataBase(this.editMovie.jellyfinId, this.editMovie.id, this.editMovie).pipe(take(1), finalize(() => {
-        this.buttonSearchJellyfin.changeLoadingActivate(false);
+      this.subscriptionSearch = this.tmdbOperationService.fetchSearchMovieInfoByMediaLibrary(this.editMovie.mediaLibraryId, this.editMovie.id, this.editMovie).pipe(take(1), finalize(() => {
+        this.buttonSearchMediaLibrary.changeLoadingActivate(false);
       })).subscribe({
         next: (data: EditMovieModel) => {
           this.editionMovieService.updateMovie(data);

@@ -3,14 +3,14 @@ import { ProgressStateMedia } from "../progress-state-media.enum"
 export interface EpisodeModel {
     id: number,
     seasonId: number,
-    jellyfinId: string
+    mediaLibraryId: string
     name: string,
     episodeNumber: number
     description: string,
     date: Date,
-    time: number,
+    duration: number,
     watchProgress: number,
     stateProgress: ProgressStateMedia,
-    quality: string,
+    resolution: string,
     srcPoster: string | undefined,
 }

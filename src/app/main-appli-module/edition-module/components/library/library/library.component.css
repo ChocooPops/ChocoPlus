@@ -1,0 +1,224 @@
+input {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  background-color: transparent;
+  border: none;
+  font-size: 13px;
+  width: 100%;
+  color: #888888;
+}
+
+.ml-card {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  background: #1a1a1a;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+  width: 400px;
+}
+
+.ml-card-not-selected:hover {
+  border-color: #3a3a3a;
+}
+
+.ml-card-selected {
+  border-color: #7f7f7f;
+}
+
+.ml-card-header {
+  background: #111;
+  padding: 16px 20px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+.ml-type-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.ml-type-film {
+  background: #d4af3722;
+  color: #d4af37;
+  border: 1px solid #d4af3744;
+}
+
+.ml-type-serie {
+  background: #87ceeb22;
+  color: #87ceeb;
+  border: 1px solid #87ceeb44;
+}
+
+.ml-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e8e6d9;
+  letter-spacing: 0.02em;
+}
+
+.ml-lang {
+  font-size: 11px;
+  color: #aaa;
+  text-align: end;
+}
+
+.ml-selected-dot-movie {
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d4af37;
+  opacity: 0;
+  transition: opacity 0.2s;
+  box-shadow: 0 0 6px #d4af3780;
+}
+
+.ml-selected-dot-series {
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #87ceeb;
+  opacity: 0;
+  transition: opacity 0.2s;
+  box-shadow: 0 0 6px #87ceeb44;
+}
+
+.ml-card.selected .ml-selected-dot {
+  opacity: 1;
+}
+
+.ml-card-body {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ml-path-icon {
+  color: #555;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.ml-path {
+  font-size: 13px;
+  color: #888;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.ml-card.selected .ml-path {
+  color: #c9a85f;
+}
+
+.ml-card-footer {
+  padding: 10px 20px 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid #1e1e1e;
+}
+
+.ml-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  justify-content: center;
+}
+
+.ml-btn-delete {
+  background: transparent;
+  border: 1.5px solid #555;
+  color: #ccc;
+}
+
+.ml-btn-delete:hover {
+  border-color: #e05555;
+  color: #e05555;
+  background: #e0555510;
+}
+
+.ml-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.ml-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #444;
+  text-transform: uppercase;
+  padding: 0 2px;
+  margin-bottom: 4px;
+}
+
+.spinning {
+  animation: spin 0.6s linear;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ml-btn-refresh {
+  background: transparent;
+  border: 1.5px solid #d4af37;
+  color: #d4af37;
+  position: relative;
+  overflow: hidden;
+}
+
+.ml-btn-refresh:hover {
+  background: #d4af3715;
+  border-color: #f4c430;
+  color: #f4c430;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+.ml-btn-refresh-in-progress {
+  border: 1.5px solid #685112;
+  color: #c9a85f;
+  background: linear-gradient(
+    90deg,
+    #1a1510 0%,
+    #2a2010 35%,
+    #3a2e18 48%,
+    #4a3a20 50%,
+    #3a2e18 52%,
+    #2a2010 65%,
+    #1a1510 100%
+  );
+  background-size: 250% 100%;
+  animation: shimmer 3s linear infinite;
+}

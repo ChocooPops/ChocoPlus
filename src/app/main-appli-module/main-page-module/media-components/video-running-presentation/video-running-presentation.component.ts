@@ -55,7 +55,7 @@ export class VideoRunningPresentationComponent {
 
   ngAfterViewInit(): void {
     this.startStreamingVideo();
-    if (this.newsMedia.jellyfinId) {
+    if (this.newsMedia.mediaLibraryId) {
       this.observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           this.isVisible = entry.isIntersecting;

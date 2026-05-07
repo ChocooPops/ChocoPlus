@@ -17,7 +17,7 @@ import { MenuType } from '../../../menu-module/model/menu-type.enum';
 })
 export class SettingManagerJellyfinComponent extends UnauthorizedError {
 
-  protected override menuType: MenuType = MenuType.PARAM_JELLYFIN;
+  protected override menuType: MenuType = MenuType.OTHER_PARAM_ADMIN;
 
   private type!: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   private message: string = 'Voulez-vous vraiment exécuter cet appel ?';

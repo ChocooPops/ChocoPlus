@@ -28,7 +28,7 @@
             "TRY_AGAIN": "Réessayer",
             "NO_CONNECTION": "Aucune connexion",
             "INCORRECT_USERNAME": "pseudo ou mot de passe incorrect",
-            "USER_DISABLED": "L'utilisateur n'est pas activé ou a été désactivé",
+            "USER_DISABLED": "L'utilisateur n'est pas activé ou a été suspendu",
             "ERROR": "Erreur"
         },
 
@@ -72,7 +72,7 @@
             "ADVANCED_SETTINGS": "Paramètres avancés",
             "MEDIA_LIBRARY": "Médiathèque",
             "VERSION": "Version",
-            "JELLYFIN_PARAMETERS": "Paramètre Jellyfin",
+            "OTHER_PARAMETERS_ADMIN": "Autre paramètre",
 
             "NEWS_MANAGEMENT": "Gestion des news",
             "MODIFY_NEWS_HOME": "Modifer les news d'accueil",
@@ -132,7 +132,6 @@
 
     "SEARCH_PAGE": {
         "RESULT": "Résultat",
-        "BROWSE": "Parcourir",
         "PLACEHOLDER_RESEARCH_MOVIE_SERIES": "Rechercher un film, une série ..."
     },
 
@@ -277,6 +276,7 @@
         "NORMAL_POSTER": "Affiche normal",
         "SPECIAL_POSTER": "Affiche spécial",
         "LICENSE_POSTER": "Affiche License",
+        "MEDIA_LIBRARY": "Médiathèque Id",
 
         "UNAUTHORIZED" : {
             "ADD": "Vous n'êtes pas autorisé à ajouter des données.",
@@ -403,7 +403,7 @@
             "PLACEHOLDER_LOGO": "ex : Logo du film",
             "PLACEHOLDER_BACK": "ex : Plan iconique du film",
             "PLACEHOLDER_TITLE": "ex : Le Labyrinthe de Pan",
-            "PLACEHOLDER_JELLYFIN": "ex : gh0f55a6c3f269f79tc6d91fb55z3179",
+            "PLACEHOLDER_MEDIA_LIBRARY": "ex : 014711a2-f03b-4595-964a-a7d268e81749",
             "RELEASE_DATE": "Date de sortie du film",
             "TIME_SLOT": "Intervalle de présentation du film",
             "LOGO_POSTER": "Logo du film",
@@ -420,7 +420,7 @@
             "PLACEHOLDER_LOGO": "ex : Logo de la série",
             "PLACEHOLDER_BACK": "ex : Plan iconique de la série",
             "PLACEHOLDER_TITLE": "ex : Breaking Bad",
-            "PLACEHOLDER_JELLYFIN": "ex : gh0f55a6c3f269f79tc6d91fb55z3179",
+            "PLACEHOLDER_MEDIA_LIBRARY": "ex : 014711a2-f03b-4595-964a-a7d268e81749",
             "RELEASE_DATE_SERIES": "Date d'apparition de la série",
             "TIME_SLOT_SERIES": "Intervalle de présentation de la série",
             "LOGO_POSTER": "Logo de la série",
@@ -442,6 +442,26 @@
             "POSTER_VERTICAL": "Affiches",
             "POSTER_HORIZONTAL": "Affiches horizontal",
             "SAME_POSTER": "Poster horizontal identique au background ?"
+        },
+
+        "LIBRARY": {
+            "LIBRARY_MANAGEMENT_TITLE": "Médiathèque — gestion des sources de médias",
+            "MEDIA_LIST": "Liste des médias",
+            "MESSAGE_DELETE": "Supprimer une librairie supprimera aussi tout les médias associés. Êtes-vous sûr de vouloir procéder à cette opération ?", 
+            "NEW_LIBRARY": "Nouvelle médiathèque",
+            "SETUP_MEDIA_SOURCE": "Configurer une source de médias",
+            "FORMATED_TITLE": "Titre formaté",
+            "ABSOLUTE_PATH": "Chemin absolue",
+            "DURATION": "Durée",
+            "FRAMES": "Frames",
+            "BYTES": "BYTES",
+            "DIMENSION": "Dimension",
+            "RESOLUTION": "Résolution",
+            "MEDIA_TYPE": "Type de média",
+            "CREATE_MEDIA_LIBRARY": "Créer la médiathèque",
+            "LANGUAGE": "Langue",
+            "MESSAGE_ADD_LIBRARY": "Cette action ajoutera une nouvelle librairie et téléchargera automatiquement les métadonnées des médias trouvés",
+            "SELECT...": "Sélectionner…"
         }
     },
 
@@ -459,7 +479,9 @@
         "ACTION": "Action",
         "DELETE": "Supprimer",
         "RESET": "Réinitialiser",
-        "CONFIRM": "Valider"
+        "REFRESH": "Actualiser",
+        "CONFIRM": "Valider",
+        "BROWSE": "Parcourir"
     },
 
     "FOOTER": {
@@ -471,7 +493,7 @@
     "DECADE": "Décennie",
     "CATEGORY": "Categorie",
     "MEDIA": "Média",
-    "SERIES": "Series",
+    "SERIES": "Séries",
     "SEASON": "Saison",
     "SEASONS": "Saisons",
     "ALL": "Tout",
@@ -499,5 +521,16 @@
     "YES": "Oui",
     "NO": "Non",
 
-    "POSTER": "Affiche"
+    "POSTER": "Affiche",
+
+    "FRENCH": "Français",
+    "ENGLISH": "Anglais",
+    "SPANISH": "Espagnol",
+    "GERMAN": "Allemand",
+    "ITALIAN": "Italien",
+    "JAPANESE": "Japonais",
+    "RUSSIAN": "Russe",
+    "KOREAN": "Coréen",
+    "CHINESE": "Chinois",
+    "PORTUGUESE": "Portugais"
 }

@@ -31,12 +31,12 @@
     </div>
 
     <div class="containerFieldToFill">
-        <p>Jellyfin Id <span class="yellow">*</span></p>
+        <p> {{ 'EDITION.MEDIA_LIBRARY' | translate }} <span class="yellow">*</span></p>
         <div class="container-flex">
-            <app-input-text-edition [text]="editSeries.jellyfinId" [placeHolder]="placeHolderJellyfinId"
-                (onInputChange)="onInputJellyfinId($event)"
-                (keydown.enter)="onClickButtonJellyfin(false)"></app-input-text-edition>
-            <app-ai-button (clickEmit)="onClickButtonJellyfin(false)" #buttonSearchJellyfin></app-ai-button>
+            <app-input-text-edition [text]="editSeries.mediaLibraryId" [placeHolder]="placeHolderMediaLibraryId"
+                (onInputChange)="onInputMediaLibraryId($event)"
+                (keydown.enter)="onClickButtonMediaLibrary(false)"></app-input-text-edition>
+            <app-ai-button (clickEmit)="onClickButtonMediaLibrary(false)" #buttonSearchMediaLibrary></app-ai-button>
         </div>
     </div>
 
@@ -126,7 +126,7 @@
     <div class="containerFieldToFill">
         <app-edit-season [season]="editSeasons[seasonIndexSelected]"
             (changeTitleSeason)="modifyNameBySeasonIndex(seasonIndexSelected, $event)"
-            (changeJellyfinIdSeason)="modifyJellyfinIdBySeasonIndex(seasonIndexSelected, $event)"
+            (changeMediaLibraryIdSeason)="modifyMediaLibraryIdBySeasonIndex(seasonIndexSelected, $event)"
             (fillPosterSeason)="modifyPosterBySeasonIndex(seasonIndexSelected, $event)"></app-edit-season>
     </div>
 
@@ -137,7 +137,7 @@
             <app-edit-episode [episode]="episode"
                 (deleteEpisode)="deleteEpisodeByIndex(seasonIndexSelected, episodeIndex)"
                 (changePoster)="modifyPosterEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
-                (changeJellyfinId)="modifyJellyfinIdEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
+                (changeMediaLibraryId)="modifyMediaLibraryIdEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
                 (changeTitle)="modifyTitleEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
                 (changeDescription)="modifyDescriptionEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"
                 (changeDate)="modifyDateEpisodeByIndex(seasonIndexSelected, episodeIndex, $event)"

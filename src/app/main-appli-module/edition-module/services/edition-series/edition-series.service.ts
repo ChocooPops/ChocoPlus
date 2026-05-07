@@ -47,7 +47,7 @@ export class EditionSeriesService extends EditionMediaService {
     return {
       id: -1,
       title: undefined,
-      jellyfinId: undefined,
+      mediaLibraryId: undefined,
       otherTitles: [],
       credits: [],
       categories: [],
@@ -102,8 +102,8 @@ export class EditionSeriesService extends EditionMediaService {
     this.updateSeries({ title: title });
   }
 
-  public modifyJellyfinId(jellyfinId: string | undefined): void {
-    this.updateSeries({ jellyfinId: jellyfinId });
+  public modifyMediaLibraryId(mediaLibraryId: string | undefined): void {
+    this.updateSeries({ mediaLibraryId: mediaLibraryId });
   }
 
   public modifyCredits(credits: MediaCreditModel[]): void {
@@ -321,7 +321,7 @@ export class EditionSeriesService extends EditionMediaService {
       description: undefined,
       date: new Date(),
       srcPoster: undefined,
-      jellyfinId: undefined
+      mediaLibraryId: undefined
     }
   }
 
@@ -329,7 +329,7 @@ export class EditionSeriesService extends EditionMediaService {
     const id: number = this.getId();
     return {
       id: id,
-      jellyfinId: undefined,
+      mediaLibraryId: undefined,
       seriesId: seriesId,
       name: "Saison " + seasonNumber,
       seasonNumber: seasonNumber,
@@ -400,10 +400,10 @@ export class EditionSeriesService extends EditionMediaService {
       this.editSeasonSubject.next(season);
     }
   }
-  public modifyJellyfinIdBySeasonIndex(idx: number, jellyfinId: string): void {
+  public modifyMediaLibraryIdBySeasonIndex(idx: number, mediaLibraryId: string): void {
     const season: EditSeasonModel[] = this.editSeasonSubject.value;
     if (idx >= 0 && idx < season.length) {
-      season[idx].jellyfinId = jellyfinId;
+      season[idx].mediaLibraryId = mediaLibraryId;
       this.editSeasonSubject.next(season);
     }
   }
@@ -415,12 +415,12 @@ export class EditionSeriesService extends EditionMediaService {
     }
   }
 
-  public modifyJellyfinIdEpisodeByIndex(seasonIdx: number, episodeIdx: number, jellyfinId: string): void {
+  public modifyMediaLibraryIdEpisodeByIndex(seasonIdx: number, episodeIdx: number, mediaLibraryId: string): void {
     const season: EditSeasonModel[] = this.editSeasonSubject.value;
     if (seasonIdx >= 0 && seasonIdx < season.length) {
       const episode: EditEpisodeModel[] = season[seasonIdx].episodes;
       if (episodeIdx >= 0 && episodeIdx < episode.length) {
-        season[seasonIdx].episodes[episodeIdx].jellyfinId = jellyfinId;
+        season[seasonIdx].episodes[episodeIdx].mediaLibraryId = mediaLibraryId;
       }
     }
   }
@@ -581,7 +581,7 @@ export class EditionSeriesService extends EditionMediaService {
     const newSeries: EditSeriesModel = {
       id: series.id,
       title: series.title,
-      jellyfinId: series.jellyfinId,
+      mediaLibraryId: series.mediaLibraryId,
       otherTitles: series.otherTitles || [],
       credits: series.credits || [],
       categories: series.categories || [],
@@ -615,7 +615,7 @@ export class EditionSeriesService extends EditionMediaService {
             editEpisodes.push({
               id: episode.id,
               seasonId: episode.seasonId,
-              jellyfinId: episode.jellyfinId,
+              mediaLibraryId: episode.mediaLibraryId,
               name: episode.name,
               episodeNumber: episode.episodeNumber,
               description: episode.description,
@@ -627,7 +627,7 @@ export class EditionSeriesService extends EditionMediaService {
         editSeasons.push({
           id: season.id,
           seriesId: season.seriesId,
-          jellyfinId: season.jellyfinId,
+          mediaLibraryId: season.mediaLibraryId,
           name: season.name,
           seasonNumber: season.seasonNumber,
           srcPoster: season.srcPoster || undefined,

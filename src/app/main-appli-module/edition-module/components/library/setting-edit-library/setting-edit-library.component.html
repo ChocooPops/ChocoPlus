@@ -1,0 +1,53 @@
+<app-popup (emitActionData)="emitDeleteLibrary()"></app-popup>
+
+@if (displayFormNewLibrary) {
+<app-new-library (cancelled)="hiddeForm()"></app-new-library>
+}
+
+<div class="containerSettingSelected">
+
+    <div class="containerFieldToFill set-animation-null">
+        <div class="container-title-reset">
+            <p> {{ 'EDITION.LIBRARY.LIBRARY_MANAGEMENT_TITLE' | translate }} </p>
+            <div class="container-reset" (click)="onClickReset()">
+                <img [src]="srcReset">
+            </div>
+        </div>
+
+        @if(displayLoader) {
+        <div class="container-laoder-content">
+            <div class="little-spinner"></div>
+        </div>
+        } @else {
+        <div class="container-library">
+            @for (library of libraries; track library) {
+            <app-library class="animationPosterAndLicense" [library]="library" 
+                (handleDelete)="deleteLibrary($event)"
+                (handleRefresh)="refreshLibrary($event)" (selected)="onSelectedLibrary($event)" 
+                [idSelected]="librarySelected"></app-library>
+            }
+            @if (libraries.length > 0) {
+                <div></div>
+                <app-button-add (click)="onClickAdd()"></app-button-add>
+            } @else {
+                <app-button-add (click)="onClickAdd()" [text]="'Ajouter une médiathèque'"></app-button-add>
+            }
+        </div>
+        }
+
+    </div>
+
+    @if(mediaLibraries) {
+        <div class="containerFieldToFill">
+            <p>{{ 'EDITION.LIBRARY.MEDIA_LIST' | translate }} : </p>
+            <app-media-library-tab [mediaLibraries]="mediaLibraries"></app-media-library-tab>
+        </div>
+    }@else if (displayLoaderMediaLibraries) {
+        <div class="containerFieldToFill">
+            <div class="container-laoder-content">
+                <div class="little-spinner"></div>
+            </div>
+        </div>
+    }
+
+</div>

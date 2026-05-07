@@ -21,15 +21,15 @@ export class NewsVideoRunningService {
   private firstMoviePresentation: NewsVideoRunningModel | undefined = undefined;
   private firstSeriesPresentation: NewsVideoRunningModel | undefined = undefined;
 
-  constructor(private http: HttpClient,
-    private movieService: MovieService,
-    private seriesService: SeriesService
+  constructor(private readonly http: HttpClient,
+    private readonly movieService: MovieService,
+    private readonly seriesService: SeriesService
   ) { }
 
   private getEmptyNewsMedia(mediaType: MediaTypeModel): NewsVideoRunningModel {
     return {
       id: -1,
-      jellyfinId: undefined,
+      mediaLibraryId: undefined,
       srcBackground: undefined,
       startShow: '',
       endShow: '',
@@ -37,7 +37,7 @@ export class NewsVideoRunningService {
       {
         id: -1,
         title: 'Nameless',
-        jellyfinId: 'undefined',
+        mediaLibraryId: 'undefined',
         typeZoomX: false,
         typeZoomY: false,
         mediaType: mediaType
@@ -52,7 +52,7 @@ export class NewsVideoRunningService {
           const movie: MovieModel = this.movieService.createNewMovie(data.media);
           this.firstMoviePresentation = {
             id: data.id,
-            jellyfinId: data.jellyfinId && data.jellyfinId.trim() !== '' ? data.jellyfinId : movie.jellyfinId,
+            mediaLibraryId: data.mediaLibraryId && data.mediaLibraryId.trim() !== '' ? data.mediaLibraryId : movie.mediaLibraryId,
             srcBackground: data.srcBackground ? data.srcBackground : undefined,
             startShow: data.startShow ? data.startShow : '00:10:00',
             endShow: data.endShow ? data.endShow : '00:11:30',
@@ -76,7 +76,7 @@ export class NewsVideoRunningService {
           const series: SeriesModel = this.seriesService.createNewSeries(data.media);
           this.firstSeriesPresentation = {
             id: data.id,
-            jellyfinId: data.jellyfinId && data.jellyfinId.trim() !== '' ? data.jellyfinId : undefined,
+            mediaLibraryId: data.mediaLibraryId && data.mediaLibraryId.trim() !== '' ? data.mediaLibraryId : undefined,
             srcBackground: data.srcBackground ? data.srcBackground : undefined,
             startShow: data.startShow ? data.startShow : '00:04:00',
             endShow: data.endShow ? data.endShow : '00:05:30',

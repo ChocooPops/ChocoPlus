@@ -10,8 +10,8 @@
         }
     </div>
     <div class="container-info">
-        <app-input-text-edition (onInputChange)="onChangeJellyfinId($event)" [placeHolder]="'Jellyfin_id'"
-            [text]="episode.jellyfinId"></app-input-text-edition>
+        <app-input-text-edition (onInputChange)="onChangeMediaLibraryId($event)" [placeHolder]="placeHolderMediaLibrary"
+            [text]="episode.mediaLibraryId"></app-input-text-edition>
         <div class="container-simple">
             <app-input-image-edition (inputChange)="onChangePoster($event)" [typeInputImage]="4"
                 [srcImageAdded]="episode.srcPoster"></app-input-image-edition>

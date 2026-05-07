@@ -12,7 +12,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class PopupComponent {
 
-  @Output() emitActionData = new EventEmitter<any>()
+  @Output() emitActionData = new EventEmitter<any>();
+  @Output() emitResetPopup = new EventEmitter<any>();
   messages: string[] | undefined = undefined;
   displayPopup: boolean = false;
   displayButton: boolean = false;
@@ -22,7 +23,7 @@ export class PopupComponent {
   srcImageSuccess: string = 'icon/success.svg';
   srcImageError: string = 'icon/error.svg';
 
-  constructor(private elementRef: ElementRef) { }
+  constructor(private readonly elementRef: ElementRef) { }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
@@ -43,6 +44,9 @@ export class PopupComponent {
   }
 
   onClickCancel(): void {
+    if (this.endTask) {
+      this.emitResetPopup.emit();
+    }
     this.displayPopup = false;
     this.endTask = false;
   }
@@ -82,6 +86,7 @@ export class PopupComponent {
     this.displayPopup = false;
     this.endTask = false;
     this.srcImage = undefined;
+    this.emitResetPopup.emit();
   }
 
 }

@@ -17,14 +17,14 @@ import { EditionParametersService } from "../../services/edition-parameters/edit
 export abstract class SettingMovieAbstraction extends UnauthorizedError {
 
     @ViewChild('buttonSearchTmdb') buttonSearchTmdb !: AiButtonComponent;
-    @ViewChild('buttonSearchJellyfin') buttonSearchJellyfin !: AiButtonComponent;
+    @ViewChild('buttonSearchMediaLibrary') buttonSearchMediaLibrary !: AiButtonComponent;
     @ViewChild('otherTitles') otherTitlesRef!: ElementRef;
     @ViewChild('buttonOtherLanguage') buttonOtherLanguageRef!: ElementRef;
 
     protected exTextLogo: string = "EDITION.MOVIE.PLACEHOLDER_LOGO";
     protected exTestBackgroundImage: string = "EDITION.MOVIE.PLACEHOLDER_BACK";
     protected placeHolderTitle: string = "EDITION.MOVIE.PLACEHOLDER_TITLE";
-    protected placeHolderJellyfinId: string = "EDITION.MOVIE.PLACEHOLDER_JELLYFIN";
+    protected placeHolderMediaLibraryId: string = "EDITION.MOVIE.PLACEHOLDER_MEDIA_LIBRARY";
 
     protected editMovie !: EditMovieModel;
     protected typeSelectionPosters !: SimpleModel[];
@@ -100,8 +100,8 @@ export abstract class SettingMovieAbstraction extends UnauthorizedError {
         this.editionMovieService.modifyTitleMovie(newTitle);
     }
 
-    protected onInputJellyfinId(jellyfinId: string | undefined): void {
-        this.editionMovieService.modifyJellyfinId(jellyfinId);
+    protected onInputMediaLibraryId(mediaLibraryId: string | undefined): void {
+        this.editionMovieService.modifyMediaLibraryId(mediaLibraryId);
     }
 
     protected onInputOtherTitles(titles: TranslationTitle[]): void {

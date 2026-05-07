@@ -36,7 +36,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   poster: string | undefined = undefined;
 
   duration !: string;
-  quality !: string;
+  resolution !: string;
   date !: Date | null;
 
   ProgressState = ProgressStateMedia;
@@ -60,8 +60,8 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   }
 
   protected initSpe(): void {
-    this.duration = this.verifTimerShowService.extractHourAndMinute(this.movie?.time) || '2015';
-    this.quality = this.movie?.quality || 'any quality';
+    this.duration = this.verifTimerShowService.extractHourAndMinute(this.movie?.duration) || '2015';
+    this.resolution = this.movie?.resolution || 'any quality';
     this.date = this.movie.date || new Date();
 
     if (this.movie) {

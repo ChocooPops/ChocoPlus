@@ -1,19 +1,37 @@
 .containerButtonAdd {
   height: 34px;
-  width: 34px;
+  width: auto;
   border-radius: 6px;
   border: 2px solid #3a3a3a;
   background-color: transparent;
   position: relative;
   cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
+  display: flex;
+  align-items: center;
+  color: #3a3a3a;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
   &:hover {
     border-color: #666;
+    color: #ebebeb;
     background-color: #1e1e1e;
 
-    .buttonAdd { background-color: #fff; }
+    .buttonAdd {
+      background-color: #fff;
+    }
   }
+}
+
+.container-cross {
+  height: 34px;
+  width: 34px;
+  position: relative;
 }
 
 .buttonAdd {
@@ -34,4 +52,12 @@
 .buttonAdd:nth-child(2) {
   height: 2px;
   width: 14px;
+}
+
+p {
+  font-weight: bold;
+  font-size: 15px;
+  padding-right: 15px;
+  transition: color 0.2s;
+  margin: 0;
 }

@@ -34,6 +34,13 @@ export class ElectronService {
   async windowClose(): Promise<void> {
     await window.electron.invoke('window-close');
   }
+  async openFileDialog(): Promise<string[]> {
+    try {
+      return await window.electron.invoke('open-file-dialog');
+    } catch(error) {
+      return [];
+    }
+  }
 
   private listenToWindowEvents() {
     window.electron.onMaximize(() => this.isMaximizedSubject.next(true));

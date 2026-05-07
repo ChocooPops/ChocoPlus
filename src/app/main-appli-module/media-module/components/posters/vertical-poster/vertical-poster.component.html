@@ -22,7 +22,7 @@
                 @if(media.mediaType === MediaType.MOVIE) {
                 <p class="duration">{{duration}}</p>
                 <div class="container-quality">
-                    <p class="quality" [ngClass]="{'text' : true}">{{quality}}</p>
+                    <p class="quality" [ngClass]="{'text' : true}">{{ resolution }}</p>
                 </div>
                 } @else if(media.mediaType === MediaType.SERIES) {
                 <p class="duration"> {{ nbSeason }} <span>

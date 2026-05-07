@@ -183,10 +183,7 @@ ipcMain.handle('open-external', async (_event, url) => {
 
 ipcMain.handle('open-file-dialog', async () => {
   const result = await dialog.showOpenDialog({
-    properties: ['openFile'],
-    filters: [
-      { name: 'Videos', extensions: ['mp4', 'mkv'] },
-    ],
+    properties: ['openDirectory'],
   });
   return result.filePaths;
 });

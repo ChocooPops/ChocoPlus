@@ -27,7 +27,7 @@ export class EditNewVideoRunningComponent {
   poster !: string | undefined;
   series: SeriesModel | undefined = undefined;
   @Input() videoRunning !: NewsVideoRunningModel;
-  @Output() modifyJellyfinId = new EventEmitter<SimpleModel>();
+  @Output() modifyMediaLibraryId = new EventEmitter<SimpleModel>();
   @Output() modifyStartShow = new EventEmitter<SimpleModel>();
   @Output() modifyEndShow = new EventEmitter<SimpleModel>();
   @Output() modifySrcBackground = new EventEmitter<SimpleModel>();
@@ -62,8 +62,8 @@ export class EditNewVideoRunningComponent {
     this.currentBack = srcBack;
     this.modifySrcBackground.emit({ id: this.videoRunning.id, name: srcBack });
   }
-  onChangeJellyfinId(jellyfinId: string): void {
-    this.modifyJellyfinId.emit({ id: this.videoRunning.id, name: jellyfinId });
+  onChangeMediaLibraryId(mediaLibraryId: string): void {
+    this.modifyMediaLibraryId.emit({ id: this.videoRunning.id, name: mediaLibraryId });
   }
   onClickDelete(): void {
     this.deleteNews.emit(this.videoRunning.id);

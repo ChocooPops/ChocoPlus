@@ -6,7 +6,7 @@ import { MediaCreditModel } from "./media-credit.interface";
 export interface MediaModel {
     id: number,
     title: string,
-    jellyfinId: string,
+    mediaLibraryId: string,
     otherTitles?: TranslationTitle[],
     credits?: MediaCreditModel[],
     keyWords?: string[] | undefined,

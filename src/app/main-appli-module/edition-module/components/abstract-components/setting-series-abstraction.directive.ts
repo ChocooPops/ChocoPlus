@@ -18,14 +18,14 @@ import { EditionParametersService } from "../../services/edition-parameters/edit
 export abstract class SettingSeriesAbstraction extends UnauthorizedError {
 
     @ViewChild('buttonSearchTmdb') buttonSearchTmdb !: AiButtonComponent;
-    @ViewChild('buttonSearchJellyfin') buttonSearchJellyfin !: AiButtonComponent;
+    @ViewChild('buttonSearchMediaLibrary') buttonSearchMediaLibrary !: AiButtonComponent;
     @ViewChild('otherTitles') otherTitlesRef!: ElementRef;
     @ViewChild('buttonOtherLanguage') buttonOtherLanguageRef!: ElementRef;
 
     protected exTextLogo: string = "EDITION.SERIES.PLACEHOLDER_LOGO";
     protected exTestBackgroundImage: string = "EDITION.SERIES.PLACEHOLDER_BACK";
     protected placeHolderTitle: string = "EDITION.SERIES.PLACEHOLDER_TITLE";
-    protected placeHolderJellyfinId: string = "EDITION.SERIES.PLACEHOLDER_JELLYFIN";
+    protected placeHolderMediaLibraryId: string = "EDITION.SERIES.PLACEHOLDER_MEDIA_LIBRARY";
 
     protected editSeries !: EditSeriesModel;
     protected editSeasons !: EditSeasonModel[];
@@ -95,8 +95,8 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
         this.editionSeriesService.modifyTitleSeries(newTitle);
     }
 
-    protected onInputJellyfinId(jellyfinId: string | undefined): void {
-        this.editionSeriesService.modifyJellyfinId(jellyfinId);
+    protected onInputMediaLibraryId(mediaLibraryId: string | undefined): void {
+        this.editionSeriesService.modifyMediaLibraryId(mediaLibraryId);
     }
 
     protected onInputOtherTitles(titles: TranslationTitle[]): void {
@@ -222,15 +222,15 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
     protected modifyNameBySeasonIndex(idx: number, name: string): void {
         this.editionSeriesService.modifyNameBySeasonIndex(idx, name);
     }
-    protected modifyJellyfinIdBySeasonIndex(idx: number, jellyfinId: string): void {
-        this.editionSeriesService.modifyJellyfinIdBySeasonIndex(idx, jellyfinId);
+    protected modifyMediaLibraryIdBySeasonIndex(idx: number, mediaLibraryId: string): void {
+        this.editionSeriesService.modifyMediaLibraryIdBySeasonIndex(idx, mediaLibraryId);
     }
     protected modifyPosterBySeasonIndex(idx: number, poster: string | ArrayBuffer | undefined | null): void {
         this.editionSeriesService.modifyPosterBySeasonIndex(idx, poster);
     }
 
-    protected modifyJellyfinIdEpisodeByIndex(seasonIdx: number, episodeIdx: number, jellyfinId: string): void {
-        this.editionSeriesService.modifyJellyfinIdEpisodeByIndex(seasonIdx, episodeIdx, jellyfinId);
+    protected modifyMediaLibraryIdEpisodeByIndex(seasonIdx: number, episodeIdx: number, mediaLibraryId: string): void {
+        this.editionSeriesService.modifyMediaLibraryIdEpisodeByIndex(seasonIdx, episodeIdx, mediaLibraryId);
     }
     protected modifyPosterEpisodeByIndex(seasonIdx: number, episodeIdx: number, poster: string | ArrayBuffer | undefined | null): void {
         this.editionSeriesService.modifyPosterEpisodeByIndex(seasonIdx, episodeIdx, poster);
@@ -268,12 +268,12 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
         }
     }
 
-    protected onClickButtonJellyfin(modifyMetaData: boolean): void {
-        if (this.editSeries.jellyfinId && this.editSeries.jellyfinId.trim() !== '') {
-            this.buttonSearchJellyfin.changeLoadingActivate(true);
+    protected onClickButtonMediaLibrary(modifyMetaData: boolean): void {
+        if (this.editSeries.mediaLibraryId && this.editSeries.mediaLibraryId.trim() !== '') {
+            this.buttonSearchMediaLibrary.changeLoadingActivate(true);
             this.unsubscribeSearchSeries();
-            this.subscriptionSearch = this.tmdbOperationService.fetchSearchSeriesInfoByJellyfin(this.editSeries.jellyfinId, this.editSeries.id, this.editSeries, this.editSeasons, modifyMetaData).pipe(take(1), finalize(() => {
-                this.buttonSearchJellyfin.changeLoadingActivate(false);
+            this.subscriptionSearch = this.tmdbOperationService.fetchSearchSeriesInfoByMediaLibrary(this.editSeries.mediaLibraryId, this.editSeries.id, this.editSeries, this.editSeasons, modifyMetaData).pipe(take(1), finalize(() => {
+                this.buttonSearchMediaLibrary.changeLoadingActivate(false);
             })).subscribe({
                 next: (data: EditSeriesModel) => {
                     this.editionSeriesService.updateSeasons(data.seasons);

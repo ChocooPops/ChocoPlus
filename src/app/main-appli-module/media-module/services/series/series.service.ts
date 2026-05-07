@@ -29,7 +29,7 @@ export class SeriesService {
     const seriesTmp: SeriesModel = {
       id: series.id,
       title: series.title,
-      jellyfinId: series.jellyfinId,
+      mediaLibraryId: series.mediaLibraryId,
       otherTitles: series.otherTitles || [],
       credits: series.credits || [],
       categories: series.categories || [],
@@ -67,10 +67,10 @@ export class SeriesService {
       ...item,
       name: item.name ? item.name : `Episode ${item.episodeNumber}`,
       date: item.date ? new Date(item.date) : new Date(),
-      time: item.time ? item.time : 0,
+      duration: item.duration ? item.duration : 0,
       watchProgress: item.watchProgress ?? 0,
       stateProgress: item.stateProgress ?? ProgressStateMedia.NOT_WATCHED,
-      quality: item.quality ? item.quality : 'any quality',
+      resolution: item.resolution ? item.resolution : 'any quality',
       srcPoster: item.srcPoster ? item.srcPoster : undefined
     }));
   }
@@ -85,7 +85,7 @@ export class SeriesService {
         const series: SeriesModel = {
           id: 0,
           title: "Nameless",
-          jellyfinId: 'undefined',
+          mediaLibraryId: 'undefined',
           typeZoomX: undefined,
           typeZoomY: false,
           mediaType: MediaTypeModel.SERIES,

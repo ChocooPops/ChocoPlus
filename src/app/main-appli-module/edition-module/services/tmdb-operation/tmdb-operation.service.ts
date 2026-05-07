@@ -15,9 +15,9 @@ export class TmdbOperationService {
 
   private readonly apiUrlAi: string = `${environment.apiUrlTmdb}`;
   private readonly apiUrlSearchMovieByTmdb: string = 'search-movie-tmdb';
-  private readonly apiUrlSearchMovieByJellyfin: string = 'search-movie-jellyfin';
+  private readonly apiUrlSearchMovieByMediaLibrary: string = 'search-movie-library';
   private readonly apiUrlSearchSeriesByTmdb: string = 'search-series-tmdb';
-  private readonly apiUrlSearchSeriesJellyfin: string = 'search-series-jellyfin';
+  private readonly apiUrlSearchSeriesByMediaLibrary: string = 'search-series-library';
   private readonly apiUrlSearchCreditById: string = 'search-credit-by-id';
   private readonly apiUrlSearchCreditByFullName: string = 'search-credit-by-full-name';
 
@@ -51,8 +51,8 @@ export class TmdbOperationService {
     )
   }
 
-  public fetchSearchMovieInfoByByJellyfinDataBase(jellyfinId: string, id: number, edit: EditMovieModel | undefined = undefined): Observable<EditMovieModel> {
-    return this.http.get<any>(`${this.apiUrlAi}/${this.apiUrlSearchMovieByJellyfin}/${jellyfinId}`).pipe(
+  public fetchSearchMovieInfoByMediaLibrary(mediaLibraryId: string, id: number, edit: EditMovieModel | undefined = undefined): Observable<EditMovieModel> {
+    return this.http.get<any>(`${this.apiUrlAi}/${this.apiUrlSearchMovieByMediaLibrary}/${mediaLibraryId}`).pipe(
       map((data: EditMovieModel) => {
         const editMovie: EditMovieModel = data;
         editMovie.id = id;
@@ -97,8 +97,8 @@ export class TmdbOperationService {
     )
   }
 
-  public fetchSearchSeriesInfoByJellyfin(title: string, id: number, edit: EditSeriesModel, editSeasons: EditSeasonModel[], modifyMetaData: boolean): Observable<EditSeriesModel> {
-    return this.http.get<any>(`${this.apiUrlAi}/${this.apiUrlSearchSeriesJellyfin}/${title}`).pipe(
+  public fetchSearchSeriesInfoByMediaLibrary(mediaLibraryId: string, id: number, edit: EditSeriesModel, editSeasons: EditSeasonModel[], modifyMetaData: boolean): Observable<EditSeriesModel> {
+    return this.http.get<any>(`${this.apiUrlAi}/${this.apiUrlSearchSeriesByMediaLibrary}/${mediaLibraryId}`).pipe(
       map((data: EditSeriesModel) => {
         const editSeries: EditSeriesModel = data;
         editSeries.date = editSeries.date ? new Date(editSeries.date) : new Date();
@@ -131,7 +131,7 @@ export class TmdbOperationService {
           });
 
           editSeries.seasons.forEach((season: EditSeasonModel, seasonIndex: number) => {
-            const seasonTmp : EditSeasonModel | undefined = editSeasons.find((item : EditSeasonModel) => item.jellyfinId === season.jellyfinId);
+            const seasonTmp : EditSeasonModel | undefined = editSeasons.find((item : EditSeasonModel) => item.mediaLibraryId === season.mediaLibraryId);
             if (seasonTmp) {
               editSeries.seasons[seasonIndex].id = seasonTmp.id;
               if(seasonTmp.name && seasonTmp.name.trim() !== '') {
@@ -142,7 +142,7 @@ export class TmdbOperationService {
               }
             }
             season.episodes.forEach((episode : EditEpisodeModel, episodeIndex: number) => {
-              const episodeTmp : EditEpisodeModel | undefined = allEpisodes.find((item : EditEpisodeModel) => item.jellyfinId === episode.jellyfinId);
+              const episodeTmp : EditEpisodeModel | undefined = allEpisodes.find((item : EditEpisodeModel) => item.mediaLibraryId === episode.mediaLibraryId);
               if (episodeTmp) {
                editSeries.seasons[seasonIndex].episodes[episodeIndex].id = episodeTmp.id;
                 if (episodeTmp.name && episodeTmp.name.trim() !== '') {

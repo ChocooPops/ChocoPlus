@@ -14,8 +14,8 @@
         <div class="container-episodes" [ngClass]="'animationEditField'">
             @for(episode of episodes; track episode.id) {
             <div class="container-episode-on-edit-video-running">
-                <img [ngClass]="{'current-episode' : episode.jellyfinId === currentJellyfinId}"
-                    [src]="episode.srcPoster" (click)="onChangeJellyfinEpisode(episode.jellyfinId)">
+                <img [ngClass]="{'current-episode' : episode.mediaLibraryId === currentMediaLibraryId}"
+                    [src]="episode.srcPoster" (click)="onChangeMediaLibraryInEpisode(episode.mediaLibraryId)">
                 <p class="title-episode"> {{ episode.name }} </p>
             </div>
             }

@@ -10,6 +10,10 @@
     </div>
 
     <div class="container-under-menu" [ngClass]="class" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        <div class="container-option" (click)="onClickReset()">
+            <img [src]="srcReset">
+            <p>{{ 'MENU.OTHER.RESET' | translate }}</p>
+        </div>
         @if (user && user.role === Role.ADMIN) {
             <div class="container-option" (click)="onToggleTranslationKeys()">
                 @if (isShowingKeys) {
@@ -21,10 +25,6 @@
                 }
             </div>
         }
-        <div class="container-option" (click)="onClickReset()">
-            <img [src]="srcReset">
-            <p>{{ 'MENU.OTHER.RESET' | translate }}</p>
-        </div>
         <div class="container-option" (click)="onClickRandomMovie()">
             <img [src]="srcRandom">
             <p>{{ 'MENU.OTHER.START_RANDOM_MOVIE' | translate }}</p>

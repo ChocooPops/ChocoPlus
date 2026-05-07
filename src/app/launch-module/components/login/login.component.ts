@@ -77,7 +77,7 @@ export class LoginComponent extends FormPageDirectiveAbstract {
         } else if (error.status === 404) {
           this.message = 'LAUNCH.MESSAGE.INCORRECT_USERNAME';
         } else if (error.status === 401) {
-          this.message = "LAUNCH.MESSAGE.INCORRECT_USERNAME";
+          this.message = "LAUNCH.MESSAGE.USER_DISABLED";
         } else {
           this.message = 'LAUNCH.MESSAGE.ERROR';
         }

@@ -23,7 +23,7 @@ export class SimilarPosterHorizontalComponent {
   @Input() media !: MediaModel;
   @Output() onClicked = new EventEmitter<MediaModel>();
   duration !: string;
-  quality !: string;
+  resolution !: string;
   description !: string;
   date !: Date;
   srcPoster: string | undefined = undefined;
@@ -40,8 +40,8 @@ export class SimilarPosterHorizontalComponent {
     this.description = this.media.description || '';
 
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
-      this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).time) || '1 h 30 min';
-      this.quality = (this.media as MovieModel).quality || 'any quality';
+      this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).duration) || '1 h 30 min';
+      this.resolution = (this.media as MovieModel).resolution || 'any quality';
       this.date = (this.media as MovieModel).date || new Date();
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       this.nbSeason = (this.media as SeriesModel).seasons.length;

@@ -11,8 +11,8 @@
                 [placeHolder]="placeHolderSeason | translate"></app-input-text-edition>
         </div>
         <div class="containerFieldToFill">
-            <p>Jellyfin Id <span class="yellow">*</span></p>
-            <app-input-text-edition [text]="season.jellyfinId" (onInputChange)="onChangeJellyFinId($event)"
+            <p> {{ 'EDITION.MEDIA_LIBRARY' | translate }} <span class="yellow">*</span></p>
+            <app-input-text-edition [text]="season.mediaLibraryId" (onInputChange)="onChangeMediaLibraryId($event)"
                 [placeHolder]="'ex : 817f577ac9be33579e0ec50ede240e43'"></app-input-text-edition>
         </div>
     </div>

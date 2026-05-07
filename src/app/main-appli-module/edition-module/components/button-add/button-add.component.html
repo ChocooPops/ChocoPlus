@@ -1,4 +1,9 @@
 <button class="containerButtonAdd">
-    <div class="buttonAdd"></div>
-    <div class="buttonAdd"></div>
+    <div class="container-cross">
+        <div class="buttonAdd"></div>
+        <div class="buttonAdd"></div>
+    </div>
+    @if(text) {
+    <p>{{ text | translate }}</p>
+    }
 </button>

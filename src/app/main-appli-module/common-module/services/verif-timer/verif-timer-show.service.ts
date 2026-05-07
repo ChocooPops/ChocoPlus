@@ -29,7 +29,7 @@ export class VerifTimerShowService {
 
   public extractHourAndMinute(duration: number | undefined): string {
     if (duration) {
-      const totalSeconds = duration / 10_000_000;
+      const totalSeconds = duration / 10_00;
       const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const formattedMinutes = String(minutes).padStart(2, '0');

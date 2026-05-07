@@ -45,7 +45,7 @@ export class MediaHorizontalBackgroundComponent {
   displaying: boolean = false;
 
   duration!: string;
-  quality!: string;
+  resolution!: string;
   nbSeasons!: number;
 
   ProgressState = ProgressStateMedia;
@@ -79,8 +79,8 @@ export class MediaHorizontalBackgroundComponent {
     }
 
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
-      this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).time) || '2015';
-      this.quality = (this.media as MovieModel)?.quality || 'any quality';
+      this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).duration) || '2015';
+      this.resolution = (this.media as MovieModel)?.resolution || 'any quality';
       this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, (this.media as MovieModel).watchProgress, (this.media as MovieModel).stateProgress);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       this.nbSeasons = (this.media as SeriesModel).seasons.length;

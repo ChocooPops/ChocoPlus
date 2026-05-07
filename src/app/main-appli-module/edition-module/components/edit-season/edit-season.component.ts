@@ -17,7 +17,7 @@ export class EditSeasonComponent {
 
   @Output() fillPosterSeason = new EventEmitter<string | ArrayBuffer | undefined | null>();
   @Output() changeTitleSeason = new EventEmitter<string>();
-  @Output() changeJellyfinIdSeason = new EventEmitter<string>();
+  @Output() changeMediaLibraryIdSeason = new EventEmitter<string>();
 
   placeHolderSeason = "EDITION.SERIES.PLACEHOLDER_SEASON"
   placeHolderSeasonPoster = "EDITION.SERIES.PLACEHOLDER_SEASON_POSTER"
@@ -30,8 +30,8 @@ export class EditSeasonComponent {
     this.changeTitleSeason.emit(title);
   }
 
-  onChangeJellyFinId(id: string): void {
-    this.changeJellyfinIdSeason.emit(id);
+  onChangeMediaLibraryId(id: string): void {
+    this.changeMediaLibraryIdSeason.emit(id);
   }
 
 }

@@ -38,7 +38,7 @@ export class PosterAbstraction {
     subscription: Subscription = new Subscription();
     dimension !: DimensionModel;
     duration !: string;
-    quality !: string;
+    resolution !: string;
     nbSeason !: number;
     seasons !: SeasonModel[];
 
@@ -57,8 +57,8 @@ export class PosterAbstraction {
 
     ngOnInit() {
         if (this.media.mediaType === MediaTypeModel.MOVIE) {
-            this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).time);
-            this.quality = (this.media as MovieModel).quality || 'any quality';
+            this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).duration);
+            this.resolution = (this.media as MovieModel).resolution || 'any quality';
         } else if (this.media.mediaType === MediaTypeModel.SERIES) {
             const nb: number = (this.media as SeriesModel).seasons.length;
             this.seasons = (this.media as SeriesModel).seasons;

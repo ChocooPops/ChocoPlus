@@ -18,7 +18,7 @@ import { ButtonMoveComponent } from '../button-move/button-move.component';
 export class EditEpisodeComponent {
 
   @Input() episode !: EditEpisodeModel;
-  @Output() changeJellyfinId = new EventEmitter<string>();
+  @Output() changeMediaLibraryId = new EventEmitter<string>();
   @Output() changePoster = new EventEmitter<string | ArrayBuffer | undefined | null>();
   @Output() changeTitle = new EventEmitter<string>();
   @Output() changeDescription = new EventEmitter<string>();
@@ -32,9 +32,10 @@ export class EditEpisodeComponent {
 
   placeHolderTitle = "EDITION.MEDIA.TITLE";
   placeHolderDescription = "EDITION.MEDIA.DESCRIPTION";
+  placeHolderMediaLibrary = "EDITION.MEDIA_LIBRARY";
 
-  onChangeJellyfinId(jellyfinId: string): void {
-    this.changeJellyfinId.emit(jellyfinId);
+  onChangeMediaLibraryId(mediaLibraryId: string): void {
+    this.changeMediaLibraryId.emit(mediaLibraryId);
   }
   onChangePoster(poster: string | ArrayBuffer | undefined | null): void {
     this.changePoster.emit(poster);

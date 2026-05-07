@@ -64,8 +64,8 @@ export abstract class SettingNewsVideoRunning extends UnauthorizedError {
         this.editNewsVideoRunningService.modifySrcBackground(info.id, info.name)
     }
 
-    protected modifyJellyfinId(info: SimpleModel): void {
-        this.editNewsVideoRunningService.modifyJellyfinId(info.id, info.name);
+    protected modifyMediaLibraryId(info: SimpleModel): void {
+        this.editNewsVideoRunningService.modifyMediaLibraryId(info.id, info.name);
     }
 
 } 
