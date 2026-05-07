@@ -26,10 +26,11 @@ export class LibraryService {
   public fetchCreateNewLibrary(library: Library): Observable<MessageReturnedModel> {
     return this.http.post<any>(`${this.apiUrlLibrary}`, library).pipe(
       map((data: MessageReturnedModel) => {
-        if (data.state && data.other) {
+        if (data.state && data.other && data.other.id) {
           const libraries: Library[] = this.librariesSubject.value;
           libraries.push(data.other);
           this.librariesSubject.next(libraries);
+          this.callFetchRefreshLibrary(data.other.id);
         }
         return data;
       })

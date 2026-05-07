@@ -87,6 +87,8 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
     this.libraryService.resetLibrary();
     this.fetchAllLibrary();
     this.mediaLibraries = null;
+    this.idSelectedForDeleting = null;
+    this.librarySelected = null;
   }
 
   onClickAdd(): void {
@@ -99,6 +101,10 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
 
   refreshLibrary(id: string): void {
     this.libraryService.callFetchRefreshLibrary(id);
+    if (id && id === this.librarySelected) {
+      this.mediaLibraries = null;
+      this.librarySelected = null;
+    }
   }
 
   deleteLibrary(id: string): void {
@@ -116,6 +122,10 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
         this.popup.setEndTask(true);
         this.popup.setDisplayButton(false);
         this.displayLoader = false;
+        if (this.idSelectedForDeleting === this.librarySelected) {
+          this.mediaLibraries = null;
+          this.librarySelected = null;
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.displayPopupOnError(error, 3);
