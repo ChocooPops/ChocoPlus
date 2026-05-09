@@ -100,8 +100,7 @@ export class JsonViewerComponent implements OnInit, OnChanges {
 
   calculatePreview(node: JsonNode): string {
     if (node.type === 'string') {
-      const str = String(node.value);
-      return `"${str.length > 100 ? str.substring(0, 100) + '...' : str}"`;
+      return `"${String(node.value)}"`;
     }
     if (node.type === 'null') return 'null';
     if (node.type === 'boolean') return String(node.value);

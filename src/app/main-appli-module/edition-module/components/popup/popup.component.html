@@ -7,9 +7,11 @@
             @for(message of messages; track message) {
             <p> {{ message | translate }}</p>
             }
+            @if (srcImage) {
             <div class="last-message">
                 <img [src]="srcImage">
             </div>
+            }
         </div>
         }@else {
         <div class="little-spinner"></div>

@@ -14,6 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MediaLibrary } from '../../../models/library/media-library.interface';
 import { MediaLibraryTabComponent } from '../media-library-tab/media-library-tab.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { StateLibrary } from '../../../models/library/state-library.enum';
 
 @Component({
   selector: 'app-setting-edit-library',
@@ -38,8 +39,10 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
   displayFormNewLibrary: boolean = false;
   srcReset: string = 'icon/modify.svg';
   idSelectedForDeleting: string | null = null;
-  librarySelected: string | null = null;
+  librarySelected: Library | null = null;
   displayLoaderMediaLibraries: boolean = false;
+
+  StateLibrary = StateLibrary;
 
   constructor(editionParametersService: EditionParametersService,
     private readonly libraryService: LibraryService
@@ -99,9 +102,9 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
     this.displayFormNewLibrary = false;
   }
 
-  refreshLibrary(id: string): void {
-    this.libraryService.callFetchRefreshLibrary(id);
-    if (id && id === this.librarySelected) {
+  refreshLibrary(library: Library): void {
+    this.libraryService.callFetchRefreshLibrary(library.id, library.mediaType);
+    if (library.id && library.id === this.librarySelected?.id) {
       this.mediaLibraries = null;
       this.librarySelected = null;
     }
@@ -133,15 +136,15 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
     });
   }
 
-  onSelectedLibrary(id: string): void {
-    this.librarySelected = id;
+  onSelectedLibrary(library: Library): void {
+    this.librarySelected = library;
     this.mediaLibraries = null;
     this.unsubscribLoadMediaLibraries();
     this.displayLoaderMediaLibraries = true;
-    this.subscriptionLoadMediaLibraries = this.libraryService.fetchAllMediaLibraryByLibraryId(id).pipe(take(1)).subscribe((data: MediaLibrary[]) => {
+    this.subscriptionLoadMediaLibraries = this.libraryService.fetchAllMediaLibraryByLibraryId(library.id).pipe(take(1)).subscribe((data: MediaLibrary[]) => {
       this.mediaLibraries = data;
       this.displayLoaderMediaLibraries = false;
-    })
+    });
   }
 
 }

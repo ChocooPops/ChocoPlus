@@ -1173,7 +1173,7 @@ namespace ChocoPlayer
 
         private string FormatDuration(long milliseconds)
         {
-            long totalSeconds = milliseconds / 10_000_000;
+            long totalSeconds = milliseconds / 10_00;
             TimeSpan time = TimeSpan.FromSeconds(totalSeconds);
             if (time.Hours > 0)
             {

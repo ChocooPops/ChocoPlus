@@ -465,6 +465,12 @@
             "LANGUAGE": "Langue",
             "MESSAGE_ADD_LIBRARY": "Cette action ajoutera une nouvelle librairie et téléchargera automatiquement les métadonnées des médias trouvés",
             "SELECT...": "Sélectionner…"
+        },
+
+        "LOG": {
+            "MODAL_TITLE": "Journal",
+            "NO_LOGS": "Aucun Log",
+            "AVAILABLE_LOG": "Logs disponibles"
         }
     },
 

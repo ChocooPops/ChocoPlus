@@ -14,39 +14,39 @@
             </div>
         </div>
 
-        @if(displayLoader) {
+        @if(displayLoader ) {
         <div class="container-laoder-content">
             <div class="little-spinner"></div>
         </div>
         } @else {
         <div class="container-library">
             @for (library of libraries; track library) {
-            <app-library class="animationPosterAndLicense" [library]="library" 
-                (handleDelete)="deleteLibrary($event)"
-                (handleRefresh)="refreshLibrary($event)" (selected)="onSelectedLibrary($event)" 
+            <app-library class="animationPosterAndLicense" [library]="library" (handleDelete)="deleteLibrary($event)"
+                (handleRefresh)="refreshLibrary($event)" (selected)="onSelectedLibrary($event)"
                 [idSelected]="librarySelected"></app-library>
             }
             @if (libraries.length > 0) {
-                <div></div>
-                <app-button-add (click)="onClickAdd()"></app-button-add>
+            <div></div>
+            <app-button-add (click)="onClickAdd()"></app-button-add>
             } @else {
-                <app-button-add (click)="onClickAdd()" [text]="'EDITION.LIBRARY.ADD_LIBRARY'"></app-button-add>
+            <app-button-add (click)="onClickAdd()" [text]="'EDITION.LIBRARY.ADD_LIBRARY'"></app-button-add>
             }
         </div>
         }
 
     </div>
 
-    @if(mediaLibraries) {
+    @if (displayLoaderMediaLibraries || librarySelected?.state === StateLibrary.IN_PROGRESS) {
+        <div class="containerFieldToFill set-animation-null">
+            <div class="container-loader-media-library">
+                <div class="ml-btn-refresh-in-progress"> </div>
+                <p> {{ 'LAUNCH.MESSAGE.LOADING' | translate}} </p>
+            </div>
+        </div>
+    } @else if (mediaLibraries) {
         <div class="containerFieldToFill">
             <p>{{ 'EDITION.LIBRARY.MEDIA_LIST' | translate }} : </p>
             <app-media-library-tab [mediaLibraries]="mediaLibraries"></app-media-library-tab>
-        </div>
-    }@else if (displayLoaderMediaLibraries) {
-        <div class="containerFieldToFill">
-            <div class="container-laoder-content">
-                <div class="little-spinner"></div>
-            </div>
         </div>
     }
 

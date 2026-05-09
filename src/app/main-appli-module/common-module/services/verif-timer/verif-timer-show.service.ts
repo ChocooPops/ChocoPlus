@@ -42,7 +42,7 @@ export class VerifTimerShowService {
   public getFormatEpisode(duration: number | undefined): string {
     if (!duration) return '0min';
 
-    const totalSeconds = duration / 10_000_000;
+    const totalSeconds = duration / 10_00;
 
     const minutes = Math.floor(totalSeconds / 60);
     const hours = Math.floor(minutes / 60);

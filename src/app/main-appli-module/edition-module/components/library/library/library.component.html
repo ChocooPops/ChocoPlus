@@ -1,6 +1,6 @@
-<div class="ml-card" 
-[ngClass]="{'ml-card-not-selected' : library.id != idSelected, 
-    'ml-card-selected': library.id === idSelected}">
+<!-- library.component.html -->
+<div class="ml-card" [ngClass]="{'ml-card-not-selected' : library.id != idSelected?.id, 
+    'ml-card-selected': library.id === idSelected?.id}">
     <div class="ml-card-header" (click)="onClickLibrary()">
         @if (library.mediaType === MediaType.MOVIE) {
         <span class="ml-type-badge ml-type-film">{{ 'MOVIES' | translate }}</span>
@@ -23,9 +23,58 @@
         </span>
         <span class="ml-path"> <input type="text" [value]="library.path" disabled> </span>
     </div>
+
+    @if (library.log) {
+    <div class="ml-log-preview" (click)="openLogModal($event)">
+        <div class="ml-log-preview-left">
+            <span class="ml-log-status-dot" [ngClass]="{
+                'ml-log-dot-success': logStatus === 'success',
+                'ml-log-dot-error': logStatus === 'error',
+                'ml-log-dot-warning': logStatus === 'warning',
+                'ml-log-dot-progress': logStatus === 'in_progress'
+            }"></span>
+            <span class="ml-log-meta">
+                @if (logLastRefresh) {
+                <span class="ml-log-date">{{ logLastRefresh }}</span>
+                }
+                <span class="ml-log-count"> {{ 'EDITION.LOG.AVAILABLE_LOG' | translate }}</span>
+            </span>
+            @if (logHasErrors) {
+            <span class="ml-log-badge ml-log-badge-error">
+                <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor">
+                    <path
+                        d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 11a1 1 0 110-2 1 1 0 010 2zm.75-4.75a.75.75 0 01-1.5 0V5a.75.75 0 011.5 0v2.25z" />
+                </svg>
+                {{ library.log.stats?.errors }}
+            </span>
+            }
+            @if (logHasWarnings) {
+            <span class="ml-log-badge ml-log-badge-warning">
+                <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor">
+                    <path
+                        d="M8.982 1.566a1.13 1.13 0 00-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 01-1.1 0L7.1 5.995A.905.905 0 018 5zm.002 6a1 1 0 110 2 1 1 0 010-2z" />
+                </svg>
+                {{ library.log.stats?.warnings }}
+            </span>
+            }
+        </div>
+        <span class="ml-log-open-hint">
+            <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+            </svg>
+        </span>
+    </div>
+    } @else {
+    <div class="ml-log-empty">
+        <span class="ml-log-empty-text">{{ 'EDITION.LOG.NO_LOGS' | translate }}</span>
+    </div>
+    }
+
     <div class="ml-card-footer">
-        <button class="ml-btn" [ngClass]="{ 'ml-btn-refresh-in-progress': library.state === StateLibrary.IN_PROGRESS, 'ml-btn-refresh': library.state != StateLibrary.IN_PROGRESS }" 
-        (click)="setHandleRefresh($event)">
+        <button class="ml-btn"
+            [ngClass]="{ 'ml-btn-refresh-in-progress': library.state === StateLibrary.IN_PROGRESS, 'ml-btn-refresh': library.state != StateLibrary.IN_PROGRESS }"
+            (click)="setHandleRefresh($event)">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M2 8a6 6 0 1 1 1.5 4" />
@@ -46,3 +95,8 @@
         </button>
     </div>
 </div>
+
+@if (isLogModalOpen && library.log) {
+<app-log-viewer-modal [logData]="library.log" [libraryPath]="library.path" (close)="closeLogModal()">
+</app-log-viewer-modal>
+}

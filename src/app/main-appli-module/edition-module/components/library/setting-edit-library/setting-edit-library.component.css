@@ -47,3 +47,46 @@ app-library {
 .set-animation-null {
   animation: none !important;
 }
+
+.container-loader-media-library {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  
+  p {
+    margin: 0;
+    text-align: center;
+    font-family: "JetBrains Mono", "Courier New", monospace;
+    font-size: 16px;
+  }
+}
+
+.ml-btn-refresh-in-progress {
+  height: 40px;
+  width: 250px;
+  border: 1.5px solid #685112;
+  border-radius: 4px;
+  color: #c9a85f;
+
+  background: linear-gradient(
+    90deg,
+    #1a1510 0%,
+    #2a2010 35%,
+    #3a2e18 48%,
+    #4a3a20 50%,
+    #3a2e18 52%,
+    #2a2010 65%,
+    #1a1510 100%
+  );
+
+  background-size: 250% 100%;
+  animation: shimmer 30s linear infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: -2150% 0%; }
+}

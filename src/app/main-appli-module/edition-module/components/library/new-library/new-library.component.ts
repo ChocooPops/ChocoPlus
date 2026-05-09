@@ -132,7 +132,8 @@ export class NewLibraryComponent extends UnauthorizedError {
       path: this.path.trim(),
       mediaType: this.mediaType!,
       lang: this.lang!,
-      state: StateLibrary.NOT_WORKED
+      state: StateLibrary.NOT_WORKED,
+      log: null
     }
     this.popup.setMessage(this.message, undefined);
     this.popup.setDisplayPopup(true);

@@ -1,11 +1,10 @@
 .container {
-  height: 100%;
-  width: 100%;
+  position: fixed;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  z-index: 9999;
+  z-index: 999999999;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
 }
