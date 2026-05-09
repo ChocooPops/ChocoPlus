@@ -464,7 +464,14 @@
             "CREATE_MEDIA_LIBRARY": "Créer la médiathèque",
             "LANGUAGE": "Langue",
             "MESSAGE_ADD_LIBRARY": "Cette action ajoutera une nouvelle librairie et téléchargera automatiquement les métadonnées des médias trouvés",
-            "SELECT...": "Sélectionner…"
+            "SELECT...": "Sélectionner…",
+            "SEARCH_FORMATED_TITLE": "Rechercher un titre",
+            "LINES": "lignes",
+            "LINE": "ligne",
+            "MISS_YEAR": "Année manquante",
+            "MISS_TMDB": "TMDB manquant",
+            "LINES_PAGES": "Lignes par page",
+            "ANY_LINE_FOUND": "Aucune ligne ne correspond aux filtres."
         },
 
         "LOG": {
