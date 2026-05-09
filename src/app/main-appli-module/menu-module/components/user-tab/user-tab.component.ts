@@ -167,7 +167,8 @@ export class UserTabComponent {
     this.user.profilPhoto = this.srcDefaultPp;
   }
 
-  onToggleTranslationKeys(): void {
+  onToggleTranslationKeys(event: MouseEvent): void {
+    event.stopPropagation();
     if (this.isShowingKeys) {
       this.translationLanguageService.revertToPreviousLang();
     } else {

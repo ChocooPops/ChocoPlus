@@ -35,11 +35,11 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
 
   public libraries: Library[] = [];
   public mediaLibraries: MediaLibrary[] | null = null;
+  public librarySelected: Library | null = null;
 
   displayFormNewLibrary: boolean = false;
   srcReset: string = 'icon/modify.svg';
   idSelectedForDeleting: string | null = null;
-  librarySelected: Library | null = null;
   displayLoaderMediaLibraries: boolean = false;
 
   StateLibrary = StateLibrary;
@@ -76,7 +76,17 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
       this.libraryService.getLibrary().subscribe((data: Library[]) => {
           this.libraries = data;
       })
-    )
+    );
+    this.subscription.add(
+      this.libraryService.getMediaLibraries().subscribe((data: MediaLibrary[] | null) => {
+        this.mediaLibraries = data;
+      })
+    );
+    this.subscription.add(
+      this.libraryService.getLibrarySelected().subscribe((data: Library | null) => {
+        this.librarySelected = data;
+      })
+    );
     this.fetchAllLibrary();
   }
 
@@ -87,11 +97,11 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
 
   onClickReset(): void {
     this.displayLoader = true;
-    this.libraryService.resetLibrary();
+    this.libraryService.setLibrary([]);
+    this.libraryService.setLibrarySelected(null);
+    this.libraryService.setMediaLibraries(null);
     this.fetchAllLibrary();
-    this.mediaLibraries = null;
     this.idSelectedForDeleting = null;
-    this.librarySelected = null;
   }
 
   onClickAdd(): void {
@@ -105,8 +115,7 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
   refreshLibrary(library: Library): void {
     this.libraryService.callFetchRefreshLibrary(library.id, library.mediaType);
     if (library.id && library.id === this.librarySelected?.id) {
-      this.mediaLibraries = null;
-      this.librarySelected = null;
+      this.libraryService.setMediaLibraries(null);
     }
   }
 
@@ -125,9 +134,9 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
         this.popup.setEndTask(true);
         this.popup.setDisplayButton(false);
         this.displayLoader = false;
-        if (this.idSelectedForDeleting === this.librarySelected) {
-          this.mediaLibraries = null;
-          this.librarySelected = null;
+        if (this.idSelectedForDeleting === this.librarySelected?.id) {
+          this.libraryService.setLibrarySelected(null);
+          this.libraryService.setMediaLibraries(null);
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -137,12 +146,11 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
   }
 
   onSelectedLibrary(library: Library): void {
-    this.librarySelected = library;
-    this.mediaLibraries = null;
+    this.libraryService.setLibrarySelected(library);
+    this.libraryService.setMediaLibraries(null);
     this.unsubscribLoadMediaLibraries();
     this.displayLoaderMediaLibraries = true;
     this.subscriptionLoadMediaLibraries = this.libraryService.fetchAllMediaLibraryByLibraryId(library.id).pipe(take(1)).subscribe((data: MediaLibrary[]) => {
-      this.mediaLibraries = data;
       this.displayLoaderMediaLibraries = false;
     });
   }

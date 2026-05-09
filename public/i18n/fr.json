@@ -469,8 +469,8 @@
 
         "LOG": {
             "MODAL_TITLE": "Journal",
-            "NO_LOGS": "Aucun Log",
-            "AVAILABLE_LOG": "Logs disponibles"
+            "NO_LOGS": "Aucun journal",
+            "AVAILABLE_LOG": "Journaux disponibles"
         }
     },
 

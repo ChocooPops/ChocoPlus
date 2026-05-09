@@ -29,7 +29,7 @@ export class MediaLibraryTabComponent {
   srcIconSave: string = 'icon/save.svg';
 
   private readonly MIN_COL_WIDTH = 40;
-  private readonly FEEDBACK_DURATION_MS = 4000;
+  private readonly FEEDBACK_DURATION_MS = 12000;
 
   constructor(private readonly elementRef: ElementRef,
     private readonly libraryService: LibraryService
@@ -89,29 +89,25 @@ export class MediaLibraryTabComponent {
       this.feedbackStates[index] = null;
       clearTimeout(this.feedbackTimers[index]);
   
-      // this.versionService.fetchUpdateVersionByOs(version).subscribe({
-      //   next: (result: MessageReturnedModel) => {
-      //     this.loadingStates[index] = false;
-      //     this.feedbackStates[index] = {
-      //       message: result.message,
-      //       state: result.state
-      //     };
-      //     if (result.state && result.other) {
-      //       const index = this.versions.findIndex((item) => item.os === version.os);
-      //       if (index >= 0) this.versions[index] = result.other;
-      //     }
-      //     this.onMediaLibrary.emit();
-      //     this.scheduleFeedbackClear(index);
-      //   },
-      //   error: () => {
-      //     this.loadingStates[index] = false;
-      //     this.feedbackStates[index] = {
-      //       message: 'EDITION.ADVANCED_SETTINGS.ERROR',
-      //       state: false
-      //     };
-      //     this.scheduleFeedbackClear(index);
-      //   }
-      // });
+      this.libraryService.modifyMediaLibrary(mediaLibrary).subscribe({
+        next: (result: MessageReturnedModel) => {
+          this.loadingStates[index] = false;
+          this.feedbackStates[index] = {
+            message: result.message,
+            state: result.state
+          };
+          this.onMediaLibrary.emit();
+          this.scheduleFeedbackClear(index);
+        },
+        error: () => {
+          this.loadingStates[index] = false;
+          this.feedbackStates[index] = {
+            message: 'EDITION.ADVANCED_SETTINGS.ERROR',
+            state: false
+          };
+          this.scheduleFeedbackClear(index);
+        }
+      });
     }
 
     private scheduleFeedbackClear(index: number): void {

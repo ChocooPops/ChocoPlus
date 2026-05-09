@@ -15,7 +15,7 @@
             <p>{{ 'MENU.OTHER.RESET' | translate }}</p>
         </div>
         @if (user && user.role === Role.ADMIN) {
-            <div class="container-option" (click)="onToggleTranslationKeys()">
+            <div class="container-option" (click)="onToggleTranslationKeys($event)">
                 @if (isShowingKeys) {
                     <img [src]="srcTraductionFill">
                     <p>{{ 'MENU.OTHER.HIDE_KEYS' | translate}}</p>
