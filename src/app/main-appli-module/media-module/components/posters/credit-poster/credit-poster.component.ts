@@ -7,11 +7,12 @@ import { MediaTypeModel } from '../../../models/media-type.enum';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { MediaCreditModel } from '../../../models/media-credit.interface';
 import { TranslatePipe } from '@ngx-translate/core';
+import { JobPipe } from '../../../../../common-module/pipe/job.pipe';
 
 @Component({
   selector: 'app-credit-poster',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, JobPipe],
   templateUrl: './credit-poster.component.html',
   styleUrl: './credit-poster.component.css',
 })

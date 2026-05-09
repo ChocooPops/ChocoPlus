@@ -8,11 +8,13 @@ import { EpisodePosterVerticalViewComponent } from '../../../posters/episode-pos
 import { EpisodePosterVerticalViewLoadingComponent } from '../../../posters/episode-poster-vertical-view-loading/episode-poster-vertical-view-loading.component';
 import { FormatMediaPageModel } from '../../../../models/format-media-page-enum';
 import { TranslatePipe } from '@ngx-translate/core';
+import { TitleCasePipe } from '@angular/common';
+import { JobPipe } from '../../../../../../common-module/pipe/job.pipe';
 
 @Component({
   selector: 'app-series-vertical-page',
   standalone: true,
-  imports: [NgClass, EpisodePosterVerticalViewComponent, EpisodePosterVerticalViewLoadingComponent, SimilarPosterHorizontalComponent, SimilarPosterHorizontalLoadingComponent, DatePipe, TranslatePipe],
+  imports: [JobPipe, NgClass, TitleCasePipe, EpisodePosterVerticalViewComponent, EpisodePosterVerticalViewLoadingComponent, SimilarPosterHorizontalComponent, SimilarPosterHorizontalLoadingComponent, DatePipe, TranslatePipe],
   templateUrl: './series-page.component.html',
   styleUrls: ['./series-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css'],
 })

@@ -2,11 +2,16 @@
 
 <div class="containerSettingSelected">
     <div class="containerFieldToFill">
-        <p>{{ 'EDITION.CATEGORY.CATEGORY_NAME' | translate }} <span>*</span></p>
-        <app-input-text-edition [text]="editCategory.name" [placeHolder]="exCategory"
-            (onInputChange)="onChangeNameCategory($event)"></app-input-text-edition>
+        <p>{{ 'EDITION.CATEGORY.TRANSLATION_KEY' | translate }} <span>*</span></p>
+        <app-input-text-edition [text]="editCategory.translationKey" [placeHolder]="exCategory"
+            (onInputChange)="onChangeTranslationKeyCategory($event)"></app-input-text-edition>
     </div>
 
+    <div class="containerFieldToFill">
+        <p> {{ 'EDITION.TMDB_ID' | translate }} <span>*</span></p>
+        <app-input-number-edition [placeHolder]="placeholderTextTmdbId" (onInputChange)="onChangeTmdbId($event)" [number]="editCategory.tmdbId" (onInputChange)="onChangeTmdbId($event)"></app-input-number-edition>
+    </div>
+    
     <div class="containerFieldToFill">
         <p>{{ 'EDITION.CATEGORY.SELECTION_NAME' | translate }} <span>*</span></p>
         <app-input-text-edition [text]="editCategory.nameSelection" [placeHolder]="exNameSelectionCategory"

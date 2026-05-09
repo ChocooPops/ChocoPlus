@@ -1,6 +1,6 @@
 <div class="containerInputCategories">
     @for(category of categoriesSelected; track category) {
-    <app-container-word (removeWordEmit)="removeCategory(category.id)" [word]="category.name"></app-container-word>
+    <app-container-word (removeWordEmit)="removeCategory(category.id)" [word]="category.translationKey"></app-container-word>
     }
 
     <div class="containerSelectCategory">
@@ -15,7 +15,7 @@
             <div class="container-categories-searched">
                 @for (category of categoriesSearched; track category.id) {
                 <div class="container-category-searched" (click)="onClick(category)">
-                    <p> {{ category.name |translate }} </p>
+                    <p> {{ category.translationKey | translate }} </p>
                 </div>
                 }
             </div>

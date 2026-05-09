@@ -4,6 +4,7 @@ import { FiltersChoicesModel } from '../../../media-module/models/catalog/filter
 import { FILTERS } from '../../../media-module/models/catalog/filters.interface';
 import { Operation } from '../../../media-module/models/catalog/operation.enum';
 import { TranslatePipe } from '@ngx-translate/core';
+import { FilterType } from '../../../media-module/models/catalog/filter-type.enum';
 
 @Component({
   selector: 'app-filter',
@@ -20,6 +21,8 @@ export class FilterComponent {
   isOpen: boolean = false;
   private static nextId: number = 1;
   private pendingFilter: FILTERS | null = null;
+
+  FilterType = FilterType;
 
   constructor(private readonly elementRef: ElementRef) {}
 

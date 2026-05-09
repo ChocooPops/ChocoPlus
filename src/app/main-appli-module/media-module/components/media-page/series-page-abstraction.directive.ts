@@ -289,7 +289,7 @@ export abstract class SeriesPageAbstraction {
         operation: Operation.CONTAIN,
         value: [
           {
-            name: category.name,
+            name: category.translationKey,
             value: category.id
           }
         ]

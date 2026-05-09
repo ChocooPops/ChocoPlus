@@ -8,11 +8,6 @@
 
     @if (editCredit.id >= 0) {
     <div class="container-profil">
-
-        <div class="containerFieldToFill">
-            <p> {{ 'IDENTIFYING' | translate }} </p>
-            <app-input-number-edition [number]="editCredit.id" [disbaled]="true"></app-input-number-edition>
-        </div>
         
         <div class="containerFieldToFill">
             <p>{{ 'EDITION.CREDIT.POSTER_CREDIT' | translate}} <span class="yellow">**</span></p>
@@ -21,6 +16,11 @@
         </div>
 
         <div class="containerSettingSelected" style="position: relative;">
+             <div class="containerFieldToFill">
+                <p> {{ 'IDENTIFYING' | translate }} </p>
+                <app-input-number-edition [number]="editCredit.id" [disbaled]="true"></app-input-number-edition>
+            </div>
+            
             <div class="containerFieldToFill">
                 <p>TMDB ID <span class="yellow">*</span></p>
                 <div class="container-flex">

@@ -23,9 +23,9 @@ export class CategoryService {
   private editCategorySubject: BehaviorSubject<CategoryEntirelyModel> = new BehaviorSubject<CategoryEntirelyModel>(this.getInitialEditCategory());
   private editCategory$: Observable<CategoryEntirelyModel> = this.editCategorySubject.asObservable();
 
-  constructor(private http: HttpClient,
-    private movieService: MovieService,
-    private seriesService: SeriesService
+  constructor(private readonly http: HttpClient,
+    private readonly movieService: MovieService,
+    private readonly seriesService: SeriesService
   ) {
     this.fetchAllCategories().pipe(take(1)).subscribe(() => { });
   }
@@ -33,7 +33,8 @@ export class CategoryService {
   private getInitialEditCategory(): CategoryEntirelyModel {
     return {
       id: -1,
-      name: '',
+      tmdbId: undefined,
+      translationKey: '',
       nameSelection: '',
       movies: [],
       series: []
@@ -55,8 +56,12 @@ export class CategoryService {
     return this.editCategory$;
   }
 
-  public modifyNameCategory(name: string): void {
-    this.updateEditCategory({ name: name });
+  public modifyTranslationKeyCategory(translationKey: string): void {
+    this.updateEditCategory({ translationKey: translationKey });
+  }
+
+  public modifyTmdbId(tmdbId: number): void {
+    this.updateEditCategory({ tmdbId: tmdbId });
   }
 
   public modifyNameSelectionCategory(name: string): void {
@@ -167,7 +172,8 @@ export class CategoryService {
 
         return {
           id: data.id,
-          name: data.name,
+          tmdbId: data.tmdbId,
+          translationKey: data.translationKey,
           nameSelection: data.nameSelection,
           movies: medias,
           series: series
@@ -185,8 +191,9 @@ export class CategoryService {
           const categories: CategorySimpleModel[] = this.categoriesSubject.value;
           categories.push({
             id: data.other.id,
-            name: this.editCategorySubject.value.name
-          })
+            tmdbId: this.editCategorySubject.value.tmdbId,
+            translationKey: this.editCategorySubject.value.translationKey
+          });
           this.categoriesSubject.next(categories);
         }
         return data;
@@ -226,7 +233,8 @@ export class CategoryService {
     const series: number[] = category.series.map(serie => serie.id);
     return {
       id: category.id,
-      name: category.name,
+      tmdbId: category.tmdbId,
+      translationKey: category.translationKey,
       nameSelection: category.nameSelection,
       movies: movies,
       series: series
@@ -245,13 +253,13 @@ export class CategoryService {
     const input = this.normalizeText(searchStr.trim());
     if (input.length < 3) {
       return categories.filter(category =>
-        this.normalizeText(category.name).startsWith(input)
+        this.normalizeText(category.translationKey).startsWith(input)
       );
     }
     const startsWithMatches: CategorySimpleModel[] = [];
     const fuzzyMatches: CategorySimpleModel[] = [];
     for (const category of categories) {
-      const normalized = this.normalizeText(category.name);
+      const normalized = this.normalizeText(category.translationKey);
 
       if (normalized.startsWith(input)) {
         startsWithMatches.push(category);

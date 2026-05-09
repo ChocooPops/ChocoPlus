@@ -18,13 +18,15 @@ import { FormatMediaPageModel } from '../../../../models/format-media-page-enum'
 import { FiltersCatalogService } from '../../../../services/filters-catalog/filters-catalog.service';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { TitleCasePipe } from '@angular/common';
+import { JobPipe } from '../../../../../../common-module/pipe/job.pipe';
 
 @Component({
   selector: 'app-movie-vertical-page',
   standalone: true,
-  imports: [TranslatePipe, DatePipe, SimilarPosterHorizontalLoadingComponent, SimilarPosterHorizontalComponent, NgClass],
+  imports: [JobPipe, TranslatePipe, DatePipe, SimilarPosterHorizontalLoadingComponent, SimilarPosterHorizontalComponent, NgClass, TitleCasePipe],
   templateUrl: './movie-page.component.html',
-  styleUrls: ['./movie-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css']
+  styleUrls: ['./movie-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css'],
 })
 export class MovieVerticalPageComponent extends MoviePageAbstraction {
 

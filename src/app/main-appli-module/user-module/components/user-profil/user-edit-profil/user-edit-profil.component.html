@@ -17,9 +17,7 @@
 
     <div class="containe-edition">
         <div class="container-pp" (click)="onClickProfilPicture($event)" #containerBtProfilPicture>
-            @if(profilPhoto) {
             <img [src]="profilPhoto" class="pp" (error)="errorPpUser()">
-            }
             <div class="button-edit">
                 <img [src]="srcButtonEdit">
             </div>

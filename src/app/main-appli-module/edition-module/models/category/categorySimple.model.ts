@@ -1,4 +1,5 @@
 export interface CategorySimpleModel {
     id: number,
-    name: string
+    tmdbId: number | undefined,
+    translationKey: string
 }

@@ -14,11 +14,12 @@ import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { CategoryService } from '../../services/category/category.service';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputNumberEditionComponent } from '../input-number-edition/input-number-edition.component';
 
 @Component({
   selector: 'app-setting-add-category',
   standalone: true,
-  imports: [TranslatePipe, InputTextEditionComponent, InputResearchSeriesComponent, PopupComponent, InputResearchMovieComponent, SelectionOverviewComponent, ButtonSaveComponent, ButtonRemoveComponent],
+  imports: [TranslatePipe, InputNumberEditionComponent, InputTextEditionComponent, InputResearchSeriesComponent, PopupComponent, InputResearchMovieComponent, SelectionOverviewComponent, ButtonSaveComponent, ButtonRemoveComponent],
   templateUrl: './setting-add-category.component.html',
   styleUrls: ['./setting-add-category.component.css', '../../styles/edition.css']
 })

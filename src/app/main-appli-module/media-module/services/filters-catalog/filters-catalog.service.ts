@@ -178,7 +178,7 @@ export class FiltersCatalogService {
         data.forEach((category: CategorySimpleModel) => {
           this.categoryFilter.filters.push({
             id: this.getId(),
-            name: category.name,
+            name: category.translationKey,
             value: category.id,
             isSelected: 0,
           });
@@ -263,25 +263,11 @@ export class FiltersCatalogService {
   public addFilters(filtre: FILTERS): void {
     const filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
     filtres.push(filtre);
+    filtre.id = this.getId();
     this.FILTERS_SUBJECT.next(filtres);
   }
 
   public deleteFilter(filtre: FILTERS): any {
-    if (filtre.typeData === FilterType.DECADE) {
-      this.decadeFilter.filters.forEach((el) => {
-        if (filtre.value.some((item) => item.value === el.value)) {
-          el.isSelected = 0;
-        }
-      });
-    } else if (filtre.typeData === FilterType.CATEGORY) {
-      this.categoryFilter.filters.forEach((el) => {
-        if (filtre.value.some((item) => item.value === el.value)) {
-          el.isSelected = 0;
-        }
-      });
-    } else if (filtre.typeData === FilterType.MEDIA) {
-      return null;
-    }
     let filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
     filtres = filtres.filter((item) => item.id !== filtre.id);
     this.FILTERS_SUBJECT.next(filtres);
@@ -303,6 +289,7 @@ export class FiltersCatalogService {
   public setFilterFromMediaPage(filtres: FILTERS[]): void {
     const filtresSubject: FILTERS[] = this.FILTERS_SUBJECT.value.slice(0, 1);
     filtres.forEach((filtre: FILTERS) => {
+      filtre.id = this.getId();
       filtresSubject.push(filtre);
     });
     this.FILTERS_SUBJECT.next(filtresSubject);

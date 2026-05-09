@@ -18,8 +18,8 @@
             </div>
             <div class="fc-dropdown">
                 @for (opt of typeOptions; track opt) {
-                <div class="fc-option" [class.selected]="selected.type === opt" (click)="selectOption('type', opt)">{{
-                    opt }}</div>
+                <div class="fc-option" [class.selected]="selected.type === opt" (click)="selectOption('type', opt)">
+                    {{ opt | translate }}</div>
                 @if (!$last) { <div class="fc-divider"></div> }
                 }
             </div>

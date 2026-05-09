@@ -9,11 +9,13 @@ export class JoinPipe implements PipeTransform {
 
   constructor(private readonly translate: TranslateService) {}
 
-  transform(value: {name: string, value: any}[] | null | undefined, separator: string = ', '): string {
+  transform(value: {name: string, value: any}[] | null | undefined, separator: string): string {
     if (!value || !Array.isArray(value)) {
       return '';
     }
-    return value.map((item) => this.translate.instant(item.name)).join(separator);
+
+    separator = (this.translate.instant(`OPERATOR.${separator}`) as string).toString();
+    return value.map((item) => this.translate.instant(`${item.name}`)).join(` ${separator} `);
   }
   
 }

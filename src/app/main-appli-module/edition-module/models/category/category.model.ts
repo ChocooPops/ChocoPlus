@@ -1,7 +1,8 @@
 export interface CategoryModel {
-    id : number,
-    name : string,
-    nameSelection : string,
-    movies : number[],
-    series : number[]
+    id: number,
+    tmdbId: number | undefined,
+    translationKey: string,
+    nameSelection: string,
+    movies: number[],
+    series: number[]
 }

@@ -26,7 +26,7 @@ export class InputCategoriesEditionComponent {
   srcArow: string = 'icon/arrow.svg';
   subscription: Subscription = new Subscription();
 
-  constructor(private categoryService: CategoryService) { }
+  constructor(private readonly categoryService: CategoryService) { }
 
   ngOnInit(): void {
     this.subscription.add(

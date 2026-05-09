@@ -15,7 +15,7 @@
         <div class="containerMoviesSearched">
             @for(categorie of contentWanted; track categorie.id) {
             <div class="movieSearched" (click)="onClickOnContentWanted(categorie)">
-                <p> {{categorie.name}}</p>
+                <p> {{ categorie.translationKey | titlecase }}</p>
             </div>
             }
         </div>

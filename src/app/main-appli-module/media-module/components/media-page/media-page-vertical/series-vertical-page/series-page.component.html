@@ -23,7 +23,7 @@
                      <span class="legend"> {{'MEDIA_PAGE.PRODUCTION_DIRECTION' | translate}}: </span>
                         @for (crew of crews; track $index) {
                             <div class="container-job-transparent">
-                                <p class="info-tooltip">{{ crew.job }}</p>
+                                <p class="info-tooltip">{{ crew.job | job }}</p>
                                 @if ($index !== crews.length - 1) {
                                 }
                                 @if ($index !== crews.length - 1) {
@@ -51,9 +51,9 @@
                     <span class="legend">{{'MEDIA_PAGE.CATEGORY' | translate}}: </span> 
                     @for (genre of genres; track $index) {
                         @if ($index !== genres.length - 1) {
-                            <span><span class="content" (click)="setFilterCategory(genre)">{{ genre.name}}</span>,</span>
+                            <span><span class="content" (click)="setFilterCategory(genre)">{{ genre.translationKey|translate}}</span>,</span>
                         } @else {
-                            <span class="content" (click)="setFilterCategory(genre)">{{ genre.name}}</span>
+                            <span class="content" (click)="setFilterCategory(genre)">{{ genre.translationKey|translate}}</span>
                         }
                     }
                 </div>
@@ -61,9 +61,9 @@
                     <span class="legend">{{'MEDIA_PAGE.KEY_WORDS' | translate}}: </span> 
                     @for (keyWord of keyWords; track $index) {
                         @if ($index !== keyWords.length - 1) {
-                            <span><span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord}}</span>,</span>
+                            <span><span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord|titlecase}}</span>,</span>
                         } @else {
-                            <span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord}}</span>
+                            <span class="content" (click)="setFilterKeyWord(keyWord)">{{ keyWord|titlecase}}</span>
                         }
                     }
                 </div>

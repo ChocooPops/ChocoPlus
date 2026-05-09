@@ -23,7 +23,8 @@
         <div class="container-filters" [style.margin-left.vw]="marginLeft">
             @for (FILTER of FILTERS; track FILTER.id) {
                 <div class="container-filter">
-                    <p> <span> {{ FILTER.typeData | translate }} </span> <span> {{ FILTER.operation | translate }} </span> <span> {{ FILTER.value | join:' ou ' }} </span> </p>
+                    <p> 
+                        <span> {{ FILTER.typeData | translate }} </span> <span> {{ FILTER.operation | translate }} </span> <span> {{ FILTER.value | join:'OR'}} </span> </p>
                     @if (FILTER.typeData !== TypeData.MEDIA) {
                         <img [src]="srcYellowCross" (click)="deleteFilter(FILTER)">
                     }

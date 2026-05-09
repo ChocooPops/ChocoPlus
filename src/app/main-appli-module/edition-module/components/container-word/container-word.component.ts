@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-container-word',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './container-word.component.html',
   styleUrl: './container-word.component.css'
 })

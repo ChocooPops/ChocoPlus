@@ -13,7 +13,7 @@ export abstract class SettingCreditAbstraction extends UnauthorizedError {
     @ViewChild('buttonSearchTmdbId') buttonSearchTmdbId !: AiButtonComponent;
     @ViewChild('buttonSearchFullName') buttonSearchFullName !: AiButtonComponent;
 
-    protected placeholderTextTmdbId = 'EDITION.CREDIT.PLACEHOLDER_TMDB';
+    protected placeholderTextTmdbId = 'EDITION.PLACEHOLDER_TMDB';
     protected placeholderTextFullName = 'EDITION.CREDIT.PLACEHOLDER_FULLNAME';
     protected placeholderTextOriginalFullName = 'EDITION.CREDIT.PLACEHOLDER_ORIGINAL_FULLNAME';
     protected exTextPoster = 'EDITION.CREDIT.PLACEHOLDER_POSTER';

@@ -11,7 +11,7 @@
 
         <div class="containerSettingSelected" style="position: relative;">
             <div class="containerFieldToFill">
-                <p>TMDB ID <span class="yellow">*</span></p>
+                <p>{{ 'EDITION.TMDB_ID' | translate}} <span class="yellow">*</span></p>
                 <div class="container-flex">
                     <app-input-number-edition [number]="editCredit.tmdbId" (onInputChange)="onInputTmdbId($event)"
                         [placeHolder]="placeholderTextTmdbId"

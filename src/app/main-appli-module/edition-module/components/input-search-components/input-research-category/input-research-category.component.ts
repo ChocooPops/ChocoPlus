@@ -5,11 +5,12 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { CategoryService } from '../../../services/category/category.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-input-research-category',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, TranslatePipe],
+  imports: [ReactiveFormsModule, NgClass, TranslatePipe, TitleCasePipe],
   templateUrl: './input-research-category.component.html',
   styleUrls: ['./input-research-category.component.css', '../../../styles/search.css']
 })

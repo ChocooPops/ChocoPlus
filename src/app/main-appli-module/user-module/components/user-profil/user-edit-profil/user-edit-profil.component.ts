@@ -29,6 +29,7 @@ export class UserEditProfilComponent {
   profilPhoto: string | undefined = undefined;
   subscription !: Subscription;
   srcButtonEdit: string = 'icon/edition.svg';
+  srcDefaultPp: string = 'pp/pp.jpg';
 
   formGroupInfo !: FormGroup;
   formControlPseudo: string = 'inputPseudo';
@@ -98,11 +99,8 @@ export class UserEditProfilComponent {
     }
   }
 
-  srcDefaultPp: string = 'pp/pp.jpg';
   errorPpUser(): void {
-    if (this.profilPhoto) {
-      this.profilPhoto = this.srcDefaultPp;
-    }
+    this.profilPhoto = this.srcDefaultPp;
   }
 
   onClickProfilPicture(event: Event): void {

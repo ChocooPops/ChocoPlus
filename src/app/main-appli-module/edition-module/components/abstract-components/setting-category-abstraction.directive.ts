@@ -18,6 +18,7 @@ export abstract class SettingCategoryAbstraction extends UnauthorizedError {
         super(editionParametersService);
     }
 
+    protected placeholderTextTmdbId = 'EDITION.PLACEHOLDER_TMDB';
     protected exCategory = 'EDITION.CATEGORY.PLACEHOLDER_NAME_CATEGORY';
     protected exNameSelectionCategory = 'EDITION.CATEGORY.PLACEHOLDER_NAME_SELECTION';
     protected editCategory !: CategoryEntirelyModel;
@@ -43,9 +44,12 @@ export abstract class SettingCategoryAbstraction extends UnauthorizedError {
         this.subscription.unsubscribe();
     }
 
-    //MOVIES
-    protected onChangeNameCategory(name: string): void {
-        this.categoryService.modifyNameCategory(name);
+    protected onChangeTranslationKeyCategory(name: string): void {
+        this.categoryService.modifyTranslationKeyCategory(name);
+    }
+
+    protected onChangeTmdbId(tmdbId: number): void {
+        this.categoryService.modifyTmdbId(tmdbId);
     }
 
     protected onChangeNameSelectionCategory(name: string): void {

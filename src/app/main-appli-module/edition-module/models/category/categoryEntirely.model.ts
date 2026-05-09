@@ -3,7 +3,8 @@ import { SeriesModel } from "../../../media-module/models/series/series.interfac
 
 export interface CategoryEntirelyModel {
     id: number,
-    name: string,
+    tmdbId: number | undefined,
+    translationKey: string,
     nameSelection: string,
     movies: MovieModel[],
     series : SeriesModel[]

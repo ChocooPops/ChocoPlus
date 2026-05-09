@@ -7,7 +7,7 @@ import { TranslationLanguageService } from '../../../common-module/services/tran
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
     const authService: AuthService = inject(AuthService);
-    //const languageService: TranslationLanguageService = inject(TranslationLanguageService);
+    const languageService: TranslationLanguageService = inject(TranslationLanguageService);
 
     if (req.headers.has('skipInterceptor')) {
         const headers = req.headers.delete('skipInterceptor');
@@ -15,12 +15,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return next(cloned);
     }
 
+    //Ignorer les requêtes de traduction i18n
+    if (req.url.includes('/i18n/')) {
+        return next(req);
+    }
+
     let token = authService.getToken();
 
     const headers: { [key: string]: string } = {};
 
     headers[environment.HEADER_NAME_FIELD_SECRET_API] = environment.HEADER_SECRET_API;
-    headers['Accept-Language'] = "en"
+    headers['Accept-Language'] = languageService.getCurrentLangValue();
 
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;

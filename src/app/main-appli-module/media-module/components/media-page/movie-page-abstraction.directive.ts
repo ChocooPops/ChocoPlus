@@ -141,7 +141,7 @@ export abstract class MoviePageAbstraction {
         .subscribe((info: MediaInfoModel | null) => {
           if (info) {
             this.genres = info.categories;
-            this.keyWords = info.keyWords.map((item) => this.transform(item));
+            this.keyWords = info.keyWords;
             
             if (this.formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
               const img = this.imagePreloaderService.getPosterFromCredits([...info.casts, ...info.crews]);
@@ -164,12 +164,6 @@ export abstract class MoviePageAbstraction {
     }
   }
 
-  private transform(value: string): string {
-    if (!value) return '';
-    value = value.trimStart();
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  }
-
   onClickSimilarTitle(media: MediaModel): void {
     this.mediaSelectedService.selectMedia(media);
   }
@@ -185,7 +179,7 @@ export abstract class MoviePageAbstraction {
         operation: Operation.CONTAIN,
         value: [
           {
-            name: category.name,
+            name: category.translationKey,
             value: category.id
           }
         ]

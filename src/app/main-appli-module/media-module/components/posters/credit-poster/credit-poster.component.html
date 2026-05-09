@@ -19,7 +19,7 @@
         @if (jobTitle === JobModel.ACTOR) {
             <p (click)="onClickCredit(credit)" class="character" [style.width.vw]="width"> {{ credit.character }} </p>
         } @else if(jobTitle === JobModel.DIRECTOR) {
-            <p (click)="onClickCredit(credit)" class="job" [style.width.vw]="width"> {{ credit.job }} </p>
+            <p (click)="onClickCredit(credit)" class="job" [style.width.vw]="width"> {{ credit.job | job}} </p>
         }
         </div>
     </div>
