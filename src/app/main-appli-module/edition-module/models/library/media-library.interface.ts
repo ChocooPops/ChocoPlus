@@ -3,6 +3,9 @@ import { MediaTypeModel } from "../../../media-module/models/media-type.enum"
 export interface MediaLibrary {
     id: string,
     libraryId: string,
+    parentId: string,
+    seasonNumber: number,
+    episodeNumber: number,
     titleFormated: string,
     year: string,
     path: string,

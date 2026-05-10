@@ -90,7 +90,7 @@
     </thead>
     <tbody>
       @for (item of pagedItems; track item.mediaLibrary.id; let i = $index) {
-      <tr [class.ct-row--warning]="isRowWarning(item.mediaLibrary)">
+      <tr class="ct-row--movies" [class.ct-row--warning]="isRowWarning(item.mediaLibrary)">
         <td>
           <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.id" disabled>
         </td>
@@ -98,8 +98,10 @@
           <input class="ct-input ct-input-number" [class.ct-input--invalid--tmdb]="isTmdbInvalid(item.mediaLibrary)"
             type="number" [(ngModel)]="item.mediaLibrary.tmdbId">
         </td>
-        <td>
-          <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.type" disabled>
+        <td class="ct-td-badge">
+          <div class="ct-type-badge ct-badge--movies">
+            {{ item.mediaLibrary.type }}
+          </div>
         </td>
         <td>
           <input class="ct-input ct-input-order" type="text" [(ngModel)]="item.mediaLibrary.titleFormated" disabled />

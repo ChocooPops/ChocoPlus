@@ -1,0 +1,648 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Couleurs d'accent par type (cohérentes avec les badges)
+   ───────────────────────────────────────────────────────────────────────────── */
+:host {
+  --color-series:  #7eb8f7;   /* bleu clair  — SERIES  */
+  --color-season:  #a78bfa;   /* violet      — SEASON  */
+  --color-episode: #6ee7b7;   /* vert menthe — EPISODE */
+}
+
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
+
+.ct-wrap {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 170px;
+}
+
+.ct-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #111;
+  border-bottom: 1px solid #222;
+  border-radius: 8px 8px 0 0;
+}
+
+.ct-controls-left,
+.ct-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ─── Search ─────────────────────────────────────────────────────────────── */
+
+.ct-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ct-search-icon {
+  position: absolute;
+  left: 9px;
+  width: 14px;
+  height: 14px;
+  color: #555;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.ct-search-input {
+  height: 32px;
+  width: 220px;
+  background: #1a1a1a;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 6px;
+  padding: 0 30px 0 30px;
+  font-size: 13px;
+  font-family: "Courier New", monospace;
+  color: #ccc;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:focus {
+    border-color: #444;
+    background: #111;
+  }
+
+  &::placeholder {
+    color: #444;
+  }
+}
+
+.ct-clear-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+
+  &:hover {
+    color: #aaa;
+  }
+}
+
+/* ─── Filter group ───────────────────────────────────────────────────────── */
+
+.ct-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Filtre type SERIES / SEASON / EPISODE */
+.ct-type-filter-group {
+  display: flex;
+  gap: 0;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ct-type-btn {
+  height: 30px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid #2a2a2a;
+  color: #555;
+  font-size: 11px;
+  font-family: "Courier New", monospace;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:hover {
+    background: #1a1a1a;
+    color: #aaa;
+  }
+
+  &.ct-type-btn--active {
+    background: #1e1e1e;
+    color: #eee;
+  }
+}
+
+/* Couleurs d'accent quand actif */
+.ct-type-btn--series.ct-type-btn--active { color: var(--color-series); }
+.ct-type-btn--season.ct-type-btn--active { color: var(--color-season); }
+.ct-type-btn--episode.ct-type-btn--active { color: var(--color-episode); }
+
+/* Filtres warning (TMDB / Year) */
+.ct-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px;
+  background: transparent;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 6px;
+  color: #666;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: #444;
+    color: #aaa;
+    background: #1a1a1a;
+  }
+
+  &.ct-filter-btn--active {
+    border-color: #555;
+    color: #eee;
+    background: #1e1e1e;
+  }
+}
+
+.ct-filter-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ct-filter-dot--year { background: #e57373; }
+.ct-filter-dot--tmdb { background: #ffd301; }
+
+/* ─── Count / Page size ──────────────────────────────────────────────────── */
+
+.ct-total-count {
+  font-size: 12px;
+  font-family: "Courier New", monospace;
+  color: #666;
+  white-space: nowrap;
+
+  strong { color: #aaa; }
+}
+
+.ct-page-size-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #555;
+  white-space: nowrap;
+}
+
+.container-select-size {
+  position: relative;
+  width: 95px;
+}
+
+.ct-page-size-select {
+  width: 100%;
+  height: 30px;
+  background: #1a1a1a;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 5px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-family: "Courier New", monospace;
+  color: #aaa;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, border-radius 0.3s;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.container-options-size {
+  width: calc(100% - 4px);
+  position: absolute;
+  display: flex;
+  background: #1a1a1a;
+  border: 1.5px solid #555;
+  top: 33px;
+  flex-direction: column;
+  z-index: 999;
+  border-radius: 0 0 5px 5px;
+  box-sizing: border-box;
+  overflow: hidden;
+  left: 50%;
+  transform: translate(-50%, 0);
+  animation: enterdd 0.2s ease;
+
+  p {
+    background-color: transparent;
+    margin: 0;
+    padding-block: 6px;
+    padding-inline: 8px;
+    cursor: pointer;
+    transition: 0.2s background-color;
+
+    &:hover { background-color: #212121; }
+  }
+}
+
+@keyframes enterdd {
+  0%   { opacity: 0; transform: translate(-50%, 5px); }
+  100% { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.not-select:hover { border-color: #444; }
+
+.selected {
+  border-radius: 5px 5px 0 0;
+  border-color: #555;
+
+  .ct-custom-select-arrow {
+    transform: rotate(180deg);
+    color: #aaa;
+  }
+}
+
+.ct-custom-select-arrow {
+  width: 10px;
+  height: 6px;
+  color: #555;
+  flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+
+/* ─── Table ──────────────────────────────────────────────────────────────── */
+
+.ct-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #1a1a1a;
+}
+
+thead tr {
+  background-color: #111;
+  border-bottom: 2px solid #2a2a2a;
+}
+
+th {
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--white-dark);
+  text-align: center;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+.ct-action-col {
+  width: 180px;
+  min-width: 140px;
+}
+
+tbody tr {
+  border-bottom: 1px solid #222;
+  transition: background-color 0.15s;
+
+  &:hover { background-color: #1e1e1e; }
+  &:last-child { border-bottom: none; }
+}
+
+/* ── Coloration subtile par type de ligne ── */
+.ct-row--series {
+  border-left: 2px solid var(--color-series);
+}
+
+.ct-row--season {
+  border-left: 2px solid var(--color-season);
+  background-color: #161618;
+
+  &:hover { background-color: #1b1b1e; }
+}
+
+.ct-row--episode {
+  border-left: 2px solid var(--color-episode);
+  background-color: #131514;
+
+  &:hover { background-color: #181a18; }
+}
+
+/* Warning override (plus fort que le type) */
+.ct-row--warning {
+  background-color: #171717 !important;
+
+  &:hover { background-color: #131313 !important; }
+}
+
+td {
+  padding: 6px 8px;
+  vertical-align: middle;
+}
+
+.ct-td-badge {
+  text-align: center;
+}
+
+.ct-action-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 6px 12px;
+  min-height: 46px;
+}
+
+.ct-empty {
+  text-align: center;
+  padding: 32px;
+  color: #444;
+  font-size: 13px;
+  font-family: "Courier New", monospace;
+}
+
+/* ─── Type badge ─────────────────────────────────────────────────────────── */
+
+.ct-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.ct-badge--series {
+  color: var(--color-series);
+  border-color: color-mix(in srgb, var(--color-series) 40%, transparent);
+  background: color-mix(in srgb, var(--color-series) 8%, transparent);
+}
+
+.ct-badge--season {
+  color: var(--color-season);
+  border-color: color-mix(in srgb, var(--color-season) 40%, transparent);
+  background: color-mix(in srgb, var(--color-season) 8%, transparent);
+}
+
+.ct-badge--episode {
+  color: var(--color-episode);
+  border-color: color-mix(in srgb, var(--color-episode) 40%, transparent);
+  background: color-mix(in srgb, var(--color-episode) 8%, transparent);
+}
+
+/* ─── Inputs ─────────────────────────────────────────────────────────────── */
+
+.ct-input {
+  width: 100%;
+  height: 34px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: 14px;
+  font-family: "Courier New", monospace;
+  color: #ccc;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover { border-color: #2a2a2a; }
+
+  &:focus {
+    border-color: #444;
+    background: #111;
+  }
+
+  &::placeholder { color: #444; }
+}
+
+/* Valeur non-applicable (—) */
+.ct-input--muted {
+  color: #333 !important;
+  font-size: 13px;
+}
+
+/* Centrage pour les colonnes numériques courtes */
+.ct-input--centered {
+  text-align: center;
+}
+
+/* Champ non éditable (TMDB sur SEASON/EPISODE) */
+.ct-input--readonly {
+  color: #444 !important;
+  cursor: default;
+}
+
+.ct-input--invalid--year { color: #e57373 !important; }
+.ct-input--invalid--tmdb { color: #ffd301 !important; }
+
+.ct-input-number {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+/* ─── Save button ────────────────────────────────────────────────────────── */
+
+.ct-save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 30px;
+  padding: 0 12px;
+  background: transparent;
+  border: 1.5px solid #3a3a3a;
+  border-radius: 6px;
+  color: #aaa;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: #555;
+    color: #eee;
+    background: #222;
+  }
+
+  &:active { background: #1a1a1a; }
+
+  img {
+    height: 14px;
+    width: 14px;
+  }
+}
+
+/* Placeholder pour SEASON / EPISODE : pas de bouton */
+.ct-no-action {
+  color: #2a2a2a;
+  font-size: 14px;
+  font-family: "Courier New", monospace;
+  user-select: none;
+}
+
+/* ─── Spinner / Feedback ─────────────────────────────────────────────────── */
+
+.ct-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 2px solid #333;
+  border-top-color: #ffd301;
+  border-radius: 50%;
+  animation: ct-spin 0.7s linear infinite;
+}
+
+@keyframes ct-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ct-feedback {
+  font-size: 12px;
+  font-family: "Courier New", monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: ct-fade-in 0.2s ease;
+}
+
+.ct-feedback--success { color: #4caf50; }
+.ct-feedback--error   { color: #e57373; }
+
+@keyframes ct-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Resize handles ─────────────────────────────────────────────────────── */
+
+.ct-resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 2px;
+    height: 16px;
+    background: #333;
+    border-radius: 1px;
+    transition: background 0.15s;
+  }
+
+  &:hover::after,
+  &.is-resizing::after {
+    background: #666;
+  }
+}
+
+/* ─── Column widths ──────────────────────────────────────────────────────── */
+
+th:nth-child(1)  { width: 150px; }              /* ID */
+th:nth-child(2)  { width: 80px; }               /* TMDB ID */
+th:nth-child(3)  { width: 90px; }               /* TYPE badge */
+th:nth-child(4)  { width: 150px; }              /* Title */
+th:nth-child(5)  { width: 50px; }               /* Year */
+th:nth-child(6)  { width: 150px; }              /* Parent ID */
+th:nth-child(7)  { width: 60px; }               /* Season # */
+th:nth-child(8)  { width: 60px; }               /* Episode # */
+th:nth-child(9)  { width: 20%; min-width: 250px; } /* Path */
+th:nth-child(10) { width: 100px; }              /* Dimension */
+th:nth-child(11) { width: 70px; }               /* Resolution */
+th:nth-child(12) { width: 180px; }              /* Action */
+
+/* ─── Pagination ─────────────────────────────────────────────────────────── */
+
+.ct-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 12px;
+  background: #111;
+  border-top: 1px solid #222;
+  border-radius: 0 0 8px 8px;
+  flex-wrap: wrap;
+}
+
+.ct-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  background: transparent;
+  border: 1.5px solid #2a2a2a;
+  border-radius: 5px;
+  color: #666;
+  font-size: 13px;
+  font-family: "Courier New", monospace;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: #444;
+    color: #ccc;
+    background: #1a1a1a;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  &.ct-page-btn--active {
+    border-color: #ffd301;
+    color: #ffd301;
+    background: #1a1700;
+  }
+}
+
+.ct-page-ellipsis {
+  color: #333;
+  font-size: 13px;
+  padding: 0 4px;
+  line-height: 30px;
+}
+
+.ct-page-info {
+  font-size: 12px;
+  font-family: "Courier New", monospace;
+  color: #444;
+  margin-left: 8px;
+  white-space: nowrap;
+}

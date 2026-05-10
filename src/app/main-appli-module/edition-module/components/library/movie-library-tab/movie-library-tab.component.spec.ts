@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MediaLibraryTabComponent } from './media-library-tab.component';
+import { MediaLibraryTabComponent } from './movie-library-tab.component';
 
 describe('MediaLibraryTabComponent', () => {
   let component: MediaLibraryTabComponent;

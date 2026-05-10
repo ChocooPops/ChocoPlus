@@ -1,0 +1,244 @@
+<div class="ct-wrap">
+
+  <div class="ct-controls">
+
+    <div class="ct-controls-left">
+      <div class="ct-search-wrap">
+        <svg class="ct-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input class="ct-search-input" type="text" [placeholder]="'EDITION.LIBRARY.SEARCH_FORMATED_TITLE' | translate"
+          [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()" />
+        @if (searchQuery) {
+        <button class="ct-clear-btn" (click)="clearSearch()" title="Effacer">✕</button>
+        }
+      </div>
+
+      <div class="ct-filter-group">
+
+        <div class="ct-type-filter-group">
+          <button class="ct-type-btn" [class.ct-type-btn--active]="filterType === 'ALL'"
+            (click)="setTypeFilter('ALL')">
+            {{ 'EDITION.LIBRARY.TYPE_ALL' | translate }}
+          </button>
+          <button class="ct-type-btn ct-type-btn--series" [class.ct-type-btn--active]="filterType === 'SERIES'"
+            (click)="setTypeFilter('SERIES')">
+            {{ 'EDITION.LIBRARY.TYPE_SERIES' | translate }}
+          </button>
+          <button class="ct-type-btn ct-type-btn--season" [class.ct-type-btn--active]="filterType === 'SEASON'"
+            (click)="setTypeFilter('SEASON')">
+            {{ 'EDITION.LIBRARY.TYPE_SEASON' | translate }}
+          </button>
+          <button class="ct-type-btn ct-type-btn--episode" [class.ct-type-btn--active]="filterType === 'EPISODE'"
+            (click)="setTypeFilter('EPISODE')">
+            {{ 'EDITION.LIBRARY.TYPE_EPISODE' | translate }}
+          </button>
+        </div>
+
+        <button class="ct-filter-btn" [class.ct-filter-btn--active]="filterMissingTmdb" (click)="toggleFilterTmdb()"
+          title="Lignes sans TMDB ID ou ID invalide">
+          <span class="ct-filter-dot ct-filter-dot--tmdb"></span>
+          {{ 'EDITION.LIBRARY.MISS_TMDB' | translate }}
+        </button>
+
+        <button class="ct-filter-btn" [class.ct-filter-btn--active]="filterMissingYear" (click)="toggleFilterYear()"
+          title="Lignes sans année ou année invalide">
+          <span class="ct-filter-dot ct-filter-dot--year"></span>
+          {{ 'EDITION.LIBRARY.MISS_YEAR' | translate }}
+        </button>
+
+      </div>
+    </div>
+
+    <div class="ct-controls-right">
+      <span class="ct-total-count">
+        <strong>{{ pagedItems.length }}</strong> / {{ mediaLibraries.length }}
+        {{ mediaLibraries.length > 1
+        ? ('EDITION.LIBRARY.LINES' | translate)
+        : ('EDITION.LIBRARY.LINE' | translate)
+        }}
+      </span>
+      <label class="ct-page-size-label">
+        {{ 'EDITION.LIBRARY.LINES_PAGES' | translate }}
+        <div #selectSize class="container-select-size">
+          <div class="ct-page-size-select" (click)="openSelectSize()"
+            [ngClass]="{'selected': displaySelectSize, 'not-select': !displaySelectSize}">
+            <p>{{ pageSize }}</p>
+            <svg class="ct-custom-select-arrow" viewBox="0 0 10 6" fill="none">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          @if (displaySelectSize) {
+          <div class="container-options-size">
+            @for (size of sizes; track size) {
+            <p (click)="onPageSizeChange(size)">{{ size }}</p>
+            }
+          </div>
+          }
+        </div>
+      </label>
+    </div>
+
+  </div>
+
+  <table class="ct-table">
+    <thead>
+      <tr>
+        <th>ID<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.TMDB_ID' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'MEDIA' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.FORMATED_TITLE' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'YEAR' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.PARENT_ID' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.SEASON_NUMBER' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.EPISODE_NUMBER' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.ABSOLUTE_PATH' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.DIMENSION' | translate }}<div class="ct-resize-handle"></div></th>
+        <th>{{ 'EDITION.LIBRARY.RESOLUTION' | translate }}<div class="ct-resize-handle"></div></th>
+        <th class="ct-action-col">{{ 'BUTTON.ACTION' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of pagedItems; track item.mediaLibrary.id; let i = $index) {
+      <tr [class.ct-row--warning]="isRowWarning(item.mediaLibrary)"
+        [class.ct-row--series]="item.mediaLibrary.type === 'SERIES'"
+        [class.ct-row--season]="item.mediaLibrary.type === 'SEASON'"
+        [class.ct-row--episode]="item.mediaLibrary.type === 'EPISODE'">
+
+        <!-- ID -->
+        <td>
+          <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.id" disabled />
+        </td>
+
+        <!-- TMDB ID — éditable seulement pour les SERIES -->
+        <td>
+          <input class="ct-input ct-input-number"
+            [class.ct-input--invalid--tmdb]="isTmdbInvalid(item.mediaLibrary)"
+            [class.ct-input--readonly]="item.mediaLibrary.type !== 'SERIES'"
+            type="number"
+            [(ngModel)]="item.mediaLibrary.tmdbId"
+            [disabled]="item.mediaLibrary.type !== 'SERIES'" />
+        </td>
+
+        <!-- TYPE badge -->
+        <td class="ct-td-badge">
+          <div class="ct-type-badge" [ngClass]="getTypeBadgeClass(item.mediaLibrary.type)">
+            {{ item.mediaLibrary.type }}
+          </div>
+        </td>
+
+        <!-- TITLE FORMATTED -->
+        <td>
+          <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.titleFormated" disabled />
+        </td>
+
+        <!-- YEAR -->
+        <td>
+          <input class="ct-input ct-input-number"
+            [class.ct-input--invalid--year]="isYearInvalid(item.mediaLibrary)"
+            type="number"
+            [(ngModel)]="item.mediaLibrary.year"
+            disabled />
+        </td>
+
+        <!-- PARENT ID -->
+        <td>
+          <input class="ct-input ct-input--muted" type="text"
+            [value]="item.mediaLibrary.parentId ?? '—'"
+            disabled />
+        </td>
+
+        <!-- SEASON NUMBER -->
+        <td>
+          <input class="ct-input ct-input-number ct-input--centered"
+            [class.ct-input--muted]="item.mediaLibrary.seasonNumber == null"
+            type="text"
+            [value]="item.mediaLibrary.seasonNumber ?? '—'"
+            disabled />
+        </td>
+
+        <!-- EPISODE NUMBER -->
+        <td>
+          <input class="ct-input ct-input-number ct-input--centered"
+            [class.ct-input--muted]="item.mediaLibrary.episodeNumber == null"
+            type="text"
+            [value]="item.mediaLibrary.episodeNumber ?? '—'"
+            disabled />
+        </td>
+
+        <!-- PATH -->
+        <td>
+          <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.path" disabled />
+        </td>
+
+        <!-- DIMENSION -->
+        <td>
+          <input class="ct-input ct-input--centered" type="text" [value]="getDimension(item.mediaLibrary)"
+            disabled />
+        </td>
+
+        <!-- RESOLUTION -->
+        <td>
+          <input class="ct-input ct-input--centered" type="text" [(ngModel)]="item.mediaLibrary.resolution"
+            disabled />
+        </td>
+
+        <td class="ct-action-cell">
+          @if (item.mediaLibrary.type === 'SERIES') {
+            @if (loadingStates[item.originalIndex]) {
+            <span class="ct-spinner"></span>
+            } @else {
+            <button class="ct-save-btn" (click)="saveVersion(item.mediaLibrary, item.originalIndex)"
+              title="Enregistrer les modifications">
+              <img [src]="srcIconSave" />
+              {{ 'BUTTON.MODIFY' | translate }}
+            </button>
+            }
+            @if (feedbackStates[item.originalIndex]; as fb) {
+            <span class="ct-feedback" [class.ct-feedback--success]="fb.state"
+              [class.ct-feedback--error]="!fb.state">
+              {{ fb.message | translate }}
+            </span>
+            }
+          } @else {
+          <span class="ct-no-action">—</span>
+          }
+        </td>
+
+      </tr>
+      }
+      @if (pagedItems.length === 0) {
+      <tr>
+        <td colspan="12" class="ct-empty">{{ 'EDITION.LIBRARY.ANY_LINE_FOUND' | translate }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (totalPages > 1) {
+  <div class="ct-pagination">
+    <button class="ct-page-btn" (click)="goToPage(0)" [disabled]="currentPage === 0" title="Première page">«</button>
+    <button class="ct-page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0"
+      title="Page précédente">‹</button>
+
+    @for (p of visiblePages; track p) {
+    @if (p === -1) {
+    <span class="ct-page-ellipsis">…</span>
+    } @else {
+    <button class="ct-page-btn" [class.ct-page-btn--active]="p === currentPage" (click)="goToPage(p)">{{ p + 1
+      }}</button>
+    }
+    }
+
+    <button class="ct-page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages - 1"
+      title="Page suivante">›</button>
+    <button class="ct-page-btn" (click)="goToPage(totalPages - 1)" [disabled]="currentPage === totalPages - 1"
+      title="Dernière page">»</button>
+
+    <span class="ct-page-info">Page {{ currentPage + 1 }} / {{ totalPages }}</span>
+  </div>
+  }
+
+</div>

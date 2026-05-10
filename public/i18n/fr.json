@@ -477,7 +477,14 @@
             "MISS_YEAR": "Année manquante",
             "MISS_TMDB": "TMDB manquant",
             "LINES_PAGES": "Lignes par page",
-            "ANY_LINE_FOUND": "Aucune ligne ne correspond aux filtres."
+            "ANY_LINE_FOUND": "Aucune ligne ne correspond aux filtres.",
+            "PARENT_ID": "Parent ID",
+            "SEASON_NUMBER": "N° Saison",
+            "EPISODE_NUMBER": "N° Episode",
+            "TYPE_ALL": "Tout",
+            "TYPE_SERIES": "Séries",
+            "TYPE_SEASON": "Saisons",
+            "TYPE_EPISODE": "Episodes"
         },
 
         "LOG": {

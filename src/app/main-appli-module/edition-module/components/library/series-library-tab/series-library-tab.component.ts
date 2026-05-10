@@ -6,6 +6,8 @@ import { MessageReturnedModel } from '../../../../../common-module/models/messag
 import { LibraryService } from '../../../services/library/library.service';
 import { NgClass } from '@angular/common';
 
+type SeriesTypeFilter = 'ALL' | 'SERIES' | 'SEASON' | 'EPISODE';
+
 interface FeedbackState {
   message: string;
   state: boolean;
@@ -17,13 +19,13 @@ interface PagedItem {
 }
 
 @Component({
-  selector: 'app-media-library-tab',
+  selector: 'app-series-library-tab',
   standalone: true,
   imports: [FormsModule, TranslatePipe, NgClass],
-  templateUrl: './media-library-tab.component.html',
-  styleUrl: './media-library-tab.component.css'
+  templateUrl: './series-library-tab.component.html',
+  styleUrl: './series-library-tab.component.css'
 })
-export class MediaLibraryTabComponent implements OnChanges {
+export class SeriesLibraryTabComponent implements OnChanges {
 
   @Input() mediaLibraries: MediaLibrary[] = [];
   @Output() onMediaLibrary = new EventEmitter<void>();
@@ -38,6 +40,8 @@ export class MediaLibraryTabComponent implements OnChanges {
   searchQuery: string = '';
   filterMissingYear: boolean = false;
   filterMissingTmdb: boolean = false;
+
+  filterType: SeriesTypeFilter = 'ALL';
 
   pageSize: number = 50;
   sizes: number[] = [25, 50, 100, 200, 500, 1000];
@@ -102,21 +106,37 @@ export class MediaLibraryTabComponent implements OnChanges {
     this.onFilterChange();
   }
 
+  setTypeFilter(type: SeriesTypeFilter): void {
+    this.filterType = type;
+    this.onFilterChange();
+  }
+
   clearSearch(): void {
     this.searchQuery = '';
     this.onFilterChange();
   }
 
   isYearInvalid(ml: MediaLibrary): boolean {
+    if (ml.type !== 'SERIES') return false;
     return ml.year == null || Number(ml.year) <= 0;
   }
 
   isTmdbInvalid(ml: MediaLibrary): boolean {
+    if (ml.type !== 'SERIES') return false;
     return ml.tmdbId == null || ml.tmdbId <= 0;
   }
 
   isRowWarning(ml: MediaLibrary): boolean {
     return this.isYearInvalid(ml) || this.isTmdbInvalid(ml);
+  }
+
+  getTypeBadgeClass(type: string | undefined): string {
+    switch (type) {
+      case 'SERIES':  return 'ct-badge--series';
+      case 'SEASON':  return 'ct-badge--season';
+      case 'EPISODE': return 'ct-badge--episode';
+      default:        return '';
+    }
   }
 
   private applyFilters(): void {
@@ -126,6 +146,7 @@ export class MediaLibraryTabComponent implements OnChanges {
       .map((ml, originalIndex) => ({ mediaLibrary: ml, originalIndex }))
       .filter(({ mediaLibrary: ml }) => {
         if (q && !ml.titleFormated?.toLowerCase().includes(q)) return false;
+        if (this.filterType !== 'ALL' && ml.type !== this.filterType) return false;
         if (this.filterMissingYear && !this.isYearInvalid(ml)) return false;
         if (this.filterMissingTmdb && !this.isTmdbInvalid(ml)) return false;
         return true;
@@ -171,7 +192,7 @@ export class MediaLibraryTabComponent implements OnChanges {
 
       const sorted = Array.from(set).sort((a, b) => a - b);
       for (let i = 0; i < sorted.length; i++) {
-        if (i > 0 && sorted[i] - sorted[i - 1] > 1) pages.push(-1); // ellipse
+        if (i > 0 && sorted[i] - sorted[i - 1] > 1) pages.push(-1);
         pages.push(sorted[i]);
       }
     }
@@ -217,18 +238,28 @@ export class MediaLibraryTabComponent implements OnChanges {
   }
 
   saveVersion(mediaLibrary: MediaLibrary, index: number): void {
+    if (mediaLibrary.type !== 'SERIES') return;
     if (this.loadingStates[index]) return;
-
+  
     this.loadingStates[index] = true;
     this.feedbackStates[index] = null;
     clearTimeout(this.feedbackTimers[index]);
-
+  
     this.libraryService.modifyMediaLibrary(mediaLibrary).subscribe({
       next: (result: MessageReturnedModel) => {
         this.loadingStates[index] = false;
         this.feedbackStates[index] = { message: result.message, state: result.state };
-        this.onMediaLibrary.emit();
         this.scheduleFeedbackClear(index);
+  
+        if (result.state && Array.isArray(result.other) && result.other.length > 0) {
+          const updatedIds = new Set<string>(result.other);
+          this.mediaLibraries = this.mediaLibraries.map((ml) =>
+            updatedIds.has(ml.id) ? { ...ml, tmdbId: mediaLibrary.tmdbId } : ml
+          );
+          this.applyFilters();
+        }
+  
+        this.onMediaLibrary.emit();
       },
       error: () => {
         this.loadingStates[index] = false;
@@ -237,7 +268,7 @@ export class MediaLibraryTabComponent implements OnChanges {
       }
     });
   }
-
+ 
   private scheduleFeedbackClear(index: number): void {
     this.feedbackTimers[index] = setTimeout(() => {
       this.feedbackStates[index] = null;
@@ -245,7 +276,8 @@ export class MediaLibraryTabComponent implements OnChanges {
   }
 
   public getDimension(mediaLibrary: MediaLibrary): string {
-    return `${mediaLibrary.width} * ${mediaLibrary.height} px`;
+    if (!mediaLibrary.width && !mediaLibrary.height) return '—';
+    return `${mediaLibrary.width} × ${mediaLibrary.height} px`;
   }
 
   @HostListener('document:click', ['$event'])
@@ -256,5 +288,4 @@ export class MediaLibraryTabComponent implements OnChanges {
       this.displaySelectSize = false;
     }
   }
-
 }

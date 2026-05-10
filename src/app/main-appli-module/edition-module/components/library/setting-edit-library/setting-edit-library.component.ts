@@ -12,14 +12,16 @@ import { ButtonAddComponent } from '../../button-add/button-add.component';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MediaLibrary } from '../../../models/library/media-library.interface';
-import { MediaLibraryTabComponent } from '../media-library-tab/media-library-tab.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { StateLibrary } from '../../../models/library/state-library.enum';
+import { MovieLibraryTabComponent } from '../movie-library-tab/movie-library-tab.component';
+import { MediaTypeModel } from '../../../../media-module/models/media-type.enum';
+import { SeriesLibraryTabComponent } from '../series-library-tab/series-library-tab.component';
 
 @Component({
   selector: 'app-setting-edit-library',
   standalone: true,
-  imports: [PopupComponent, TranslatePipe, NewLibraryComponent, LibraryComponent, ButtonAddComponent, MediaLibraryTabComponent],
+  imports: [PopupComponent, SeriesLibraryTabComponent, TranslatePipe, NewLibraryComponent, LibraryComponent, ButtonAddComponent, MovieLibraryTabComponent],
   templateUrl: './setting-edit-library.component.html',
   styleUrls: ['./setting-edit-library.component.css', '../../../../../common-module/styles/loader.css', '../../../styles/edition.css', '../../../../common-module/styles/animation.css']
 })
@@ -43,6 +45,7 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
   displayLoaderMediaLibraries: boolean = false;
 
   StateLibrary = StateLibrary;
+  MediaType = MediaTypeModel;
 
   constructor(editionParametersService: EditionParametersService,
     private readonly libraryService: LibraryService

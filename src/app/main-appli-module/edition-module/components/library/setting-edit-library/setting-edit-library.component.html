@@ -46,7 +46,11 @@
     } @else if (mediaLibraries) {
         <div class="containerFieldToFill">
             <p>{{ 'EDITION.LIBRARY.MEDIA_LIST' | translate }} : </p>
-            <app-media-library-tab [mediaLibraries]="mediaLibraries"></app-media-library-tab>
+            @if (librarySelected?.mediaType === MediaType.MOVIE) {
+                <app-movie-library-tab [mediaLibraries]="mediaLibraries"></app-movie-library-tab>
+            }@else if (librarySelected?.mediaType === MediaType.SERIES) {
+                <app-series-library-tab [mediaLibraries]="mediaLibraries"></app-series-library-tab>
+            }
         </div>
     }
 

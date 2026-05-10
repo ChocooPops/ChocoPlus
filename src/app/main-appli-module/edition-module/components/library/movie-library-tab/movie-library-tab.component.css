@@ -1,3 +1,7 @@
+:host {
+  --color-movies:  #ffd301;
+}
+
 .ct-wrap {
   width: 100%;
   box-sizing: border-box;
@@ -522,4 +526,33 @@ th:nth-child(12) { width: 150px; }
   color: #444;
   margin-left: 8px;
   white-space: nowrap;
+}
+
+.ct-td-badge {
+  text-align: center;
+}
+
+.ct-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.ct-row--movies {
+  border-left: 2px solid var(--color-movies);
+}
+
+.ct-badge--movies {
+  color: var(--color-movies);
+  border-color: color-mix(in srgb, var(--color-movies) 40%, transparent);
+  background: color-mix(in srgb, var(--color-movies) 8%, transparent);
 }
