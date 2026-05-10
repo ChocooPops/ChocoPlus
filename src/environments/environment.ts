@@ -17,7 +17,6 @@ export const environment = {
     apiUrlTmdb: apiUrl + '/tmdb',
     apiUrlSimilarTitle: apiUrl + '/similar-title',
     apiProfilPicture: apiUrl + '/profil-photo',
-    apiJellyfin: apiUrl + '/jellyfin',
     apiSupport: apiUrl + '/support',
     apiNews: apiUrl + '/news',
     apiUrlNewsVideoRunning: apiUrl + '/news-video-running',

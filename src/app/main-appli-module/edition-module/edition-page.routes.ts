@@ -119,9 +119,9 @@ export const editionRoutes: Routes = [
         component: SettingModifyVersionComponent
     },
     {
-        path: 'manager-jellyfin',
+        path: 'admin-params',
         canActivate: [IsAdminGuard],
-        loadComponent: () => import('./components/setting-manager-jellyfin/setting-manager-jellyfin.component').then(m => m.SettingManagerJellyfinComponent)
+        loadComponent: () => import('./components/setting-admin-params/setting-admin-params.component').then(m => m.SettingAdminParamsComponent)
     },
     {
         path: 'unauthorized',

@@ -22,7 +22,7 @@ namespace ChocoPlayer
     {
         public int Id { get; set; }
         public int SeasonId { get; set; }
-        public string JellyfinId { get; set; }
+        public string MediaLibraryId { get; set; }
         public string Name { get; set; }
         public int EpisodeNumber { get; set; }
         public string Description { get; set; }
@@ -33,19 +33,19 @@ namespace ChocoPlayer
 
         public Episode()
         {
-            JellyfinId = "";
+            MediaLibraryId = "";
             Name = "";
             Description = "";
             Quality = "";
             SrcPoster = "";
         }
 
-        public Episode(int id, int seasonId, string jellyfinId, string name, int episodeNumber,
+        public Episode(int id, int seasonId, string mediaLibraryId, string name, int episodeNumber,
                       string description, DateTime date, long time, string quality, string srcPoster)
         {
             Id = id;
             SeasonId = seasonId;
-            JellyfinId = jellyfinId;
+            MediaLibraryId = mediaLibraryId;
             Name = name;
             EpisodeNumber = episodeNumber;
             Description = description;

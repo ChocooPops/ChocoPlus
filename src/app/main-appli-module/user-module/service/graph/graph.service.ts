@@ -16,11 +16,6 @@ import { MediaIdTypeModel } from '../../../media-module/models/media-id-type.int
 })
 export class GraphService {
 
-  private readonly apiUrlJellyfin: string = `${environment.apiJellyfin}`;
-  private readonly urlMissMetadataTmdb: string = 'miss-metadata-tmdb';
-  private readonly urlMovietNotSaved: string = 'media-not-saved';
-  private readonly urlJellyfinIdDontExist: string = 'jellyfinId-dont-exist';
-
   private readonly apiUrlMedia: string = `${environment.apiUrlMedia}`;
   private readonly urlNullPoster: string = 'null-poster';
   private readonly urlMediaPathDontExist : string = 'path-dont-exist';
@@ -47,8 +42,6 @@ export class GraphService {
   private readonly colorWhiteSeries: string = '#D9D9D9';
   private readonly colorPinkEpisode:string = '#D85795';
   private readonly colorYellowCategory: string = '#FFD812';
-  private readonly colorPurpleJellyfinMovie: string = '#A95DC3';
-  private readonly colorOrangeJellyfinSeries: string = '#FF8B1F';
   private readonly colorBlueSelection: string = `#70ABF3`;
   private readonly colorGreenLicense: string = `#34D183`;
 
@@ -63,9 +56,6 @@ export class GraphService {
 
   private linksBetweenSimilarTitle: GraphLink[] = [];
   private graphWithMovieAndCategory: GraphModel | undefined = undefined;
-  private graphMissMetadataTmdb: GraphModel | undefined = undefined;
-  private graphMovieNotSaved: GraphModel | undefined = undefined;
-  private graphJellyfinDontWorked: GraphModel | undefined = undefined;
   private graphMovieWithNullPoster: GraphModel | undefined = undefined;
   private graphLessSimilarTitlesMovies: GraphModel | undefined = undefined;
   private graphMediaPathDontExist: GraphModel | undefined = undefined;
@@ -75,43 +65,25 @@ export class GraphService {
   private modeGraph: SimpleModel[] = [
     {
       id: 0,
-      name: 'All data',
+      name: 'USER.GRAPH.ALL_DATA',
       state: false,
       value: () => this.generateGraphWithAllMoviesWithAllCategoryWithAllSimilarMovie()
     },
     {
-      id: 2,
-      name: 'JellyfinId not saved in ChocoPlus Data',
-      state: false,
-      value: () => this.generateGraphMovieNotSaved()
-    },
-    {
-      id: 3,
-      name: "Media with jellyfin_id don't working",
-      state: false,
-      value: () => this.generateGraphJellyfinDontWorked()
-    },
-    {
-      id: 4,
-      name: "Miss tmdb's metadata",
-      state: false,
-      value: () => this.generateGraphWithTmdbMetadatsMissed()
-    },
-    {
       id: 5,
-      name: 'Media without poster',
+      name: 'USER.GRAPH.MEDIA_WITHOUT_POSTER',
       state: false,
       value: () => this.generateGraphMovieWithNullPoster()
     },
     {
       id: 6,
-      name: 'Not yet similar titles',
+      name: 'USER.GRAPH.NOT_YET_SIMILAR_TITLE',
       state: false,
       value: () => this.generateGraphLessSimilarTitlesMovies()
     },
     {
       id: 7,
-      name: "Media with path don't exists",
+      name: 'USER.GRAPH.PATH_NOT_EXISTS',
       state: false,
       value: () => this.generateGraphMediaPathDontExist()
     },
@@ -371,66 +343,6 @@ export class GraphService {
       effective: effective,
       isVisible: true
     }
-  }
-
-  private async generateGraphWithTmdbMetadatsMissed(): Promise<void> {
-    if (!this.graphMissMetadataTmdb) {
-      const url: string = `${this.apiUrlJellyfin}/${this.urlMissMetadataTmdb}`;
-      const data: any = await firstValueFrom(this.http.get(url)) as any[];
-
-      const movies = this.createNewGraph(data.movies, [], this.colorPurpleJellyfinMovie, 6, MediaTypeModel.MOVIE);
-      const series = this.createNewGraph(data.series, [], this.colorOrangeJellyfinSeries, 6, MediaTypeModel.SERIES);
-
-      this.graphMissMetadataTmdb = {
-        links: [...movies.links, ...series.links],
-        nodes: [...movies.nodes, ...series.nodes]
-      }
-    }
-    this.legendsSubject.next([
-      this.createNewLegend('Jellyfin Items Movies', this.colorPurpleJellyfinMovie, this.graphMissMetadataTmdb.nodes.filter((item) => item.color === this.colorPurpleJellyfinMovie).length),
-      this.createNewLegend('Jellyfin Items Series', this.colorOrangeJellyfinSeries, this.graphMissMetadataTmdb.nodes.filter((item) => item.color === this.colorOrangeJellyfinSeries).length),
-    ]);
-    this.updateGraphSubject(this.graphMissMetadataTmdb);
-  }
-
-  private async generateGraphMovieNotSaved(): Promise<void> {
-    if (!this.graphMovieNotSaved) {
-      const url: string = `${this.apiUrlJellyfin}/${this.urlMovietNotSaved}`;
-      const data: any = await firstValueFrom(this.http.get(url)) as any[];
-
-      const movies = this.createNewGraph(data.movies, [], this.colorPurpleJellyfinMovie, 6, MediaTypeModel.MOVIE);
-      const series = this.createNewGraph(data.series, [], this.colorOrangeJellyfinSeries, 6, MediaTypeModel.SERIES);
-
-      this.graphMovieNotSaved = {
-        links: [...movies.links, ...series.links],
-        nodes: [...movies.nodes, ...series.nodes]
-      }
-    }
-    this.legendsSubject.next([
-      this.createNewLegend('Jellyfin Items Movies', this.colorPurpleJellyfinMovie, this.graphMovieNotSaved.nodes.filter((item) => item.color === this.colorPurpleJellyfinMovie).length),
-      this.createNewLegend('Jellyfin Items Series', this.colorOrangeJellyfinSeries, this.graphMovieNotSaved.nodes.filter((item) => item.color === this.colorOrangeJellyfinSeries).length),
-    ]);
-    this.updateGraphSubject(this.graphMovieNotSaved);
-  }
-
-  private async generateGraphJellyfinDontWorked(): Promise<void> {
-    if (!this.graphJellyfinDontWorked) {
-      const url: string = `${this.apiUrlJellyfin}/${this.urlJellyfinIdDontExist}`;
-      const data: any = await firstValueFrom(this.http.get(url)) as any[];
-
-      const movies = this.createNewGraph(data.movies, [], this.colorPurpleJellyfinMovie, 6, MediaTypeModel.MOVIE);
-      const series = this.createNewGraph(data.series, [], this.colorOrangeJellyfinSeries, 6, MediaTypeModel.SERIES);
-
-      this.graphJellyfinDontWorked = {
-        links: [...movies.links, ...series.links],
-        nodes: [...movies.nodes, ...series.nodes]
-      }
-    }
-    this.legendsSubject.next([
-      this.createNewLegend('Jellyfin Items Movies', this.colorPurpleJellyfinMovie, this.graphJellyfinDontWorked.nodes.filter((item) => item.color === this.colorPurpleJellyfinMovie).length),
-      this.createNewLegend('Jellyfin Items Series', this.colorOrangeJellyfinSeries, this.graphJellyfinDontWorked.nodes.filter((item) => item.color === this.colorOrangeJellyfinSeries).length),
-    ]);
-    this.updateGraphSubject(this.graphJellyfinDontWorked);
   }
 
   private async generateGraphMovieWithNullPoster(): Promise<void> {

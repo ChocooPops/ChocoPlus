@@ -247,6 +247,12 @@
             "LAST_NAME": "Nom : ",
             "WARNING_DELETE_USER": "Voulez-vous vraiment supprimer l'utilisateur suivant :",
             "ERROR_ID": "Erreur avec l'id de l'utilisateur"
+        },
+        "GRAPH": {
+            "ALL_DATA": "All data",
+            "MEDIA_WITHOUT_POSTER": "Media without poster",
+            "NOT_YET_SIMILAR_TITLE": "Not yet similar titles",
+            "PATH_NOT_EXISTS": "Media with path don't exists"
         }
     },
 
@@ -478,6 +484,13 @@
             "MODAL_TITLE": "Journal",
             "NO_LOGS": "Aucun journal",
             "AVAILABLE_LOG": "Journaux disponibles"
+        },
+
+        "OTHER_PARAMS": {
+            "REWRITE_SIMILAR_TITLE": "Réécrire les données pour tous les titres similaires",
+            "RELOAD_PROFIL_PICTURE": "Actualiser toutes les photos de profil",
+            "SAVE_ALL_NEW_CREDIT": "Actualiser les crédits pour tous les médias",
+            "MESSAGE_EXECUTE_CALL": "Voulez-vous vraiment exécuter cet appel ?"
         }
     },
 

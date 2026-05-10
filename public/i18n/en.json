@@ -72,7 +72,6 @@
             "ADVANCED_SETTINGS": "Advanced settings",
             "MEDIA_LIBRARY": "Media library",
             "VERSION": "Version",
-            "JELLYFIN_PARAMETERS": "Jellyfin settings",
 
             "NEWS_MANAGEMENT": "News management",
             "MODIFY_NEWS_HOME": "Edit home news",
@@ -403,7 +402,6 @@
             "PLACEHOLDER_LOGO": "e.g.: Movie logo",
             "PLACEHOLDER_BACK": "e.g.: Iconic shot from the movie",
             "PLACEHOLDER_TITLE": "e.g.: Pan's Labyrinth",
-            "PLACEHOLDER_JELLYFIN": "e.g.: gh0f55a6c3f269f79tc6d91fb55z3179",
             "RELEASE_DATE": "Movie release date",
             "TIME_SLOT": "Movie display interval",
             "LOGO_POSTER": "Movie logo",
@@ -420,7 +418,6 @@
           "PLACEHOLDER_LOGO": "e.g.: Series logo",
           "PLACEHOLDER_BACK": "e.g.: Iconic shot from the series",
           "PLACEHOLDER_TITLE": "e.g.: Breaking Bad",
-          "PLACEHOLDER_JELLYFIN": "e.g.: gh0f55a6c3f269f79tc6d91fb55z3179",
           "RELEASE_DATE_SERIES": "Series release date",
           "TIME_SLOT_SERIES": "Series display interval",
           "LOGO_POSTER": "Series logo",

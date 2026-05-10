@@ -1,0 +1,23 @@
+<app-popup (emitActionData)="emitActionData()"></app-popup>
+
+<div class="containerSettingSelected">
+
+    <div class="container-buttons">
+        <div class="container-button" (click)="onClickButton(1)">
+            <p> {{ 'EDITION.OTHER_PARAMS.REWRITE_SIMILAR_TITLE' | translate }} </p>
+        </div>
+
+        <div class="container-button" (click)="onClickButton(2)">
+            <p> {{ 'EDITION.OTHER_PARAMS.RELOAD_PROFIL_PICTURE' | translate }} </p>
+        </div>
+
+        <div class="container-button" (click)="onClickButton(3)">
+            <p> {{ 'EDITION.OTHER_PARAMS.SAVE_ALL_NEW_CREDIT' | translate }} </p>
+        </div>
+    </div>
+
+    @if(object) {
+        <app-json-viewer [data]="object" [maxInitialDepth]="2"></app-json-viewer>
+    }
+
+</div>

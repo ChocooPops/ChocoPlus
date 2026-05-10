@@ -1,0 +1,70 @@
+.container-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.container-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding-inline: 25px;
+  background: transparent;
+  border: 1.5px solid #3a3a3a;
+  border-radius: 6px;
+  color: #aaa;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+
+  p {
+    margin: 0;
+    color: inherit;
+    font: inherit;
+  }
+
+  &:hover {
+    border-color: #555;
+    color: #eee;
+    background: #1e1e1e;
+  }
+
+  &:active {
+    background: #161616;
+  }
+}
+
+app-json-viewer {
+  width: 100%;
+  min-height: 15px;
+  max-height: calc(100vh - 370px);
+  height: auto;
+  border: 1.5px solid #2a2a2a;
+  overflow: auto;
+  border-radius: 6px;
+  padding-block: 15px;
+  padding-inline: 20px;
+  box-sizing: border-box;
+  background: #1a1a1a;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 2px;
+  }
+}
+
+p {
+  margin: 0;
+}

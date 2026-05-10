@@ -13,16 +13,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class VlcButtonComponent {
 
   @Input() typeButton: boolean = false;
-  @Input() jellyfinId !: string;
 
   srcImage: string = "icon/vlcInput.svg";
 
   constructor(private readonly executionVLCService: ExecutionVLCService) { }
 
   async onClick(): Promise<void> {
-    if (this.jellyfinId != undefined) {
-      await this.executionVLCService.openVLCWithVideo(this.jellyfinId);
-    }
+    await this.executionVLCService.openVLCWithVideo('path');
   }
 
 }

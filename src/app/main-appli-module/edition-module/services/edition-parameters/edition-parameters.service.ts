@@ -43,7 +43,7 @@ export class EditionParametersService {
           id: this.getId(),
           name: "MENU.EDIT.OTHER_PARAMETERS_ADMIN",
           type: MenuType.OTHER_PARAM_ADMIN,
-          route: 'manager-jellyfin',
+          route: 'admin-params',
           isClicked: false
         }
       ]
