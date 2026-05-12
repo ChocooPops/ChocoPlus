@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, finalize, map, Observable, of, switchMap, take } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, map, Observable, of, switchMap, take, throwError } from 'rxjs';
 import { Library } from '../../models/library/library.interface';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { MediaLibrary } from '../../models/library/media-library.interface';
@@ -57,6 +57,9 @@ export class LibraryService {
           this.callFetchRefreshLibrary(library.id, library.mediaType);
         }
         return data;
+      }),
+      catchError((error) => {
+        return throwError(() => error)
       })
     )
   }
@@ -69,6 +72,9 @@ export class LibraryService {
           this.setLibrary(libraries);
         }
         return data;
+      }),
+      catchError((error) => {
+        return throwError(() => error)
       })
     )
   }
@@ -127,6 +133,9 @@ export class LibraryService {
     return this.http.put<any>(`${this.apiUrlLibrary}/refresh/${id}/${mediaType}`, null).pipe(
       map((data) => {
         return data;
+      }),
+      catchError((error) => {
+        return throwError(() => error)
       })
     );
   }

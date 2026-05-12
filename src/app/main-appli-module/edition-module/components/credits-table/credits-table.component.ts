@@ -23,6 +23,7 @@ export class CreditsTableComponent {
   jobOptions: JobModel[] = Object.values(JobModel);
 
   openDropdown: string | null = null;
+  isBodyVisible: boolean = true;
   MediaType = MediaTypeModel;
   
   constructor(private readonly elementRef: ElementRef) { }
@@ -68,6 +69,9 @@ export class CreditsTableComponent {
     });
   }
 
+  toggleBodyVisibility(): void {
+    this.isBodyVisible = !this.isBodyVisible;
+  }
 
   toggleDropdown(key: string, event: MouseEvent): void {
     event.stopPropagation();

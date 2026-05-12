@@ -172,12 +172,12 @@ export class NewLibraryComponent extends UnauthorizedError {
       if (this.subscription) {
         this.subscription.unsubscribe();
       }
+      this.popup.setMessage(undefined, undefined);
+      this.popup.setDisplayButton(false);
       this.subscription = this.libraryService.fetchCreateNewLibrary(this.librairie).pipe(take(1)).subscribe({
         next: (data: MessageReturnedModel) => {
           this.popup.setMessage(data.message, data.state);
           this.popup.setEndTask(true);
-          this.popup.setDisplayButton(false);
-          this.displayLoader = false;
         },
         error: (error: HttpErrorResponse) => {
           this.displayPopupOnError(error, 1);

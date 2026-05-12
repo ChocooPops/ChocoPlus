@@ -2,6 +2,7 @@ import { ProgressStateMedia } from "../progress-state-media.enum"
 
 export interface EpisodeModel {
     id: number,
+    seriesId: number,
     seasonId: number,
     mediaLibraryId: string
     name: string,

@@ -13,62 +13,76 @@
         <th>{{ 'EDITION.CREDIT.ROLE' | translate}}<div class="ct-resize-handle"></div></th>
         <th>{{ 'POSTER' | translate}}<div class="ct-resize-handle"></div></th>
         <th>{{ 'EDITION.CREDIT.ORDER' | translate}}<div class="ct-resize-handle"></div></th>
-        <th></th>
+        <th>
+          <button
+            class="ct-btn-toggle"
+            [class.is-collapsed]="!isBodyVisible"
+            (click)="toggleBodyVisibility()"
+            [title]="isBodyVisible ? ('EDITION.CREDIT.HIDE_ROWS' | translate) : ('EDITION.CREDIT.SHOW_ROWS' | translate)">
+            <svg class="ct-toggle-icon" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </th>
       </tr>
     </thead>
-    <tbody>
-      @for (credit of credits; track credit.id; let i = $index) {
-        <tr>
-          <td>
-            <input class="ct-input" type="text" [value]="$index + 1" disabled>
-          </td>
-          <td>
-            <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.tmdbId" (ngModelChange)="onFieldChange(credit)"/>
-          </td>
-          <td>
-            <input class="ct-input" type="text" [(ngModel)]="credit.fullName" (ngModelChange)="onFieldChange(credit)"/>
-          </td>
-          <td>
-            <input class="ct-input" type="text" [(ngModel)]="credit.originalFullName" (ngModelChange)="onFieldChange(credit)"/>
-          </td>
-          <td>
-            <input class="ct-input" type="text" [(ngModel)]="credit.character" placeholder="—" (ngModelChange)="onFieldChange(credit)"/>
-          </td>
-          @if (mediaType === MediaType.SERIES) {
-          <td>
-            <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.episodeCount" (ngModelChange)="onFieldChange(credit)"/>
-          </td>
-          }
-          <td>
-            <div class="ct-select-wrap" [class.is-open]="openDropdown === 'job-' + i">
-              <div class="ct-select-btn" (click)="toggleDropdown('job-' + i, $event)">
-                <span class="ct-select-label">{{ credit.job }}</span>
-                <div class="ct-arrow"></div>
+    @if (isBodyVisible) {
+      <tbody>
+        @for (credit of credits; track credit.id; let i = $index) {
+          <tr>
+            <td>
+              <input class="ct-input" type="text" [value]="$index + 1" disabled>
+            </td>
+            <td>
+              <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.tmdbId" (ngModelChange)="onFieldChange(credit)"/>
+            </td>
+            <td>
+              <input class="ct-input" type="text" [(ngModel)]="credit.fullName" (ngModelChange)="onFieldChange(credit)"/>
+            </td>
+            <td>
+              <input class="ct-input" type="text" [(ngModel)]="credit.originalFullName" (ngModelChange)="onFieldChange(credit)"/>
+            </td>
+            <td>
+              <input class="ct-input" type="text" [(ngModel)]="credit.character" placeholder="—" (ngModelChange)="onFieldChange(credit)"/>
+            </td>
+            @if (mediaType === MediaType.SERIES) {
+            <td>
+              <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.episodeCount" (ngModelChange)="onFieldChange(credit)"/>
+            </td>
+            }
+            <td>
+              <div class="ct-select-wrap" [class.is-open]="openDropdown === 'job-' + i">
+                <div class="ct-select-btn" (click)="toggleDropdown('job-' + i, $event)">
+                  <span class="ct-select-label">{{ credit.job }}</span>
+                  <div class="ct-arrow"></div>
+                </div>
+                <div class="ct-dropdown" [style.height.px]="(credits.length - $index) * 34">
+                  @for (opt of jobOptions; track opt) {
+                    <div class="ct-option" [class.selected]="credit.job === opt"
+                         (click)="selectJob(credit, opt, $event)">{{ opt }}</div>
+                    @if (!$last) { <div class="ct-divider"></div> }
+                  }
+                </div>
               </div>
-              <div class="ct-dropdown" [style.height.px]="(credits.length - $index) * 34">
-                @for (opt of jobOptions; track opt) {
-                  <div class="ct-option" [class.selected]="credit.job === opt"
-                       (click)="selectJob(credit, opt, $event)">{{ opt }}</div>
-                  @if (!$last) { <div class="ct-divider"></div> }
-                }
-              </div>
-            </div>
-          </td>
-          <td>
-            <input class="ct-input" type="text" [(ngModel)]="credit.srcPoster" placeholder="—" (ngModelChange)="onFieldChange(credit)"/>
-          </td>
-          <td>
-            <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.order" (ngModelChange)="onFieldChange(credit)"/>
-          </td>
-          <td class="td-action">
-            <button class="ct-btn-remove" (click)="removeCredit(i)" title="Supprimer">✕</button>
-          </td>
-        </tr>
-      }
-    </tbody>
+            </td>
+            <td>
+              <input class="ct-input" type="text" [(ngModel)]="credit.srcPoster" placeholder="—" (ngModelChange)="onFieldChange(credit)"/>
+            </td>
+            <td>
+              <input class="ct-input ct-input-order" type="number" [(ngModel)]="credit.order" (ngModelChange)="onFieldChange(credit)"/>
+            </td>
+            <td class="td-action">
+              <button class="ct-btn-remove" (click)="removeCredit(i)" title="Supprimer">✕</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    }
   </table>
 
-  <div class="ct-footer">
-    <button class="ct-btn-add" (click)="addCredit()">{{ 'EDITION.CREDIT.ADD_ROW_CREDIT' | translate}}</button>
-  </div>
+  @if (isBodyVisible) {
+    <div class="ct-footer">
+      <button class="ct-btn-add" (click)="addCredit()">{{ 'EDITION.CREDIT.ADD_ROW_CREDIT' | translate}}</button>
+    </div>
+  }
 </div>

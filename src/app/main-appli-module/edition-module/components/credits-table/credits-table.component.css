@@ -27,8 +27,6 @@ th {
   position: relative;
   overflow: hidden;
   text-align: center;
-  /* font-family: 'Courier New', monospace; */
-  /*   color: #555; */
 }
 
 tbody tr {
@@ -288,4 +286,36 @@ th:nth-child(10) { width: 30px; }
 .ct-resize-handle:hover::after,
 .ct-resize-handle.is-resizing::after {
   background: #666;
+}
+
+/* ── Toggle visibility button ── */
+.ct-btn-toggle {
+  background: none;
+  border: 1.5px solid transparent;
+  border-radius: 4px;
+  color: #555;
+  cursor: pointer;
+  padding: 4px 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  line-height: 1;
+
+  &:hover {
+    color: #aaa;
+    border-color: #333;
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.ct-toggle-icon {
+  width: 10px;
+  height: 6px;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.ct-btn-toggle.is-collapsed .ct-toggle-icon {
+  transform: rotate(-90deg);
 }

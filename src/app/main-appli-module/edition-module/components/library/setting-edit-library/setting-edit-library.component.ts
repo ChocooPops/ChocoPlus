@@ -131,12 +131,12 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
 
   emitDeleteLibrary(): any {
     if (!this.idSelectedForDeleting) return null;
+    this.popup.setMessage(undefined, undefined);
+    this.popup.setDisplayButton(false);
     this.libraryService.fetchDeleteLibrary(this.idSelectedForDeleting).pipe(take(1)).subscribe({
       next: (data: MessageReturnedModel) => {
         this.popup.setMessage(data.message, data.state);
         this.popup.setEndTask(true);
-        this.popup.setDisplayButton(false);
-        this.displayLoader = false;
         if (this.idSelectedForDeleting === this.librarySelected?.id) {
           this.libraryService.setLibrarySelected(null);
           this.libraryService.setMediaLibraries(null);
