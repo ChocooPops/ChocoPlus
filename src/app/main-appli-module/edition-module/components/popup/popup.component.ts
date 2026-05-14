@@ -44,9 +44,7 @@ export class PopupComponent {
   }
 
   onClickCancel(): void {
-    if (this.endTask) {
-      this.emitResetPopup.emit();
-    }
+    this.emitResetPopup.emit();
     this.displayPopup = false;
     this.endTask = false;
   }

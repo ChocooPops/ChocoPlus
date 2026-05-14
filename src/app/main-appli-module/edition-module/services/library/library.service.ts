@@ -149,8 +149,23 @@ export class LibraryService {
     }
   }
 
-  public modifyMediaLibrary(mediaLibrary: MediaLibrary): Observable<MessageReturnedModel> {
-    return this.http.put<any>(`${this.apiUrlLibrary}/modify-media-library`, mediaLibrary).pipe(
+  public reloadMediaLibraryMetedata(mediaLibraryId: string): Observable<MessageReturnedModel> {
+    return this.http.put<any>(`${this.apiUrlLibrary}/reload-media-library-metadata/${mediaLibraryId}`, null).pipe(
+      map((data: MessageReturnedModel) => {
+        return data;
+      }),
+      catchError((error) => {
+        return of({
+          id: -1,
+          state: false,
+          message: "Error"
+        })
+      })
+    )
+  }
+
+  public modifyTmdbIdFromMediaLibrary(mediaLibrary: MediaLibrary): Observable<MessageReturnedModel> {
+    return this.http.put<any>(`${this.apiUrlLibrary}/modify-tmbd/${mediaLibrary.id}`, { tmdbId: mediaLibrary.tmdbId }).pipe(
       map((data: MessageReturnedModel) => {
         return data;
       }),

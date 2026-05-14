@@ -35,8 +35,8 @@
         <div class="container-flex">
             <app-input-text-edition [text]="editSeries.mediaLibraryId" [placeHolder]="placeHolderMediaLibraryId"
                 (onInputChange)="onInputMediaLibraryId($event)"
-                (keydown.enter)="onClickButtonMediaLibrary(false)"></app-input-text-edition>
-            <app-ai-button (clickEmit)="onClickButtonMediaLibrary(false)" #buttonSearchMediaLibrary></app-ai-button>
+                (keydown.enter)="onClickButtonMediaLibrary()"></app-input-text-edition>
+            <app-ai-button (clickEmit)="onClickButtonMediaLibrary()" #buttonSearchMediaLibrary></app-ai-button>
         </div>
     </div>
 

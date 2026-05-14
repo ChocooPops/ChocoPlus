@@ -1,3 +1,5 @@
+<app-popup (emitActionData)="modifyTmdbIdFromMediaLibrary()" (emitResetPopup)="rollback()"></app-popup>
+
 <div class="ct-wrap">
 
   <div class="ct-controls">
@@ -95,8 +97,13 @@
           <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.id" disabled>
         </td>
         <td>
-          <input class="ct-input ct-input-number" [class.ct-input--invalid--tmdb]="isTmdbInvalid(item.mediaLibrary)"
-            type="number" [(ngModel)]="item.mediaLibrary.tmdbId">
+          <input class="ct-input ct-input-number" 
+            [class.ct-input--invalid--tmdb]="isTmdbInvalid(item.mediaLibrary)"
+            type="number" 
+            [(ngModel)]="item.mediaLibrary.tmdbId" 
+            (focus)="onFocus(item.mediaLibrary)"
+            (keydown.enter)="onBlur(item.mediaLibrary)"
+            (blur)="onBlur(item.mediaLibrary)">
         </td>
         <td class="ct-td-badge">
           <div class="ct-type-badge ct-badge--movies">
@@ -135,7 +142,7 @@
           <button class="ct-save-btn" (click)="saveVersion(item.mediaLibrary, item.originalIndex)"
             title="Enregistrer les modifications">
             <img [src]="srcIconSave">
-            {{ 'BUTTON.MODIFY' | translate }}
+            {{ 'BUTTON.RELOAD_METADATA' | translate }}
           </button>
           }
           @if (feedbackStates[item.originalIndex]; as fb) {

@@ -4,6 +4,8 @@ import { JobModel } from '../../../media-module/models/job.eum';
 import { FormsModule } from '@angular/forms';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { CreditsTabService } from '../../services/credits-tab/credits-tab.service';
 
 @Component({
   selector: 'app-credits-table',
@@ -19,14 +21,29 @@ export class CreditsTableComponent {
   @Output() onCreditChanged  = new EventEmitter<MediaCreditModel[]>();
 
   private readonly MIN_COL_WIDTH = 40;
+  private subscription: Subscription = new Subscription();
 
   jobOptions: JobModel[] = Object.values(JobModel);
 
   openDropdown: string | null = null;
-  isBodyVisible: boolean = true;
+  isBodyVisible!: boolean;
   MediaType = MediaTypeModel;
   
-  constructor(private readonly elementRef: ElementRef) { }
+  constructor(private readonly elementRef: ElementRef,
+    private readonly creditsTabService: CreditsTabService
+  ) { }
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.creditsTabService.getIsBodyVisible().subscribe((bool: any) => {
+        this.isBodyVisible = bool;
+      })
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   ngAfterViewInit(): void {
     this.initResizableColumns();
@@ -70,7 +87,7 @@ export class CreditsTableComponent {
   }
 
   toggleBodyVisibility(): void {
-    this.isBodyVisible = !this.isBodyVisible;
+    this.creditsTabService.setIsBodyVisible(!this.isBodyVisible);
   }
 
   toggleDropdown(key: string, event: MouseEvent): void {

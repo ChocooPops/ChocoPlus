@@ -1,3 +1,5 @@
+<app-popup (emitActionData)="modifyTmdbIdFromMediaLibrary()" (emitResetPopup)="rollback()"></app-popup>
+
 <div class="ct-wrap">
 
   <div class="ct-controls">
@@ -42,11 +44,13 @@
           {{ 'EDITION.LIBRARY.MISS_TMDB' | translate }}
         </button>
 
+        <!---
         <button class="ct-filter-btn" [class.ct-filter-btn--active]="filterMissingYear" (click)="toggleFilterYear()"
           title="Lignes sans année ou année invalide">
           <span class="ct-filter-dot ct-filter-dot--year"></span>
           {{ 'EDITION.LIBRARY.MISS_YEAR' | translate }}
         </button>
+        -->
 
       </div>
     </div>
@@ -90,7 +94,9 @@
         <th>{{ 'EDITION.TMDB_ID' | translate }}<div class="ct-resize-handle"></div></th>
         <th>{{ 'MEDIA' | translate }}<div class="ct-resize-handle"></div></th>
         <th>{{ 'EDITION.LIBRARY.FORMATED_TITLE' | translate }}<div class="ct-resize-handle"></div></th>
-        <th>{{ 'YEAR' | translate }}<div class="ct-resize-handle"></div></th>
+        <!--
+          <th>{{ 'YEAR' | translate }}<div class="ct-resize-handle"></div></th> 
+        -->
         <th>{{ 'EDITION.LIBRARY.PARENT_ID' | translate }}<div class="ct-resize-handle"></div></th>
         <th>{{ 'EDITION.LIBRARY.SEASON_NUMBER' | translate }}<div class="ct-resize-handle"></div></th>
         <th>{{ 'EDITION.LIBRARY.EPISODE_NUMBER' | translate }}<div class="ct-resize-handle"></div></th>
@@ -118,7 +124,10 @@
             [class.ct-input--invalid--tmdb]="isTmdbInvalid(item.mediaLibrary)"
             [class.ct-input--readonly]="item.mediaLibrary.type !== 'SERIES'"
             type="number"
-            [(ngModel)]="item.mediaLibrary.tmdbId"
+            [(ngModel)]="item.mediaLibrary.tmdbId" 
+            (focus)="onFocus(item.mediaLibrary)"
+            (keydown.enter)="onBlur(item.mediaLibrary)"
+            (blur)="onBlur(item.mediaLibrary)"
             [disabled]="item.mediaLibrary.type !== 'SERIES'" />
         </td>
 
@@ -132,15 +141,6 @@
         <!-- TITLE FORMATTED -->
         <td>
           <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.titleFormated" disabled />
-        </td>
-
-        <!-- YEAR -->
-        <td>
-          <input class="ct-input ct-input-number"
-            [class.ct-input--invalid--year]="isYearInvalid(item.mediaLibrary)"
-            type="number"
-            [(ngModel)]="item.mediaLibrary.year"
-            disabled />
         </td>
 
         <!-- PARENT ID -->
@@ -193,7 +193,7 @@
             <button class="ct-save-btn" (click)="saveVersion(item.mediaLibrary, item.originalIndex)"
               title="Enregistrer les modifications">
               <img [src]="srcIconSave" />
-              {{ 'BUTTON.MODIFY' | translate }}
+              {{ 'BUTTON.RELOAD_METADATA' | translate }}
             </button>
             }
             @if (feedbackStates[item.originalIndex]; as fb) {

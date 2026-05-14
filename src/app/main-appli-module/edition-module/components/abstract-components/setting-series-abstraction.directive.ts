@@ -256,7 +256,7 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
         if (this.editSeries.title && this.editSeries.title.trim() !== '') {
             this.buttonSearchTmdb.changeLoadingActivate(true);
             this.unsubscribeSearchSeries();
-            this.subscriptionSearch = this.tmdbOperationService.fetchSearchSeriesInfoByTmdbDataBase(this.editSeries.title, this.editSeries.id, this.editSeries).pipe(take(1), finalize(() => {
+            this.subscriptionSearch = this.tmdbOperationService.fetchSearchSeriesInfoByTmdbDataBase(this.editSeries.title, this.editSeries.id, this.editSeries, this.editSeasons).pipe(take(1), finalize(() => {
                 this.buttonSearchTmdb.changeLoadingActivate(false);
             })).subscribe({
                 next: (data: EditSeriesModel) => {
@@ -268,11 +268,11 @@ export abstract class SettingSeriesAbstraction extends UnauthorizedError {
         }
     }
 
-    protected onClickButtonMediaLibrary(modifyMetaData: boolean): void {
+    protected onClickButtonMediaLibrary(): void {
         if (this.editSeries.mediaLibraryId && this.editSeries.mediaLibraryId.trim() !== '') {
             this.buttonSearchMediaLibrary.changeLoadingActivate(true);
             this.unsubscribeSearchSeries();
-            this.subscriptionSearch = this.tmdbOperationService.fetchSearchSeriesInfoByMediaLibrary(this.editSeries.mediaLibraryId, this.editSeries.id, this.editSeries, this.editSeasons, modifyMetaData).pipe(take(1), finalize(() => {
+            this.subscriptionSearch = this.tmdbOperationService.fetchSearchSeriesInfoByMediaLibrary(this.editSeries.mediaLibraryId, this.editSeries.id, this.editSeries, this.editSeasons).pipe(take(1), finalize(() => {
                 this.buttonSearchMediaLibrary.changeLoadingActivate(false);
             })).subscribe({
                 next: (data: EditSeriesModel) => {

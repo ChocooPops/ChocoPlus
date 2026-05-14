@@ -484,7 +484,8 @@
             "TYPE_ALL": "Tout",
             "TYPE_SERIES": "Séries",
             "TYPE_SEASON": "Saisons",
-            "TYPE_EPISODE": "Episodes"
+            "TYPE_EPISODE": "Episodes",
+            "MESSAGE_TMDB": "Voulez vraiment changer l'identifiant de la base de donnée TMDB ?"
         },
 
         "LOG": {
@@ -517,7 +518,9 @@
         "RESET": "Réinitialiser",
         "REFRESH": "Actualiser",
         "CONFIRM": "Valider",
-        "BROWSE": "Parcourir"
+        "BROWSE": "Parcourir",
+        "RELOAD_METADATA": "Recharger les métadonnées",
+        "RELOAD_FILE": "Recharger le fichier"
     },
 
     "FOOTER": {

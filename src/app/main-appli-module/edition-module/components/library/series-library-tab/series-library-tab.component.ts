@@ -1,10 +1,15 @@
-import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, ViewChild, HostListener } from '@angular/core';
+import { Component, ElementRef, Input, Output, EventEmitter, ViewChild, HostListener } from '@angular/core';
 import { MediaLibrary } from '../../../models/library/media-library.interface';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
 import { LibraryService } from '../../../services/library/library.service';
 import { NgClass } from '@angular/common';
+import { UnauthorizedError } from '../../abstract-components/unauthorized-error-abstract.directive';
+import { EditionParametersService } from '../../../services/edition-parameters/edition-parameters.service';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
+import { HttpErrorResponse } from '@angular/common/http';
+import { PopupComponent } from '../../popup/popup.component';
 
 type SeriesTypeFilter = 'ALL' | 'SERIES' | 'SEASON' | 'EPISODE';
 
@@ -21,11 +26,14 @@ interface PagedItem {
 @Component({
   selector: 'app-series-library-tab',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, NgClass],
+  imports: [FormsModule, TranslatePipe, NgClass, PopupComponent],
   templateUrl: './series-library-tab.component.html',
   styleUrl: './series-library-tab.component.css'
 })
-export class SeriesLibraryTabComponent implements OnChanges {
+export class SeriesLibraryTabComponent extends UnauthorizedError {
+
+  private readonly messageTmdb = 'EDITION.LIBRARY.MESSAGE_TMDB';
+  protected override menuType: MenuType = MenuType.LIBRARY;
 
   @Input() mediaLibraries: MediaLibrary[] = [];
   @Output() onMediaLibrary = new EventEmitter<void>();
@@ -34,11 +42,14 @@ export class SeriesLibraryTabComponent implements OnChanges {
   feedbackStates: (FeedbackState | null)[] = [];
   loadingStates: boolean[] = [];
   private feedbackTimers: ReturnType<typeof setTimeout>[] = [];
+  private seriesLibrarySelected: MediaLibrary | null = null;
+  private previousValue: number | null = null;
+
 
   srcIconSave: string = 'icon/save.svg';
 
   searchQuery: string = '';
-  filterMissingYear: boolean = false;
+  //filterMissingYear: boolean = false;
   filterMissingTmdb: boolean = false;
 
   filterType: SeriesTypeFilter = 'ALL';
@@ -64,8 +75,11 @@ export class SeriesLibraryTabComponent implements OnChanges {
 
   constructor(
     private readonly elementRef: ElementRef,
-    private readonly libraryService: LibraryService
-  ) { }
+    private readonly libraryService: LibraryService,
+    editionParametersService: EditionParametersService
+  ) {
+    super(editionParametersService)
+  }
 
   ngOnChanges(): void {
     this.loadingStates = this.mediaLibraries.map(() => false);
@@ -95,14 +109,14 @@ export class SeriesLibraryTabComponent implements OnChanges {
   }
 
   toggleFilterYear(): void {
-    this.filterMissingYear = !this.filterMissingYear;
+    //this.filterMissingYear = !this.filterMissingYear;
     this.filterMissingTmdb = false;
     this.onFilterChange();
   }
 
   toggleFilterTmdb(): void {
     this.filterMissingTmdb = !this.filterMissingTmdb;
-    this.filterMissingYear = false;
+    //this.filterMissingYear = false;
     this.onFilterChange();
   }
 
@@ -147,7 +161,7 @@ export class SeriesLibraryTabComponent implements OnChanges {
       .filter(({ mediaLibrary: ml }) => {
         if (q && !ml.titleFormated?.toLowerCase().includes(q)) return false;
         if (this.filterType !== 'ALL' && ml.type !== this.filterType) return false;
-        if (this.filterMissingYear && !this.isYearInvalid(ml)) return false;
+        //if (this.filterMissingYear && !this.isYearInvalid(ml)) return false;
         if (this.filterMissingTmdb && !this.isTmdbInvalid(ml)) return false;
         return true;
       });
@@ -237,6 +251,58 @@ export class SeriesLibraryTabComponent implements OnChanges {
     });
   }
 
+  onFocus(seriesLibrary: MediaLibrary): void {
+    this.previousValue = seriesLibrary.tmdbId;
+  }
+
+  onBlur(seriesLibrary: MediaLibrary): void {
+    const newValue = seriesLibrary.tmdbId;
+    if (this.previousValue !== newValue) {
+      this.seriesLibrarySelected = seriesLibrary;
+      this.popup.setMessage(this.messageTmdb, undefined);
+      this.popup.setDisplayPopup(true);
+      this.popup.setDisplayButton(true);
+    }
+  }
+
+  rollback(): void {
+    if (this.previousValue) {
+      const index: number = this.mediaLibraries.findIndex((item) => item.id === this.seriesLibrarySelected?.id);
+      if (index >= 0) {
+        this.mediaLibraries[index].tmdbId = this.previousValue;
+      }
+    }
+    this.previousValue = null;
+    this.seriesLibrarySelected = null;
+  }
+  
+  modifyTmdbIdFromMediaLibrary(): void {
+    if (!this.seriesLibrarySelected) return;
+    this.popup.setMessage(undefined, undefined);
+    this.popup.setDisplayButton(false);
+    this.libraryService.modifyTmdbIdFromMediaLibrary(this.seriesLibrarySelected).subscribe({
+      next: (data: MessageReturnedModel) => {
+        this.popup.setMessage(data.message, data.state);
+        this.popup.setEndTask(true);
+        if (data.state) {
+          if (data.state && Array.isArray(data.other) && data.other.length > 0) {
+          const updatedIds = new Set<string>(data.other);
+          this.mediaLibraries = this.mediaLibraries.map((ml) =>
+              updatedIds.has(ml.id) ? { ...ml, tmdbId: this.seriesLibrarySelected?.tmdbId ?? 0} : ml
+            );
+            this.applyFilters();
+          }
+          this.previousValue = null;
+        }
+        this.rollback();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.rollback();
+        this.displayPopupOnError(error, 2);
+      }
+    });
+  }
+
   saveVersion(mediaLibrary: MediaLibrary, index: number): void {
     if (mediaLibrary.type !== 'SERIES') return;
     if (this.loadingStates[index]) return;
@@ -245,20 +311,11 @@ export class SeriesLibraryTabComponent implements OnChanges {
     this.feedbackStates[index] = null;
     clearTimeout(this.feedbackTimers[index]);
   
-    this.libraryService.modifyMediaLibrary(mediaLibrary).subscribe({
+    this.libraryService.reloadMediaLibraryMetedata(mediaLibrary.id).subscribe({
       next: (result: MessageReturnedModel) => {
         this.loadingStates[index] = false;
         this.feedbackStates[index] = { message: result.message, state: result.state };
         this.scheduleFeedbackClear(index);
-  
-        if (result.state && Array.isArray(result.other) && result.other.length > 0) {
-          const updatedIds = new Set<string>(result.other);
-          this.mediaLibraries = this.mediaLibraries.map((ml) =>
-            updatedIds.has(ml.id) ? { ...ml, tmdbId: mediaLibrary.tmdbId } : ml
-          );
-          this.applyFilters();
-        }
-  
         this.onMediaLibrary.emit();
       },
       error: () => {

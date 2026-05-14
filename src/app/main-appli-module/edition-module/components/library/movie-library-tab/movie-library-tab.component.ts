@@ -1,10 +1,15 @@
-import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, ViewChild, HostListener } from '@angular/core';
+import { Component, ElementRef, Input, Output, EventEmitter, ViewChild, HostListener } from '@angular/core';
 import { MediaLibrary } from '../../../models/library/media-library.interface';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
 import { LibraryService } from '../../../services/library/library.service';
 import { NgClass } from '@angular/common';
+import { UnauthorizedError } from '../../abstract-components/unauthorized-error-abstract.directive';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
+import { EditionParametersService } from '../../../services/edition-parameters/edition-parameters.service';
+import { PopupComponent } from '../../popup/popup.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 interface FeedbackState {
   message: string;
@@ -19,11 +24,14 @@ interface PagedItem {
 @Component({
   selector: 'app-movie-library-tab',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, NgClass],
+  imports: [FormsModule, TranslatePipe, NgClass, PopupComponent],
   templateUrl: './movie-library-tab.component.html',
   styleUrl: './movie-library-tab.component.css'
 })
-export class MovieLibraryTabComponent implements OnChanges {
+export class MovieLibraryTabComponent extends UnauthorizedError {
+
+  protected override menuType: MenuType  = MenuType.LIBRARY;
+  private readonly messageTmdb = 'EDITION.LIBRARY.MESSAGE_TMDB';
 
   @Input() mediaLibraries: MediaLibrary[] = [];
   @Output() onMediaLibrary = new EventEmitter<void>();
@@ -46,6 +54,8 @@ export class MovieLibraryTabComponent implements OnChanges {
   currentPage: number = 0;
 
   private filteredItems: PagedItem[] = [];
+  private movieLibrarySelected: MediaLibrary | null = null;
+  private previousValue: number | null = null;
 
   pagedItems: PagedItem[] = [];
 
@@ -60,8 +70,11 @@ export class MovieLibraryTabComponent implements OnChanges {
 
   constructor(
     private readonly elementRef: ElementRef,
-    private readonly libraryService: LibraryService
-  ) { }
+    private readonly libraryService: LibraryService,
+    editionParametersService: EditionParametersService
+  ) { 
+    super(editionParametersService);
+  }
 
   ngOnChanges(): void {
     this.loadingStates = this.mediaLibraries.map(() => false);
@@ -216,6 +229,51 @@ export class MovieLibraryTabComponent implements OnChanges {
     });
   }
 
+  onFocus(movieLibrary: MediaLibrary): void {
+    this.previousValue = movieLibrary.tmdbId;
+  }
+
+  onBlur(movieLibrary: MediaLibrary): void {
+    const newValue = movieLibrary.tmdbId;
+    if (this.previousValue !== newValue) {
+      this.movieLibrarySelected = movieLibrary;
+      this.popup.setMessage(this.messageTmdb, undefined);
+      this.popup.setDisplayPopup(true);
+      this.popup.setDisplayButton(true);
+    }
+  }
+
+  rollback(): void {
+    if (this.previousValue) {
+      const index: number = this.mediaLibraries.findIndex((item) => item.id === this.movieLibrarySelected?.id);
+      if (index >= 0) {
+        this.mediaLibraries[index].tmdbId = this.previousValue;
+      }
+    }
+    this.previousValue = null;
+    this.movieLibrarySelected = null;
+  }
+  
+  modifyTmdbIdFromMediaLibrary(): void {
+    if (!this.movieLibrarySelected) return;
+    this.popup.setMessage(undefined, undefined);
+    this.popup.setDisplayButton(false);
+    this.libraryService.modifyTmdbIdFromMediaLibrary(this.movieLibrarySelected).subscribe({
+      next: (data: MessageReturnedModel) => {
+        this.popup.setMessage(data.message, data.state);
+        this.popup.setEndTask(true);
+        if (data.state) {
+          this.previousValue = null;
+        }
+        this.rollback();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.rollback();
+        this.displayPopupOnError(error, 2);
+      }
+    });
+  }
+
   saveVersion(mediaLibrary: MediaLibrary, index: number): void {
     if (this.loadingStates[index]) return;
 
@@ -223,7 +281,7 @@ export class MovieLibraryTabComponent implements OnChanges {
     this.feedbackStates[index] = null;
     clearTimeout(this.feedbackTimers[index]);
 
-    this.libraryService.modifyMediaLibrary(mediaLibrary).subscribe({
+    this.libraryService.reloadMediaLibraryMetedata(mediaLibrary.id).subscribe({
       next: (result: MessageReturnedModel) => {
         this.loadingStates[index] = false;
         this.feedbackStates[index] = { message: result.message, state: result.state };

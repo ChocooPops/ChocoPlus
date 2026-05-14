@@ -49,7 +49,8 @@ export class NewLibraryComponent extends UnauthorizedError {
     const target = event.target;
     const clickedInside = this.form?.nativeElement.contains(target);
     if (!clickedInside) {
-      this.cancel();
+      this.reset();
+      this.cancelled.emit();
     } else {
       const clickInsideMedia = this.selectTypeMedia?.nativeElement.contains(target);
       const clickInsideLang = this.selectLanguage?.nativeElement.contains(target);
@@ -141,8 +142,10 @@ export class NewLibraryComponent extends UnauthorizedError {
   }
  
   cancel(): void {
-    this.reset();
-    this.cancelled.emit();
+    if (this.popup.endTask) {
+      this.reset();
+      this.cancelled.emit();
+    }
   }
  
   private reset(): void {

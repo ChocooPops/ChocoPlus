@@ -3,10 +3,13 @@
   inset: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  overflow-y: auto;
   z-index: 999999999;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
+  padding: 24px 0;
+  box-sizing: border-box;
 }
 
 .container-popup {
@@ -24,6 +27,8 @@
   box-sizing: border-box;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   background-color: #161616;
+  position: relative;
+  margin: auto;
 }
 
 .animation {

@@ -575,14 +575,14 @@ th:nth-child(1)  { width: 150px; }              /* ID */
 th:nth-child(2)  { width: 80px; }               /* TMDB ID */
 th:nth-child(3)  { width: 90px; }               /* TYPE badge */
 th:nth-child(4)  { width: 150px; }              /* Title */
-th:nth-child(5)  { width: 50px; }               /* Year */
-th:nth-child(6)  { width: 150px; }              /* Parent ID */
-th:nth-child(7)  { width: 60px; }               /* Season # */
-th:nth-child(8)  { width: 60px; }               /* Episode # */
-th:nth-child(9)  { width: 20%; min-width: 250px; } /* Path */
-th:nth-child(10) { width: 100px; }              /* Dimension */
-th:nth-child(11) { width: 70px; }               /* Resolution */
-th:nth-child(12) { width: 180px; }              /* Action */
+/* th:nth-child(5)  { width: 50px; }               /* Year */
+th:nth-child(5)  { width: 150px; }              /* Parent ID */
+th:nth-child(6)  { width: 60px; }               /* Season # */
+th:nth-child(7)  { width: 60px; }               /* Episode # */
+th:nth-child(8)  { width: 20%; min-width: 250px; } /* Path */
+th:nth-child(9) { width: 100px; }              /* Dimension */
+th:nth-child(10) { width: 70px; }               /* Resolution */
+th:nth-child(11) { width: 210px; }              /* Action */
 
 /* ─── Pagination ─────────────────────────────────────────────────────────── */
 

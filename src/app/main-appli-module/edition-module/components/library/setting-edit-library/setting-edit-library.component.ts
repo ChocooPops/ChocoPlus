@@ -137,7 +137,7 @@ export class SettingEditLibraryComponent extends UnauthorizedError {
       next: (data: MessageReturnedModel) => {
         this.popup.setMessage(data.message, data.state);
         this.popup.setEndTask(true);
-        if (this.idSelectedForDeleting === this.librarySelected?.id) {
+        if (this.idSelectedForDeleting === this.librarySelected?.id && data.state) {
           this.libraryService.setLibrarySelected(null);
           this.libraryService.setMediaLibraries(null);
         }
