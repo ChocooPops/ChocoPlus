@@ -10,11 +10,7 @@ import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../../services/edition-parameters/edition-parameters.service';
 import { PopupComponent } from '../../popup/popup.component';
 import { HttpErrorResponse } from '@angular/common/http';
-
-interface FeedbackState {
-  message: string;
-  state: boolean;
-}
+import { LogViewerModalComponent } from '../log-viewer-modal/log-viewer-modal.component';
 
 interface PagedItem {
   mediaLibrary: MediaLibrary;
@@ -24,7 +20,7 @@ interface PagedItem {
 @Component({
   selector: 'app-movie-library-tab',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, NgClass, PopupComponent],
+  imports: [FormsModule, TranslatePipe, NgClass, PopupComponent, LogViewerModalComponent],
   templateUrl: './movie-library-tab.component.html',
   styleUrl: './movie-library-tab.component.css'
 })
@@ -37,11 +33,17 @@ export class MovieLibraryTabComponent extends UnauthorizedError {
   @Output() onMediaLibrary = new EventEmitter<void>();
   @ViewChild('selectSize') selectSize!: ElementRef;
 
-  feedbackStates: (FeedbackState | null)[] = [];
+  feedbackStates: (any | null)[] = [];
   loadingStates: boolean[] = [];
   private feedbackTimers: ReturnType<typeof setTimeout>[] = [];
 
+  // Log viewer modal state
+  logViewerOpen: boolean = false;
+  logViewerData: any | null = null;
+  logViewerPath: string = '';
+
   srcIconSave: string = 'icon/save.svg';
+  srcIconLog: string = 'icon/log.svg';
 
   searchQuery: string = '';
   filterMissingYear: boolean = false;
@@ -184,7 +186,7 @@ export class MovieLibraryTabComponent extends UnauthorizedError {
 
       const sorted = Array.from(set).sort((a, b) => a - b);
       for (let i = 0; i < sorted.length; i++) {
-        if (i > 0 && sorted[i] - sorted[i - 1] > 1) pages.push(-1); // ellipse
+        if (i > 0 && sorted[i] - sorted[i - 1] > 1) pages.push(-1);
         pages.push(sorted[i]);
       }
     }
@@ -274,17 +276,20 @@ export class MovieLibraryTabComponent extends UnauthorizedError {
     });
   }
 
-  saveVersion(mediaLibrary: MediaLibrary, index: number): void {
+  reloadMediaLibraryMetedata(mediaLibrary: MediaLibrary, index: number): void {
     if (this.loadingStates[index]) return;
 
     this.loadingStates[index] = true;
     this.feedbackStates[index] = null;
     clearTimeout(this.feedbackTimers[index]);
 
-    this.libraryService.reloadMediaLibraryMetedata(mediaLibrary.id).subscribe({
+    this.libraryService.fetchReloadMediaLibraryMetedata(mediaLibrary.id).subscribe({
       next: (result: MessageReturnedModel) => {
         this.loadingStates[index] = false;
-        this.feedbackStates[index] = { message: result.message, state: result.state };
+        if (result.message && typeof result.message === 'string') {
+          result.message = result.message.split('\n').map((item) => item.trim()).filter((item) => item !== '') as any;
+        }
+        this.feedbackStates[index] = result;
         this.onMediaLibrary.emit();
         this.scheduleFeedbackClear(index);
       },
@@ -296,14 +301,53 @@ export class MovieLibraryTabComponent extends UnauthorizedError {
     });
   }
 
+  reloadMediaLibraryFile(mediaLibrary: MediaLibrary, index: number): void {
+    if (this.loadingStates[index]) return;
+
+    this.loadingStates[index] = true;
+    this.feedbackStates[index] = null;
+    clearTimeout(this.feedbackTimers[index]);
+
+    this.libraryService.fetchReloadMediaLibraryFile(mediaLibrary.id).subscribe({
+      next: (result: MessageReturnedModel) => {
+        this.loadingStates[index] = false;
+        if (result.message && typeof result.message === 'string') {
+          result.message = result.message.split('\n').map((item) => item.trim()).filter((item) => item !== '') as any;
+        }        
+        this.feedbackStates[index] = result;
+        this.onMediaLibrary.emit();
+        this.scheduleFeedbackClear(index);
+      },
+      error: (error) => {
+        this.loadingStates[index] = false;
+        this.feedbackStates[index] = { message: error, state: false };
+        this.scheduleFeedbackClear(index);
+      }
+    });
+  }
+
+  openLogViewerForRow(index: number, mediaLibrary: MediaLibrary): void {
+    const fb = this.feedbackStates[index];
+    if (!fb) return;
+    this.logViewerData = fb;
+    this.logViewerPath = mediaLibrary.path;
+    this.logViewerOpen = true;
+  }
+
+  closeLogViewer(): void {
+    this.logViewerOpen = false;
+    this.logViewerData = null;
+    this.logViewerPath = '';
+  }
+
   private scheduleFeedbackClear(index: number): void {
     this.feedbackTimers[index] = setTimeout(() => {
-      this.feedbackStates[index] = null;
+      //this.feedbackStates[index] = null;
     }, this.FEEDBACK_DURATION_MS);
   }
 
   public getDimension(mediaLibrary: MediaLibrary): string {
-    return `${mediaLibrary.width} * ${mediaLibrary.height} px`;
+    return `${mediaLibrary.width} * ${mediaLibrary.height}`;
   }
 
   @HostListener('document:click', ['$event'])

@@ -520,7 +520,9 @@
         "CONFIRM": "Valider",
         "BROWSE": "Parcourir",
         "RELOAD_METADATA": "Recharger les métadonnées",
-        "RELOAD_FILE": "Recharger le fichier"
+        "RELOAD_FILES": "Recharger le fichier",
+        "RELOAD_FILE": "Recharger les fichiers",
+        "VIEW_LOGS": "Visualiser le journal"
     },
 
     "FOOTER": {

@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LibraryLog } from '../../../models/library/library.interface';
 import { JsonViewerComponent } from '../../json-viewer/json-viewer.component';
 
 @Component({
@@ -13,7 +12,7 @@ import { JsonViewerComponent } from '../../json-viewer/json-viewer.component';
 })
 export class LogViewerModalComponent {
 
-  @Input() logData!: LibraryLog;
+  @Input() logData!: any;
   @Input() libraryPath: string = '';
 
   @Output() close = new EventEmitter<void>();

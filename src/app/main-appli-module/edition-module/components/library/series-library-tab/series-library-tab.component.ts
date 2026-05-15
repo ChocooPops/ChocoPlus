@@ -10,13 +10,9 @@ import { EditionParametersService } from '../../../services/edition-parameters/e
 import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PopupComponent } from '../../popup/popup.component';
+import { LogViewerModalComponent } from '../log-viewer-modal/log-viewer-modal.component';
 
 type SeriesTypeFilter = 'ALL' | 'SERIES' | 'SEASON' | 'EPISODE';
-
-interface FeedbackState {
-  message: string;
-  state: boolean;
-}
 
 interface PagedItem {
   mediaLibrary: MediaLibrary;
@@ -26,7 +22,7 @@ interface PagedItem {
 @Component({
   selector: 'app-series-library-tab',
   standalone: true,
-  imports: [FormsModule, TranslatePipe, NgClass, PopupComponent],
+  imports: [FormsModule, TranslatePipe, NgClass, PopupComponent, LogViewerModalComponent],
   templateUrl: './series-library-tab.component.html',
   styleUrl: './series-library-tab.component.css'
 })
@@ -39,19 +35,21 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
   @Output() onMediaLibrary = new EventEmitter<void>();
   @ViewChild('selectSize') selectSize!: ElementRef;
 
-  feedbackStates: (FeedbackState | null)[] = [];
+  feedbackStates: (any | null)[] = [];
   loadingStates: boolean[] = [];
   private feedbackTimers: ReturnType<typeof setTimeout>[] = [];
   private seriesLibrarySelected: MediaLibrary | null = null;
   private previousValue: number | null = null;
 
+  // Log viewer modal state
+  logViewerOpen: boolean = false;
+  logViewerData: any | null = null;
+  logViewerPath: string = '';
 
   srcIconSave: string = 'icon/save.svg';
 
   searchQuery: string = '';
-  //filterMissingYear: boolean = false;
   filterMissingTmdb: boolean = false;
-
   filterType: SeriesTypeFilter = 'ALL';
 
   pageSize: number = 50;
@@ -63,11 +61,8 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
   private filteredItems: PagedItem[] = [];
 
   pagedItems: PagedItem[] = [];
-
   filteredCount: number = 0;
-
   totalPages: number = 0;
-
   visiblePages: number[] = [];
 
   private readonly MIN_COL_WIDTH = 40;
@@ -78,7 +73,7 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
     private readonly libraryService: LibraryService,
     editionParametersService: EditionParametersService
   ) {
-    super(editionParametersService)
+    super(editionParametersService);
   }
 
   ngOnChanges(): void {
@@ -108,15 +103,8 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
     this.updatePage();
   }
 
-  toggleFilterYear(): void {
-    //this.filterMissingYear = !this.filterMissingYear;
-    this.filterMissingTmdb = false;
-    this.onFilterChange();
-  }
-
   toggleFilterTmdb(): void {
     this.filterMissingTmdb = !this.filterMissingTmdb;
-    //this.filterMissingYear = false;
     this.onFilterChange();
   }
 
@@ -161,7 +149,6 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
       .filter(({ mediaLibrary: ml }) => {
         if (q && !ml.titleFormated?.toLowerCase().includes(q)) return false;
         if (this.filterType !== 'ALL' && ml.type !== this.filterType) return false;
-        //if (this.filterMissingYear && !this.isYearInvalid(ml)) return false;
         if (this.filterMissingTmdb && !this.isTmdbInvalid(ml)) return false;
         return true;
       });
@@ -178,10 +165,8 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
 
   private updatePage(): void {
     this.totalPages = Math.max(1, Math.ceil(this.filteredItems.length / this.pageSize));
-
     const start = this.currentPage * this.pageSize;
     this.pagedItems = this.filteredItems.slice(start, start + this.pageSize);
-
     this.buildVisiblePages();
   }
 
@@ -275,7 +260,7 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
     this.previousValue = null;
     this.seriesLibrarySelected = null;
   }
-  
+
   modifyTmdbIdFromMediaLibrary(): void {
     if (!this.seriesLibrarySelected) return;
     this.popup.setMessage(undefined, undefined);
@@ -286,9 +271,9 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
         this.popup.setEndTask(true);
         if (data.state) {
           if (data.state && Array.isArray(data.other) && data.other.length > 0) {
-          const updatedIds = new Set<string>(data.other);
-          this.mediaLibraries = this.mediaLibraries.map((ml) =>
-              updatedIds.has(ml.id) ? { ...ml, tmdbId: this.seriesLibrarySelected?.tmdbId ?? 0} : ml
+            const updatedIds = new Set<string>(data.other);
+            this.mediaLibraries = this.mediaLibraries.map((ml) =>
+              updatedIds.has(ml.id) ? { ...ml, tmdbId: this.seriesLibrarySelected?.tmdbId ?? 0 } : ml
             );
             this.applyFilters();
           }
@@ -303,20 +288,23 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
     });
   }
 
-  saveVersion(mediaLibrary: MediaLibrary, index: number): void {
+  reloadMediaLibraryMetedata(mediaLibrary: MediaLibrary, index: number): void {
     if (mediaLibrary.type !== 'SERIES') return;
     if (this.loadingStates[index]) return;
-  
+
     this.loadingStates[index] = true;
     this.feedbackStates[index] = null;
     clearTimeout(this.feedbackTimers[index]);
-  
-    this.libraryService.reloadMediaLibraryMetedata(mediaLibrary.id).subscribe({
+
+    this.libraryService.fetchReloadMediaLibraryMetedata(mediaLibrary.id).subscribe({
       next: (result: MessageReturnedModel) => {
         this.loadingStates[index] = false;
-        this.feedbackStates[index] = { message: result.message, state: result.state };
-        this.scheduleFeedbackClear(index);
+        if (result.message && typeof result.message === 'string') {
+          result.message = result.message.split('\n').map((item) => item.trim()).filter((item) => item !== '') as any;
+        }
+        this.feedbackStates[index] = result;
         this.onMediaLibrary.emit();
+        this.scheduleFeedbackClear(index);
       },
       error: () => {
         this.loadingStates[index] = false;
@@ -325,16 +313,56 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
       }
     });
   }
- 
+
+  reloadMediaLibraryFile(mediaLibrary: MediaLibrary, index: number): void {
+    if (mediaLibrary.type !== 'SERIES') return;
+    if (this.loadingStates[index]) return;
+
+    this.loadingStates[index] = true;
+    this.feedbackStates[index] = null;
+    clearTimeout(this.feedbackTimers[index]);
+
+    this.libraryService.fetchReloadMediaLibraryFile(mediaLibrary.id).subscribe({
+      next: (result: MessageReturnedModel) => {
+        this.loadingStates[index] = false;
+        if (result.message && typeof result.message === 'string') {
+          result.message = result.message.split('\n').map((item) => item.trim()).filter((item) => item !== '') as any;
+        }
+        this.feedbackStates[index] = result;
+        this.onMediaLibrary.emit();
+        this.scheduleFeedbackClear(index);
+      },
+      error: () => {
+        this.loadingStates[index] = false;
+        this.feedbackStates[index] = { message: 'EDITION.ADVANCED_SETTINGS.ERROR', state: false };
+        this.scheduleFeedbackClear(index);
+      }
+    });
+  }
+
+  openLogViewerForRow(index: number, mediaLibrary: MediaLibrary): void {
+    const fb = this.feedbackStates[index];
+    if (!fb) return;
+    this.logViewerData = fb;
+    this.logViewerPath = mediaLibrary.path;
+    this.logViewerOpen = true;
+  }
+
+  closeLogViewer(): void {
+    this.logViewerOpen = false;
+    this.logViewerData = null;
+    this.logViewerPath = '';
+  }
+
   private scheduleFeedbackClear(index: number): void {
     this.feedbackTimers[index] = setTimeout(() => {
-      this.feedbackStates[index] = null;
+      //this.feedbackStates[index] = null;
     }, this.FEEDBACK_DURATION_MS);
   }
 
   public getDimension(mediaLibrary: MediaLibrary): string {
     if (!mediaLibrary.width && !mediaLibrary.height) return '—';
-    return `${mediaLibrary.width} × ${mediaLibrary.height} px`;
+    return `${mediaLibrary.width} × ${mediaLibrary.height}`;
   }
 
   @HostListener('document:click', ['$event'])

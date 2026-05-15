@@ -1,5 +1,13 @@
 <app-popup (emitActionData)="modifyTmdbIdFromMediaLibrary()" (emitResetPopup)="rollback()"></app-popup>
 
+@if (logViewerOpen && logViewerData) {
+  <app-log-viewer-modal
+    [logData]="logViewerData"
+    [libraryPath]="logViewerPath"
+    (close)="closeLogViewer()">
+  </app-log-viewer-modal>
+}
+
 <div class="ct-wrap">
 
   <div class="ct-controls">
@@ -135,20 +143,53 @@
         <td>
           <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.resolution" disabled />
         </td>
+
         <td class="ct-action-cell">
           @if (loadingStates[item.originalIndex]) {
-          <span class="ct-spinner"></span>
+            <span class="ct-spinner"></span>
           } @else {
-          <button class="ct-save-btn" (click)="saveVersion(item.mediaLibrary, item.originalIndex)"
-            title="Enregistrer les modifications">
-            <img [src]="srcIconSave">
-            {{ 'BUTTON.RELOAD_METADATA' | translate }}
-          </button>
-          }
-          @if (feedbackStates[item.originalIndex]; as fb) {
-          <span class="ct-feedback" [class.ct-feedback--success]="fb.state" [class.ct-feedback--error]="!fb.state">
-            {{ fb.message | translate }}
-          </span>
+            <div class="ct-action-buttons">
+
+              <button
+                class="ct-action-btn ct-action-btn--metadata"
+                (click)="reloadMediaLibraryMetedata(item.mediaLibrary, item.originalIndex)">
+                <svg class="ct-action-btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M13.5 2.5A6.5 6.5 0 1 1 7 1.5"/>
+                  <polyline points="11 1 14 1 14 4"/>
+                </svg>
+                <span>{{ 'BUTTON.RELOAD_METADATA' | translate }}</span>
+              </button>
+
+              <button
+                class="ct-action-btn ct-action-btn--file"
+                (click)="reloadMediaLibraryFile(item.mediaLibrary, item.originalIndex)">
+                <svg class="ct-action-btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12V4.5L6 1h6.5A1.5 1.5 0 0 1 14 2.5v9.5A1.5 1.5 0 0 1 12.5 13.5h-9A1.5 1.5 0 0 1 2 12z"/>
+                  <polyline points="6 1 6 5 10 5"/>
+                  <line x1="8" y1="8" x2="8" y2="11"/>
+                  <line x1="6.5" y1="9.5" x2="9.5" y2="9.5"/>
+                </svg>
+                <span>{{ 'BUTTON.RELOAD_FILE' | translate }}</span>
+              </button>
+
+              @if (feedbackStates[item.originalIndex]; as fb) {
+                <button
+                  class="ct-action-btn ct-action-btn--log"
+                  [class.ct-action-btn--log-success]="fb.state"
+                  [class.ct-action-btn--log-error]="!fb.state"
+                  (click)="openLogViewerForRow(item.originalIndex, item.mediaLibrary)"
+                  title="{{ 'BUTTON.VIEW_LOGS' | translate }}">
+                  <svg class="ct-action-btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="12" height="12" rx="2"/>
+                    <line x1="5" y1="6" x2="11" y2="6"/>
+                    <line x1="5" y1="9" x2="9" y2="9"/>
+                  </svg>
+                  <span>{{ 'BUTTON.VIEW_LOGS' | translate }}</span>
+                  <span class="ct-log-dot" [class.ct-log-dot--success]="fb.state" [class.ct-log-dot--error]="!fb.state"></span>
+                </button>
+              }
+
+            </div>
           }
         </td>
       </tr>
