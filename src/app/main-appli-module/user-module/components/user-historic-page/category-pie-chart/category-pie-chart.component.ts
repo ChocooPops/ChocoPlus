@@ -308,6 +308,8 @@ export class CategoryPieChartComponent {
         const charWidth = 7;
         const maxChars = Math.floor(availableWidth / charWidth);
         
+        d.categoryName = this.translateService.instant(d.categoryName);
+
         const fullText = `${d.categoryName} (${d.percentage.toFixed(1)}%)`;
         
         if (fullText.length > maxChars) {
@@ -329,7 +331,7 @@ export class CategoryPieChartComponent {
     let content = `
       <div style="line-height: 1.5;">
         <div style="font-size: 14px; font-weight: 700; margin-bottom: 5px;">
-          ${category.categoryName}
+          ${this.translateService.instant(category.categoryName)}
         </div>
         <div style="font-size: 13px;">
           ${category.count} ${category.count > 1 ? (this.translateService.instant('CONTENTS') as string).toLocaleLowerCase() : (this.translateService.instant('CONTENT') as string).toLocaleLowerCase()}

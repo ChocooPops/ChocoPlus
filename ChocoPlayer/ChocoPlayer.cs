@@ -1157,18 +1157,24 @@ namespace ChocoPlayer
 
         public string InsertIntoUrlBeforeFilename(string url, string insert)
         {
-            var urlParts = url.Split('/').ToList();
+            try
+            {
+                var urlParts = url.Split('/').ToList();
 
-            if (urlParts.Count < 2)
-                return url;
+                if (urlParts.Count < 2)
+                    return url;
 
-            var fileName = urlParts.Last();
-            urlParts.RemoveAt(urlParts.Count - 1);
+                var fileName = urlParts.Last();
+                urlParts.RemoveAt(urlParts.Count - 1);
 
-            urlParts.Add(insert.ToString());
-            urlParts.Add(fileName);
+                urlParts.Add(insert.ToString());
+                urlParts.Add(fileName);
 
-            return string.Join("/", urlParts);
+                return string.Join("/", urlParts);   
+            } catch
+            {
+                return "";
+            }
         }
 
         private string FormatDuration(long milliseconds)
