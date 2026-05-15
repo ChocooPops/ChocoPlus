@@ -355,6 +355,12 @@ export class EditionMovieService extends EditionMediaService {
       logo: movie.srcLogo !== undefined ? movie.srcLogo.toString() : undefined,
       horizontalPosterSameAsBackground: state,
       backgroundImage: movie.srcBackgroundImage !== undefined ? movie.srcBackgroundImage.toString() : undefined,
+
+      path: movie.path,
+      bytes: movie.bytes,
+      frames: movie.frames,
+      height: movie.height,
+      width: movie.width
     }
     if (!movie.srcPosterNormal && !movie.srcPosterSpecial && !movie.srcPosterLicense) {
       newMovie.posters = this.getInitialPosters();

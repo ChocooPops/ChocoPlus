@@ -10,8 +10,13 @@
         }
     </div>
     <div class="container-info">
+        <div class="container-simple">
         <app-input-text-edition (onInputChange)="onChangeMediaLibraryId($event)" [placeHolder]="placeHolderMediaLibrary"
             [text]="episode.mediaLibraryId"></app-input-text-edition>
+            @if (episode.path && episode.path.trim() !== '') {
+                <app-input-text-edition class="margin-left" [text]="episode.path" [disabled]="true" [type]="4"></app-input-text-edition>
+            }
+        </div>
         <div class="container-simple">
             <app-input-image-edition (inputChange)="onChangePoster($event)" [typeInputImage]="4"
                 [srcImageAdded]="episode.srcPoster"></app-input-image-edition>

@@ -7,5 +7,10 @@ export interface MovieModel extends MediaModel {
     watchProgress: number,
     stateProgress: ProgressStateMedia,
     resolution: string,
-    mediaType: MediaTypeModel.MOVIE
+    mediaType: MediaTypeModel.MOVIE,
+
+    frames?: number,
+    bytes?: number,
+    width?: number,
+    height?:number
 }

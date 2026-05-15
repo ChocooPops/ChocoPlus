@@ -13,18 +13,18 @@ export class InputNumberEditionComponent {
   
   @Input() placeHolder: string = '';
   @Input() number: number | undefined | null;
-  @Input() disbaled!: boolean;
+  @Input() disabled!: boolean;
   @Output() onInputChange = new EventEmitter<number>();
 
   formGroup!: FormGroup;
-  constructor(private fb: FormBuilder) { }
+  constructor(private readonly fb: FormBuilder) { }
   
   ngOnInit(): void {
     this.formGroup = this.fb.group({
       inputValue: [this.number]
     });
     this.loadFormGroup();
-    if (this.disbaled) {
+    if (this.disabled) {
       this.formGroup.get('inputValue')?.disable();
     }
   }

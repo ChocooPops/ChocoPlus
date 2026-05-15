@@ -23,5 +23,7 @@ export interface MediaModel {
     srcBackgroundImage?: string | undefined,
     typeZoomX: boolean | undefined;
     typeZoomY: boolean,
-    mediaType: MediaTypeModel
+    mediaType: MediaTypeModel,
+
+    path?: string
 }

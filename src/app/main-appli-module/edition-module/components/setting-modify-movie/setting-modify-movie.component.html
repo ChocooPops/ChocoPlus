@@ -7,10 +7,18 @@
     </div>
 
     @if(editMovie.id >= 0) {
-        
-    <div class="containerFieldToFill">
-        <p> {{ 'IDENTIFYING' | translate }} </p>
-        <app-input-number-edition [number]="editMovie.id" [disbaled]="true"></app-input-number-edition>
+    
+    <div class="container-flex">
+        <div class="containerFieldToFill">
+            <p> {{ 'IDENTIFYING' | translate }} </p>
+            <app-input-number-edition [number]="editMovie.id" [disabled]="true"></app-input-number-edition>
+        </div>
+        @if (editMovie.path && editMovie.path.trim() !== '') {
+            <div class="containerFieldToFill">
+                <p> {{ 'EDITION.FILE_CHEMIN' | translate }} </p>
+                <app-input-text-edition [text]="editMovie.path" [disabled]="true" [type]="4"></app-input-text-edition>
+            </div>
+        }
     </div>
 
     <div class="containerFieldToFill">

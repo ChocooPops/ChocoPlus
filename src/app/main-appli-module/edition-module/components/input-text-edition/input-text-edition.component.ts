@@ -17,10 +17,13 @@ export class InputTextEditionComponent {
   placeHolder: string = "";
 
   @Input()
-  type: number = 1;
+  type: 1 | 2 | 3 | 4 = 1;
 
   @Input()
   text: string | undefined | null = "";
+
+  @Input()
+  disabled: boolean = false;
 
   @Output()
   onInputChange = new EventEmitter<string>();
@@ -34,7 +37,7 @@ export class InputTextEditionComponent {
   @ViewChild('inputRef') inputElement!: ElementRef<HTMLInputElement>;
 
   formGroup!: FormGroup;
-  constructor(private fb: FormBuilder) { }
+  constructor(private readonly fb: FormBuilder) { }
 
   focusIsEnabled(): void {
     this.onFocus.emit(true);
@@ -49,6 +52,9 @@ export class InputTextEditionComponent {
       inputValue: [this.text]
     });
     this.loadFormGroup();
+    if (this.disabled) {
+      this.formGroup.get('inputValue')?.disable();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

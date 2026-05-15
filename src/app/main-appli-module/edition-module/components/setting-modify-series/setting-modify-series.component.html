@@ -9,10 +9,18 @@
     </div>
 
     @if(editSeries.id >= 0) {
-    <div class="containerFieldToFill">
-        <p> {{ 'IDENTIFYING' | translate }} </p>
-        <app-input-number-edition [number]="editSeries.id" [disbaled]="true"></app-input-number-edition>
-    </div>
+        <div class="container-flex">
+            <div class="containerFieldToFill">
+                <p> {{ 'IDENTIFYING' | translate }} </p>
+                <app-input-number-edition [number]="editSeries.id" [disabled]="true"></app-input-number-edition>
+            </div>
+            @if (editSeries.path && editSeries.path.trim() !== '') {
+                <div class="containerFieldToFill">
+                    <p> {{ 'EDITION.FILE_CHEMIN' | translate }} </p>
+                    <app-input-text-edition [text]="editSeries.path" [disabled]="true" [type]="4"></app-input-text-edition>
+                </div>
+            }
+        </div>
 
     <div class="containerFieldToFill">
         <app-input-button-info-series (toggleTypeInfo)="modifyTypeInfoDisplayed($event)"

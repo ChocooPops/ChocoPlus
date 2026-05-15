@@ -7,5 +7,7 @@ export interface EditSeasonModel {
     name: string | undefined,
     seasonNumber: number,
     srcPoster: string | ArrayBuffer | undefined | null,
-    episodes: EditEpisodeModel[]
+    episodes: EditEpisodeModel[],
+
+    path?: string
 }

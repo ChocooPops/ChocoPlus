@@ -119,6 +119,9 @@ export class TmdbOperationService {
           if(seasonTmp.srcPoster) {
             editSeries.seasons[seasonIndex].srcPoster = seasonTmp.srcPoster;
           }
+          if(seasonTmp.path) {
+            editSeries.seasons[seasonIndex].path = seasonTmp.path;
+          }
         }
         season.episodes.forEach((episode : EditEpisodeModel, episodeIndex: number) => {
           const episodeTmp : EditEpisodeModel | undefined = allEpisodes.find((item : EditEpisodeModel) => item.mediaLibraryId === episode.mediaLibraryId);
@@ -134,6 +137,9 @@ export class TmdbOperationService {
             }
             if (episodeTmp.date) {
               editSeries.seasons[seasonIndex].episodes[episodeIndex].date = new Date(episodeTmp.date);
+            }
+            if (episodeTmp.path) {
+              editSeries.seasons[seasonIndex].episodes[episodeIndex].path = episodeTmp.path;
             }
           }
         });

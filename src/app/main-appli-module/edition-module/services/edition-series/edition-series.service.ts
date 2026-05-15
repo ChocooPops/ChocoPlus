@@ -595,7 +595,8 @@ export class EditionSeriesService extends EditionMediaService {
       logo: series.srcLogo !== undefined ? series.srcLogo.toString() : undefined,
       horizontalPosterSameAsBackground: state,
       backgroundImage: series.srcBackgroundImage !== undefined ? series.srcBackgroundImage.toString() : undefined,
-      seasons: []
+      seasons: [],
+      path: series.path
     }
     if (!series.srcPosterNormal && !series.srcPosterSpecial && !series.srcPosterLicense) {
       newSeries.posters = this.getInitialPosters();
@@ -620,7 +621,13 @@ export class EditionSeriesService extends EditionMediaService {
               episodeNumber: episode.episodeNumber,
               description: episode.description,
               date: episode.date ? new Date(episode.date) : new Date(),
-              srcPoster: episode.srcPoster || undefined
+              srcPoster: episode.srcPoster || undefined,
+
+              path: episode.path,
+              frames: episode.frames,
+              bytes: episode.bytes,
+              width: episode.width,
+              height: episode.height
             });
           });
         }
@@ -631,7 +638,9 @@ export class EditionSeriesService extends EditionMediaService {
           name: season.name,
           seasonNumber: season.seasonNumber,
           srcPoster: season.srcPoster || undefined,
-          episodes: editEpisodes
+          episodes: editEpisodes,
+
+          path: season.path
         });
       })
       this.editSeasonSubject.next(editSeasons);

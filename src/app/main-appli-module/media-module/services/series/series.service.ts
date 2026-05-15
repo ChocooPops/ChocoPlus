@@ -49,6 +49,11 @@ export class SeriesService {
       mediaType: MediaTypeModel.SERIES,
       seasons: series.seasons && series.seasons.length > 0 ? this.createNewSeasons(series.seasons) : []
     }
+
+    if (series.path) {
+      seriesTmp.path = series.path
+    }
+
     return seriesTmp;
   }
 

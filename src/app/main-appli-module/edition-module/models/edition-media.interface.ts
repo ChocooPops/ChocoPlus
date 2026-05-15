@@ -20,4 +20,6 @@ export interface EditionMediaModel {
     horizontalPosterSameAsBackground: boolean,
     logo: string | ArrayBuffer | undefined | null,
     backgroundImage: string | ArrayBuffer | undefined | null,
+
+    path?: string
 }

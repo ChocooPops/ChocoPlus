@@ -1,5 +1,5 @@
 <form [formGroup]="formGroup">
     <input #inputRef (focus)="focusIsEnabled()" (blur)="focusIsDisabled()"
-        [ngClass]="{'inputText_1' : type === 1, 'inputText_2' : type === 2, 'inputText_3' : type === 3}"
+        [ngClass]="{'inputText_1' : type === 1, 'inputText_2' : type === 2, 'inputText_3' : type === 3, 'inputText_4' : type === 4}"
         [placeholder]="placeHolder | translate" type="text" formControlName="inputValue" />
 </form>

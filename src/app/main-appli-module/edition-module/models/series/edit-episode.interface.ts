@@ -7,4 +7,10 @@ export interface EditEpisodeModel {
     description: string | undefined,
     date: Date,
     srcPoster: string | ArrayBuffer | undefined | null,
+
+    path?: string,
+    frames?: number,
+    bytes?: number,
+    width?: number,
+    height?:number
 }

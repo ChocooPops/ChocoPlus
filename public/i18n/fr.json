@@ -285,6 +285,7 @@
         "MEDIA_LIBRARY": "Médiathèque Id",
         "TMDB_ID": "TMDB ID",
         "PLACEHOLDER_TMDB": "ex: 8596",
+        "FILE_CHEMIN": "Chemin du fichier", 
 
         "UNAUTHORIZED" : {
             "ADD": "Vous n'êtes pas autorisé à ajouter des données.",

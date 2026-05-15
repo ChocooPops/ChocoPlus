@@ -5,6 +5,12 @@
             [exText]="placeHolderSeasonPoster | translate"></app-input-image-edition>
     </div>
     <div class="containerSettingSelected" style="position: relative;">
+        @if (season.path && season.path.trim() !== '') {
+            <div class="containerFieldToFill">
+                <p> {{ 'EDITION.FILE_CHEMIN' | translate }} </p>
+                <app-input-text-edition [text]="season.path" [disabled]="true" [type]="4"></app-input-text-edition>
+            </div>
+        }
         <div class="containerFieldToFill">
             <p>{{ 'EDITION.SERIES.SEASON_NAME' | translate }} <span class="yellow">*</span></p>
             <app-input-text-edition [text]="season.name" (onInputChange)="onChangeTitle($event)"
