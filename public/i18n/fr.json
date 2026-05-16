@@ -249,10 +249,12 @@
             "ERROR_ID": "Erreur avec l'id de l'utilisateur"
         },
         "GRAPH": {
-            "ALL_DATA": "All data",
-            "MEDIA_WITHOUT_POSTER": "Media without poster",
-            "NOT_YET_SIMILAR_TITLE": "Not yet similar titles",
-            "PATH_NOT_EXISTS": "Media with path don't exists"
+            "ALL_DATA": "Toutes les données",
+            "MEDIA_WITHOUT_POSTER": "Media sans poster",
+            "NOT_YET_SIMILAR_TITLE": "Pas assez de titres similaires",
+            "MEDIA_MISSING_FILES": "Media avec chemin dysfonctionnel",
+            "ORPHAN_MEDIA_LIBRARIES": "Bibliothèques multimédia orphelines",
+            "DUPLICATE_TMDB": "Duplication de l'identifiant TMDB"
         }
     },
 

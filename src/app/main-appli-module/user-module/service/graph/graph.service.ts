@@ -16,9 +16,13 @@ import { MediaIdTypeModel } from '../../../media-module/models/media-id-type.int
 })
 export class GraphService {
 
+  private readonly apiUrlLibrary: string = `${environment.apiUrlLibrary}`;
+  private readonly urlMediaMissingFiles: string = 'media-missing-files';
+  private readonly urlOrphanMediaLibrary: string = 'orphan-media-library';
+  private readonly urlDuplicateTmdb: string = 'duplicate-tmdb';
+
   private readonly apiUrlMedia: string = `${environment.apiUrlMedia}`;
   private readonly urlNullPoster: string = 'null-poster';
-  private readonly urlMediaPathDontExist : string = 'path-dont-exist';
 
   private readonly apiUrlMovie: string = `${environment.apiUrlMovie}`;
   private readonly urlNodesMovie: string = 'nodes';
@@ -40,9 +44,10 @@ export class GraphService {
 
   private readonly colorBlackMovie: string = '#000000';
   private readonly colorWhiteSeries: string = '#D9D9D9';
-  private readonly colorPinkEpisode:string = '#D85795';
-  private readonly colorYellowCategory: string = '#FFD812';
-  private readonly colorBlueSelection: string = `#70ABF3`;
+  private readonly colorGreenEpisode: string = '#6ee7b7';
+  private readonly colorPurpleSeason: string = '#a78bfa';
+  private readonly colorYellowCategory: string = '#ffd301';
+  private readonly colorBlueSelection: string = `#7eb8f7`;
   private readonly colorGreenLicense: string = `#34D183`;
 
   private graphSubject: BehaviorSubject<GraphModel | undefined> = new BehaviorSubject<GraphModel | undefined>(undefined);
@@ -58,7 +63,9 @@ export class GraphService {
   private graphWithMovieAndCategory: GraphModel | undefined = undefined;
   private graphMovieWithNullPoster: GraphModel | undefined = undefined;
   private graphLessSimilarTitlesMovies: GraphModel | undefined = undefined;
-  private graphMediaPathDontExist: GraphModel | undefined = undefined;
+  private graphMediaMissingFiles: GraphModel | undefined = undefined;
+  private graphOrphanMediaLibraries: GraphModel | undefined = undefined;
+  private graphDuplicateTmdb: GraphModel | undefined = undefined;
 
   private oldSaveGraphe: GraphModel = this.initOldSaveGraph();
 
@@ -70,23 +77,35 @@ export class GraphService {
       value: () => this.generateGraphWithAllMoviesWithAllCategoryWithAllSimilarMovie()
     },
     {
-      id: 5,
+      id: 1,
       name: 'USER.GRAPH.MEDIA_WITHOUT_POSTER',
       state: false,
       value: () => this.generateGraphMovieWithNullPoster()
     },
     {
-      id: 6,
+      id: 2,
       name: 'USER.GRAPH.NOT_YET_SIMILAR_TITLE',
       state: false,
       value: () => this.generateGraphLessSimilarTitlesMovies()
     },
     {
-      id: 7,
-      name: 'USER.GRAPH.PATH_NOT_EXISTS',
+      id: 3,
+      name: 'USER.GRAPH.MEDIA_MISSING_FILES',
       state: false,
-      value: () => this.generateGraphMediaPathDontExist()
+      value: () => this.generateGraphMediaWithMissingFiles()
     },
+    {
+      id: 4,
+      name: "USER.GRAPH.ORPHAN_MEDIA_LIBRARIES",
+      state: false,
+      value: () => this.generateGraphOrphanMediaLibraries()
+    },
+    {
+      id: 5,
+      name: "USER.GRAPH.DUPLICATE_TMDB",
+      state: false,
+      value: () => this.generateGraphDuplicateTmdb()
+    }
   ]
 
   constructor(private http: HttpClient) { }
@@ -385,24 +404,68 @@ export class GraphService {
     this.updateGraphSubject(this.graphLessSimilarTitlesMovies);
   }
 
-  private async generateGraphMediaPathDontExist(): Promise<void> {
-    if (!this.graphMediaPathDontExist) {
-      const url: string = `${this.apiUrlMedia}/${this.urlMediaPathDontExist}`;
+  private async generateGraphMediaWithMissingFiles(): Promise<void> {
+    if (!this.graphMediaMissingFiles) {
+      const url: string = `${this.apiUrlLibrary}/${this.urlMediaMissingFiles}`;
       const data: any = await firstValueFrom(this.http.get(url)) as any[];
 
       const movies = this.createNewGraph(data.movies, [], this.colorBlackMovie, 6, MediaTypeModel.MOVIE);
-      const series = this.createNewGraph(data.series, [], this.colorPinkEpisode, 6, MediaTypeModel.EPISODE);
+      const episodes = this.createNewGraph(data.episodes, [], this.colorGreenEpisode, 6, MediaTypeModel.EPISODE);
 
-      this.graphMediaPathDontExist = {
+      this.graphMediaMissingFiles = {
+        links: [],
+        nodes: [...movies.nodes, ...episodes.nodes]
+      }
+    }
+    this.legendsSubject.next([
+      this.createNewLegend('MOVIE', this.colorBlackMovie, this.graphMediaMissingFiles.nodes.filter((item) => item.color === this.colorBlackMovie).length),
+      this.createNewLegend('EPISODES', this.colorGreenEpisode, this.graphMediaMissingFiles.nodes.filter((item) => item.color === this.colorGreenEpisode).length),
+    ]);
+    this.updateGraphSubject(this.graphMediaMissingFiles);
+  }
+
+  private async generateGraphOrphanMediaLibraries(): Promise<void> {
+    if (!this.graphOrphanMediaLibraries) {
+      const url: string = `${this.apiUrlLibrary}/${this.urlOrphanMediaLibrary}`;
+      const data: any = await firstValueFrom(this.http.get(url)) as any[];
+
+      const movies = this.createNewGraph(data.movies, [], this.colorBlackMovie, 6, MediaTypeModel.MOVIE);
+      const series = this.createNewGraph(data.series, [], this.colorWhiteSeries, 6, MediaTypeModel.SERIES);
+      const seasons = this.createNewGraph(data.seasons, [], this.colorPurpleSeason, 6, MediaTypeModel.SEASON);
+      const episodes = this.createNewGraph(data.episodes, [], this.colorGreenEpisode, 6, MediaTypeModel.EPISODE);
+
+      this.graphOrphanMediaLibraries = {
+        links: [],
+        nodes: [...movies.nodes, ...series.nodes, ...seasons.nodes, ...episodes.nodes]
+      }
+    }
+    this.legendsSubject.next([
+      this.createNewLegend('MOVIE', this.colorBlackMovie, this.graphOrphanMediaLibraries.nodes.filter((item) => item.color === this.colorBlackMovie).length),
+      this.createNewLegend('SERIES', this.colorWhiteSeries, this.graphOrphanMediaLibraries.nodes.filter((item) => item.color === this.colorWhiteSeries).length),
+      this.createNewLegend('SEASONS', this.colorPurpleSeason, this.graphOrphanMediaLibraries.nodes.filter((item) => item.color === this.colorPurpleSeason).length),
+      this.createNewLegend('EPISODES', this.colorGreenEpisode, this.graphOrphanMediaLibraries.nodes.filter((item) => item.color === this.colorGreenEpisode).length)
+    ]);
+    this.updateGraphSubject(this.graphOrphanMediaLibraries);
+  }
+
+  private async generateGraphDuplicateTmdb(): Promise<void> {
+    if (!this.graphDuplicateTmdb) {
+      const url: string = `${this.apiUrlLibrary}/${this.urlDuplicateTmdb}`;
+      const data: any = await firstValueFrom(this.http.get(url)) as any[];
+
+      const movies = this.createNewGraph(data.nodes.movies, data.links.movies, this.colorBlackMovie, 6, MediaTypeModel.MOVIE);
+      const series = this.createNewGraph(data.nodes.series, data.links.series, this.colorWhiteSeries, 6, MediaTypeModel.SERIES);
+
+      this.graphDuplicateTmdb = {
         links: [...movies.links, ...series.links],
         nodes: [...movies.nodes, ...series.nodes]
       }
     }
     this.legendsSubject.next([
-      this.createNewLegend('MOVIE', this.colorBlackMovie, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorBlackMovie).length),
-      this.createNewLegend('EPISODE', this.colorPinkEpisode, this.graphMediaPathDontExist.nodes.filter((item) => item.color === this.colorPinkEpisode).length),
+      this.createNewLegend('MOVIE', this.colorBlackMovie, this.graphDuplicateTmdb.nodes.filter((item) => item.color === this.colorBlackMovie).length - 1),
+      this.createNewLegend('SERIES', this.colorWhiteSeries, this.graphDuplicateTmdb.nodes.filter((item) => item.color === this.colorWhiteSeries).length - 1),
     ]);
-    this.updateGraphSubject(this.graphMediaPathDontExist);
+    this.updateGraphSubject(this.graphDuplicateTmdb);
   }
 
   public getGraphFromNodeClicked(id: number, mediaType: MediaTypeModel): GraphNode[] | undefined {
