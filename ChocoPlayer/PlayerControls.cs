@@ -63,6 +63,22 @@ namespace ChocoPlayer
         private bool _isFullscreen = false;
         private bool _hasSeasons = false;
 
+        public event EventHandler<ProgressHoverEventArgs>? ProgressHoverChanged;
+
+        public class ProgressHoverEventArgs : EventArgs
+        {
+            public int FormX { get; }
+            public int FormY { get; }
+            public string? TimeText { get; }
+
+            public ProgressHoverEventArgs(int formX, int formY, string? timeText)
+            {
+                FormX = formX;
+                FormY = formY;
+                TimeText = timeText;
+            }
+        }
+
         public PlayerControls()
         {
             this.BackColor = Color.FromArgb(20, 20, 20);
@@ -85,6 +101,10 @@ namespace ChocoPlayer
             this.MouseDown += PlayerControls_MouseDown;
             this.MouseUp += PlayerControls_MouseUp;
             this.MouseMove += PlayerControls_MouseMove;
+            this.MouseLeave += (s, e) =>
+            {
+                ProgressHoverChanged?.Invoke(this, new ProgressHoverEventArgs(0, 0, null));
+            };
             this.Resize += (s, e) => RefreshImmediate();
         }
 
@@ -183,6 +203,7 @@ namespace ChocoPlayer
             if (_isDragging)
             {
                 UpdateProgress(e.X);
+                FireHoverEvent(e.X);
             }
             else if (_isDraggingVolume)
             {
@@ -195,19 +216,50 @@ namespace ChocoPlayer
                 int lineWidth = lineEnd - _leftMargin;
                 int progressX = _leftMargin + (int)(_progress * lineWidth);
 
-                if (IsOverPoint(e.X, e.Y, progressX, lineY) ||
-                    IsOverLine(e.X, e.Y, lineY, lineEnd) ||
-                    IsOverVolumeLine(e.X, e.Y) ||
-                    IsOverVolumePoint(e.X, e.Y) ||
-                    IsOverAnyButton(e.X, e.Y))
+                bool overProgressBar = IsOverPoint(e.X, e.Y, progressX, lineY) || IsOverLine(e.X, e.Y, lineY, lineEnd);
+
+                if (overProgressBar)
                 {
                     this.Cursor = Cursors.Hand;
+                    FireHoverEvent(e.X);
                 }
                 else
                 {
-                    this.Cursor = Cursors.Default;
+                    ProgressHoverChanged?.Invoke(this, new ProgressHoverEventArgs(0, 0, null));
+
+                    if (IsOverVolumeLine(e.X, e.Y) ||
+                        IsOverVolumePoint(e.X, e.Y) ||
+                        IsOverAnyButton(e.X, e.Y))
+                    {
+                        this.Cursor = Cursors.Hand;
+                    }
+                    else
+                    {
+                        this.Cursor = Cursors.Default;
+                    }
                 }
             }
+        }
+
+        private void FireHoverEvent(int localX)
+        {
+            int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
+            int lineWidth = lineEnd - _leftMargin;
+
+            float hoverProgress;
+            if (localX < _leftMargin) hoverProgress = 0f;
+            else if (localX > lineEnd) hoverProgress = 1f;
+            else hoverProgress = (float)(localX - _leftMargin) / lineWidth;
+
+            long totalTime = Player.GetTotalTime();
+            long hoverTime = (long)(hoverProgress * totalTime);
+            string timeText = FormatTime(hoverTime);
+
+            Point formPoint = this.Parent != null
+                ? this.Parent.PointToClient(this.PointToScreen(new Point(localX, 0)))
+                : new Point(localX, this.Top);
+
+            ProgressHoverChanged?.Invoke(this, new ProgressHoverEventArgs(formPoint.X, this.Top, timeText));
         }
 
         public int GetButtonSize() => _buttonSize;
@@ -658,7 +710,5 @@ namespace ChocoPlayer
             path.CloseFigure();
             return path;
         }
-
     }
-
 }

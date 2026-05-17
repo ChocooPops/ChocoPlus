@@ -23,6 +23,7 @@ namespace ChocoPlayer
         private ApiService? _apiService;
         private MiniPlayerButton? _miniPlayerButton;
         private KeyActionOverlay? _keyActionOverlay;
+        private ProgressTooltip? _progressTooltip;
 
         private int _mediaId;
         private int _currentEpisodeId = 0;
@@ -371,7 +372,9 @@ namespace ChocoPlayer
         {
             _controlsVisible = false;
             _playerControls!.Visible = false;
-
+        
+            _progressTooltip?.HideTooltip();
+        
             if (!_isMiniMode)
             {
                 _miniPlayerButton!.Visible = false;
@@ -674,6 +677,22 @@ namespace ChocoPlayer
             _playerControls.SetProgressChangeListener(new ProgressListener(this));
             this.Controls.Add(_playerControls);
 
+            _progressTooltip = new ProgressTooltip();
+            this.Controls.Add(_progressTooltip);
+
+            _playerControls.ProgressHoverChanged += (s, e) =>
+            {
+                if (e.TimeText == null)
+                {
+                    _progressTooltip.HideTooltip();
+                }
+                else
+                {
+                    _progressTooltip.ShowAt(e.FormX, e.FormY, e.TimeText);
+                    _progressTooltip.BringToFront();
+                }
+            };
+
             _trackSettingsMenu = new TrackSettingsMenu();
             _trackListener = new TrackListener(this);
             _trackSettingsMenu.SetListener(_trackListener);
@@ -847,6 +866,7 @@ namespace ChocoPlayer
             {
                 _seasonsMenu.BringToFront();
             }
+            _progressTooltip?.BringToFront();
         }
 
         private void ChocoPlayer_Resize(object? sender, EventArgs e)
