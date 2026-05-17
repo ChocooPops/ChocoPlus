@@ -25,7 +25,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const headers: { [key: string]: string } = {};
 
     headers[environment.HEADER_NAME_FIELD_SECRET_API] = environment.HEADER_SECRET_API;
-    headers['Accept-Language'] = languageService.getCurrentLangValue();
+
+    if (languageService.getIsShowingKeysValue()) {
+        headers['Accept-Language'] = "none";
+    } else {
+        headers['Accept-Language'] = languageService.getCurrentLangValue();
+    }
 
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { SeriesModel } from '../../../models/series/series.interface';
 import { EpisodeModel } from '../../../models/series/episode.interface';
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
@@ -25,7 +25,7 @@ export class EpisodePosterHorizontalViewComponent {
   @Input() episodes!: EpisodeModel[];
   @Input() notRunning: boolean = true;
 
-  episodePoster: any[] = [];
+  episodePoster: (string | undefined)[] = [];
   episodeProgress: MediaProgressingModel[] = [];
   ProgressState = ProgressStateMedia;
 
@@ -33,6 +33,7 @@ export class EpisodePosterHorizontalViewComponent {
   width!: number;
   gap!: number;
   srcIconInfo: string = 'icon/info.svg';
+  srcEpisode: string = 'icon/episode.svg';
 
   private subscription!: Subscription;
 
@@ -57,7 +58,7 @@ export class EpisodePosterHorizontalViewComponent {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['episodes']) {
       this.episodePoster = this.episodes.map((episode: EpisodeModel) =>
-        this.compressedPosterService.getEpisodePoster(episode),
+        this.compressedPosterService.getEpisodePoster(episode) ?? this.srcEpisode,
       );
       this.episodeProgress = this.episodes.map((episode: EpisodeModel) =>
         this.historicWatchProgressService.getHistoricEpisodeProgressById(
@@ -78,4 +79,9 @@ export class EpisodePosterHorizontalViewComponent {
   getTimerEpisode(timer: number): string {
     return this.verifTimerShowService.getFormatEpisode(timer);
   }
+
+  onError(idx: number): void {
+    this.episodePoster[idx] = this.srcEpisode;
+  }
+
 }

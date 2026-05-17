@@ -13,7 +13,9 @@
                 <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
                     [episode]="episode" [seasons]="series.seasons"></app-start-button>
             </div>
-            <img [src]="episodePoster[idx]">
+            @if (episodePoster[idx]) {
+                <img [src]="episodePoster[idx]" (error)="onError(idx)">
+            }
             @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
             <div class="container-progress">
                 <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>

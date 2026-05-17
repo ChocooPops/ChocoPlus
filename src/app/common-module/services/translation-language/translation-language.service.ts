@@ -49,8 +49,12 @@ export class TranslationLanguageService {
     return this.currentLang$.value;
   }
  
+  getIsShowingKeysValue() {
+    return this.isShowingKeys$.value;
+  }
+
   setLang(lang: SupportedLang): void {
-    this.isShowingKeys$.next(false);
+    this.hiddeKey();
     if (lang === this.currentLang$.value) return;
     this.previousLang = lang;
     localStorage.setItem('lang', lang);
@@ -75,8 +79,7 @@ export class TranslationLanguageService {
       get: (_target, key: string) => key
     }));
     this.translate.use('keys' as any);
-    this.isShowingKeys$.next(true);
-    localStorage.setItem(this.KEYS_MODE_STORAGE, 'true');
+    this.showKey();
   }
 
   revertToPreviousLang(): void {
@@ -84,9 +87,18 @@ export class TranslationLanguageService {
     this.currentLang$.next(target);
     this.previousLang = target;
     localStorage.setItem('lang', target);
+    this.hiddeKey();
+    this.applyLang(target);
+  }
+
+  private showKey(): void {
+    this.isShowingKeys$.next(true);
+    localStorage.setItem(this.KEYS_MODE_STORAGE, 'true');
+  }
+
+  private hiddeKey(): void {
     localStorage.setItem(this.KEYS_MODE_STORAGE, 'false');
     this.isShowingKeys$.next(false);
-    this.applyLang(target);
   }
 
 }

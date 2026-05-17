@@ -582,8 +582,8 @@
     "KEY WORD": "Mots clés",
     
     "OPERATOR": {
-        "OR": "Ou",
-        "AND": "Et"
+        "OR": "ou",
+        "AND": "et"
     },
 
     "ACTION": "Action",

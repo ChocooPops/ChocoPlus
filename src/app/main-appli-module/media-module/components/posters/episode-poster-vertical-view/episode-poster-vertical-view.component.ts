@@ -25,6 +25,7 @@ export class EpisodePosterVerticalViewComponent {
   episodePoster: any[] = [];
   episodeProgress: MediaProgressingModel[] = [];
   ProgressState = ProgressStateMedia;
+  srcEpisode: string = 'icon/episode.svg';
 
   constructor(private readonly verifTimerShowService: VerifTimerShowService,
     private readonly compressedPosterService: CompressedPosterService,
@@ -34,7 +35,7 @@ export class EpisodePosterVerticalViewComponent {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['episodes']) {
       this.episodePoster = this.episodes.map((episode: EpisodeModel) =>
-        this.compressedPosterService.getEpisodePoster(episode)
+        this.compressedPosterService.getEpisodePoster(episode) ?? this.srcEpisode
       );
       this.episodeProgress = this.episodes.map((episode: EpisodeModel) =>
         this.historicWatchProgressService.getHistoricEpisodeProgressById(episode.id, episode.watchProgress, episode.stateProgress)
@@ -44,6 +45,10 @@ export class EpisodePosterVerticalViewComponent {
 
   getTimerEpisode(timer: number): string {
     return this.verifTimerShowService.getFormatEpisode(timer)
+  }
+
+  onError(idx: number): void {
+    this.episodePoster[idx] = this.srcEpisode;
   }
 
 }
