@@ -2,7 +2,6 @@ import { Component, Renderer2, ElementRef, ViewChild } from '@angular/core';
 import { LicenseModel } from '../../../license-module/model/license.interface';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription, switchMap, take } from 'rxjs';
-import { MediaModel } from '../../../media-module/models/media.interface';
 import { NgClass } from '@angular/common';
 import { LicensePagesLoadingComponent } from '../license-page-loading/license-page-loading.component';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
@@ -13,12 +12,11 @@ import { CompressedPosterService } from '../../../common-module/services/compres
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { LicenseService } from '../../../license-module/service/license/licence.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-license-page',
   standalone: true,
-  imports: [SelectionsListComponent, MediaPageComponent, NgClass, LicensePagesLoadingComponent],
+  imports: [SelectionsListComponent, NgClass, LicensePagesLoadingComponent],
   templateUrl: './license-page.component.html',
   styleUrls: ['./license-page.component.css', '../../../common-module/styles/animation.css']
 })
@@ -32,20 +30,19 @@ export class LicensePageComponent {
   srcLogo !: string | undefined;
   srcBackground !: string | undefined;
   format !: FormatPosterModel;
-  mediaSelected: MediaModel | undefined = undefined;
   private idLicense !: number;
   private subscription: Subscription = new Subscription();
   private changeNewPoster: boolean = false;
 
-  constructor(private route: ActivatedRoute,
-    private mediaSelectedService: MediaSelectedService,
-    private licenseService: LicenseService,
-    private renderer: Renderer2,
-    private el: ElementRef,
-    private imagePreloaderService: ImagePreloaderService,
-    private formatPosterService: FormatPosterService,
-    private compressedPosterService: CompressedPosterService,
-    private menuTabService: MenuTabService
+  constructor(private readonly route: ActivatedRoute,
+    private readonly mediaSelectedService: MediaSelectedService,
+    private readonly licenseService: LicenseService,
+    private readonly renderer: Renderer2,
+    private readonly el: ElementRef,
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly formatPosterService: FormatPosterService,
+    private readonly compressedPosterService: CompressedPosterService,
+    private readonly menuTabService: MenuTabService
   ) {
     this.menuTabService.setActivateTransition(true);
   }
@@ -79,12 +76,6 @@ export class LicensePageComponent {
         this.changeNewPoster = true;
       })
     });
-
-    this.subscription.add(
-      this.mediaSelectedService.getMediaSelected().subscribe((media) => {
-        this.mediaSelected = media;
-      })
-    )
   }
 
   private reloadWhenFormatPosterChange(): void {

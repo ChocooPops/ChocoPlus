@@ -18,7 +18,6 @@ import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SortCatalog } from '../../../media-module/models/catalog/sort-catalog.enum';
 import { ScrollEventService } from '../../../common-module/services/scroll-event/scroll-event.service';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 import { FiltersCatalogService } from '../../../media-module/services/filters-catalog/filters-catalog.service';
 import { FiltersChoicesModel } from '../../../media-module/models/catalog/filters-choices.interface';
 import { FilterChoiceModel } from '../../../media-module/models/catalog/filter-choice.interface';
@@ -31,7 +30,7 @@ import { JoinPipe } from '../../../../common-module/pipe/join.pipe';
 @Component({
   selector: 'app-catalog-page',
   standalone: true,
-  imports: [JoinPipe, OtherFiltersComponent, TranslatePipe, MediaPageComponent, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
+  imports: [JoinPipe, OtherFiltersComponent, TranslatePipe, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
   templateUrl: './catalog-page.component.html',
   styleUrl: './catalog-page.component.css'
 })
@@ -50,7 +49,6 @@ export class CatalogPageComponent {
 
   marginLeft!: number;
   width!: string;
-  mediaSelected: MediaModel | undefined = undefined;
 
   decadeFilter!: FiltersChoicesModel;
   categoryFilter!: FiltersChoicesModel;
@@ -105,12 +103,6 @@ export class CatalogPageComponent {
   }
 
   ngOnInit(): void {
-    this.subscription.add(
-      this.mediaSelectedService.getMediaSelected().subscribe((media: MediaModel | undefined) => {
-        this.mediaSelected = media;
-      })
-    );
-
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterCatalog().subscribe((format: FormatPosterModel) => {
         this.format = format;

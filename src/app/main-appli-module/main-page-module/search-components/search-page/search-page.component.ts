@@ -9,19 +9,18 @@ import { FormatPosterModel } from '../../../common-module/models/format-poster.e
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { SearchLicenseListComponent } from '../../../license-module/components/search-license-list/search-license-list.component';
-import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { MediaService } from '../../../media-module/services/media/media.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 
 @Component({
   selector: 'app-search-page',
   standalone: true,
-  imports: [MediaPageComponent, TranslatePipe, GridListComponent, SearchLicenseListComponent, MenuTmpComponent, ReactiveFormsModule],
+  imports: [TranslatePipe, GridListComponent, SearchLicenseListComponent, MenuTmpComponent, ReactiveFormsModule],
   templateUrl: './search-page.component.html',
   styleUrl: './search-page.component.css'
 })
@@ -40,19 +39,18 @@ export class SearchPageComponent {
   refresh: number = 300;
 
   formGroup!: FormGroup;
-  mediaSelected: MediaModel | undefined = undefined;
   private loadNewFormat: boolean = false;
   private subscription: Subscription = new Subscription();
 
-  constructor(private fb: FormBuilder,
-    private mediaService: MediaService,
-    private mediaSelectedService: MediaSelectedService,
-    private imagePreloaderService: ImagePreloaderService,
-    private formatPosterService: FormatPosterService,
-    private menuTabService: MenuTabService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private loadOpeningPageService: LoadOpeningPageService
+  constructor(private readonly fb: FormBuilder,
+    private readonly mediaService: MediaService,
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly formatPosterService: FormatPosterService,
+    private readonly menuTabService: MenuTabService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly loadOpeningPageService: LoadOpeningPageService,
+    private readonly mediaSelectedService: MediaSelectedService
   ) {
     this.menuTabService.setActivateTransition(false);
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_RESEARCH);
@@ -128,12 +126,6 @@ export class SearchPageComponent {
         }
       })
     );
-
-    this.subscription.add(
-      this.mediaSelectedService.getMediaSelected().subscribe((movie: MediaModel | undefined) => {
-        this.mediaSelected = movie;
-      })
-    )
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterResearch().subscribe((format: FormatPosterModel) => {
         this.format = format;
@@ -148,6 +140,7 @@ export class SearchPageComponent {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.abortController.abort();
+    this.mediaSelectedService.clearSelection();
   }
 
   private preloadNewFormat(): void {

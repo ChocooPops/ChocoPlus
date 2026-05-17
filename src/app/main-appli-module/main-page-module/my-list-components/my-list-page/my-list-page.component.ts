@@ -8,15 +8,14 @@ import { FormatPosterModel } from '../../../common-module/models/format-poster.e
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
-import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
+import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 
 @Component({
   selector: 'app-my-list-page',
   standalone: true,
-  imports: [MenuTmpComponent, MediaPageComponent, GridListComponent],
+  imports: [MenuTmpComponent, GridListComponent],
   templateUrl: './my-list-page.component.html',
   styleUrl: './my-list-page.component.css'
 })
@@ -31,16 +30,15 @@ export class MyListPageComponent {
   gap !: number;
   marginLeft !: number;
   marginBottom !: number;
-  mediaSelected: MediaModel | undefined = undefined;
   nbPosterPerLine: number = 0;
   loadNewFormat: boolean = false;
 
-  constructor(private userService: UserService,
-    private mediaSelectedService: MediaSelectedService,
-    private formatPosterService: FormatPosterService,
-    private imagePreloaderService: ImagePreloaderService,
-    private menuTabService: MenuTabService,
-    private loadOpeningPageService: LoadOpeningPageService
+  constructor(private readonly userService: UserService,
+    private readonly formatPosterService: FormatPosterService,
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly menuTabService: MenuTabService,
+    private readonly loadOpeningPageService: LoadOpeningPageService,
+    private readonly mediaSelectedService: MediaSelectedService
   ) {
     this.menuTabService.setActivateTransition(false);
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_MYLIST);
@@ -59,11 +57,6 @@ export class MyListPageComponent {
       })
     )
     this.subscription.add(
-      this.mediaSelectedService.getMediaSelected().subscribe((medias: MediaModel | undefined) => {
-        this.mediaSelected = medias;
-      })
-    )
-    this.subscription.add(
       this.formatPosterService.fetchFormatPosterMyList().subscribe((format: FormatPosterModel) => {
         this.format = format;
         if (this.loadNewFormat) {
@@ -77,6 +70,7 @@ export class MyListPageComponent {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.abortController.abort();
+    this.mediaSelectedService.clearSelection();
   }
 
   private reloadWhenFormatPosterChange(): void {

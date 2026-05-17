@@ -15,12 +15,11 @@ import { NewsVideoRunningModel } from '../../../news-module/models/news-video-ru
 import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-series-page',
   standalone: true,
-  imports: [VideoRunningPresentationComponent, VideoRunningPresentationLoadingComponent, SelectionsListComponent, MediaPageComponent],
+  imports: [VideoRunningPresentationComponent, VideoRunningPresentationLoadingComponent, SelectionsListComponent],
   templateUrl: './series-page.component.html',
   styleUrl: './series-page.component.css'
 })
@@ -29,29 +28,23 @@ export class SeriesPageComponent {
   private abortController = new AbortController();
   seriesShowHome !: NewsVideoRunningModel | undefined;
   seriesSelection: SelectionModel[] | undefined;
-  seriesSelected: MediaModel | undefined = undefined;
   format !: FormatPosterModel;
   private loadNewFormat: boolean = false;
   private subscription: Subscription = new Subscription();
 
-  constructor(private selectionService: SelectionService,
-    private mediaSelectedService: MediaSelectedService,
-    private imagePreloaderService: ImagePreloaderService,
-    private formatPosterService: FormatPosterService,
-    private menuTabService: MenuTabService,
-    private newsVideoRunningService: NewsVideoRunningService,
-    private loadOpeningPageService: LoadOpeningPageService
+  constructor(private readonly selectionService: SelectionService,
+    private readonly mediaSelectedService: MediaSelectedService,
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly formatPosterService: FormatPosterService,
+    private readonly menuTabService: MenuTabService,
+    private readonly newsVideoRunningService: NewsVideoRunningService,
+    private readonly loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(true);
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_SERIES);
   }
 
   ngOnInit(): void {
-    this.subscription.add(
-      this.mediaSelectedService.getMediaSelected().subscribe((series: MediaModel | undefined) => {
-        this.seriesSelected = series;
-      })
-    )
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterSeries().subscribe((format: FormatPosterModel) => {
         this.format = format;

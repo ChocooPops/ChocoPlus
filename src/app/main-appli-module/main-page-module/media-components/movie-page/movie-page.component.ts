@@ -15,12 +15,11 @@ import { NewsVideoRunningService } from '../../../news-module/services/news-vide
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-movie-page',
   standalone: true,
-  imports: [MediaPageComponent, VideoRunningPresentationComponent, VideoRunningPresentationLoadingComponent, SelectionsListComponent],
+  imports: [VideoRunningPresentationComponent, VideoRunningPresentationLoadingComponent, SelectionsListComponent],
   templateUrl: './movie-page.component.html',
   styleUrl: './movie-page.component.css'
 })
@@ -29,29 +28,23 @@ export class MoviePageComponent {
   private abortController = new AbortController();
   movieShowHome !: NewsVideoRunningModel | undefined;
   movieSelections: SelectionModel[] | undefined = undefined;
-  movieSelected: MediaModel | undefined = undefined;
   format !: FormatPosterModel;
   private loadNewFormat: boolean = false;
   private subscription: Subscription = new Subscription();
 
-  constructor(private selectionService: SelectionService,
-    private mediaSelectedService: MediaSelectedService,
-    private imagePreloaderService: ImagePreloaderService,
-    private formatPosterService: FormatPosterService,
-    private menuTabService: MenuTabService,
-    private newsVideoRunningService: NewsVideoRunningService,
-    private loadOpeningPageService: LoadOpeningPageService
+  constructor(private readonly selectionService: SelectionService,
+    private readonly mediaSelectedService: MediaSelectedService,
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly formatPosterService: FormatPosterService,
+    private readonly menuTabService: MenuTabService,
+    private readonly newsVideoRunningService: NewsVideoRunningService,
+    private readonly loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(true);
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_MOVIE);
   }
 
   ngOnInit(): void {
-    this.subscription.add(
-      this.mediaSelectedService.getMediaSelected().subscribe((movie: MediaModel | undefined) => {
-        this.movieSelected = movie;
-      })
-    );
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterMovie().subscribe((format: FormatPosterModel) => {
         this.format = format;

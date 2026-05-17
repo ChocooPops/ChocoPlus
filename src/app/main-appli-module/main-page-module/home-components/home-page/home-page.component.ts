@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
 import { forkJoin, Subscription, take } from 'rxjs';
 import { SelectionsListComponent } from '../../../media-module/components/selections/selections-list/selections-list.component';
-import { MediaModel } from '../../../media-module/models/media.interface';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { SelectionModel } from '../../../media-module/models/selection.interface';
 import { HomeLicenseListComponent } from '../../../license-module/components/home-license-list/home-license-list.component';
@@ -16,19 +15,17 @@ import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-
 import { NewsListComponent } from '../../../news-module/components/news-list/news-list.component';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
-import { MediaPageComponent } from '../../../media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [MediaPageComponent, SelectionsListComponent, HomeLicenseListComponent, MenuTmpComponent, NewsListComponent],
+  imports: [SelectionsListComponent, HomeLicenseListComponent, MenuTmpComponent, NewsListComponent],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })
 export class HomePageComponent {
 
   private abortController = new AbortController();
-  mediaSelected: MediaModel | undefined = undefined;
   selections: SelectionModel[] | undefined = undefined;
   format !: FormatPosterModel;
   news: NewsModel[] | undefined = undefined;
@@ -48,11 +45,6 @@ export class HomePageComponent {
   }
 
   ngOnInit(): void {
-    this.subscription.add(
-      this.mediaSelectedService.getMediaSelected().subscribe((media: MediaModel | undefined) => {
-        this.mediaSelected = media;
-      })
-    )
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterHome().subscribe((format: FormatPosterModel) => {
         this.format = format;

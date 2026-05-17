@@ -4,6 +4,9 @@
         <app-menu-bar></app-menu-bar>
         }
         <div class="mainContain">
+            @if(mediaSelected != undefined) {
+                <app-media-page></app-media-page>
+            }
             <router-outlet />
         </div>
         <!--

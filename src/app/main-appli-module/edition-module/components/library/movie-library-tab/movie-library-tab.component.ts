@@ -140,7 +140,7 @@ export class MovieLibraryTabComponent extends UnauthorizedError {
     this.filteredItems = this.mediaLibraries
       .map((ml, originalIndex) => ({ mediaLibrary: ml, originalIndex }))
       .filter(({ mediaLibrary: ml }) => {
-        if (q && !ml.titleFormated?.toLowerCase().includes(q)) return false;
+        if (q && !ml.titleFormated?.toLowerCase().includes(q) && !ml.id.toLowerCase().includes(q)) return false;
         if (this.filterMissingYear && !this.isYearInvalid(ml)) return false;
         if (this.filterMissingTmdb && !this.isTmdbInvalid(ml)) return false;
         return true;

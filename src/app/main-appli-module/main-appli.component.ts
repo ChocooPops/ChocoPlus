@@ -7,11 +7,14 @@ import { HiddenComponentService } from './menu-module/service/hidden-component/h
 import { SavePathService } from './common-module/services/save-path/save-path.service';
 import { ScrollEventService } from './common-module/services/scroll-event/scroll-event.service';
 import { filter } from 'rxjs';
+import { MediaSelectedService } from './media-module/services/media-selected/media-selected.service';
+import { MediaModel } from './media-module/models/media.interface';
+import { MediaPageComponent } from './media-module/components/media-page/media-page/media-page.component';
 
 @Component({
   selector: 'app-main-appli',
   standalone: true,
-  imports: [RouterOutlet, MenuBarComponent, FooterComponent],
+  imports: [RouterOutlet, MenuBarComponent, MediaPageComponent, FooterComponent],
   templateUrl: './main-appli.component.html',
   styleUrl: './main-appli.component.css'
 })
@@ -21,12 +24,14 @@ export class MainAppliComponent {
   componentMustBeHidden !: boolean;
 
   private subscription: Subscription = new Subscription();
+  mediaSelected: MediaModel | undefined = undefined;
 
-  constructor(private router: Router,
-    private hiddenComponentService: HiddenComponentService,
-    private savePathService: SavePathService,
-    private scrollEventService: ScrollEventService,
-    private renderer: Renderer2
+  constructor(private readonly router: Router,
+    private readonly hiddenComponentService: HiddenComponentService,
+    private readonly savePathService: SavePathService,
+    private readonly scrollEventService: ScrollEventService,
+    private readonly renderer: Renderer2,
+    private readonly mediaSelectedService: MediaSelectedService
   ) { }
 
   ngOnInit() {
@@ -47,6 +52,12 @@ export class MainAppliComponent {
     this.subscription.add(
       this.hiddenComponentService.getIfComponentMustHidden().subscribe((bool) => {
         this.componentMustBeHidden = bool;
+      })
+    );
+
+    this.subscription.add(
+      this.mediaSelectedService.getMediaSelected().subscribe((media: MediaModel | undefined) => {
+        this.mediaSelected = media;
       })
     )
   }

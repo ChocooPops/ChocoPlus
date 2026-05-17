@@ -1,8 +1,4 @@
 <div class="container-home">
-    @if(movieSelected != undefined) {
-    <app-media-page></app-media-page>
-    }
-
     @if(movieShowHome) {
     <app-video-running-presentation [newsMedia]="movieShowHome"></app-video-running-presentation>
     }@else {
