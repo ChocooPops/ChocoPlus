@@ -22,7 +22,7 @@
                 <img [src]="srcPoster" loading="lazy" (error)="onErrorImagePoster()" (load)="onPosterLoad()"
                     [ngClass]="{'hidden' : !displaying}">
                 } @else {
-                <p class="title"> {{title}}</p>
+                <p class="title-poster"> {{title}}</p>
                 }
             </div>
             @if (media.mediaType === MediaType.MOVIE) {

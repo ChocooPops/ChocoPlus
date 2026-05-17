@@ -12,15 +12,13 @@
         "CONTINUE": "Continuer",
         "DOWNLOAD_VERSION": "Télécharger la ",
         "LOGOUT": "Se déconnecter",
-
         "PLACEHOLDER": {
             "EMAIL": "Email",
             "KEY": "Saisissez votre clef d'accès",
-            "PSEUDO" : "Pseudo",
+            "PSEUDO": "Pseudo",
             "FIRST_NAME": "Prénom",
             "LAST_NAME": "Nom"
         },
-
         "MESSAGE": {
             "LOADING_SPRITES": "Chargement des sprites ...",
             "INVALID_FORM": "Formulaire incorrect",
@@ -31,7 +29,6 @@
             "USER_DISABLED": "L'utilisateur n'est pas activé ou a été suspendu",
             "ERROR": "Erreur"
         },
-
         "GRAPH": {
             "WAVE": "Vague",
             "CHAOS": "Chaos",
@@ -41,13 +38,11 @@
             "STOP": "Arreter"
         }
     },
-
     "OFFLINE": {
         "LOGIN": "Connexion"
     },
-
     "MENU": {
-        "MAIN" : {
+        "MAIN": {
             "HOME": "Accueil",
             "SEARCH": "Recherche",
             "MOVIE": "Film",
@@ -57,57 +52,46 @@
             "EDITION": "Editer",
             "MORE": "Plus"
         },
-
-        "USER" : {
+        "USER": {
             "HISTORIC": "Historique",
             "MANAGE_PROFIL": "Gérer le profil",
             "DOCUMENTATION": "Documentation",
             "USER_SUPPORT": "Support utilisateur",
             "APP_SETTINGS": "Paramètres de l'application",
             "VIEW_METADAT": "Visualiser les metadonnées",
-            "USER_MANAGEMENT" : "Gestion des utilisateurs"
+            "USER_MANAGEMENT": "Gestion des utilisateurs"
         },
-
         "EDIT": {
             "ADVANCED_SETTINGS": "Paramètres avancés",
             "MEDIA_LIBRARY": "Médiathèque",
             "VERSION": "Version",
             "OTHER_PARAMETERS_ADMIN": "Autre paramètre",
-
             "NEWS_MANAGEMENT": "Gestion des news",
             "MODIFY_NEWS_HOME": "Modifer les news d'accueil",
             "MODIFY_NEW_MOVIES": "Modifer les news des films",
             "MODIFY_NEW_SERIES": "Modifer les news des séries",
-
             "CATEGORY_MANAGEMENT": "Gestion de vos catégories",
             "ADD_CATEGORY": "Ajouter une catégorie",
             "MODIFY_CATEGORY": "Modifier une catégorie",
-
             "MOVIE_MANAGEMENT": "Gestion des films",
             "ADD_MOVIE": "Ajouter un film",
             "MODIFY_MOVIE": "Modifier un film",
-
             "SERIES_MANAGEMENT": "Gestion des séries",
             "ADD_SERIES": "Ajouter une série",
             "MODIFY_SERIES": "Modifier une séries",
-
             "CREDIT_MANAGEMENT": "Gestions des crédits",
             "ADD_CREDIT": "Ajouter un crédit",
             "MODIFY_CREDIT": "Modificer un crédit",
-
             "SELECTION_MANAGEMENT": "Gérer les sélections personnalisées",
             "ADD_SELECTION": "Créer une sélection",
             "MODIFY_SELECTION": "Modifier une sélection",
-
             "LICENSE_MANAGEMENT": "Gérer vos licences personnalisées",
             "ADD_LICENSE": "Créer une licence",
             "MODIFY_LICENSE": "Modifier une licence",
             "MODIFY_ORDER_LICENSE": "Modifier l'ordre des licenses",
-
             "HOME_PAGE_MANAGEMENT": "Gérer la création de page",
             "MODIFY_HOME_PAGE_SELECTION": "Page d'accueil"
         },
-
         "OTHER": {
             "RESET": "Réinitialiser",
             "START_RANDOM_MOVIE": "Start random movie",
@@ -117,7 +101,6 @@
             "SHOW_KEYS": "Afficher les clés de traductions"
         }
     },
-
     "MEDIA_PAGE": {
         "PRODUCTION_DIRECTION": "Production & Réalisation",
         "ACTORS": "Acteurs",
@@ -129,14 +112,11 @@
         "CASTING": "Casting",
         "DESCRIPTION": "Description"
     },
-
     "SEARCH_PAGE": {
         "RESULT": "Résultat",
         "PLACEHOLDER_RESEARCH_MOVIE_SERIES": "Rechercher un film, une série ..."
     },
-
-    "MYLIST_PAGE" : "Votre liste",
-
+    "MYLIST_PAGE": "Votre liste",
     "USER": {
         "HISTORIC": {
             "TOP_TITLE": "Top 10 du contenu le plus regardé",
@@ -242,7 +222,7 @@
             "STATS": "Stats",
             "EMAIL": "Adresse email : ",
             "DATE_BIRTH": "Date de naissance : ",
-            "PSEUDO" : "Pseudo : ",
+            "PSEUDO": "Pseudo : ",
             "FIRST_NAME": "Prénom : ",
             "LAST_NAME": "Nom : ",
             "WARNING_DELETE_USER": "Voulez-vous vraiment supprimer l'utilisateur suivant :",
@@ -257,7 +237,6 @@
             "DUPLICATE_TMDB": "Duplication de l'identifiant TMDB"
         }
     },
-
     "FILTER": {
         "OTHER_FILTER": "Ajouter un autre filtre",
         "PLACEHOLDER_DATA_TYPE": "Type de donnée",
@@ -269,7 +248,6 @@
         "SORT_DURATION": "Durée",
         "SORT_SHUFFLE": "Aléatoire"
     },
-
     "EDITION": {
         "START_SHOW": "Début",
         "END_SHOW": "Fin",
@@ -287,16 +265,14 @@
         "MEDIA_LIBRARY": "Médiathèque Id",
         "TMDB_ID": "TMDB ID",
         "PLACEHOLDER_TMDB": "ex: 8596",
-        "FILE_CHEMIN": "Chemin du fichier", 
-
-        "UNAUTHORIZED" : {
+        "FILE_CHEMIN": "Chemin du fichier",
+        "UNAUTHORIZED": {
             "ADD": "Vous n'êtes pas autorisé à ajouter des données.",
             "MODIFY": "Vous n'êtes pas autorisé à modifier des données.",
             "DELETE": "Vous n'êtes pas autorisé à supprimer des données.",
             "SEND_MAIL": "Voulez-vous envoyé vos ajouts à l'admin ?"
         },
-
-        "ADVANCED_SETTINGS" : {
+        "ADVANCED_SETTINGS": {
             "MANAGER_VERSION": "Gestionnaire des versions",
             "ERROR": "Une erreur est survenue.",
             "VERSION_NUMBER": "Numéro de version",
@@ -315,7 +291,6 @@
             "LEVEL_2": "Niveau 2",
             "LEVEL_3": "Niveau 3"
         },
-
         "SEARCH": {
             "CATEGORY_SEARCH": "Rechercher une catégorie",
             "CREDIT_SEARCH": "Rechercher un acteur/réalisateur ...",
@@ -324,13 +299,11 @@
             "SELECTION_SEARCH": "Rechercher une sélection",
             "SERIES_SEARCH": "Rechercher une série"
         },
-
         "NEWS": {
             "ADD_MOVIE_INTO_NEWS": "Ajouter un film comme news",
             "ADD_SERIES_INTO_NEWS": "Ajouter une série comme news",
             "MESSAGE_MODIFY": "Enregistrer les modifications ?"
         },
-
         "CREDIT": {
             "POSTER_CREDIT": "Poster du crédit",
             "FULL_NAME": "Nom complet",
@@ -350,7 +323,6 @@
             "PLACEHOLDER_ORIGINAL_FULLNAME": "ex: 神谷浩史",
             "PLACEHOLDER_POSTER": "ex: Photo de Bryan Cranston"
         },
-
         "CATEGORY": {
             "SEARCH_CATEGORY": "Rechercher une catégorie :",
             "TRANSLATION_KEY": "Clé de traduction",
@@ -364,7 +336,6 @@
             "PLACEHOLDER_NAME_CATEGORY": "ex : Science Fiction",
             "PLACEHOLDER_NAME_SELECTION": "ex : Film de Science Fiction"
         },
-
         "LICENSE": {
             "SEARCH_LICENSE": "Rechercher une license :",
             "LICENSE_LOCATION": "Emplacement de la License",
@@ -385,7 +356,6 @@
             "PLACEHOLDER_BACK": "ex : Image illustrant le Studio Ghibli",
             "PLACEHOLDER_LOGO": "ex : Logo du Studio Ghibli"
         },
-
         "SELECTION": {
             "SEARCH_SELECTION": "Rechercher une sélection :",
             "SELECTION_TYPE": "Type de sélection",
@@ -403,12 +373,10 @@
             "SPECIAL_SELECTION": "Sélection spéciale",
             "PLACEHOLDER_NAME": "ex : Sélection spéciale sur les Polars"
         },
-
         "PAGE_SELECTION": {
             "SEARCH_SELECTION": "Rechercher une sélection",
             "MESSAGE_MODIFY_HOME_PAGE": "Cette action modifera la liste des sélections dans la page d'accueil"
         },
-
         "MOVIE": {
             "SEARCH_MOVIE": "Chercher le film à modifier",
             "PLACEHOLDER_LOGO": "ex : Logo du film",
@@ -423,7 +391,6 @@
             "MESSAGE_MODIFY": "Cette action supprimera définitivement le film",
             "MESSAGE_DELETE": "Cette action enregistrera les modifications faites au film"
         },
-
         "SERIES": {
             "SEARCH_SERIES": "Chercher la série à modifier",
             "PLACEHOLDER_SEASON_POSTER": "ex : Saison 1 de Breaking Bad",
@@ -443,7 +410,6 @@
             "MESSAGE_MODIFY": "Cette action enregistrera les modifications faites à la série",
             "MESSAGE_DELETE": "Cette action supprimera définitevement la série"
         },
-
         "MEDIA": {
             "TITLE": "Titre",
             "CREDITS": "Credits",
@@ -454,11 +420,10 @@
             "POSTER_HORIZONTAL": "Affiches horizontal",
             "SAME_POSTER": "Poster horizontal identique au background ?"
         },
-
         "LIBRARY": {
             "LIBRARY_MANAGEMENT_TITLE": "Médiathèque — gestion des sources de médias",
             "MEDIA_LIST": "Liste des médias",
-            "MESSAGE_DELETE": "Supprimer une librairie supprimera aussi tout les médias associés. Êtes-vous sûr de vouloir procéder à cette opération ?", 
+            "MESSAGE_DELETE": "Supprimer une librairie supprimera aussi tout les médias associés. Êtes-vous sûr de vouloir procéder à cette opération ?",
             "NEW_LIBRARY": "Nouvelle médiathèque",
             "ADD_LIBRARY": "Ajouter une médiathèque",
             "SETUP_MEDIA_SOURCE": "Configurer une source de médias",
@@ -490,13 +455,11 @@
             "TYPE_EPISODE": "Episodes",
             "MESSAGE_TMDB": "Voulez vraiment changer l'identifiant de la base de donnée TMDB ?"
         },
-
         "LOG": {
             "MODAL_TITLE": "Journal",
             "NO_LOGS": "Aucun journal",
             "AVAILABLE_LOG": "Journaux disponibles"
         },
-
         "OTHER_PARAMS": {
             "REWRITE_SIMILAR_TITLE": "Réécrire les données pour tous les titres similaires",
             "RELOAD_PROFIL_PICTURE": "Actualiser toutes les photos de profil",
@@ -504,7 +467,6 @@
             "MESSAGE_EXECUTE_CALL": "Voulez-vous vraiment exécuter cet appel ?"
         }
     },
-
     "BUTTON": {
         "PLAY": "Lecture",
         "MODIFY": "Modifier",
@@ -527,13 +489,11 @@
         "RELOAD_FILE": "Recharger les fichiers",
         "VIEW_LOGS": "Visualiser le journal"
     },
-
     "FOOTER": {
         "VERSION": "Version",
         "BUILD": "Build",
         "RIGHT_RESERVED": "Tous droits réservés"
     },
-
     "DECADE": "Décennie",
     "CATEGORY": "Categorie",
     "MEDIA": "Média",
@@ -552,21 +512,16 @@
     "SELECTIONS": "Sélections",
     "LICENSE": "Licence",
     "NOT CONTAIN": "ne contient pas",
-
     "DAY": "Jour",
     "WEEK": "Semaine",
     "MONTH": "Mois",
     "YEAR": "Année",
     "HOURS": "heures",
-
     "MAXIMUM_CHARACTERS": "caractères",
     "MAXIMUM_WORDS": "mots",
-
     "YES": "Oui",
     "NO": "Non",
-
     "POSTER": "Affiche",
-
     "FRENCH": "Français",
     "ENGLISH": "Anglais",
     "SPANISH": "Espagnol",
@@ -577,15 +532,12 @@
     "KOREAN": "Coréen",
     "CHINESE": "Chinois",
     "PORTUGUESE": "Portugais",
-
     "IDENTIFYING": "Identifiant",
     "KEY WORD": "Mots clés",
-    
     "OPERATOR": {
         "OR": "ou",
         "AND": "et"
     },
-
     "ACTION": "Action",
     "ADVENTURE": "Aventure",
     "ANIMATION": "Animation",
@@ -613,9 +565,7 @@
     "SOAP": "Soap",
     "TALK": "Talk-show",
     "WAR & POLITICS": "Guerre et politique",
-
     "CREDIT": "Credit",
-
     "ACTOR": "Acteur",
     "CREATOR": "Créateur",
     "DIRECTOR": "Réalisateur",
@@ -629,7 +579,6 @@
     "ASSISTANT DIRECTOR OF PHOTOGRAPHY": "Assistant directeur de la photographie",
     "VFX DIRECTOR OF PHOTOGRAPHY": "Directeur de la photographie des effets visuels",
     "AERIAL DIRECTOR OF PHOTOGRAPHY": "Directeur de la photographie aérienne",
-
     "CHARACTER DESIGN": "Conception des personnages",
     "SERIES DIRECTOR": "Réalisateur de la série",
     "LAYOUT DESIGNER": "Designer de mise en page",
@@ -642,12 +591,10 @@
     "ORIGINAL STORY": "Histoire originale",
     "SUPERVISING ANIMATION DIRECTOR": "Superviseur de l’animation",
     "ANIMATION SUPERVISOR": "Superviseur animation",
-
     "VISUAL EFFECTS TECHNICAL DIRECTOR": "Directeur technique des effets visuels",
     "SPECIAL EFFECTS SUPERVISOR": "Superviseur des effets spéciaux",
     "VISUAL EFFECTS SUPERVISOR": "Superviseur des effets visuels",
     "VISUAL EFFECTS": "Effets visuels",
-
     "ADDITIONAL STORYBOARDING": "Storyboard additionnel",
     "STORYBOARD ARTIST": "Artiste storyboard",
     "LEAD CHARACTER DESIGNER": "Responsable du design des personnages",
@@ -657,10 +604,8 @@
     "3D ANIMATOR": "Animateur 3D",
     "3D DIRECTOR": "Réalisateur 3D",
     "MECHANICAL DESIGNER": "Designer mécanique",
-
     "SOUND MIXER": "Mixeur son",
     "SOUND EFFECTS": "Effets sonores",
     "SOUND DIRECTOR": "Directeur du son",
     "SOUND DESIGNER": "Designer sonore"
-
 }

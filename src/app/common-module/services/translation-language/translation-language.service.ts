@@ -10,8 +10,9 @@ import { BehaviorSubject } from 'rxjs';
 export class TranslationLanguageService {
 
   readonly availableLangs: LangOption[] = [
-    { code: 'fr', label: 'Français', flag: '🇫🇷' },
-    { code: 'en', label: 'English',  flag: '🇬🇧' },
+    { code: SupportedLang.fr, label: 'Français', flag: '🇫🇷' },
+    { code: SupportedLang.en, label: 'English',  flag: '🇬🇧' },
+    { code: SupportedLang.ja, label: '日本語',  flag: '🇯🇵' },
   ];
 
   private currentLang$ = new BehaviorSubject<SupportedLang>(this.getInitialLang());
@@ -24,7 +25,7 @@ export class TranslationLanguageService {
   );
 
   constructor(private readonly translate: TranslateService) {
-    this.translate.addLangs(['fr', 'en']);
+    this.translate.addLangs(Object.values(SupportedLang));
     this.translate.setDefaultLang('en');
 
     if (this.isShowingKeys$.value) {
@@ -68,10 +69,10 @@ export class TranslationLanguageService {
  
   private getInitialLang(): SupportedLang {
     const stored = localStorage.getItem('lang') as SupportedLang | null;
-    if (stored && ['fr', 'en'].includes(stored)) return stored;
+    if (stored && Object.values(SupportedLang).includes(stored)) return stored;
  
     const browser = navigator.language.split('-')[0];
-    return (['fr', 'en'].includes(browser) ? browser : 'en') as SupportedLang;
+    return (Object.values(SupportedLang).includes(browser as SupportedLang) ? browser : 'en') as SupportedLang;
   }
 
   showTranslationKeys(): void {

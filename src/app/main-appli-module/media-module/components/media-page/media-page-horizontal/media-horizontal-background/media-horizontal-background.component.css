@@ -60,8 +60,29 @@
   word-break: break-word;
   white-space: normal;
   position: absolute;
-  bottom: 0;
+  top: 50%;
+  transform: translateY(-50%);
   right: 0;
+}
+
+.title-poster {
+  max-width: 80%;
+  font-size: 2vw;
+  font-weight: bold;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.216);
+  color: white;
+  border-radius: 5px;
+  padding-block: 1vw;
+  padding-inline: 1.5vw;
+  margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .borderBackground {
