@@ -13,6 +13,7 @@
 - [Fonctionnalités principales](#-fonctionnalités-principales)
 - [Architecture](#-architecture)
 - [Modèle de données](#-modèle-de-données)
+- [Internationalisation](#-internationalisation-i18n)
 - [Prérequis](#-prérequis)
 - [Installation](#-installation)
 - [Configuration](#-configuration)
@@ -36,6 +37,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - **Streaming HLS** : Support du streaming adaptatif avec hls.js (Fonctionnalité obsolète)
 - **Authentification sécurisée** : Stockage sécurisé des tokens avec Keytar
 - **Graphiques interactifs** : Visualisation d'un graphe avec D3.js et de plusieurs statistiques personnelles
+- **Multilingue** : Interface disponible en français, anglais et japonais
 
 ## ✨ Fonctionnalités principales
 
@@ -76,7 +78,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
   - Statistiques par licence
   - Distribution par catégorie
   - Évolution de la bibliothèque
-  - Diagramme fromage des catégories les plus visonnées
+  - Diagramme fromage des catégories les plus visionnées
   - Statistique de nombre d'heure de visionnage par date
 - **Suivi de visionnage** : État NOT_WATCHED, IN_PROGRESS ou FINISHED par média/épisode
 
@@ -86,22 +88,22 @@ ChocoPlus utilise une architecture hybride unique :
 
 ```
 ┌─────────────────────────────────────────────┐
-│           Electron Container                 │
+│           Electron Container                │
 │  ┌────────────────────────────────────────┐ │
 │  │      Angular 18 Application            │ │
-│  │  (Interface utilisateur principale)     │ │
-│  │                                         │ │
+│  │  (Interface utilisateur principale)    │ │
+│  │                                        │ │
 │  │  - Routing & Navigation                │ │
 │  │  - Material Design Components          │ │
 │  │  - Services & State Management         │ │
 │  │  - API Communication (HTTP/JWT)        │ │
 │  └────────────────────────────────────────┘ │
-│                     │                        │
-│                     │ IPC Communication      │
-│                     ▼                        │
+│                     │                       │
+│                     │ IPC Communication     │
+│                     ▼                       │
 │  ┌────────────────────────────────────────┐ │
 │  │         Main Process (Node.js)         │ │
-│  │  - Window Management                    │ │
+│  │  - Window Management                   │ │
 │  │  - Secure Token Storage (Keytar)       │ │
 │  │  - File System Operations              │ │
 │  │  - Process Spawning                    │ │
@@ -113,24 +115,24 @@ ChocoPlus utilise une architecture hybride unique :
         ┌──────────────────────────┐
         │   ChocoPlayer (C#/.NET)  │
         │                          │
-        │  - LibVLCSharp          │
-        │  - WinForms UI          │
-        │  - Video Playback       │
-        │  - Subtitle Rendering   │
-        │  - Controls Overlay     │
+        │  - LibVLCSharp           │
+        │  - WinForms UI           │
+        │  - Video Playback        │
+        │  - Subtitle Rendering    │
+        │  - Controls Overlay      │
         └──────────────────────────┘
                      │
                      │
                      ▼
-              ┌───────────┐
-              │  API REST │
-              │  (Backend)│
-              └───────────┘
+              ┌────────────┐
+              │  API REST  │
+              │  (Backend) │
+              └────────────┘
                      │
                      ▼
-           ┌──────────────────┐
-           │  MariaDB / MySQL │
-           └──────────────────┘
+           ┌───────────────────┐
+           │  MariaDB / MySQL  │
+           └───────────────────┘
 ```
 
 ## 📊 Modèle de données
@@ -145,7 +147,7 @@ User (Utilisateurs)
 Media (Films et Séries)
   ├── Translation_Title (Titres traduits)
   ├── Media_Category (Catégories/Genres)
-  ├── Media_Credit (Acteurs/Réalisateurs)
+  ├── Media_Credit (Acteurs/Réalisateurs et autres)
   ├── Media_Poster (Posters multiples)
   ├── Keyword (Mots-clés)
   ├── Similar_Title (Suggestions)
@@ -196,21 +198,21 @@ News_Video_Running (Vidéos tournantes Films/Séries)
    - Affiche une `News_Video_Running` en haut
 
 4. **Page Utilisateur** (Interface multi-onglets) :
-   
+
    **Onglet Statistiques** :
    - Récupère les `Stat_User` pour l'utilisateur connecté
    - Affiche l'historique de visionnage (films et épisodes)
    - Filtrage par plage de dates personnalisable
    - Affiche l'état de progression : IN PROGRESS ou FINISHED
    - Liaison avec les tables `Media` (pour les films) et `Episode` (pour les séries)
-   
+
    **Onglet Rapport de Bug** :
    - Formulaire de signalement avec 3 champs requis :
      - **Sujet** : Titre du problème rencontré
      - **Page concernée** : Localisation du bug (Accueil, Films, Séries, etc.)
      - **Description** : Détails du problème
    - Envoi par API REST au backend pour traitement par les admins
-   
+
    **Onglet Graphiques** :
    - Visualisation interactive avec D3.js de toutes les données de la plateforme :
      - Nombre total de films et séries (`Media` avec `mediaType`)
@@ -218,17 +220,18 @@ News_Video_Running (Vidéos tournantes Films/Séries)
      - Répartition par licences (`License` via `License_Media`)
      - Nombre de sélections disponibles (`Selection`)
    - Graphiques en temps réel basés sur les données complètes de la base
-   
+
    **Onglet Informations Personnelles** :
    - Modification des données utilisateur depuis la table `User` :
      - **Pseudo** : Changement du nom d'utilisateur (avec validation unicité)
      - **Mot de passe** : Mise à jour sécurisée (hashage bcrypt)
      - **Photo de profil** : Sélection depuis `Profil_Photo` ou upload
      - **Date de naissance** : Modification du champ `dateBorn`
+     - **Langue** : Modification de la langue du système (français, anglais, japonais)
    - Validation et mise à jour via API REST
-   
-  **Onlget Documentation** :
-   - Visualisation de la documentation/notice d'utilisation principale de ChocoPlus en format pdf
+
+   **Onglet Documentation** :
+   - Visualisation de la documentation/notice d'utilisation principale de ChocoPlus en format PDF
 
    **Onglet Administration** (Visible uniquement pour `role = 'ADMIN'`) :
    - Liste complète de tous les utilisateurs de la table `User`
@@ -239,7 +242,53 @@ News_Video_Running (Vidéos tournantes Films/Séries)
        - Déclenche l'envoi automatique d'un email de confirmation
      - **Suspendre** : Passage en SUSPENDED (blocage de l'accès)
    - Mise à jour en temps réel via API REST avec notification email
-   
+
+## 🌍 Internationalisation (i18n)
+
+ChocoPlus supporte plusieurs langues via **@ngx-translate/core**. La langue peut être changée à tout moment depuis les paramètres du profil utilisateur.
+
+### Langues disponibles
+
+| Drapeau | Langue | Code |
+|---------|--------|------|
+| 🇫🇷 | Français | `fr` |
+| 🇬🇧 | English | `en` |
+| 🇯🇵 | 日本語 | `ja` |
+
+### Gestion des traductions
+
+Les fichiers de traduction sont organisés par langue dans le répertoire `public/i18n/` :
+
+```
+public/
+└── i18n/
+    ├── fr.json      # Français (langue par défaut)
+    ├── en.json      # Anglais
+    └── ja.json      # Japonais
+```
+
+Chaque fichier contient l'ensemble des clés de traduction organisées par domaine fonctionnel (`LAUNCH`, `MENU`, `EDITION`, `BUTTON`, etc.). Les fichiers `fr.json` et `common.json` servent de référence — toute nouvelle clé doit y être ajoutée en premier.
+
+### Fonctionnement
+
+La langue est chargée au démarrage depuis les préférences de l'utilisateur et appliquée globalement via `TranslateService`. En l'absence de préférence enregistrée, l'application utilise le français par défaut.
+
+```typescript
+readonly availableLangs: LangOption[] = [
+  { code: SupportedLang.fr, label: 'Français', flag: '🇫🇷' },
+  { code: SupportedLang.en, label: 'English',  flag: '🇬🇧' },
+  { code: SupportedLang.ja, label: '日本語',   flag: '🇯🇵' },
+];
+```
+
+### Ajouter une nouvelle langue
+
+1. Créer le fichier de traduction `public/i18n/<code>.json` en se basant sur `fr.json`
+2. Ajouter une entrée dans `availableLangs` avec le code ISO 639-1 correspondant
+3. Vérifier que toutes les clés sont bien traduites avant de déployer
+
+> **Note** : Utiliser le code **langue** ISO 639-1 (ex: `ja` pour japonais) et non le code **pays** ISO 3166-1 (ex: `jp`).
+
 ## 🔧 Prérequis
 
 ### Logiciels requis
@@ -247,8 +296,8 @@ News_Video_Running (Vidéos tournantes Films/Séries)
 - **Node.js** : 18.x ou supérieur
 - **npm** : 9.x ou supérieur
 - **.NET SDK** : 9.0 ou supérieur
+- **Angular** : 18.0 ou supérieur
 - **Visual Studio 2022** ou **VS Code** avec extension C#
-- **MariaDB/MySQL** : 10.x ou supérieur
 
 ### Système d'exploitation
 
@@ -312,6 +361,7 @@ Les variables d'environnement sont chargées au démarrage de l'application via 
 1. **Main Process** (app.js) : Charge le `.env` avec `dotenv` et transmet les variables via `additionalArguments`
 2. **Preload Script** (preload.js) : Récupère les arguments et les expose via `contextBridge`
 3. **Angular** (environment.ts) : Accède aux variables de manière synchrone via `window.electron`
+
 ```typescript
 // Exemple d'utilisation dans environment.ts
 const apiUrl: string = window.electron?.apiUrl || 'http://localhost:3000';
@@ -321,7 +371,7 @@ const headerName: string = window.electron?.headerName || 'X-API-Secret-Key';
 
 #### Sécurité
 
-⚠️ **Important** : 
+⚠️ **Important** :
 - Le fichier `.env` est inclus dans `.gitignore` et ne doit **jamais** être commité
 - Pour la production, le fichier `.env` est copié dans les ressources de l'application packagée
 - Les utilisateurs finaux peuvent modifier le `.env` à côté de l'exécutable pour pointer vers leur propre instance d'API
@@ -330,6 +380,7 @@ const headerName: string = window.electron?.headerName || 'X-API-Secret-Key';
 #### Configuration pour le build
 
 Lors de la création de l'exécutable, le fichier `.env` est automatiquement inclus grâce à la configuration `electron-builder` dans `package.json` :
+
 ```json
 "extraResources": [
   {
@@ -348,6 +399,8 @@ L'application packagée recherchera le `.env` dans cet ordre de priorité :
 
 ```typescript
 const apiUrl: string = '';
+const headerSecret: string = '';
+const headerName: string = '';
 
 export const environment = {
     apiUrlAuth: apiUrl + '/auth',
@@ -371,8 +424,8 @@ export const environment = {
     apiUrlVersion: apiUrl + '/version',
     apiUrlLibrary: apiUrl + '/library',
     access_token: 'access_token',
-    HEADER_SECRET_API: '',
-    HEADER_NAME_FIELD_SECRET_API: ''
+    HEADER_SECRET_API: headerSecret,
+    HEADER_NAME_FIELD_SECRET_API: headerName
 }
 ```
 
@@ -380,7 +433,7 @@ export const environment = {
 
 L'application nécessite une API REST pour :
 - Authentification JWT (login/register/refresh)
-- CRUD des médias, licences, sélections
+- CRUD des médias, licences, sélections ...
 - Gestion des utilisateurs
 - Récupération des statistiques
 
@@ -403,13 +456,13 @@ npm start
 ### Scripts disponibles
 
 ```bash
-npm run ng          # CLI Angular
-npm start           # Build Angular + Lancer Electron
-npm run build       # Build production Angular
-npm run watch       # Build Angular en mode watch
-npm test            # Tests unitaires
+npm run ng           # CLI Angular
+npm start            # Build Angular + Lancer Electron
+npm run build        # Build production Angular
+npm run watch        # Build Angular en mode watch
+npm test             # Tests unitaires
 npm run electron:dev # Lancer Electron uniquement
-npm run dist        # Créer l'exécutable distributable
+npm run dist         # Créer l'exécutable distributable
 ```
 
 ### Développement du ChocoPlayer
@@ -496,13 +549,18 @@ ChocoPlus/
 │   │   ├── guards/              # Route Guards
 │   │   ├── models/              # Interfaces TypeScript
 │   │   └── pages/               # Pages principales
-│   │       ├── home/           # Page d'accueil
-│   │       ├── movies/         # Page films
-│   │       ├── series/         # Page séries
-│   │       ├── search/         # Page recherche
-│   │       └── edit/           # Page édition (admin)
-│   ├── assets/                  # Images, styles, fonts
+│   │       ├── home/            # Page d'accueil
+│   │       ├── movies/          # Page films
+│   │       ├── series/          # Page séries
+│   │       ├── search/          # Page recherche
+│   │       └── edit/            # Page édition (admin)
 │   └── environments/            # Configuration environnement
+│
+├── public/                      # Ressources publiques
+│   └── i18n/                    # Fichiers de traduction
+│       ├── fr.json              # Français (langue par défaut)
+│       ├── en.json              # Anglais
+│       └── ja.json              # Japonais
 │
 ├── ChocoPlayer/                 # Projet C# .NET 9
 │   ├── Forms/                   # WinForms UI
@@ -514,7 +572,7 @@ ChocoPlus/
 │   └── Program.cs
 │
 ├── resources/                   # Ressources pour le build
-│   └── ChocoPlayer/            # ⚠️ Copier les fichiers compilés ici pour prod
+│   └── ChocoPlayer/             # ⚠️ Copier les fichiers compilés ici pour prod
 │
 ├── dist/                        # Build Angular (généré)
 ├── node_modules/                # Dépendances Node.js
@@ -541,11 +599,12 @@ ChocoPlus/
 | TypeScript | 5.5.2 | Langage de programmation |
 | RxJS | 7.8.0 | Programmation réactive |
 | D3.js | 7.9.0 | Visualisation de données |
+| @ngx-translate/core | — | Internationalisation (i18n) |
 
 ### Backend Integration
 
-| Technologie | Usage |
-|------------|-------|
+| Technologie | Version | Usage |
+|------------|---------|-------|
 | @auth0/angular-jwt | 5.2.0 | Gestion JWT tokens |
 | keytar | 7.9.0 | Stockage sécurisé des credentials |
 | electron-store | 10.1.0 | Stockage local persistant |
@@ -598,7 +657,7 @@ Lors du lancement de ChocoPlayer, Electron transmet :
 Les vidéos sont servies via :
 - **Chemins locaux/réseau** pour le lecteur natif (VLC)
 - Support des sous-titres multi-langues (SRT, VTT)
-- L'audio et les sous-titres choisis sont sauvegardés pour une meilleure expérience utilisateur
+- La langue de l'audio et des sous-titres choisis sont sauvegardés pour une meilleure expérience utilisateur
 
 ## 🤝 Contribution
 
@@ -612,4 +671,4 @@ Projet Open source - Tous droits réservés
 
 **Développé avec ❤️ et 🍫 par l'équipe ChocoPlus**
 
-*Version 1.0.0 - Janvier 2025*
+*Version 2.0.0 - Mai 2026*
