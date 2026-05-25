@@ -28,8 +28,8 @@ export class SeriesLibraryTabComponent {
   private readonly messageTmdb = 'EDITION.LIBRARY.MESSAGE_TMDB';
   private readonly messagePath = 'EDITION.LIBRARY.MESSAGE_PATH';
 
-  @ViewChild(PopupComponent) popupTmdb !: PopupComponent;
-  @ViewChild(PopupComponent) popupPath !: PopupComponent;
+  @ViewChild("popupTmdb") popupTmdb !: PopupComponent;
+  @ViewChild("popupPath") popupPath !: PopupComponent;
 
   @Input() mediaLibraries: MediaLibrary[] = [];
   @Output() onMediaLibrary = new EventEmitter<void>();
@@ -263,9 +263,9 @@ export class SeriesLibraryTabComponent {
     const newValue = seriesLibrary.path;
     if (this.previousValuePath !== newValue) {
       this.seriesLibrarySelectedPath = seriesLibrary;
-      this.popupTmdb.setMessage(this.messagePath, undefined);
-      this.popupTmdb.setDisplayPopup(true);
-      this.popupTmdb.setDisplayButton(true);
+      this.popupPath.setMessage(this.messagePath, undefined);
+      this.popupPath.setDisplayPopup(true);
+      this.popupPath.setDisplayButton(true);
     }
   }
   rollbackPath(): void {
@@ -307,6 +307,7 @@ export class SeriesLibraryTabComponent {
   }
 
   modifyPathFromMediaLibrary(): void {
+    console.log(this.seriesLibrarySelectedPath)
     if (!this.seriesLibrarySelectedPath) return;
     this.popupPath.setMessage(undefined, undefined);
     this.popupPath.setDisplayButton(false);

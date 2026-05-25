@@ -26,8 +26,8 @@ export class MovieLibraryTabComponent {
   private readonly messageTmdb = 'EDITION.LIBRARY.MESSAGE_TMDB';
   private readonly messagePath = 'EDITION.LIBRARY.MESSAGE_PATH';
 
-  @ViewChild(PopupComponent) popupTmdb !: PopupComponent;
-  @ViewChild(PopupComponent) popupPath !: PopupComponent;
+  @ViewChild("popupTmdb") popupTmdb !: PopupComponent;
+  @ViewChild("popupPath") popupPath !: PopupComponent;
 
   @Input() mediaLibraries: MediaLibrary[] = [];
   @Output() onMediaLibrary = new EventEmitter<void>();

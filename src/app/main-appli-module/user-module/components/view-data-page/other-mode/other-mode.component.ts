@@ -13,16 +13,22 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class OtherModeComponent {
 
+  srcReset: string = 'icon/modify.svg';
+
   @Input() displayOtherMode: boolean = false;
 
   public modesGraph: SimpleModel[] = [];
 
-  constructor(private graphService: GraphService) {
+  constructor(private readonly graphService: GraphService) {
     this.modesGraph = this.graphService.getModeGraph();
   }
 
   loadNewGraph(id: number): void {
     this.graphService.loadNewGraph(id);
+  }
+
+  onClickResetGraph(name: string): void {
+
   }
 
 }

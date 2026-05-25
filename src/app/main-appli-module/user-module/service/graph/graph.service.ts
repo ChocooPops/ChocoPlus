@@ -74,37 +74,55 @@ export class GraphService {
       id: 0,
       name: 'USER.GRAPH.ALL_DATA',
       state: false,
-      value: () => this.generateGraphWithAllMoviesWithAllCategoryWithAllSimilarMovie()
+      value: () => this.generateGraphWithAllMoviesWithAllCategoryWithAllSimilarMovie(),
+      reset: () => {
+        this.graphWithMovieAndCategory = undefined
+      }
     },
     {
       id: 1,
       name: 'USER.GRAPH.MEDIA_WITHOUT_POSTER',
       state: false,
-      value: () => this.generateGraphMovieWithNullPoster()
+      value: () => this.generateGraphMovieWithNullPoster(),
+      reset: () => {
+        this.graphMovieWithNullPoster = undefined
+      }
     },
     {
       id: 2,
       name: 'USER.GRAPH.NOT_YET_SIMILAR_TITLE',
       state: false,
-      value: () => this.generateGraphLessSimilarTitlesMovies()
+      value: () => this.generateGraphLessSimilarTitlesMovies(),
+      reset: () => {
+        this.graphLessSimilarTitlesMovies = undefined
+      }
     },
     {
       id: 3,
       name: 'USER.GRAPH.MEDIA_MISSING_FILES',
       state: false,
-      value: () => this.generateGraphMediaWithMissingFiles()
+      value: () => this.generateGraphMediaWithMissingFiles(),
+      reset: () => {
+        this.graphMediaMissingFiles = undefined
+      }
     },
     {
       id: 4,
       name: "USER.GRAPH.ORPHAN_MEDIA_LIBRARIES",
       state: false,
-      value: () => this.generateGraphOrphanMediaLibraries()
+      value: () => this.generateGraphOrphanMediaLibraries(),
+      reset: () => {
+        this.graphOrphanMediaLibraries = undefined
+      }
     },
     {
       id: 5,
       name: "USER.GRAPH.DUPLICATE_TMDB",
       state: false,
-      value: () => this.generateGraphDuplicateTmdb()
+      value: () => this.generateGraphDuplicateTmdb(),
+      reset: () => {
+        this.graphDuplicateTmdb = undefined
+      }
     }
   ]
 
@@ -461,9 +479,21 @@ export class GraphService {
         nodes: [...movies.nodes, ...series.nodes]
       }
     }
+
+    let countMovie: number = 0;
+    let countSeries: number = 0;
+
+    if (this.graphDuplicateTmdb.nodes.filter((item) => item.color === this.colorBlackMovie).length - 1 > 0) {
+      countMovie = this.graphDuplicateTmdb.nodes.filter((item) => item.color === this.colorBlackMovie).length - 1;
+    }
+
+    if (this.graphDuplicateTmdb.nodes.filter((item) => item.color === this.colorWhiteSeries).length - 1 > 0) {
+      countSeries = this.graphDuplicateTmdb.nodes.filter((item) => item.color === this.colorWhiteSeries).length - 1;
+    }
+
     this.legendsSubject.next([
-      this.createNewLegend('MOVIE', this.colorBlackMovie, this.graphDuplicateTmdb.nodes.filter((item) => item.color === this.colorBlackMovie).length - 1),
-      this.createNewLegend('SERIES', this.colorWhiteSeries, this.graphDuplicateTmdb.nodes.filter((item) => item.color === this.colorWhiteSeries).length - 1),
+      this.createNewLegend('MOVIE', this.colorBlackMovie, countMovie),
+      this.createNewLegend('SERIES', this.colorWhiteSeries, countSeries),
     ]);
     this.updateGraphSubject(this.graphDuplicateTmdb);
   }
@@ -669,6 +699,14 @@ export class GraphService {
     if (index >= 0) {
       legends[index].isVisible = value;
       this.legendsSubject.next(legends);
+    }
+  }
+
+  resetGraphByName(name: string): void {
+    const graph: SimpleModel | undefined = this.modeGraph.find((item) => item.name === name);
+    if (graph) {
+      graph.reset();
+      graph.value();
     }
   }
 

@@ -271,7 +271,7 @@ Chaque fichier contient l'ensemble des clés de traduction organisées par domai
 
 ### Fonctionnement
 
-La langue est chargée au démarrage depuis les préférences de l'utilisateur et appliquée globalement via `TranslateService`. En l'absence de préférence enregistrée, l'application utilise le français par défaut.
+La langue est chargée au démarrage depuis les préférences de l'utilisateur et appliquée globalement via `TranslateService`. En l'absence de préférence enregistrée, l'application utilise l'anglais par défaut.
 
 ```typescript
 readonly availableLangs: LangOption[] = [

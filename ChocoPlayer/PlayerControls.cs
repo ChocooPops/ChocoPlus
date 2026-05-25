@@ -20,6 +20,25 @@ namespace ChocoPlayer
         private int _rightMargin = 30;
 
         private IProgressChangeListener? _listener;
+
+        private bool _isSeekPending = false; // bloque le timer pendant le debounce seek
+
+        /// <summary>
+        /// True si l'utilisateur est en train de dragger la barre OU si un seek
+        /// est en attente de debounce. Utilisé par ChocoPlayer pour ne pas
+        /// écraser la position affichée pendant et juste après un seek.
+        /// </summary>
+        public bool IsDragging => _isDragging || _isSeekPending;
+
+        /// <summary>
+        /// Appelé par ChocoPlayer quand un seek débounce démarre (bloque le timer)
+        /// et quand il se termine (relâche le timer).
+        /// </summary>
+        public void SetSeekPending(bool pending)
+        {
+            _isSeekPending = pending;
+        }
+
         private System.Windows.Forms.Timer? _updateTimer;
 
         private string _timeText = "00:00:00 / 00:00:00";
@@ -91,7 +110,8 @@ namespace ChocoPlayer
             _updateTimer.Interval = 50;
             _updateTimer.Tick += (s, e) =>
             {
-                if (!_isDragging && !_isDraggingVolume)
+                // Bloqué pendant drag ET pendant le debounce seek post-clic
+                if (!IsDragging)
                 {
                     UpdateProgressFromPlayer();
                 }
@@ -171,6 +191,8 @@ namespace ChocoPlayer
 
             if (IsOverPoint(e.X, e.Y, progressX, lineY) || IsOverLine(e.X, e.Y, lineY, lineEnd))
             {
+                // ✅ Flag AVANT UpdateProgress pour bloquer le timer immédiatement
+                // Sans ça, le timer peut écraser _progress entre MouseDown et MouseUp
                 _isDragging = true;
                 UpdateProgress(e.X);
             }
