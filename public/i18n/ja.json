@@ -453,7 +453,8 @@
             "TYPE_SERIES": "シリーズ",
             "TYPE_SEASON": "シーズン",
             "TYPE_EPISODE": "エピソード",
-            "MESSAGE_TMDB": "TMDBデータベースの識別子を変更してもよろしいですか？"
+            "MESSAGE_TMDB": "TMDBデータベースの識別子を変更してもよろしいですか？",
+            "MESSAGE_PATH": "本当にファイルのパスを変更しますか？"
         }
     },
     "LOG": {

@@ -5,9 +5,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
 import { LibraryService } from '../../../services/library/library.service';
 import { NgClass } from '@angular/common';
-import { UnauthorizedError } from '../../abstract-components/unauthorized-error-abstract.directive';
-import { MenuType } from '../../../../menu-module/model/menu-type.enum';
-import { EditionParametersService } from '../../../services/edition-parameters/edition-parameters.service';
 import { PopupComponent } from '../../popup/popup.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LogViewerModalComponent } from '../log-viewer-modal/log-viewer-modal.component';
@@ -24,10 +21,13 @@ interface PagedItem {
   templateUrl: './movie-library-tab.component.html',
   styleUrl: './movie-library-tab.component.css'
 })
-export class MovieLibraryTabComponent extends UnauthorizedError {
+export class MovieLibraryTabComponent {
 
-  protected override menuType: MenuType  = MenuType.LIBRARY;
   private readonly messageTmdb = 'EDITION.LIBRARY.MESSAGE_TMDB';
+  private readonly messagePath = 'EDITION.LIBRARY.MESSAGE_PATH';
+
+  @ViewChild(PopupComponent) popupTmdb !: PopupComponent;
+  @ViewChild(PopupComponent) popupPath !: PopupComponent;
 
   @Input() mediaLibraries: MediaLibrary[] = [];
   @Output() onMediaLibrary = new EventEmitter<void>();
@@ -56,8 +56,10 @@ export class MovieLibraryTabComponent extends UnauthorizedError {
   currentPage: number = 0;
 
   private filteredItems: PagedItem[] = [];
-  private movieLibrarySelected: MediaLibrary | null = null;
-  private previousValue: number | null = null;
+  private previousValueTmdbId: number | null = null;
+  private previousValuePath: string | null = null;
+  private movieLibrarySelectedTmdbId: MediaLibrary | null = null;
+  private movieLibrarySelectedPath: MediaLibrary | null = null;
 
   pagedItems: PagedItem[] = [];
 
@@ -70,13 +72,9 @@ export class MovieLibraryTabComponent extends UnauthorizedError {
   private readonly MIN_COL_WIDTH = 40;
   private readonly FEEDBACK_DURATION_MS = 12000;
 
-  constructor(
-    private readonly elementRef: ElementRef,
+  constructor(private readonly elementRef: ElementRef,
     private readonly libraryService: LibraryService,
-    editionParametersService: EditionParametersService
-  ) { 
-    super(editionParametersService);
-  }
+  ) { }
 
   ngOnChanges(): void {
     this.loadingStates = this.mediaLibraries.map(() => false);
@@ -231,47 +229,95 @@ export class MovieLibraryTabComponent extends UnauthorizedError {
     });
   }
 
-  onFocus(movieLibrary: MediaLibrary): void {
-    this.previousValue = movieLibrary.tmdbId;
+  onFocusTmdbId(movieLibrary: MediaLibrary): void {
+      this.previousValueTmdbId = movieLibrary.tmdbId;
   }
-
-  onBlur(movieLibrary: MediaLibrary): void {
+  onBlurTmdbId(movieLibrary: MediaLibrary): void {
     const newValue = movieLibrary.tmdbId;
-    if (this.previousValue !== newValue) {
-      this.movieLibrarySelected = movieLibrary;
-      this.popup.setMessage(this.messageTmdb, undefined);
-      this.popup.setDisplayPopup(true);
-      this.popup.setDisplayButton(true);
+    if (this.previousValueTmdbId !== newValue) {
+      this.movieLibrarySelectedTmdbId = movieLibrary;
+      this.popupTmdb.setMessage(this.messageTmdb, undefined);
+      this.popupTmdb.setDisplayPopup(true);
+      this.popupTmdb.setDisplayButton(true);
     }
   }
-
-  rollback(): void {
-    if (this.previousValue) {
-      const index: number = this.mediaLibraries.findIndex((item) => item.id === this.movieLibrarySelected?.id);
+  rollbackTmdbId(): void {
+    if (this.previousValueTmdbId) {
+      const index: number = this.mediaLibraries.findIndex((item) => item.id === this.movieLibrarySelectedTmdbId?.id);
       if (index >= 0) {
-        this.mediaLibraries[index].tmdbId = this.previousValue;
+        this.mediaLibraries[index].tmdbId = this.previousValueTmdbId;
       }
     }
-    this.previousValue = null;
-    this.movieLibrarySelected = null;
+    this.previousValueTmdbId = null;
+    this.movieLibrarySelectedTmdbId = null;
   }
   
+  onFocusPath(movieLibrary: MediaLibrary): void {
+    this.previousValuePath = movieLibrary.path;
+  }
+  onBlurPath(movieLibrary: MediaLibrary): void {
+    const newValue = movieLibrary.path;
+    if (this.previousValuePath !== newValue) {
+      this.movieLibrarySelectedPath = movieLibrary;
+      this.popupPath.setMessage(this.messagePath, undefined);
+      this.popupPath.setDisplayPopup(true);
+      this.popupPath.setDisplayButton(true);
+    }
+  }
+  rollbackPath(): void {
+    if (this.previousValuePath) {
+      const index: number = this.mediaLibraries.findIndex((item) => item.id === this.movieLibrarySelectedPath?.id);
+      if (index >= 0) {
+        this.mediaLibraries[index].path = this.previousValuePath;
+      }
+    }
+    this.previousValuePath = null;
+    this.movieLibrarySelectedPath = null;
+  }
+
   modifyTmdbIdFromMediaLibrary(): void {
-    if (!this.movieLibrarySelected) return;
-    this.popup.setMessage(undefined, undefined);
-    this.popup.setDisplayButton(false);
-    this.libraryService.modifyTmdbIdFromMediaLibrary(this.movieLibrarySelected).subscribe({
+    if (!this.movieLibrarySelectedTmdbId) return;
+    this.popupTmdb.setMessage(undefined, undefined);
+    this.popupTmdb.setDisplayButton(false);
+    this.libraryService.modifyTmdbIdFromMediaLibrary(this.movieLibrarySelectedTmdbId).subscribe({
       next: (data: MessageReturnedModel) => {
-        this.popup.setMessage(data.message, data.state);
-        this.popup.setEndTask(true);
+        this.popupTmdb.setMessage(data.message, data.state);
+        this.popupTmdb.setEndTask(true);
         if (data.state) {
-          this.previousValue = null;
+          this.previousValueTmdbId = null;
         }
-        this.rollback();
+        this.rollbackTmdbId();
       },
       error: (error: HttpErrorResponse) => {
-        this.rollback();
-        this.displayPopupOnError(error, 2);
+        this.rollbackTmdbId();
+        this.popupTmdb.setMessage(JSON.stringify(error), false);
+      }
+    });
+  }
+
+  modifyPathFromMediaLibrary(): void {
+    if (!this.movieLibrarySelectedPath) return;
+    this.popupPath.setMessage(undefined, undefined);
+    this.popupPath.setDisplayButton(false);
+    this.libraryService.modifyPathFromMediaLibrary(this.movieLibrarySelectedPath).subscribe({
+      next: (data: MessageReturnedModel) => {
+        this.popupPath.setMessage(data.message, data.state);
+        this.popupPath.setEndTask(true);
+        if (data.state) {
+          this.previousValuePath = null;
+        }
+        if (data.other) {
+          const index = this.mediaLibraries.findIndex((item) => item.id === this.movieLibrarySelectedPath?.id);
+          if (index >= 0 ) {
+            this.mediaLibraries[index] = { ...this.mediaLibraries[index], ...data.other};
+            this.applyFilters();
+          }
+        }
+        this.rollbackPath();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.rollbackPath();
+        this.popupPath.setMessage(JSON.stringify(error), false);
       }
     });
   }

@@ -171,11 +171,18 @@ export class LibraryService {
         return data;
       }),
       catchError((error) => {
-        return of({
-          id: -1,
-          state: false,
-          message: "Error"
-        })
+        return throwError(() => error)
+      })
+    )
+  }
+
+  public modifyPathFromMediaLibrary(mediaLibrary: MediaLibrary): Observable<MessageReturnedModel> {
+    return this.http.put<any>(`${this.apiUrlLibrary}/modify-path/${mediaLibrary.id}`, { path: mediaLibrary.path }).pipe(
+      map((data: MessageReturnedModel) => {
+        return data;
+      }),
+      catchError((error) => {
+        return throwError(() => error)
       })
     )
   }

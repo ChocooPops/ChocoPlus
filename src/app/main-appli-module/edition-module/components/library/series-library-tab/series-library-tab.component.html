@@ -1,4 +1,5 @@
-<app-popup (emitActionData)="modifyTmdbIdFromMediaLibrary()" (emitResetPopup)="rollback()"></app-popup>
+<app-popup #popupTmdb (emitActionData)="modifyTmdbIdFromMediaLibrary()" (emitResetPopup)="rollbackTmdbId()"></app-popup>
+<app-popup #popupPath (emitActionData)="modifyPathFromMediaLibrary()" (emitResetPopup)="rollbackPath()"></app-popup>
 
 @if (logViewerOpen && logViewerData) {
   <app-log-viewer-modal
@@ -119,9 +120,9 @@
             [class.ct-input--readonly]="item.mediaLibrary.type !== 'SERIES'"
             type="number"
             [(ngModel)]="item.mediaLibrary.tmdbId"
-            (focus)="onFocus(item.mediaLibrary)"
-            (keydown.enter)="onBlur(item.mediaLibrary)"
-            (blur)="onBlur(item.mediaLibrary)"
+            (focus)="onFocusTmdbId(item.mediaLibrary)"
+            (keydown.enter)="onBlurTmdbId(item.mediaLibrary)"
+            (blur)="onBlurTmdbId(item.mediaLibrary)"
             [disabled]="item.mediaLibrary.type !== 'SERIES'" />
         </td>
 
@@ -158,7 +159,11 @@
         </td>
 
         <td>
-          <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.path" disabled />
+          <input class="ct-input" type="text" [(ngModel)]="item.mediaLibrary.path"  
+            (focus)="onFocusPath(item.mediaLibrary)"
+            (keydown.enter)="onBlurPath(item.mediaLibrary)"
+            (blur)="onBlurPath(item.mediaLibrary)"
+            [disabled]="item.mediaLibrary.type !== 'EPISODE'"/>
         </td>
 
         <td>

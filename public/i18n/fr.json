@@ -453,7 +453,8 @@
             "TYPE_SERIES": "Séries",
             "TYPE_SEASON": "Saisons",
             "TYPE_EPISODE": "Episodes",
-            "MESSAGE_TMDB": "Voulez vraiment changer l'identifiant de la base de donnée TMDB ?"
+            "MESSAGE_TMDB": "Voulez vraiment changer l'identifiant de la base de donnée TMDB ?",
+            "MESSAGE_PATH": "Voulez vraiment changer le chemin du fichier ?"
         },
         "LOG": {
             "MODAL_TITLE": "Journal",

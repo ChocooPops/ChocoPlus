@@ -5,9 +5,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
 import { LibraryService } from '../../../services/library/library.service';
 import { NgClass } from '@angular/common';
-import { UnauthorizedError } from '../../abstract-components/unauthorized-error-abstract.directive';
-import { EditionParametersService } from '../../../services/edition-parameters/edition-parameters.service';
-import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PopupComponent } from '../../popup/popup.component';
 import { LogViewerModalComponent } from '../log-viewer-modal/log-viewer-modal.component';
@@ -26,10 +23,13 @@ interface PagedItem {
   templateUrl: './series-library-tab.component.html',
   styleUrl: './series-library-tab.component.css'
 })
-export class SeriesLibraryTabComponent extends UnauthorizedError {
+export class SeriesLibraryTabComponent {
 
   private readonly messageTmdb = 'EDITION.LIBRARY.MESSAGE_TMDB';
-  protected override menuType: MenuType = MenuType.LIBRARY;
+  private readonly messagePath = 'EDITION.LIBRARY.MESSAGE_PATH';
+
+  @ViewChild(PopupComponent) popupTmdb !: PopupComponent;
+  @ViewChild(PopupComponent) popupPath !: PopupComponent;
 
   @Input() mediaLibraries: MediaLibrary[] = [];
   @Output() onMediaLibrary = new EventEmitter<void>();
@@ -38,8 +38,10 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
   feedbackStates: (any | null)[] = [];
   loadingStates: boolean[] = [];
   private feedbackTimers: ReturnType<typeof setTimeout>[] = [];
-  private seriesLibrarySelected: MediaLibrary | null = null;
-  private previousValue: number | null = null;
+  private seriesLibrarySelectedTmdbId: MediaLibrary | null = null;
+  private seriesLibrarySelectedPath: MediaLibrary | null = null;
+  private previousValueTmdbId: number | null = null;
+  private previousValuePath: string | null = null;
 
   // Log viewer modal state
   logViewerOpen: boolean = false;
@@ -68,13 +70,8 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
   private readonly MIN_COL_WIDTH = 40;
   private readonly FEEDBACK_DURATION_MS = 12000;
 
-  constructor(
-    private readonly elementRef: ElementRef,
-    private readonly libraryService: LibraryService,
-    editionParametersService: EditionParametersService
-  ) {
-    super(editionParametersService);
-  }
+  constructor(private readonly elementRef: ElementRef,
+    private readonly libraryService: LibraryService) { }
 
   ngOnChanges(): void {
     this.loadingStates = this.mediaLibraries.map(() => false);
@@ -236,54 +233,102 @@ export class SeriesLibraryTabComponent extends UnauthorizedError {
     });
   }
 
-  onFocus(seriesLibrary: MediaLibrary): void {
-    this.previousValue = seriesLibrary.tmdbId;
+  onFocusTmdbId(seriesLibrary: MediaLibrary): void {
+    this.previousValueTmdbId = seriesLibrary.tmdbId;
   }
-
-  onBlur(seriesLibrary: MediaLibrary): void {
+  onBlurTmdbId(seriesLibrary: MediaLibrary): void {
     const newValue = seriesLibrary.tmdbId;
-    if (this.previousValue !== newValue) {
-      this.seriesLibrarySelected = seriesLibrary;
-      this.popup.setMessage(this.messageTmdb, undefined);
-      this.popup.setDisplayPopup(true);
-      this.popup.setDisplayButton(true);
+    if (this.previousValueTmdbId !== newValue) {
+      this.seriesLibrarySelectedTmdbId = seriesLibrary;
+      this.popupTmdb.setMessage(this.messageTmdb, undefined);
+      this.popupTmdb.setDisplayPopup(true);
+      this.popupTmdb.setDisplayButton(true);
     }
   }
-
-  rollback(): void {
-    if (this.previousValue) {
-      const index: number = this.mediaLibraries.findIndex((item) => item.id === this.seriesLibrarySelected?.id);
+  rollbackTmdbId(): void {
+    if (this.previousValueTmdbId) {
+      const index: number = this.mediaLibraries.findIndex((item) => item.id === this.seriesLibrarySelectedTmdbId?.id);
       if (index >= 0) {
-        this.mediaLibraries[index].tmdbId = this.previousValue;
+        this.mediaLibraries[index].tmdbId = this.previousValueTmdbId;
       }
     }
-    this.previousValue = null;
-    this.seriesLibrarySelected = null;
+    this.previousValueTmdbId = null;
+    this.seriesLibrarySelectedTmdbId = null;
+  }
+
+  onFocusPath(seriesLibrary: MediaLibrary): void {
+    this.previousValuePath = seriesLibrary.path;
+  }
+  onBlurPath(seriesLibrary: MediaLibrary): void {
+    const newValue = seriesLibrary.path;
+    if (this.previousValuePath !== newValue) {
+      this.seriesLibrarySelectedPath = seriesLibrary;
+      this.popupTmdb.setMessage(this.messagePath, undefined);
+      this.popupTmdb.setDisplayPopup(true);
+      this.popupTmdb.setDisplayButton(true);
+    }
+  }
+  rollbackPath(): void {
+    if (this.previousValuePath) {
+      const index: number = this.mediaLibraries.findIndex((item) => item.id === this.seriesLibrarySelectedPath?.id);
+      if (index >= 0) {
+        this.mediaLibraries[index].path = this.previousValuePath;
+      }
+    }
+    this.previousValuePath = null;
+    this.seriesLibrarySelectedPath = null;
   }
 
   modifyTmdbIdFromMediaLibrary(): void {
-    if (!this.seriesLibrarySelected) return;
-    this.popup.setMessage(undefined, undefined);
-    this.popup.setDisplayButton(false);
-    this.libraryService.modifyTmdbIdFromMediaLibrary(this.seriesLibrarySelected).subscribe({
+    if (!this.seriesLibrarySelectedTmdbId) return;
+    this.popupTmdb.setMessage(undefined, undefined);
+    this.popupTmdb.setDisplayButton(false);
+    this.libraryService.modifyTmdbIdFromMediaLibrary(this.seriesLibrarySelectedTmdbId).subscribe({
       next: (data: MessageReturnedModel) => {
-        this.popup.setMessage(data.message, data.state);
-        this.popup.setEndTask(true);
+        this.popupTmdb.setMessage(data.message, data.state);
+        this.popupTmdb.setEndTask(true);
         if (data.state) {
           if (data.state && Array.isArray(data.other) && data.other.length > 0) {
             const updatedIds = new Set<string>(data.other);
             this.mediaLibraries = this.mediaLibraries.map((ml) =>
-              updatedIds.has(ml.id) ? { ...ml, tmdbId: this.seriesLibrarySelected?.tmdbId ?? 0 } : ml
+              updatedIds.has(ml.id) ? { ...ml, tmdbId: this.seriesLibrarySelectedTmdbId?.tmdbId ?? 0 } : ml
             );
             this.applyFilters();
           }
-          this.previousValue = null;
+          this.previousValueTmdbId = null;
         }
-        this.rollback();
+        this.rollbackTmdbId();
       },
       error: (error: HttpErrorResponse) => {
-        this.rollback();
-        this.displayPopupOnError(error, 2);
+        this.rollbackTmdbId();
+        this.popupTmdb.setMessage(JSON.stringify(error), false);
+      }
+    });
+  }
+
+  modifyPathFromMediaLibrary(): void {
+    if (!this.seriesLibrarySelectedPath) return;
+    this.popupPath.setMessage(undefined, undefined);
+    this.popupPath.setDisplayButton(false);
+    this.libraryService.modifyPathFromMediaLibrary(this.seriesLibrarySelectedPath).subscribe({
+      next: (data: MessageReturnedModel) => {
+        this.popupPath.setMessage(data.message, data.state);
+        this.popupPath.setEndTask(true);
+        if (data.state) {
+          if (data.state) {
+            const index = this.mediaLibraries.findIndex((item) => item.id === this.seriesLibrarySelectedPath?.id);
+            if (index >= 0) {
+              this.mediaLibraries[index] = { ...this.mediaLibraries[index], ...data.other};
+              this.applyFilters();
+            }
+          }
+          this.previousValuePath = null;
+        }
+        this.rollbackPath();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.rollbackPath();
+        this.popupPath.setMessage(JSON.stringify(error), false);
       }
     });
   }
