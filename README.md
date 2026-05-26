@@ -5,7 +5,7 @@
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/badge/License-Open_Source-yellow.svg)]()
 
-**ChocoPlus** est une application desktop multimédia sophistiquée pour cinéphiles, développée avec Electron et Angular. Elle offre une expérience de navigation et de visionnage de films et séries avec un lecteur vidéo intégré haute performance basé sur VLC.
+**ChocoPlus** est une application desktop multimédia sophistiquée pour cinéphiles, développée avec Electron, Angular et C#. Elle offre une expérience de navigation et de visionnage de films et séries avec un lecteur vidéo intégré basé sur VLC.
 
 ## 📋 Table des matières
 
@@ -28,7 +28,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - Une interface moderne développée avec **Angular 18** et **Material Design**
 - Un système de backend sécurisé avec authentification par tokens JWT
 - Un lecteur vidéo natif haute performance développé en **C# .NET 9** utilisant **LibVLC**
-- Une base de données relationnelle complexe avec système de licences, sélections et categories
+- Une base de données relationnelle avec système de licences, sélections et categories
 
 ### Caractéristiques distinctives
 
@@ -53,7 +53,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - **Page Séries** : Catalogue de série aléatoire, avec organisation par saisons et épisodes avec vidéo tournante
 - **Page Recherche** : Moteur de recherche avancé par titre + affichage des plus grandes licenses de studio ou de saga
 - **Page du Catalogue** : Visualisation du catalogue complet, avec la possibilité de trier et de filtrer le contenu selon la catégorie, la date, le type de média ...
-- **Page Édition** (Admin uniquement) : Gestion complète des médias, licences, sélections
+- **Page Édition** (Admin uniquement) : Gestion complète des médias, licences, sélections, news, librarie ...
 
 ### Système de contenu
 - **Licences** : Regroupement de contenu par licence (ex: MCU, Star Wars, Quentin Tarantino)
@@ -84,7 +84,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 
 ## 🏗️ Architecture
 
-ChocoPlus utilise une architecture hybride unique :
+ChocoPlus utilise une architecture hybride particulière :
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -92,36 +92,36 @@ ChocoPlus utilise une architecture hybride unique :
 │  ┌────────────────────────────────────────┐ │
 │  │      Angular 18 Application            │ │
 │  │  (Interface utilisateur principale)    │ │
-│  │                                        │ │
-│  │  - Routing & Navigation                │ │
-│  │  - Material Design Components          │ │
-│  │  - Services & State Management         │ │
-│  │  - API Communication (HTTP/JWT)        │ │
-│  └────────────────────────────────────────┘ │
-│                     │                       │
-│                     │ IPC Communication     │
-│                     ▼                       │
-│  ┌────────────────────────────────────────┐ │
-│  │         Main Process (Node.js)         │ │
-│  │  - Window Management                   │ │
-│  │  - Secure Token Storage (Keytar)       │ │
-│  │  - File System Operations              │ │
-│  │  - Process Spawning                    │ │
-│  └────────────────────────────────────────┘ │
-└─────────────────────────────────────────────┘
-                     │
-                     │ Spawns
-                     ▼
-        ┌──────────────────────────┐
-        │   ChocoPlayer (C#/.NET)  │
-        │                          │
-        │  - LibVLCSharp           │
-        │  - WinForms UI           │
-        │  - Video Playback        │
-        │  - Subtitle Rendering    │
-        │  - Controls Overlay      │
-        └──────────────────────────┘
-                     │
+│  │                                     |──────────────
+│  │  - Routing & Navigation                │ │        │
+│  │  - Material Design Components          │ │        │
+│  │  - Services & Module Management        │ │        │
+│  │  - API Communication (HTTP/JWT)        │ │        │
+│  └────────────────────────────────────────┘ │        │
+│                     │                       │        │
+│                     │ IPC Communication     │        │
+│                     ▼                       │        │
+│  ┌────────────────────────────────────────┐ │        │
+│  │         Main Process (Node.js)         │ │        │
+│  │  - Window Management                   │ │        │
+│  │  - Secure Token Storage (Keytar)       │ │        │
+│  │  - File System Operations              │ │        │
+│  │  - Process Spawning                    │ │        │
+│  └────────────────────────────────────────┘ │        │
+└─────────────────────────────────────────────┘        │
+                     │                                 │
+                     │ Spawns                          │
+                     ▼                                 │
+        ┌──────────────────────────┐                   │
+        │   ChocoPlayer (C#/.NET)  │                   │
+        │                          │                   │
+        │  - LibVLCSharp           │                   │
+        │  - WinForms UI           │                   │
+        │  - Video Playback        │                   │
+        │  - Subtitle Rendering    │                   │
+        │  - Controls Overlay      │                   │
+        └──────────────────────────┘                   │
+                     │ ────────────────────────────────│
                      │
                      ▼
               ┌────────────┐
@@ -131,7 +131,7 @@ ChocoPlus utilise une architecture hybride unique :
                      │
                      ▼
            ┌───────────────────┐
-           │  MariaDB / MySQL  │
+           │      MariaDB      │
            └───────────────────┘
 ```
 
@@ -144,14 +144,15 @@ User (Utilisateurs)
   └── User_Media_List (Listes personnelles)
   └── Stat_User (Statistiques de visionnage)
 
-Media (Films et Séries)
-  ├── Translation_Title (Titres traduits)
-  ├── Media_Category (Catégories/Genres)
-  ├── Media_Credit (Acteurs/Réalisateurs et autres)
-  ├── Media_Poster (Posters multiples)
-  ├── Keyword (Mots-clés)
-  ├── Similar_Title (Suggestions)
-  └── Stream_Movie (Flux vidéo et sous-titres)
+Library (Bibliothèque contenant le chemin d'un répertoire)
+  └── Media_Library (Médiathèque contenant le chemin des fichiers des médias et leurs metadonnées)
+      └── Media (Films et Séries)
+          ├── Translation_Title (Titres traduits)
+          ├── Media_Category (Catégories/Genres)
+          ├── Media_Credit (Acteurs/Réalisateurs et autres)
+          ├── Media_Poster (Posters multiples)
+          ├── Keyword (Mots-clés)
+          ├── Similar_Title (Suggestions)
   
   Pour les séries :
   └── Season (Saisons)
@@ -179,7 +180,7 @@ News_Video_Running (Vidéos tournantes Films/Séries)
 - **Selection** : Collection ordonnée de médias affichée dans les différentes pages
 - **Poster** : Entité réutilisable pour tous les visuels (logos, fonds, affiches)
 - **Episode/Season** : Organisation hiérarchique des séries
-- **Stream_Movie/Stream_Series** : Chemins vers les flux vidéo et sous-titres
+- **ChocoPlayerModel** : Url vers les flux vidéo et sous-titres + token d'accès
 
 ### Flux de données pour l'affichage
 
@@ -262,12 +263,12 @@ Les fichiers de traduction sont organisés par langue dans le répertoire `publi
 ```
 public/
 └── i18n/
-    ├── fr.json      # Français (langue par défaut)
-    ├── en.json      # Anglais
+    ├── fr.json      # Français
+    ├── en.json      # Anglais (langue par défaut)
     └── ja.json      # Japonais
 ```
 
-Chaque fichier contient l'ensemble des clés de traduction organisées par domaine fonctionnel (`LAUNCH`, `MENU`, `EDITION`, `BUTTON`, etc.). Les fichiers `fr.json` et `common.json` servent de référence — toute nouvelle clé doit y être ajoutée en premier.
+Chaque fichier contient l'ensemble des clés de traduction organisées par domaine fonctionnel (`LAUNCH`, `MENU`, `EDITION`, `BUTTON`, etc.). Le fichier `en.json` sert de référence — toute nouvelle clé doit y être ajoutée en premier.
 
 ### Fonctionnement
 
@@ -283,7 +284,7 @@ readonly availableLangs: LangOption[] = [
 
 ### Ajouter une nouvelle langue
 
-1. Créer le fichier de traduction `public/i18n/<code>.json` en se basant sur `fr.json`
+1. Créer le fichier de traduction `public/i18n/<code>.json` en se basant sur `en.json`
 2. Ajouter une entrée dans `availableLangs` avec le code ISO 639-1 correspondant
 3. Vérifier que toutes les clés sont bien traduites avant de déployer
 
