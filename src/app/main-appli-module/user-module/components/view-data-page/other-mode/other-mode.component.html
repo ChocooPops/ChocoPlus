@@ -3,7 +3,7 @@
     @for (mode of modesGraph; track mode.id) {
     <div class="container-mode" (click)="loadNewGraph(mode.id)" [ngClass]="{'cliqued' : mode.state}">
         <p> {{ mode.name | translate }} </p>
-        <div class="container-reset" (click)="onClickResetGraph(mode.name)">
+        <div class="container-reset" (click)="onClickResetGraph(mode.name, $event)">
             <img [src]="srcReset">
         </div>
     </div>

@@ -27,8 +27,9 @@ export class OtherModeComponent {
     this.graphService.loadNewGraph(id);
   }
 
-  onClickResetGraph(name: string): void {
-
+  onClickResetGraph(name: string, event: MouseEvent): void {
+    event.stopPropagation();
+    this.graphService.resetGraphByName(name);
   }
 
 }
