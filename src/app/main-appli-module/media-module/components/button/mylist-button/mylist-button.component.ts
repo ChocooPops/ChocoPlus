@@ -15,6 +15,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class MylistButtonComponent {
 
+  @Input() cursor: boolean = true;
   @Input() typeButton: boolean = false;
   @Input() typeDisplaying: boolean = false;
   @Input() media!: MediaModel;
@@ -63,6 +64,7 @@ export class MylistButtonComponent {
   }
 
   onClick(): void {
+    if (!this.cursor) return;
     if (this.media) {
       this.userService.fetchToggleMediaIntoList(this.media).pipe(take(1)).subscribe((data: MessageReturnedModel) => {
       });

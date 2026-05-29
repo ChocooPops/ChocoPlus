@@ -14,6 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class ModifyButtonComponent {
 
+  @Input() cursor: boolean = true;
   @Input() typeButton: boolean = false;
   @Input() typeDisplaying: boolean = false;
   @Input() idMedia !: number;
@@ -35,6 +36,7 @@ export class ModifyButtonComponent {
   }
 
   onClick(): void {
+    if (!this.cursor) return;
     if (this.idMedia && this.mediaType) {
       if (this.mediaType === MediaTypeModel.MOVIE) {
         this.editionParametersService.navigateToEditionByType(this.idMedia, MenuType.MODIFY_MOVIE);

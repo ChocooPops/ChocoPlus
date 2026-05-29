@@ -1,4 +1,4 @@
-<div class="container" (click)="onClick()">
+<div class="container" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}">
     @if(!typeButton) {
     <div [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}"
         (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">

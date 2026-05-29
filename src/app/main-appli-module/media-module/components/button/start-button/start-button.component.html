@@ -1,4 +1,4 @@
-<div class="containerButton" (click)="onClick()">
+<div class="containerButton" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}">
     @if(!typeButton) {
     <div class="largestContainerButton" [ngClass]="{'animationToGrey' : true}">
         <img [src]="srcStartIcon">

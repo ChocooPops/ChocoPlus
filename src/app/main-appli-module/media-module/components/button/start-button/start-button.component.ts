@@ -23,6 +23,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class StartButtonComponent {
 
+  @Input() cursor: boolean = true;
   @Input() typeButton: boolean = false;
   @Input() typeDisplaying: boolean = false;
   @Input() media!: MediaModel;
@@ -39,6 +40,8 @@ export class StartButtonComponent {
   srcStartIcon: string = 'icon/start-icon.svg';
 
   public async onClick(): Promise<void> {
+    if (!this.cursor) return;
+
     let chocoPlayer: ChocoPlayerModel = {
       MediaId: this.media.id,
       Title: this.media.title,
