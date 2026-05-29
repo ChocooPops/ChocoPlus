@@ -662,11 +662,11 @@ Les vidéos sont servies via :
 
 ## 🤝 Contribution
 
-Ce projet est Open source. Pour toute question ou contribution, contactez l'administrateur.
+Ce projet est Open source.
 
 ## 📄 License
 
-Projet Open source - Tous droits réservés
+Projet Open source - Aucun droit réservé
 
 ---
 
