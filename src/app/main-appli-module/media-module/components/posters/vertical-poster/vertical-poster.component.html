@@ -11,13 +11,20 @@
     </div>
     <div class="containerInterfacePoster">
         <div class="container-first-line">
-            <div class="containerButtonInterface">
-                <app-start-button [typeButton]="true" [media]="media" [seasons]="seasons"></app-start-button>
-                <app-mylist-button [typeDisplaying]="true" [media]="media"></app-mylist-button>
-                <app-modify-button [typeDisplaying]="true" [idMedia]="media.id"
-                    [mediaType]="media.mediaType"></app-modify-button>
-            </div>
-
+            @if (isHover) {
+                <div class="containerButtonInterface">
+                    <app-start-button [typeButton]="true" [media]="media" [seasons]="seasons"></app-start-button>
+                    <app-mylist-button [typeDisplaying]="true" [media]="media"></app-mylist-button>
+                    <app-modify-button [typeDisplaying]="true" [idMedia]="media.id"
+                        [mediaType]="media.mediaType"></app-modify-button>
+                </div>
+            }@else {
+                <div class="containerButtonInterface">
+                    <div class="containerMovieButton"></div>
+                    <div class="containerMovieButton"></div>
+                    <div class="containerMovieButton"></div>
+                </div>
+            }
             <div class="containerInfoInterface">
                 @if(media.mediaType === MediaType.MOVIE) {
                 <p class="duration">{{duration}}</p>

@@ -12,7 +12,6 @@
 .containerMovieButton {
     height: 1vw;
     width: 1vw;
-    cursor: pointer;
     overflow: hidden;
     position: relative;
 

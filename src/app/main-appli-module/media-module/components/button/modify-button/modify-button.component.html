@@ -1,16 +1,18 @@
-@if(!typeButton) {
-<div (click)="onClick()"
-    [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}"
-    (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
-    @if(isHover) {
-    <img [src]="srcImageEnter">
+<div class="container-button">
+    @if(!typeButton) {
+    <div (click)="onClick()"
+        [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}"
+        (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        @if(isHover) {
+        <img [src]="srcImageEnter">
+        }@else {
+        <img [src]="srcImageLeave">
+        }
+    </div>
     }@else {
-    <img [src]="srcImageLeave">
+    <div class="largestContainerButtonGrey" (click)="onClick()">
+        <img [src]="modify">
+        <p>{{ 'BUTTON.MODIFY' | translate }}</p>
+    </div>
     }
 </div>
-}@else {
-<div class="largestContainerButtonGrey" (click)="onClick()">
-    <img [src]="modify">
-    <p>{{ 'BUTTON.MODIFY' | translate }}</p>
-</div>
-}

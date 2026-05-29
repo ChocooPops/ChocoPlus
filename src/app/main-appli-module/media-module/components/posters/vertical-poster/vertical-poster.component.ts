@@ -13,7 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   standalone: true,
   imports: [NgClass, TranslatePipe, StartButtonComponent, MylistButtonComponent, ModifyButtonComponent, TitleCasePipe],
   templateUrl: './vertical-poster.component.html',
-  styleUrls: ['./vertical-poster.component.css', '../../../../common-module/styles/animation.css']
+  styleUrls: ['./vertical-poster.component.css', '../../../../common-module/styles/animation.css', '../../../../common-module/styles/movie-button.css']
 })
 export class VerticalPosterComponent extends PosterAbstraction {
 

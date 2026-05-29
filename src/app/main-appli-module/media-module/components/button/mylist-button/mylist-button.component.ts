@@ -11,7 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   standalone: true,
   imports: [NgClass, TranslatePipe],
   templateUrl: './mylist-button.component.html',
-  styleUrl: '../../../../common-module/styles/movie-button.css'
+  styleUrls: ['./mylist-button.component.css', '../../../../common-module/styles/movie-button.css']
 })
 export class MylistButtonComponent {
 

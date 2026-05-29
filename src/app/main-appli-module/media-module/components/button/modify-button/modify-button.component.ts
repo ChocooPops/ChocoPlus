@@ -10,7 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   standalone: true,
   imports: [NgClass, TranslatePipe],
   templateUrl: './modify-button.component.html',
-  styleUrl: '../../../../common-module/styles/movie-button.css'
+  styleUrls: ['./modify-button.component.css', '../../../../common-module/styles/movie-button.css']
 })
 export class ModifyButtonComponent {
 
