@@ -15,6 +15,7 @@ export class UserParametersService {
     {
       id: 1,
       name: 'MENU.USER.HISTORIC',
+      otherName: 'MENU.USER.STATS',
       type: MenuType.HISTORIC,
       route: `${this.rootRouter}/historic`,
       srcImage: `${this.rootImage}/historic.svg`,
@@ -23,6 +24,7 @@ export class UserParametersService {
     {
       id: 2,
       name: 'MENU.USER.MANAGE_PROFIL',
+      otherName: 'MENU.USER.MY_PROFIL',
       type: MenuType.PROFIL,
       route: `${this.rootRouter}/edit-profil`,
       srcImage: `${this.rootImage}/edit-profil.svg`,
@@ -31,6 +33,7 @@ export class UserParametersService {
     {
       id: 7,
       name: 'MENU.USER.DOCUMENTATION',
+      otherName: 'MENU.USER.DOCUMENTATION',
       type: MenuType.DOCUMENTATION,
       route: `${this.rootRouter}/documentation`,
       srcImage: `${this.rootImage}/documentation.svg`,
@@ -39,6 +42,7 @@ export class UserParametersService {
     {
       id: 3,
       name: 'MENU.USER.USER_SUPPORT',
+      otherName: 'MENU.USER.BUG_LOG',
       type: MenuType.USER_SUPPORT,
       route: `${this.rootRouter}/support`,
       srcImage: `${this.rootImage}/support-user.svg`,
@@ -47,6 +51,7 @@ export class UserParametersService {
     {
       id: 4,
       name: "MENU.USER.APP_SETTINGS",
+      otherName: '',
       type: MenuType.PARAM_APPLI,
       route: `${this.rootRouter}/parameter-appli`,
       srcImage: `${this.rootImage}/parameter.svg`,
@@ -55,6 +60,7 @@ export class UserParametersService {
     {
       id: 5,
       name: 'MENU.USER.VIEW_METADAT',
+      otherName: 'Metadonnées',
       type: MenuType.META_DATA,
       route: `${this.rootRouter}/view-data`,
       srcImage: `${this.rootImage}/view-data.svg`,
@@ -63,6 +69,7 @@ export class UserParametersService {
     {
       id: 6,
       name: 'MENU.USER.USER_MANAGEMENT',
+      otherName: '',
       type: MenuType.MANAGEMENT_USER,
       route: `${this.rootRouter}/manage-users`,
       srcImage: `${this.rootImage}/manage-users.svg`,
@@ -74,6 +81,10 @@ export class UserParametersService {
 
   public getAllUserTabMenu(): MenuTabModel[] {
     return this.userTabMenu;
+  }
+
+  public getUserParamByType(types: MenuType[]): MenuTabModel[] {
+    return this.userTabMenu.filter((item) => types.includes(item.type));
   }
 
   public navigateByUserTabId(id: number): void {

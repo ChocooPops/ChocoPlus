@@ -1,13 +1,98 @@
-<div class="fin">
-    <img class="logo" src="icon/choco.svg" alt="Choco+" />
+<footer class="footer">
 
-    <div class="info">
-        <span>{{ 'FOOTER.VERSION' | translate }} {{ appVersion }}</span>
-        <span>{{ 'FOOTER.BUILD' | translate }} {{ buildDate }}</span>
+  <div class="footer__inner">
+
+    <div class="footer__top">
+
+      <div class="footer__brand">
+        <div class="footer__logo">
+          <div class="footer__logo-icon" aria-hidden="true">C+</div>
+          <span class="footer__logo-name">Choco +</span>
+        </div>
+
+        <p class="footer__tagline">
+         {{ 'FOOTER.COMM' | translate }}
+        </p>
+
+        <div class="footer__version">
+          Version {{ appVersion }} &nbsp;·&nbsp; {{ 'FOOTER.MAY' | translate }} {{ currentYear }}
+        </div>
+      </div>
+
+      <div class="footer__links-grid">
+
+        <div class="footer__link-group">
+          <p class="footer__group-title">{{ 'FOOTER.NAV' | translate }}</p>
+          <ul class="footer__link-list">
+            @for (link of navLinks; track $index) {
+                <li>
+                    <a [routerLink]="link.route" class="footer__link">{{ link.name | translate}}</a>
+                </li>
+            }
+          </ul>
+        </div>
+
+        <div class="footer__link-group">
+          <p class="footer__group-title">{{ 'FOOTER.USER' | translate }}</p>
+          <ul class="footer__link-list">
+            @for (link of userLinks; track $index) {
+                <li>
+                    <a [routerLink]="link.route" class="footer__link">{{ link.otherName | translate}}</a>
+                </li>
+            }
+          </ul>
+        </div>
+
+        <div class="footer__link-group">
+          <p class="footer__group-title">{{ 'FOOTER.PROJECT' | translate }}</p>
+          <ul class="footer__info-list">
+            <li class="footer__info-item">
+              <span class="footer__info-icon">◈</span>
+              <span>{{ 'FOOTER.OPEN_SOURCE' | translate }}</span>
+            </li>
+            <li class="footer__info-item">
+              <span class="footer__info-icon">◈</span>
+              <span>Windows 10 / 11</span>
+            </li>
+            <li class="footer__info-item">
+              <span class="footer__info-icon">◈</span>
+              <span>FR &nbsp;·&nbsp; EN &nbsp;·&nbsp; JA</span>
+            </li>
+            <li class="footer__info-item">
+              <span class="footer__info-icon">◈</span>
+              <span>v{{appVersion}} — {{ 'FOOTER.MAY' | translate }} {{ currentYear }}</span>
+            </li>
+          </ul>
+          <a [routerLink]="'/main-app/user/support'" class="footer__bug-link">
+            {{ 'FOOTER.SIGNAL_BUG' | translate }} →
+          </a>
+        </div>
+
+      </div>
     </div>
 
-    <div class="legal">
-        <span>©ChocoPops</span>
-        <span>{{ 'FOOTER.RIGHT_RESERVED' | translate }}</span>
+    <div class="footer__bottom">
+
+      <p class="footer__copy">
+        &copy; {{ currentYear }} <strong>ChocoPlus</strong> — {{ 'FOOTER.ANY_RIGHT_RESERVED' | translate }}
+      </p>
+
+      <div class="footer__langs" role="list" aria-label="Langues disponibles">
+        @for (lang of langs; track $index) {
+          <span (click)="onClickLang(lang.code)"
+            class="footer__lang"
+            role="listitem"
+            [title]="lang.label"
+            [attr.aria-label]="lang.label"
+          >{{ lang.code | uppercase}}</span>
+        }
+      </div>
+
+      <p class="footer__credit">
+        {{ 'FOOTER.DEVELOP_WITH' | translate }} <span class="footer__heart" aria-label="amour">♥</span>
+        {{ 'OPERATOR.AND' | translate }} <span aria-label="chocolat">🍫</span> {{ 'FOOTER.CREW' | translate }}
+      </p>
+
     </div>
-</div>
+  </div>
+</footer>

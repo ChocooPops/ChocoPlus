@@ -59,7 +59,11 @@
             "USER_SUPPORT": "ユーザーサポート",
             "APP_SETTINGS": "アプリ設定",
             "VIEW_METADAT": "メタデータを表示",
-            "USER_MANAGEMENT": "ユーザー管理"
+            "USER_MANAGEMENT": "ユーザー管理",
+            "STATS": "統計",
+            "MY_PROFIL": "マイプロフィール",
+            "BUG_LOG": "バグ報告",
+            "METADATA": "メタデータ"
         },
         "EDIT": {
             "ADVANCED_SETTINGS": "詳細設定",
@@ -493,7 +497,16 @@
     "FOOTER": {
         "VERSION": "バージョン",
         "BUILD": "ビルド",
-        "RIGHT_RESERVED": "全著作権所有"
+        "ANY_RIGHT_RESERVED": "オープンソースプロジェクト。権利は留保されていません。",
+        "MAY": "5月",
+        "SIGNAL_BUG": "バグを報告",
+        "OPEN_SOURCE": "オープンソース",
+        "PROJECT": "プロジェクト",
+        "NAV": "ナビゲーション",
+        "USER": "ユーザー",
+        "COMM": "映画芸術を愛する人々のための洗練されたシネマ体験。",
+        "DEVELOP_WITH": "開発に使用",
+        "CREW": "ChocoPlusチームによって開発"
     },
     "DECADE": "年代",
     "CATEGORY": "カテゴリー",

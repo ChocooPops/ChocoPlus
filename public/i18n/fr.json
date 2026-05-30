@@ -59,7 +59,11 @@
             "USER_SUPPORT": "Support utilisateur",
             "APP_SETTINGS": "Paramètres de l'application",
             "VIEW_METADAT": "Visualiser les metadonnées",
-            "USER_MANAGEMENT": "Gestion des utilisateurs"
+            "USER_MANAGEMENT": "Gestion des utilisateurs",
+            "STATS": "Statistiques",
+            "MY_PROFIL": "Mon Profil",
+            "BUG_LOG": "Rapport de Bug",
+            "METADATA": "Metadonnées"
         },
         "EDIT": {
             "ADVANCED_SETTINGS": "Paramètres avancés",
@@ -493,7 +497,16 @@
     "FOOTER": {
         "VERSION": "Version",
         "BUILD": "Build",
-        "RIGHT_RESERVED": "Tous droits réservés"
+        "ANY_RIGHT_RESERVED": "Projet open source. Aucun droit réservé.",
+        "MAY": "Mai",
+        "SIGNAL_BUG": "Signaler un bug",
+        "OPEN_SOURCE": "Open source",
+        "PROJECT": "Projet",
+        "NAV": "Navigation",
+        "USER": "Utilisateur",
+        "COMM": "Une expérience cinéphile sophistiquée, pour les amoureux du 7ème art.",
+        "DEVELOP_WITH": "Développé avec",
+        "CREW": "par l'équipe ChocoPlus"
     },
     "DECADE": "Décennie",
     "CATEGORY": "Categorie",

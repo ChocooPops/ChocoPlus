@@ -88,6 +88,10 @@ export class MenuTabService {
     return this.menuTabs;
   }
 
+  public getMenuTabByType(types: MenuType[]): MenuTabModel[] {
+    return this.menuTabs.filter((item) => types.includes(item.type));
+  }
+
   public getActivateTransition(): Observable<boolean> {
     return this.activateTransition$;
   }
