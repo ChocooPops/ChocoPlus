@@ -10,36 +10,38 @@
 .inputRecherche {
     width: 100%;
     height: 100px;
-    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding-left: 60px;
     background: linear-gradient(to right, #3E3E3E, #1E1E1E);
-    position: relative;
     margin-bottom: 25px;
-}
-
-input {
-    width: 100%;
-    height: 100%;
-    border: transparent;
-    font-size: 45px;
-    padding-left: 130px;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    background-color: transparent;
+    overflow: hidden;
 }
 
 .container-image-research {
     height: 50%;
-    width: auto;
-    position: absolute;
-    left: 60px;
-    top: 50%;
-    transform: translateY(-50%);
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
 
-    img {
-        height: 100%;
-        width: 100%;
-    }
+.container-image-research img {
+    height: 100%;
+    width: auto;
+}
+
+input {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: white;
+    font-size: 45px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .inputRecherche input::placeholder {
@@ -49,7 +51,6 @@ input {
 
 .inputRecherche input:focus {
     outline: none;
-    border-color: transparent;
 }
 
 .containerSpinner {
@@ -60,51 +61,41 @@ input {
     align-items: center;
 }
 
-@media (max-width : 1700px) {
+@media (max-width: 1700px) {
     .inputRecherche {
         height: 80px;
         margin-bottom: 15px;
+        padding-left: 50px;
+        gap: 25px;
     }
 
     input {
         font-size: 35px;
-        padding-left: 105px;
     }
-
-    .container-image-research {
-        left: 50px;
-    }
-
 }
 
-@media (max-width : 1100px) {
+@media (max-width: 1100px) {
     .inputRecherche {
         height: 70px;
         margin-bottom: 10px;
+        padding-left: 35px;
+        gap: 20px;
     }
 
     input {
         font-size: 30px;
-        padding-left: 85px;
-    }
-
-    .container-image-research {
-        left: 35px;
     }
 }
 
-@media (max-width : 700px) {
+@media (max-width: 700px) {
     .inputRecherche {
         height: 60px;
         margin-bottom: 5px;
+        padding-left: 30px;
+        gap: 15px;
     }
 
     input {
         font-size: 25px;
-        padding-left: 72px;
-    }
-
-    .container-image-research {
-        left: 30px;
     }
 }
