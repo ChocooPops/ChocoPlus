@@ -18,15 +18,30 @@
             <div class="barre-separation"> </div>
         </div>
         <div class="container-filters" [style.margin-left.vw]="marginLeft">
-            @for (FILTER of FILTERS; track FILTER.id) {
-                <div class="container-filter">
-                    <p> 
-                        <span> {{ FILTER.typeData | translate }} </span> <span> {{ FILTER.operation | translate }} </span> <span> {{ FILTER.value | join:'OR'}} </span> </p>
-                    @if (FILTER.typeData !== TypeData.MEDIA) {
-                        <img [src]="srcYellowCross" (click)="deleteFilter(FILTER)">
-                    }
-                </div>
+        @for (FILTER of FILTERS; track FILTER.id; let index = $index) {
+            @if (index > 1) {
+            <span class="filter-logic" (click)="toggleFilterLogic(FILTER, index)">
+                {{ (FILTER.logic ?? 'AND') | operator | translate }}
+            </span>
             }
+            <div class="container-filter">
+            <p>
+                <span> {{ FILTER.typeData | translate }} </span>
+                <span> {{ FILTER.operation | translate }} </span>
+                @for (v of FILTER.value; track v.value; let isFirst = $first) {
+                @if (!isFirst) {
+                    <span class="value-logic" (click)="toggleValueLogic(FILTER)">
+                     {{ (FILTER.valueLogic ?? 'OR') | operator | translate | uppercase }} 
+                    </span>
+                }
+                <span> {{ v.name | translate }} </span>
+                }
+            </p>
+            @if (FILTER.typeData !== TypeData.MEDIA) {
+                <img [src]="srcYellowCross" (click)="deleteFilter(FILTER)">
+            }
+            </div>
+        }
         </div>
         <div style="margin-bottom: -70px;"></div>
         <app-grid-list [mediaList]="medias" [title]="title" [format]="format" [isLoadingCatalog]="isLoading"></app-grid-list>

@@ -134,3 +134,41 @@ p {
     transform: translateY(0px);
   }
 }
+
+.filter-logic {
+  position: relative;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: bold;
+  color: #FFD301;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  user-select: none;
+  transition: background-color 0.2s;
+  margin-inline: -10px;
+}
+
+.filter-logic:hover {
+  background-color: rgba(255, 213, 1, 0.15);
+}
+
+.value-logic {
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  padding-left: 7px;
+  padding-right: 4px;
+  padding-block: 2px;
+  border-radius: 3px;
+  user-select: none;
+  opacity: 0.7;
+  transition: opacity 0.2s, background-color 0.2s;
+  margin-right: 4px;
+}
+
+.value-logic:hover {
+  opacity: 1;
+  background-color: rgba(255, 213, 1, 0.2);
+}

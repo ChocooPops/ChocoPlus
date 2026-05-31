@@ -25,12 +25,13 @@ import { FILTERS } from '../../../media-module/models/catalog/filters.interface'
 import { OtherFiltersComponent } from '../other-filters/other-filters.component';
 import { FilterType } from '../../../media-module/models/catalog/filter-type.enum';
 import { TranslatePipe } from '@ngx-translate/core';
-import { JoinPipe } from '../../../../common-module/pipe/join.pipe';
+import { OperatorPipe } from '../../../../common-module/pipe/operator.pipe';
+import { UpperCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-catalog-page',
   standalone: true,
-  imports: [JoinPipe, OtherFiltersComponent, TranslatePipe, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
+  imports: [OperatorPipe, UpperCasePipe, OtherFiltersComponent, TranslatePipe, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
   templateUrl: './catalog-page.component.html',
   styleUrl: './catalog-page.component.css'
 })
@@ -166,6 +167,14 @@ export class CatalogPageComponent {
   }
   public onFilterCreated(filtre: FILTERS): void {
     this.filtersCatalogService.addFilters(filtre);
+  }
+
+  public toggleFilterLogic(filtre: FILTERS, index: number): void {
+    this.filtersCatalogService.toggleFilterLogic(filtre, index);
+  }
+
+  public toggleValueLogic(filtre: FILTERS): void {
+    this.filtersCatalogService.toggleValueLogic(filtre);
   }
 
   public onSelectedSortFilter(id: number): void {

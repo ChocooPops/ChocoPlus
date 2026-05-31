@@ -9,6 +9,7 @@ import { FilterChoiceModel } from '../../models/catalog/filter-choice.interface'
 import { FilterType } from '../../models/catalog/filter-type.enum';
 import { FILTERS } from '../../models/catalog/filters.interface';
 import { Operation } from '../../models/catalog/operation.enum';
+import { LogicalOperator } from '../../models/catalog/logical-operator';
 
 @Injectable({
   providedIn: 'root',
@@ -192,6 +193,7 @@ export class FiltersCatalogService {
               id: -1,
               typeData: FilterType.MEDIA,
               operation: Operation.CONTAIN,
+              logic: LogicalOperator.AND,
               value: [
                 {
                   name: 'ALL',
@@ -248,6 +250,7 @@ export class FiltersCatalogService {
     });
   }
   public onSelectedMediaTypeFilter(filtre: FILTERS): void {
+    filtre.logic = LogicalOperator.AND;
     const filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
     filtres[0] = filtre;
     this.FILTERS_SUBJECT.next(filtres);
@@ -262,15 +265,45 @@ export class FiltersCatalogService {
 
   public addFilters(filtre: FILTERS): void {
     const filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
-    filtres.push(filtre);
     filtre.id = this.getId();
+    if (filtre.typeData === FilterType.DECADE && !filtre.valueLogic) {
+      filtre.valueLogic = filtre.valueLogic ?? LogicalOperator.OR;
+    } else {
+      filtre.valueLogic = filtre.valueLogic ?? LogicalOperator.AND;
+    }
+    filtre.logic = filtre.logic ?? LogicalOperator.AND;
+    filtres.push(filtre);
     this.FILTERS_SUBJECT.next(filtres);
+  }
+
+  public toggleFilterLogic(filtre: FILTERS, index: number): void {
+    if (index < 2) return;
+    const filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
+    const target = filtres.find((f) => f.id === filtre.id);
+    if (!target) return;
+    target.logic =
+      target.logic === LogicalOperator.OR ? LogicalOperator.AND : LogicalOperator.OR;
+    this.FILTERS_SUBJECT.next([...filtres]);
+  }
+
+  public toggleValueLogic(filtre: FILTERS): void {
+    const filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
+    const target = filtres.find((f) => f.id === filtre.id);
+    if (!target) return;
+    target.valueLogic =
+      target.valueLogic === LogicalOperator.AND ? LogicalOperator.OR : LogicalOperator.AND;
+    this.FILTERS_SUBJECT.next([...filtres]);
   }
 
   public deleteFilter(filtre: FILTERS): any {
     let filtres: FILTERS[] = this.FILTERS_SUBJECT.value;
     filtres = filtres.filter((item) => item.id !== filtre.id);
     this.FILTERS_SUBJECT.next(filtres);
+    this.decadeFilter.filters.forEach((el) => {
+      if (filtre.value.some((item) => item.value === el.value)) {
+        el.isSelected = 0;
+      }
+    });
   }
 
   public onSelectedSortFilter(id: number): SortCatalog {

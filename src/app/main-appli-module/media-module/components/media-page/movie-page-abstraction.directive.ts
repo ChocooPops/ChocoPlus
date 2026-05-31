@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { FilterType } from '../../models/catalog/filter-type.enum';
 import { Operation } from '../../models/catalog/operation.enum';
 import { MediaCreditModel } from '../../models/media-credit.interface';
+import { LogicalOperator } from '../../models/catalog/logical-operator';
 
 @Directive({})
 export abstract class MoviePageAbstraction {
@@ -187,24 +188,29 @@ export abstract class MoviePageAbstraction {
     ];
     this.setFilterCatalogAndNavigate(filters);
   }
+
   protected setFilterCredit(credit: MediaCreditModel): void {
+    const filters: FILTERS[] = [];
     let id: number = -2;
-    //const jobs: JobModel[] = credit.job.split('\\').map((item) => item.trim()) as any;
-    const filters: FILTERS[] = [
-      {
-        id: id--,
-        typeData: FilterType.CREDIT,
-        operation: Operation.CONTAIN,
-        value: [
-          {
-            name: credit.fullName,
-            value: credit.id
-          }
-        ]
-      }
-    ];
+    const jobs: JobModel[] = credit.job.split('\\').map((item) => item.trim()) as any;
+    jobs.forEach((job: JobModel, index: number) => {
+      filters.push({
+          id: id--,
+          typeData: job,
+          operation: Operation.CONTAIN,
+          logic: index < jobs.length ? LogicalOperator.OR : LogicalOperator.AND,
+          value: [
+            {
+              name: credit.fullName,
+              value: credit.id
+            }
+          ]
+        }
+      )
+    });
     this.setFilterCatalogAndNavigate(filters);
   }
+
   protected setFilterKeyWord(keyword: string): void {
     const filters: FILTERS[] = [
       {
