@@ -308,7 +308,7 @@ export abstract class SeriesPageAbstraction {
           id: id--,
           typeData: job,
           operation: Operation.CONTAIN,
-          logic: index < jobs.length ? LogicalOperator.OR : LogicalOperator.AND,
+          logic: index === 0 ? LogicalOperator.AND : LogicalOperator.OR,
           value: [
             {
               name: credit.fullName,
