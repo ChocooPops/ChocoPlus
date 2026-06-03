@@ -62,10 +62,21 @@ export class HomePageComponent {
       selections: this.selectionService.fetchSelectionOnHomePage(),
       news: this.newsService.fetchGetAllNews()
     }).pipe(take(1)).subscribe((result: { selections: SelectionModel[], news: NewsModel[] }) => {
-      const img: string[] = [];
-      const format: FormatPosterModel = this.formatPosterService.getFormatPosterHomeValue();
-      img.push(...this.imagePreloaderService.getPosterFromSelectionToLoad(result.selections, format));
-      img.push(...this.imagePreloaderService.getImageFromNewsList(result.news));
+      // const img: string[] = [];
+      // const format: FormatPosterModel = this.formatPosterService.getFormatPosterHomeValue();
+      // img.push(...this.imagePreloaderService.getPosterFromSelectionToLoad(result.selections, format));
+      // img.push(...this.imagePreloaderService.getImageFromNewsList(result.news));
+      const newsTmp: NewsModel[] = [];
+      if (result.news.length > 0) {
+        newsTmp.push(result.news[0]);
+        // if (result.news.length > 1) {
+        //   newsTmp.push(result.news[1]);
+        //   if (result.news.length > 2) {
+        //     newsTmp.push(result.news[result.news.length - 1]);
+        //   }
+        // }
+      }
+      const img: string[] = this.imagePreloaderService.getImageFromNewsList(newsTmp);
 
       this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
         this.news = result.news;
@@ -76,12 +87,13 @@ export class HomePageComponent {
   }
 
   private reloadWhenFormatPosterChange(): void {
-    this.abortController.abort();
+    //this.abortController.abort();
     this.selectionService.fetchSelectionOnHomePage().pipe(take(1)).subscribe((selections: SelectionModel[]) => {
-      const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(selections, this.format);
-      this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        this.selections = selections;
-      })
+      this.selections = selections;
+      // const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(selections, this.format);
+      // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+      //   this.selections = selections;
+      // })
     })
   }
 

@@ -6,7 +6,7 @@ import { UserService } from '../../../user-module/service/user/user.service';
 import { GridListComponent } from '../../../media-module/components/grids/grid-list/grid-list.component';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
-import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
+//import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
@@ -23,7 +23,7 @@ export class MyListPageComponent {
 
   title = 'MYLIST_PAGE';
 
-  private abortController = new AbortController();
+  //private abortController = new AbortController();
   medias: MediaModel[] | undefined = undefined;
   format !: FormatPosterModel;
   subscription: Subscription = new Subscription();
@@ -35,7 +35,7 @@ export class MyListPageComponent {
 
   constructor(private readonly userService: UserService,
     private readonly formatPosterService: FormatPosterService,
-    private readonly imagePreloaderService: ImagePreloaderService,
+    //private readonly imagePreloaderService: ImagePreloaderService,
     private readonly menuTabService: MenuTabService,
     private readonly loadOpeningPageService: LoadOpeningPageService,
     private readonly mediaSelectedService: MediaSelectedService
@@ -47,15 +47,17 @@ export class MyListPageComponent {
   ngOnInit(): void {
     this.subscription.add(
       this.userService.fetchMyMediaListByUserId().pipe(take(1)).subscribe((medias: MediaModel[]) => {
-        const format: FormatPosterModel = this.formatPosterService.getFormatPosterMyListValue();
-        const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(medias, format);
+        this.medias = medias;
+        this.loadNewFormat = true;
+        // const format: FormatPosterModel = this.formatPosterService.getFormatPosterMyListValue();
+        // const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(medias, format);
 
-        this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-          this.medias = medias;
-          this.loadNewFormat = true;
-        })
+        // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+        //   this.medias = medias;
+        //   this.loadNewFormat = true;
+        // })
       })
-    )
+    );
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterMyList().subscribe((format: FormatPosterModel) => {
         this.format = format;
@@ -69,20 +71,22 @@ export class MyListPageComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    this.abortController.abort();
+    //this.abortController.abort();
     this.mediaSelectedService.clearSelection();
   }
 
   private reloadWhenFormatPosterChange(): void {
-    this.abortController.abort();
+    //this.abortController.abort();
     this.userService.fetchMyMediaListByUserId().pipe(take(1)).subscribe((medias: MediaModel[]) => {
-      const format: FormatPosterModel = this.formatPosterService.getFormatPosterMyListValue();
-      const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(medias, format);
+      this.medias = medias;
+      this.loadNewFormat = true;
+      // const format: FormatPosterModel = this.formatPosterService.getFormatPosterMyListValue();
+      // const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(medias, format);
 
-      this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        this.medias = medias;
-        this.loadNewFormat = true;
-      })
+      // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+      //   this.medias = medias;
+      //   this.loadNewFormat = true;
+      // });
     })
   }
 

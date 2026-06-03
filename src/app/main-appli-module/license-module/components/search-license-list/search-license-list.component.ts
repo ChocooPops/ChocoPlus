@@ -4,7 +4,7 @@ import { SearchLicenseComponent } from '../search-license/search-license.compone
 import { Subscription, take } from 'rxjs';
 import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
 import { DimensionModel } from '../../../../common-module/models/dimension.interface';
-import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
+//import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { LicenseService } from '../../service/license/licence.service';
 import { PaginationLicenseService } from '../../service/pagination-license/pagination-license.service';
 import { SearchLicenseLoadingComponent } from '../../../main-page-module/search-components/search-license-loading/search-license-loading.component';
@@ -19,7 +19,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class SearchLicenseListComponent {
 
-  private abortController = new AbortController();
+  //private abortController = new AbortController();
   licenseSearchList: LicenseModel[] | undefined = undefined;
   licenseLoadingList: number[] = [];
   gap !: number;
@@ -30,17 +30,18 @@ export class SearchLicenseListComponent {
 
   constructor(private licenseService: LicenseService,
     private paginationLicenseService: PaginationLicenseService,
-    private imagePreloaderService: ImagePreloaderService
+    //private imagePreloaderService: ImagePreloaderService
   ) { }
 
   ngOnInit(): void {
     this.subscrition.add(
       this.licenseService.fetchAllLicenseResearch().pipe(take(1)).subscribe((data: LicenseModel[] | undefined) => {
         if (data) {
-          const img: string[] = this.imagePreloaderService.getAllIconsFromLicense(data);
-          this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-            this.licenseSearchList = data;
-          })
+          this.licenseSearchList = data;
+          // const img: string[] = this.imagePreloaderService.getAllIconsFromLicense(data);
+          // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+          //   this.licenseSearchList = data;
+          // })
         }
       })
     )
@@ -62,7 +63,7 @@ export class SearchLicenseListComponent {
 
   ngOnDestroy(): void {
     this.subscrition.unsubscribe();
-    this.abortController.abort();
+    //this.abortController.abort();
   }
 
 }

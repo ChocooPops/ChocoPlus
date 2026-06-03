@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MediaModel } from '../../../media-module/models/media.interface';
 import { SelectionModel } from '../../../media-module/models/selection.interface';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { Subscription, take, forkJoin } from 'rxjs';
@@ -63,9 +62,9 @@ export class MoviePageComponent {
       movieShow: this.newsVideoRunningService.fetchRandomNewsMovieRunning(),
     }).pipe(take(1)).subscribe((result: { selections: SelectionModel[], movieShow: NewsVideoRunningModel }) => {
       const img: string[] = [];
-      const format: FormatPosterModel = this.formatPosterService.getFormatPosterMovieValue();
+      // const format: FormatPosterModel = this.formatPosterService.getFormatPosterMovieValue();
       img.push(...this.imagePreloaderService.getImageFormNewsVideoRunning(result.movieShow));
-      img.push(...this.imagePreloaderService.getPosterFromSelectionToLoad(result.selections, format));
+      // img.push(...this.imagePreloaderService.getPosterFromSelectionToLoad(result.selections, format));
 
       this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
         this.movieShowHome = result.movieShow;
@@ -76,12 +75,13 @@ export class MoviePageComponent {
   }
 
   private reloadWhenFormatPosterChange(): void {
-    this.abortController.abort();
+    //this.abortController.abort();
     this.selectionService.fetchRandomSelectionOnMoviePage().pipe(take(1)).subscribe((selections: SelectionModel[]) => {
-      const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(selections, this.format);
-      this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        this.movieSelections = selections;
-      })
+      this.movieSelections = selections;
+      // const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(selections, this.format);
+      // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+      //   this.movieSelections = selections;
+      // })
     })
   }
 

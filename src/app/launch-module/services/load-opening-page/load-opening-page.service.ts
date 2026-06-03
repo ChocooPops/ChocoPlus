@@ -2,12 +2,9 @@ import { Injectable } from '@angular/core';
 import { SelectionService } from '../../../main-appli-module/media-module/services/selection/selection.service';
 import { NewsService } from '../../../main-appli-module/news-module/services/news/news.service';
 import { LicenseService } from '../../../main-appli-module/license-module/service/license/licence.service';
-import { ImagePreloaderService } from '../../../common-module/services/image-preloader/image-preloader.service';
 import { forkJoin, take } from 'rxjs';
 import { SelectionModel } from '../../../main-appli-module/media-module/models/selection.interface';
 import { NewsModel } from '../../../main-appli-module/news-module/models/news.interface';
-import { FormatPosterModel } from '../../../main-appli-module/common-module/models/format-poster.enum';
-import { FormatPosterService } from '../../../main-appli-module/common-module/services/format-poster/format-poster.service';
 import { Router } from '@angular/router';
 import { LicenseModel } from '../../../main-appli-module/license-module/model/license.interface';
 import { PageModel } from '../../models/page.enum';
@@ -27,8 +24,8 @@ export class LoadOpeningPageService {
     private selectionService: SelectionService,
     private newsService: NewsService,
     private licenseService: LicenseService,
-    private imagePreloaderService: ImagePreloaderService,
-    private formatPosterService: FormatPosterService,
+    //private imagePreloaderService: ImagePreloaderService,
+    //private formatPosterService: FormatPosterService,
     private userService: UserService,
     private newsVideoRunningService: NewsVideoRunningService,
     private router: Router,
@@ -75,27 +72,28 @@ export class LoadOpeningPageService {
           news: NewsModel[];
           licensesHome: LicenseModel[];
         }) => {
-          const img: string[] = [];
-          const format: FormatPosterModel =
-            this.formatPosterService.getFormatPosterHomeValue();
-          img.push(
-            ...this.imagePreloaderService.getAllIconsFromLicense(
-              result.licensesHome,
-            ),
-          );
-          img.push(
-            ...this.imagePreloaderService.getImageFromNewsList(result.news),
-          );
-          img.push(
-            ...this.imagePreloaderService.getPosterFromSelectionToLoad(
-              result.selections,
-              format,
-            ),
-          );
+          this.router.navigateByUrl('main-app');
+          // const img: string[] = [];
+          // const format: FormatPosterModel =
+          //   this.formatPosterService.getFormatPosterHomeValue();
+          // img.push(
+          //   ...this.imagePreloaderService.getAllIconsFromLicense(
+          //     result.licensesHome,
+          //   ),
+          // );
+          // img.push(
+          //   ...this.imagePreloaderService.getImageFromNewsList(result.news),
+          // );
+          // img.push(
+          //   ...this.imagePreloaderService.getPosterFromSelectionToLoad(
+          //     result.selections,
+          //     format,
+          //   ),
+          // );
 
-          this.imagePreloaderService.preloadImages(img).finally(() => {
-            this.router.navigateByUrl('main-app');
-          });
+          // this.imagePreloaderService.preloadImages(img).finally(() => {
+          //   this.router.navigateByUrl('main-app');
+          // });
         },
       );
   }
@@ -106,11 +104,12 @@ export class LoadOpeningPageService {
       .pipe(take(1))
       .subscribe((data: LicenseModel[] | undefined) => {
         if (data) {
-          const img: string[] =
-            this.imagePreloaderService.getAllIconsFromLicense(data);
-          this.imagePreloaderService.preloadImages(img).finally(() => {
-            this.router.navigateByUrl('main-app/search');
-          });
+          this.router.navigateByUrl('main-app/search');
+          // const img: string[] =
+          //   this.imagePreloaderService.getAllIconsFromLicense(data);
+          // this.imagePreloaderService.preloadImages(img).finally(() => {
+          //   this.router.navigateByUrl('main-app/search');
+          // });
         }
       });
   }
@@ -126,24 +125,25 @@ export class LoadOpeningPageService {
           selections: SelectionModel[];
           movieShow: NewsVideoRunningModel;
         }) => {
-          const img: string[] = [];
-          const format: FormatPosterModel =
-            this.formatPosterService.getFormatPosterMovieValue();
-          img.push(
-            ...this.imagePreloaderService.getImageFormNewsVideoRunning(
-              result.movieShow,
-            ),
-          );
-          img.push(
-            ...this.imagePreloaderService.getPosterFromSelectionToLoad(
-              result.selections,
-              format,
-            ),
-          );
+          this.router.navigateByUrl('main-app/movies');
+          // const img: string[] = [];
+          // const format: FormatPosterModel =
+          //   this.formatPosterService.getFormatPosterMovieValue();
+          // img.push(
+          //   ...this.imagePreloaderService.getImageFormNewsVideoRunning(
+          //     result.movieShow,
+          //   ),
+          // );
+          // img.push(
+          //   ...this.imagePreloaderService.getPosterFromSelectionToLoad(
+          //     result.selections,
+          //     format,
+          //   ),
+          // );
 
-          this.imagePreloaderService.preloadImages(img).finally(() => {
-            this.router.navigateByUrl('main-app/movies');
-          });
+          // this.imagePreloaderService.preloadImages(img).finally(() => {
+          //   this.router.navigateByUrl('main-app/movies');
+          // });
         },
       );
   }
@@ -159,24 +159,25 @@ export class LoadOpeningPageService {
           selections: SelectionModel[];
           seriesShow: NewsVideoRunningModel;
         }) => {
-          const img: string[] = [];
-          const format: FormatPosterModel =
-            this.formatPosterService.getFormatPosterMovieValue();
-          img.push(
-            ...this.imagePreloaderService.getImageFormNewsVideoRunning(
-              result.seriesShow,
-            ),
-          );
-          img.push(
-            ...this.imagePreloaderService.getPosterFromSelectionToLoad(
-              result.selections,
-              format,
-            ),
-          );
+          this.router.navigateByUrl('main-app/series');
+          // const img: string[] = [];
+          // const format: FormatPosterModel =
+          //   this.formatPosterService.getFormatPosterMovieValue();
+          // img.push(
+          //   ...this.imagePreloaderService.getImageFormNewsVideoRunning(
+          //     result.seriesShow,
+          //   ),
+          // );
+          // img.push(
+          //   ...this.imagePreloaderService.getPosterFromSelectionToLoad(
+          //     result.selections,
+          //     format,
+          //   ),
+          // );
 
-          this.imagePreloaderService.preloadImages(img).finally(() => {
-            this.router.navigateByUrl('main-app/series');
-          });
+          // this.imagePreloaderService.preloadImages(img).finally(() => {
+          //   this.router.navigateByUrl('main-app/series');
+          // });
         },
       );
   }
@@ -190,16 +191,17 @@ export class LoadOpeningPageService {
       .fetchMyMediaListByUserId()
       .pipe(take(1))
       .subscribe((medias: MediaModel[]) => {
-        const format: FormatPosterModel =
-          this.formatPosterService.getFormatPosterMyListValue();
-        const img: string[] =
-          this.imagePreloaderService.getPosterFromMediaListToLoad(
-            medias,
-            format,
-          );
-        this.imagePreloaderService.preloadImages(img).finally(() => {
-          this.router.navigateByUrl('main-app/my-list');
-        });
+        this.router.navigateByUrl('main-app/my-list');
+        // const format: FormatPosterModel =
+        //   this.formatPosterService.getFormatPosterMyListValue();
+        // const img: string[] =
+        //   this.imagePreloaderService.getPosterFromMediaListToLoad(
+        //     medias,
+        //     format,
+        //   );
+        // this.imagePreloaderService.preloadImages(img).finally(() => {
+        //   this.router.navigateByUrl('main-app/my-list');
+        // });
       });
   }
 

@@ -3,7 +3,7 @@ import { HomeLicenseComponent } from '../home-license/home-license.component';
 import { LicenseModel } from '../../model/license.interface';
 import { Subscription, take } from 'rxjs';
 import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
-import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
+//import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { PosterLoadingComponent } from '../../../media-module/components/posters/poster-loading/poster-loading.component';
 import { PaginationModel } from '../../../media-module/models/pagination.interface';
 import { ScrollButtonComponent } from '../../../media-module/components/selections/scroll-button/scroll-button.component';
@@ -22,7 +22,7 @@ import { PaginationLicenseService } from '../../service/pagination-license/pagin
 
 export class HomeLicenseListComponent {
 
-  private abortController = new AbortController();
+  //private abortController = new AbortController();
   licenceHomeList: LicenseModel[] | undefined = undefined;
   licenseLoadingList: number[] = [];
 
@@ -47,19 +47,22 @@ export class HomeLicenseListComponent {
 
   constructor(private licenseService: LicenseService,
     private paginationLicenseService: PaginationLicenseService,
-    private imagePreloaderService: ImagePreloaderService
+    //private imagePreloaderService: ImagePreloaderService
   ) { }
 
   ngOnInit(): void {
     this.fillLicenseLoading();
     this.subscription.add(
       this.licenseService.fetchAllLicenseHome().pipe(take(1)).subscribe((data: LicenseModel[]) => {
-        const img: string[] = this.imagePreloaderService.getAllIconsFromLicense(data);
-        this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-          this.licenceHomeList = data;
-          this.setNbPage();
-          this.setLicenseShowed();
-        })
+        this.licenceHomeList = data;
+        this.setNbPage();
+        this.setLicenseShowed();
+        // const img: string[] = this.imagePreloaderService.getAllIconsFromLicense(data);
+        // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+        //   this.licenceHomeList = data;
+        //   this.setNbPage();
+        //   this.setLicenseShowed();
+        // })
       })
     )
     this.subscription.add(
@@ -77,7 +80,7 @@ export class HomeLicenseListComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    this.abortController.abort();
+    //this.abortController.abort();
   }
 
   private fillGeometricDimension(dimension: GeometricDimensionSelectionModel): void {

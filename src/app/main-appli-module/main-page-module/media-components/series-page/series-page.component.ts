@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { VideoRunningPresentationComponent } from '../video-running-presentation/video-running-presentation.component';
 import { VideoRunningPresentationLoadingComponent } from '../video-running-presentation-loading/video-running-presentation-loading.component';
 import { SelectionsListComponent } from '../../../media-module/components/selections/selections-list/selections-list.component';
-import { MediaModel } from '../../../media-module/models/media.interface';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { forkJoin, Subscription, take } from 'rxjs';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
@@ -63,9 +62,9 @@ export class SeriesPageComponent {
       seriesShow: this.newsVideoRunningService.fetchRandomSeriesRunning(),
     }).pipe(take(1)).subscribe((result: { selections: SelectionModel[], seriesShow: NewsVideoRunningModel }) => {
       const img: string[] = [];
-      const format: FormatPosterModel = this.formatPosterService.getFormatPosterMovieValue();
+      // const format: FormatPosterModel = this.formatPosterService.getFormatPosterMovieValue();
       img.push(...this.imagePreloaderService.getImageFormNewsVideoRunning(result.seriesShow));
-      img.push(...this.imagePreloaderService.getPosterFromSelectionToLoad(result.selections, format));
+      // img.push(...this.imagePreloaderService.getPosterFromSelectionToLoad(result.selections, format));
 
       this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
         this.seriesShowHome = result.seriesShow;
@@ -76,12 +75,13 @@ export class SeriesPageComponent {
   }
 
   private reloadWhenFormatPosterChange(): void {
-    this.abortController.abort();
+    //this.abortController.abort();
     this.selectionService.fetchRandomSelectionOnSeries().pipe(take(1)).subscribe((selections: SelectionModel[]) => {
-      const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(selections, this.format);
-      this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        this.seriesSelection = selections;
-      })
+      this.seriesSelection = selections;
+      // const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(selections, this.format);
+      // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+      //   this.seriesSelection = selections;
+      // })
     })
   }
 

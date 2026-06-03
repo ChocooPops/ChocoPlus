@@ -17,7 +17,7 @@ import { MediaService } from '../../../media-module/services/media/media.service
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SortCatalog } from '../../../media-module/models/catalog/sort-catalog.enum';
 import { ScrollEventService } from '../../../common-module/services/scroll-event/scroll-event.service';
-import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
+//import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { FiltersCatalogService } from '../../../media-module/services/filters-catalog/filters-catalog.service';
 import { FiltersChoicesModel } from '../../../media-module/models/catalog/filters-choices.interface';
 import { FilterChoiceModel } from '../../../media-module/models/catalog/filter-choice.interface';
@@ -43,7 +43,7 @@ export class CatalogPageComponent {
   subscritpionPagination!: Subscription;
   subscriptionCatalog!: Subscription;
   private scrollUnlisten!: () => void;
-  private abortController = new AbortController();
+  //private abortController = new AbortController();
 
   title: string = '';
   format: FormatPosterModel = FormatPosterModel.VERTICAL;
@@ -86,7 +86,7 @@ export class CatalogPageComponent {
     private readonly filtersCatalogService: FiltersCatalogService,
     private readonly mediaService: MediaService,
     private readonly scrollEventService: ScrollEventService,
-    private readonly imagePreloaderService: ImagePreloaderService
+    //private readonly imagePreloaderService: ImagePreloaderService
   ) {
     this.menuTabService.setActivateTransition(false);
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_CATALOG);
@@ -153,7 +153,7 @@ export class CatalogPageComponent {
     if (this.scrollUnlisten) this.scrollUnlisten();
     if (this.subscritpionPagination) this.subscritpionPagination.unsubscribe();
     if (this.subscriptionCatalog) this.subscriptionCatalog.unsubscribe();
-    this.abortController.abort();
+    //this.abortController.abort();
   }
 
   public onSelectedDecadeFilter(filtre: FILTERS): void {
@@ -218,14 +218,17 @@ export class CatalogPageComponent {
       )
       .pipe(take(1))
       .subscribe((media: MediaModel[]) => {
-        this.abortController.abort();
-        const format: FormatPosterModel = this.formatPosterService.getFormatPosterCatalogValue();
-        const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(media, format);
-        this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-          if (media.length < this.PAGE_SIZE) this.hasMore = false;
-          if (this.medias) this.medias.push(...media);
-          this.isLoading = false;
-        });
+        if (media.length < this.PAGE_SIZE) this.hasMore = false;
+        if (this.medias) this.medias.push(...media);
+        this.isLoading = false;
+        //this.abortController.abort();
+        // const format: FormatPosterModel = this.formatPosterService.getFormatPosterCatalogValue();
+        // const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(media, format);
+        // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+        //   if (media.length < this.PAGE_SIZE) this.hasMore = false;
+        //   if (this.medias) this.medias.push(...media);
+        //   this.isLoading = false;
+        // });
       });
   }
 
@@ -247,14 +250,17 @@ export class CatalogPageComponent {
       )
       .pipe(take(1))
       .subscribe((media: MediaModel[]) => {
-        this.abortController.abort();
-        const format: FormatPosterModel = this.formatPosterService.getFormatPosterCatalogValue();
-        const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(media, format);
-        this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-          if (media.length < this.PAGE_SIZE) this.hasMore = false;
-          this.medias = media;
-          this.isLoading = false;
-        });
+        if (media.length < this.PAGE_SIZE) this.hasMore = false;
+        this.medias = media;
+        this.isLoading = false;
+        // this.abortController.abort();
+        // const format: FormatPosterModel = this.formatPosterService.getFormatPosterCatalogValue();
+        // const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(media, format);
+        // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+        //   if (media.length < this.PAGE_SIZE) this.hasMore = false;
+        //   this.medias = media;
+        //   this.isLoading = false;
+        // });
       });
   }
 

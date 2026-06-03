@@ -3,7 +3,7 @@ import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { distinctUntilChanged, Subscription, map, of } from 'rxjs';
-import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
+//import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { GridListComponent } from '../../../media-module/components/grids/grid-list/grid-list.component';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
@@ -29,7 +29,7 @@ export class SearchPageComponent {
   placeHolder = 'SEARCH_PAGE.PLACEHOLDER_RESEARCH_MOVIE_SERIES';
   title = 'SEARCH_PAGE.RESULT';
 
-  private abortController = new AbortController();
+  //private abortController = new AbortController();
   format!: FormatPosterModel;
   srcImageResearch: string = 'icon/research.svg';
   mediaWanted: MediaModel[] | undefined = undefined;
@@ -44,7 +44,7 @@ export class SearchPageComponent {
 
   constructor(private readonly fb: FormBuilder,
     private readonly mediaService: MediaService,
-    private readonly imagePreloaderService: ImagePreloaderService,
+    //private readonly imagePreloaderService: ImagePreloaderService,
     private readonly formatPosterService: FormatPosterService,
     private readonly menuTabService: MenuTabService,
     private readonly route: ActivatedRoute,
@@ -115,14 +115,17 @@ export class SearchPageComponent {
         })
       ).subscribe(data => {
         if (data) {
-          const format = this.formatPosterService.getFormatPosterResearchValue();
-          const img = this.imagePreloaderService.getPosterFromMediaListToLoad(data, format);
-          this.imagePreloaderService.preloadImages(img, this.abortController.signal)
-            .finally(() => {
-              this.mediaWanted = data;
-              this.mediaWantedTmp = data;
-              this.loadNewFormat = true;
-            });
+          this.mediaWanted = data;
+          this.mediaWantedTmp = data;
+          this.loadNewFormat = true;
+          // const format = this.formatPosterService.getFormatPosterResearchValue();
+          // const img = this.imagePreloaderService.getPosterFromMediaListToLoad(data, format);
+          // this.imagePreloaderService.preloadImages(img, this.abortController.signal)
+          //   .finally(() => {
+          //     this.mediaWanted = data;
+          //     this.mediaWantedTmp = data;
+          //     this.loadNewFormat = true;
+          //   });
         }
       })
     );
@@ -139,15 +142,15 @@ export class SearchPageComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    this.abortController.abort();
+    //this.abortController.abort();
     this.mediaSelectedService.clearSelection();
   }
 
   private preloadNewFormat(): void {
-    const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(this.mediaWantedTmp, this.format);
-    this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-      //this.movieWanted = this.movieWantedTmp;
-    })
+    // const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(this.mediaWantedTmp, this.format);
+    // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
+    //   //this.movieWanted = this.movieWantedTmp;
+    // })
   }
 
 }
