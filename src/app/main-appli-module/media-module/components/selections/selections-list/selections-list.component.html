@@ -2,14 +2,30 @@
 @for(selection of selections; track selection.id) {
 @if(selection.typeSelection === SelectionType.NORMAL_POSTER) {
 @if(format === FormatPoster.VERTICAL) {
+@defer (on viewport) {
 <app-vertical-selection [selection]="selection"></app-vertical-selection>
+} @placeholder {
+<div class="selection-placeholder selection-placeholder--vertical"></div>
+}
 }@else {
+@defer (on viewport) {
 <app-horizontal-selection [selection]="selection"></app-horizontal-selection>
+} @placeholder {
+<div class="selection-placeholder selection-placeholder--horizontal"></div>
+}
 }
 }@else if (selection.typeSelection === SelectionType.SPECIAL_POSTER) {
+@defer (on viewport) {
 <app-special-selection [selection]="selection"></app-special-selection>
+} @placeholder {
+<div class="selection-placeholder selection-placeholder--special"></div>
+}
 }@else if (selection.typeSelection === SelectionType.LICENSE_POSTER) {
+@defer (on viewport) {
 <app-license-selection [selection]="selection"></app-license-selection>
+} @placeholder {
+<div class="selection-placeholder selection-placeholder--license"></div>
+}
 }
 }
 }@else {

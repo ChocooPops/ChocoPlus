@@ -4,11 +4,11 @@
     <div class="container-main-poster" (mouseenter)="onMouseEnter()" (click)="selectedMovieActivate(media)"
         [ngClass]="{'border-if-src-poster-is-undefined' : srcPoster === undefined}">
         @if(srcPoster != undefined) {
-        <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()">
+        <img [src]="srcPoster" loading="lazy" decoding="async" (error)="onErrorImage()">
         }
         <div class="container-logo">
             @if(srcLogo != undefined) {
-            <img [src]="srcLogo" (error)="onErrorLogo()">
+            <img [src]="srcLogo" loading="lazy" decoding="async" (error)="onErrorLogo()">
             }@else {
             <p> {{ media.title }}</p>
             }

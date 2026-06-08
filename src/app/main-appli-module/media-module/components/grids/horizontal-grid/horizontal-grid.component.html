@@ -6,7 +6,11 @@
         @if(mediaList) {
         @if(mediaList.length > 0) {
         @for(media of mediaList; track media) {
+        @defer (on viewport) {
         <app-horizontal-poster [media]="media" [typeZoomX]="media.typeZoomX"></app-horizontal-poster>
+        } @placeholder {
+        <div class="poster-placeholder"></div>
+        }
         }
         @if (isLoadingCatalog) {
         @for(poster of postersLoadingCatalog; track poster) {

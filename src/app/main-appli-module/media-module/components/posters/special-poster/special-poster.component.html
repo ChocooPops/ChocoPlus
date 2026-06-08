@@ -4,7 +4,7 @@
     (mouseenter)="onMouseEnter()">
     <div class="containerPoster">
         @if(srcPoster != undefined) {
-        <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()">
+        <img [src]="srcPoster" loading="lazy" decoding="async" (error)="onErrorImage()">
         } @else {
         <p class="titleMovie"> {{media.title}}</p>
         }

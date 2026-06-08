@@ -1,0 +1,30 @@
+.selection-placeholder {
+  width: 100%;
+}
+
+/* > 1400px : valeurs initiales du PaginationPosterService */
+.selection-placeholder--vertical   { height: 22vw; }  /* 10 * 1.817 + 3 */
+.selection-placeholder--horizontal { height: 14vw; }  /* 15.2 * 0.7 + 3 */
+.selection-placeholder--special    { height: 32vw; }  /* 19 * 1.512 + 3 */
+.selection-placeholder--license    { height: 27vw; }  /* 15.5 * 1.516 + 3 */
+
+@media (max-width: 1400px) {
+  .selection-placeholder--vertical   { height: 26vw; }  /* 12.7 * 1.817 + 3 */
+  .selection-placeholder--horizontal { height: 16vw; }  /* 18.2 * 0.7 + 3 */
+  .selection-placeholder--special    { height: 39vw; }  /* 23.5 * 1.512 + 3 */
+  .selection-placeholder--license    { height: 31vw; }  /* 18.5 * 1.516 + 3 */
+}
+
+@media (max-width: 1100px) {
+  .selection-placeholder--vertical   { height: 29vw; }  /* 14.5 * 1.817 + 3 */
+  .selection-placeholder--horizontal { height: 19vw; }  /* 22.2 * 0.7 + 3 */
+  .selection-placeholder--special    { height: 49vw; }  /* 30.6 * 1.512 + 3 */
+  .selection-placeholder--license    { height: 37vw; }  /* 22.5 * 1.516 + 3 */
+}
+
+@media (max-width: 700px) {
+  .selection-placeholder--vertical   { height: 42vw; }  /* 21.5 * 1.817 + 3 */
+  .selection-placeholder--horizontal { height: 24vw; }  /* 30 * 0.7 + 3 */
+  .selection-placeholder--special    { height: 71vw; }  /* 45 * 1.512 + 3 */
+  .selection-placeholder--license    { height: 48vw; }  /* 30 * 1.516 + 3 */
+}
