@@ -91,7 +91,7 @@
     </div>
 
     @if(type) {
-    <div class="container-series" [ngClass]="'animationPosterAndLicense'">
+    <div class="container-series">
         <div class="container-season">
             @if(seasons.length > 0) {
             @for(season of seasons; track season.id; let idx = $index) {
@@ -125,17 +125,20 @@
             }
         </div>
         @if(episodes) {
-        <app-episode-poster-vertical-view [series]="series" [episodes]="episodes"
-            [ngClass]="'animationPosterAndLicense'"></app-episode-poster-vertical-view>
+        <app-episode-poster-vertical-view [series]="series" [episodes]="episodes"></app-episode-poster-vertical-view>
         }@else {
         <app-episode-poster-vertical-view-loading></app-episode-poster-vertical-view-loading>
         }
     </div>
     } @else {
     @if(similarMedias) {
-    <div class="container-similar-movies" [ngClass]="'animationPosterAndLicense'">
+    <div class="container-similar-movies">
         @for (media of similarMedias; track media) {
-        <app-similar-poster-horizontal (onClicked)="onClickSimilarTitle($event)" [media]="media"></app-similar-poster-horizontal>
+        @defer(on viewport) {
+        <app-similar-poster-horizontal [media]="media" (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-horizontal>
+        } @placeholder {
+        <app-similar-poster-horizontal-loading></app-similar-poster-horizontal-loading>
+        }
         }
     </div>
     }@else {

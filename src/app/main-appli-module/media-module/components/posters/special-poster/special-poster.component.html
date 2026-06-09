@@ -4,8 +4,10 @@
     (mouseenter)="onMouseEnter()">
     <div class="containerPoster">
         @if(srcPoster != undefined) {
-        <img [src]="srcPoster" loading="lazy" decoding="async" (error)="onErrorImage()">
-        } @else {
+        <img [src]="srcPoster" loading="lazy" decoding="async" (error)="onErrorImage()" (load)="onImageLoad()"
+            [style.opacity]="imageLoaded ? '1' : '0'">
+        }
+        @if(srcPoster == undefined || !imageLoaded) {
         <p class="titleMovie"> {{media.title}}</p>
         }
     </div>

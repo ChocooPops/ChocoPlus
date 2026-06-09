@@ -1,8 +1,8 @@
 <div class="container-media-horizontal-background">
-    <div class="containerLogo" [ngClass]="{'container-animation-gradient-normal' : !displaying, 'test' : !displaying}">
+    <div class="containerLogo" [ngClass]="{'container-animation-gradient-normal' : !displaying}">
         @if(srcLogo != undefined) {
         <img [src]="srcLogo" loading="lazy" (error)="onErrorImageLogo()" (load)="onLogoLoad()"
-            [ngClass]="{'hidden' : !displaying}">
+            [style.opacity]="displaying ? '1' : '0'">
         } @else {
         <p class="title"> {{title}}</p>
         }
@@ -10,17 +10,17 @@
     <div class="containerBackground" [ngClass]="{'container-animation-gradient-little' : !displaying}">
         @if(srcBackground != undefined) {
         <img [src]="srcBackground" loading="lazy" (error)="onErrorImageBackground()" (load)="onBackgroundLoad()"
-            [ngClass]="{'hidden' : !displaying}">
+            [style.opacity]="displaying ? '1' : '0'">
         }
     </div>
 
     <div class="container-bartitle">
         <div class="container-poster">
-            <div class="poster" [ngClass]="{'container-animation-gradient-normal' : !displaying, 'test' : !displaying}">
+            <div class="poster" [ngClass]="{'container-animation-gradient-normal' : !displaying}">
                 <div class="container-tmp-poster"></div>
                 @if(srcPoster != undefined) {
                 <img [src]="srcPoster" loading="lazy" (error)="onErrorImagePoster()" (load)="onPosterLoad()"
-                    [ngClass]="{'hidden' : !displaying}">
+                    [style.opacity]="displaying ? '1' : '0'">
                 } @else {
                 <p class="title-poster"> {{title}}</p>
                 }

@@ -57,7 +57,7 @@
 
     <div class="container-second-line">
         @if (crews) {
-        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [ngClass]="'animationPosterAndLicense'" [credits]="crews" [jobTitle]="JobModel.DIRECTOR"
+        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [credits]="crews" [jobTitle]="JobModel.DIRECTOR"
             [mediaType]="movie.mediaType"></app-credit-poster>
         } @else {
         <app-credit-poster-loading [jobTitle]="JobModel.DIRECTOR"></app-credit-poster-loading>
@@ -66,7 +66,7 @@
 
     <div class="container-third-line">
         @if (casts) {
-        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [ngClass]="'animationPosterAndLicense'" [credits]="casts"
+        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [credits]="casts"
             [jobTitle]="JobModel.ACTOR"></app-credit-poster>
         } @else {
         <app-credit-poster-loading [jobTitle]="JobModel.ACTOR"></app-credit-poster-loading>
@@ -75,8 +75,12 @@
 
     <div class="container-fourth-line">
         @if (similarMedias) {
-        <app-similar-poster-vertical [ngClass]="'animationPosterAndLicense'" [medias]="similarMedias"
+        @defer(on viewport) {
+        <app-similar-poster-vertical [medias]="similarMedias"
             (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-vertical>
+        } @placeholder {
+        <app-similar-poster-vertical-loading></app-similar-poster-vertical-loading>
+        }
         } @else {
         <app-similar-poster-vertical-loading></app-similar-poster-vertical-loading>
         }

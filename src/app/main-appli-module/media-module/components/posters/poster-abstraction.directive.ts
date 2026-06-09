@@ -27,6 +27,7 @@ export class PosterAbstraction {
     protected typePoster: SelectionType = SelectionType.NORMAL_POSTER;
     protected srcPoster !: string | undefined;
     protected srcLogo !: string | undefined;
+    protected imageLoaded: boolean = false;
     protected transformScale: number = 1;
     protected transformTranslateX: number = 0;
     protected transformTranslateY: number = 0;
@@ -121,8 +122,13 @@ export class PosterAbstraction {
         }
     }
 
+    onImageLoad(): void {
+        this.imageLoaded = true;
+    }
+
     onErrorImage(): void {
         this.srcPoster = undefined;
+        this.imageLoaded = false;
     }
 
     onMouseEnter(): void {

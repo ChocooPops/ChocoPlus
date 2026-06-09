@@ -39,10 +39,11 @@ export class MediaHorizontalBackgroundComponent {
   srcBackground!: string | undefined;
   title!: string;
 
-  isLogoLoading: boolean = false;
-  isBackLoading: boolean = false;
-  isPosterLoading: boolean = false;
   displaying: boolean = false;
+
+  private posterLoaded: boolean = false;
+  private logoLoaded: boolean = false;
+  private backgroundLoaded: boolean = false;
 
   duration!: string;
   resolution!: string;
@@ -63,20 +64,16 @@ export class MediaHorizontalBackgroundComponent {
   }
 
   private init(): void {
+    this.resetLoading();
+
     this.srcPoster = this.compressedPosterService.getPosterMedia(SelectionType.SPECIAL_POSTER, this.media, ScalePoster.SCALE_ORIGINAL);
     this.srcLogo = this.compressedPosterService.getLogoForMediaPresentation(this.media);
     this.srcBackground = this.compressedPosterService.getBackgroundForMediaPresentation(this.media);
     this.title = this.media.title;
 
-    if (!this.srcPoster) {
-      this.onPosterLoad();
-    }
-    if (!this.srcLogo) {
-      this.onLogoLoad();
-    }
-    if (!this.srcBackground) {
-      this.onBackgroundLoad();
-    }
+    if (!this.srcPoster) this.onPosterLoad();
+    if (!this.srcLogo) this.onLogoLoad();
+    if (!this.srcBackground) this.onBackgroundLoad();
 
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).duration) || '2015';
@@ -87,44 +84,47 @@ export class MediaHorizontalBackgroundComponent {
     }
   }
 
-  onErrorImagePoster(): void {
-    this.srcPoster = undefined;
-    this.onLogoLoad();
+  private resetLoading(): void {
+    this.posterLoaded = false;
+    this.logoLoaded = false;
+    this.backgroundLoaded = false;
+    this.displaying = false;
   }
-  onPosterLoad(): void {
-    this.isPosterLoading = true;
-    if (this.isBackLoading && this.isLogoLoading && this.isPosterLoading) {
+
+  private checkAllLoaded(): void {
+    if (this.posterLoaded && this.logoLoaded && this.backgroundLoaded) {
       this.displaying = true;
     }
+  }
+
+  onPosterLoad(): void {
+    this.posterLoaded = true;
+    this.checkAllLoaded();
+  }
+
+  onErrorImagePoster(): void {
+    this.srcPoster = undefined;
+    this.onPosterLoad();
+  }
+
+  onLogoLoad(): void {
+    this.logoLoaded = true;
+    this.checkAllLoaded();
   }
 
   onErrorImageLogo(): void {
     this.srcLogo = undefined;
     this.onLogoLoad();
   }
-  onLogoLoad(): void {
-    this.isLogoLoading = true;
-    if (this.isBackLoading && this.isPosterLoading && this.isPosterLoading) {
-      this.displaying = true;
-    }
+
+  onBackgroundLoad(): void {
+    this.backgroundLoaded = true;
+    this.checkAllLoaded();
   }
 
   onErrorImageBackground(): void {
     this.srcBackground = undefined;
     this.onBackgroundLoad();
-  }
-  onBackgroundLoad(): void {
-    this.isBackLoading = true;
-    if (this.isLogoLoading && this.isPosterLoading && this.isPosterLoading) {
-      this.displaying = true;
-    }
-  }
-
-  resetImageLoading(): void {
-    this.isBackLoading = false;
-    this.isLogoLoading = false;
-    this.isPosterLoading = false;
-    this.displaying = false;
   }
 
   onClickFormatMediaPage(): void {

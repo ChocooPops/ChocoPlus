@@ -14,7 +14,7 @@ import { JobPipe } from '../../../../../common-module/pipe/job.pipe';
   standalone: true,
   imports: [TranslatePipe, JobPipe],
   templateUrl: './credit-poster.component.html',
-  styleUrl: './credit-poster.component.css',
+  styleUrls: ['./credit-poster.component.css', '../../../../common-module/styles/animation.css'],
 })
 export class CreditPosterComponent {
 

@@ -69,8 +69,7 @@
             }
         </div>
         @if (episodes) {
-        <app-episode-poster-horizontal-view [ngClass]="'animationPosterAndLicense'" [series]="series"
-            [episodes]="episodes"></app-episode-poster-horizontal-view>
+        <app-episode-poster-horizontal-view [series]="series" [episodes]="episodes"></app-episode-poster-horizontal-view>
         } @else {
         <app-episode-poster-horizontal-view-loading></app-episode-poster-horizontal-view-loading>
         }
@@ -78,7 +77,7 @@
 
     <div class="container-third-line">
         @if (crews) {
-        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [ngClass]="'animationPosterAndLicense'" [credits]="crews" [jobTitle]="JobModel.DIRECTOR"
+        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [credits]="crews" [jobTitle]="JobModel.DIRECTOR"
             [mediaType]="series.mediaType"></app-credit-poster>
         } @else {
         <app-credit-poster-loading [jobTitle]="JobModel.DIRECTOR"></app-credit-poster-loading>
@@ -87,7 +86,7 @@
 
     <div class="container-fourth-line">
         @if (casts) {
-        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [ngClass]="'animationPosterAndLicense'" [credits]="casts"
+        <app-credit-poster (onClickCreditEmit)="setFilterCredit($event)" [credits]="casts"
             [jobTitle]="JobModel.ACTOR"></app-credit-poster>
         } @else {
         <app-credit-poster-loading [jobTitle]="JobModel.ACTOR"></app-credit-poster-loading>
@@ -96,8 +95,12 @@
 
     <div class="container-fifth-line">
         @if (similarMedias) {
-        <app-similar-poster-vertical [ngClass]="'animationPosterAndLicense'" [medias]="similarMedias"
+        @defer(on viewport) {
+        <app-similar-poster-vertical [medias]="similarMedias"
             (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-vertical>
+        } @placeholder {
+        <app-similar-poster-vertical-loading></app-similar-poster-vertical-loading>
+        }
         } @else {
         <app-similar-poster-vertical-loading></app-similar-poster-vertical-loading>
         }

@@ -5,11 +5,12 @@
 }
 <div class="container-staffs" [style.gap.vw]="gap">
 @for (credit of credits; track $index) {
-    <div class="container-staff">
+    @defer(on viewport) {
+    <div class="container-staff animationPosterAndLicense">
         <div class="staff-poster" (click)="onClickCredit(credit)" [style.height.vw]="height" [style.width.vw]="width">
             <div class="container-tmp-poster"></div>
             @if (srcPoster[$index]) {
-                <img [src]="srcPoster[$index]" (error)="onErrorImage($index)">
+                <img [src]="srcPoster[$index]" loading="lazy" decoding="async" (error)="onErrorImage($index)">
             } @else {
                 <img [src]="srcIconCredit">
             }
@@ -23,6 +24,11 @@
         }
         </div>
     </div>
+    } @placeholder {
+    <div class="container-staff">
+        <div class="staff-poster container-animation-gradient-normal" [style.height.vw]="height" [style.width.vw]="width"></div>
+    </div>
+    }
 }
 @for (item of posterTmp; track $index) {
     <div class="container-staff">

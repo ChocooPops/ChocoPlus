@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { LicenseModel } from '../../model/license.interface';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NgClass } from '@angular/common';
 import { DimensionModel } from '../../../../common-module/models/dimension.interface';
 import { Subscription } from 'rxjs';
 import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
@@ -11,7 +10,7 @@ import { PaginationLicenseService } from '../../service/pagination-license/pagin
 @Component({
   selector: 'app-search-license',
   standalone: true,
-  imports: [NgClass],
+  imports: [],
   templateUrl: './search-license.component.html',
   styleUrls: ['./search-license.component.css', '../../../common-module/styles/animation.css']
 })

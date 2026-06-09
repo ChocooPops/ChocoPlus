@@ -18,10 +18,11 @@ export class MediaBackgroundVerticalComponent {
   srcLogo!: string | undefined;
   srcBackground!: string | undefined;
   title!: string;
-  isLogoLoading: boolean = false;
-  isBackLoading: boolean = false;
-  isPosterLoading: boolean = false;
   displaying: boolean = false;
+
+  private logoLoaded: boolean = false;
+  private backgroundLoaded: boolean = false;
+  private posterLoaded: boolean = false;
 
   constructor(private compressedPosterService: CompressedPosterService) { }
 
@@ -36,25 +37,30 @@ export class MediaBackgroundVerticalComponent {
     this.srcBackground = this.compressedPosterService.getBackgroundForMediaPresentation(this.media);
     this.title = this.media.title;
 
-    if (!this.srcLogo) {
-      this.onLogoLoad();
-    }
+    if (!this.srcLogo) this.onLogoLoad();
+    if (!this.srcBackground) this.onBackgroundLoad();
+  }
 
-    if (!this.isBackLoading) {
-      this.onBackgroundLoad();
+  private checkAllLoaded(): void {
+    if (this.logoLoaded && this.backgroundLoaded && this.posterLoaded) {
+      this.displaying = true;
+      this.newEmitLoader.emit();
     }
+  }
+
+  onLogoLoad(): void {
+    this.logoLoaded = true;
+    this.checkAllLoaded();
   }
 
   onErrorImageLogo(): void {
     this.srcLogo = undefined;
     this.onLogoLoad();
   }
-  onLogoLoad(): void {
-    this.isLogoLoading = true;
-    if (this.isBackLoading && this.isPosterLoading) {
-      this.displaying = true;
-      this.newEmitLoader.emit();
-    }
+
+  onBackgroundLoad(): void {
+    this.backgroundLoaded = true;
+    this.checkAllLoaded();
   }
 
   onErrorImageBackground(): void {
@@ -62,26 +68,15 @@ export class MediaBackgroundVerticalComponent {
     this.onBackgroundLoad();
   }
 
-  onBackgroundLoad(): void {
-    this.isBackLoading = true;
-    if (this.isLogoLoading && this.isPosterLoading) {
-      this.displaying = true;
-      this.newEmitLoader.emit();
-    }
-  }
-
   onPosterLoad(): void {
-    this.isPosterLoading = true;
-    if (this.isBackLoading && this.isLogoLoading) {
-      this.displaying = true;
-      this.newEmitLoader.emit();
-    }
+    this.posterLoaded = true;
+    this.checkAllLoaded();
   }
 
   resetImageLoading(): void {
-    this.isBackLoading = false;
-    this.isLogoLoading = false;
-    this.isPosterLoading = false;
+    this.logoLoaded = false;
+    this.backgroundLoaded = false;
+    this.posterLoaded = false;
     this.displaying = false;
   }
 

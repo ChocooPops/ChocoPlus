@@ -18,7 +18,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   standalone: true,
   imports: [StartButtonComponent, DatePipe, TranslatePipe],
   templateUrl: './episode-poster-horizontal-view.component.html',
-  styleUrl: './episode-poster-horizontal-view.component.css',
+  styleUrls: ['./episode-poster-horizontal-view.component.css', '../../../../common-module/styles/animation.css'],
 })
 export class EpisodePosterHorizontalViewComponent {
   @Input() series!: SeriesModel;

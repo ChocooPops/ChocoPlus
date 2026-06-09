@@ -1,6 +1,7 @@
 <div class="container-list-episode">
     @for(episode of episodes; track episode.id; let idx = $index) {
-    <div class="container-episode">
+    @defer(on viewport) {
+    <div class="container-episode animationPosterAndLicense">
         <div class="container-index">
             <p class="index">{{ episode.episodeNumber}}</p>
         </div>
@@ -10,7 +11,7 @@
                     [episode]="episode" [seasons]="series.seasons"></app-start-button>
             </div>
             @if (episodePoster[idx]) {
-                <img [src]="episodePoster[idx]" (error)="onError(idx)">
+                <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
             }
             @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
             <div class="container-progress">
@@ -30,5 +31,12 @@
             }
         </div>
     </div>
+    } @placeholder {
+    <div class="container-episode">
+        <div></div>
+        <div class="container-poster container-animation-gradient-normal"></div>
+        <div></div>
+    </div>
+    }
     }
 </div>

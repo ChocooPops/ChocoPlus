@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { LicenseModel } from '../../model/license.interface';
 import { DisplayOrderService } from '../../../media-module/services/display-order/display-order.service';
-import { NgClass } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
@@ -12,7 +11,7 @@ import { PaginationLicenseService } from '../../service/pagination-license/pagin
 @Component({
   selector: 'app-home-license',
   standalone: true,
-  imports: [NgClass],
+  imports: [],
   templateUrl: './home-license.component.html',
   styleUrls: ['./home-license.component.css', '../../../common-module/styles/animation.css']
 })

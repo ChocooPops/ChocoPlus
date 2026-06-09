@@ -1,7 +1,8 @@
 <h2> {{ 'MEDIA_PAGE.SIMILAR_TITLES' | translate }} </h2>
 <div class="container-medias" [style.gap.vw]="gap">
     @for (media of medias; track $index) {
-    <div class="container-media" [style.width.vw]="width">
+    @defer(on viewport) {
+    <div class="container-media animationPosterAndLicense" [style.width.vw]="width">
         @if(media.description) {
         <div class="container-info-icon" (click)="$event.stopPropagation()">
             <img class="info-icon" [src]="srcIconInfo" alt="info">
@@ -18,12 +19,17 @@
                 </div>
             </div>
             @if (srcPoster[$index]) {
-            <img [src]="srcPoster[$index]" (error)="onErrorImage($index)">
+            <img [src]="srcPoster[$index]" loading="lazy" decoding="async" (error)="onErrorImage($index)">
             } @else {
             <p class="titlePoster">{{ media.title }}</p>
             }
         </div>
     </div>
+    } @placeholder {
+    <div class="container-media" [style.width.vw]="width">
+        <div class="media-poster container-animation-gradient-normal" [style.height.vw]="height" [style.width.vw]="width"></div>
+    </div>
+    }
     }
     <div class="margin-left"></div>
 </div>

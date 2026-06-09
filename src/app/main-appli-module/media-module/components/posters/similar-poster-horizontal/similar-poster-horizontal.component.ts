@@ -16,7 +16,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   standalone: true,
   imports: [MylistButtonComponent, StartButtonComponent, DatePipe, TranslatePipe],
   templateUrl: './similar-poster-horizontal.component.html',
-  styleUrl: './similar-poster-horizontal.component.css'
+  styleUrls: ['./similar-poster-horizontal.component.css', '../../../../common-module/styles/animation.css']
 })
 export class SimilarPosterHorizontalComponent {
 

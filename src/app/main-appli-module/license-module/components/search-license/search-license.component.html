@@ -1,5 +1,5 @@
-<div class="containerLicenceSearch" [style.height.vw]="dimension.height" [style.width.vw]="dimension.width"
-    (click)="onClick()" [ngClass]="{'animationPosterAndLicense' : true}">
+<div class="containerLicenceSearch animationPosterAndLicense" [style.height.vw]="dimension.height" [style.width.vw]="dimension.width"
+    (click)="onClick()">
     @if(srcIcon !== undefined) {
     <div class="containerImageLicense">
         <img [src]="srcIcon" loading="lazy" (error)="onErrorImage()">

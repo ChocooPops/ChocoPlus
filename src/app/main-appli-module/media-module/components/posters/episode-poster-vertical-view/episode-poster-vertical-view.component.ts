@@ -14,7 +14,7 @@ import { MediaProgressingModel } from '../../../../video-playing-module/models/m
   standalone: true,
   imports: [DatePipe, StartButtonComponent],
   templateUrl: './episode-poster-vertical-view.component.html',
-  styleUrl: './episode-poster-vertical-view.component.css'
+  styleUrls: ['./episode-poster-vertical-view.component.css', '../../../../common-module/styles/animation.css']
 })
 export class EpisodePosterVerticalViewComponent {
 

@@ -1,12 +1,13 @@
 <h2> {{ 'MEDIA_PAGE.EPISODES' | translate }} </h2>
 <div class="container-episodes" [style.gap.vw]="gap">
     @for (episode of episodes; track episode.id; let idx = $index) {
-    <div class="container-episode" [style.max-width.vw]="width">
+    @defer(on viewport) {
+    <div class="container-episode animationPosterAndLicense" [style.max-width.vw]="width">
         <div class="container-info-icon" (click)="$event.stopPropagation()">
-                <img class="info-icon" [src]="srcIconInfo">
-                <div class="info-tooltip">
+            <img class="info-icon" [src]="srcIconInfo">
+            <div class="info-tooltip">
                 <p>{{ episode.description }}</p>
-                </div>
+            </div>
         </div>
         <div class="container-poster" [style.height.vw]="height" [style.width.vw]="width" (click)="start.onClick()">
             <div class="container-tmp-poster">
@@ -14,7 +15,7 @@
                     [episode]="episode" [seasons]="series.seasons"></app-start-button>
             </div>
             @if (episodePoster[idx]) {
-                <img [src]="episodePoster[idx]" (error)="onError(idx)">
+                <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
             }
             @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
             <div class="container-progress">
@@ -27,6 +28,11 @@
             <p class="other-info"> {{ episode.resolution }} <br> {{ getTimerEpisode(episode.duration) }} <br> {{ episode.date | date:'d MMMM, y'}} </p>
         </div>
     </div>
+    } @placeholder {
+    <div class="container-episode" [style.max-width.vw]="width">
+        <div class="container-poster container-animation-gradient-normal" [style.height.vw]="height" [style.width.vw]="width"></div>
+    </div>
+    }
     }
     <div class="margin-left"></div>
 </div>

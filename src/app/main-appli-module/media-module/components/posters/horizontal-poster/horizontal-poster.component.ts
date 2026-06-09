@@ -20,8 +20,15 @@ export class HorizontalPosterComponent extends PosterAbstraction {
   override typePoster: SelectionType = SelectionType.HORIZONTAL_POSTER;
   protected override transformScale: number = 1.7;
 
+  logoLoaded: boolean = false;
+
+  onLogoLoad(): void {
+    this.logoLoaded = true;
+  }
+
   onErrorLogo(): void {
     this.srcLogo = undefined;
+    this.logoLoaded = false;
   }
 
 }
