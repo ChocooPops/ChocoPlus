@@ -76,3 +76,10 @@ img {
     --edit-color: #aaa;
     --edit-placeholder: #aaa;
 }
+
+app-news-alert {
+    z-index: 5;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+}

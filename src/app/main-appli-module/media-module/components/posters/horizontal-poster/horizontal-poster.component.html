@@ -1,6 +1,9 @@
 <div class="container-horizontal-poster" [style.transform]="transformStyle" [style.z-index]="zIndex"
     [style.height.vw]="dimension.height" [style.width.vw]="dimension.width" (mouseleave)="onMouseLeave()"
     [ngClass]="{'container-horizontal-poster-pressed' : isHover, 'animationPosterAndLicense' : true}">
+    
+    <app-news-alert [visibility]="!isHover" [isRecent]="media.isRecent" [mediaType]="media.mediaType"></app-news-alert>
+    
     <div class="container-main-poster" (mouseenter)="onMouseEnter()" (click)="selectedMovieActivate(media)"
         [ngClass]="{'border-if-src-poster-is-undefined' : srcPoster === undefined}">
         @if(srcPoster != undefined) {

@@ -8,11 +8,12 @@ import { SelectionType } from '../../../models/selection-type.enum';
 import { StartButtonComponent } from '../../button/start-button/start-button.component';
 import { MylistButtonComponent } from '../../button/mylist-button/mylist-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { NewsAlertComponent } from '../news-alert/news-alert.component';
 
 @Component({
   selector: 'app-similar-poster-vertical',
   standalone: true,
-  imports: [StartButtonComponent, MylistButtonComponent, TranslatePipe],
+  imports: [StartButtonComponent, MylistButtonComponent, TranslatePipe, NewsAlertComponent],
   templateUrl: './similar-poster-vertical.component.html',
   styleUrls: ['./similar-poster-vertical.component.css', '../../../../common-module/styles/animation.css'],
 })

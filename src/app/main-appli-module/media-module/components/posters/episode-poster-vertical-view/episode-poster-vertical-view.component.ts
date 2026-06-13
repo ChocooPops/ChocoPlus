@@ -8,11 +8,13 @@ import { SeriesModel } from '../../../models/series/series.interface';
 import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
 import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
+import { NewsAlertComponent } from '../news-alert/news-alert.component';
+import { MediaTypeModel } from '../../../models/media-type.enum';
 
 @Component({
   selector: 'app-episode-poster-vertical-view',
   standalone: true,
-  imports: [DatePipe, StartButtonComponent],
+  imports: [DatePipe, NewsAlertComponent, StartButtonComponent],
   templateUrl: './episode-poster-vertical-view.component.html',
   styleUrls: ['./episode-poster-vertical-view.component.css', '../../../../common-module/styles/animation.css']
 })
@@ -26,6 +28,8 @@ export class EpisodePosterVerticalViewComponent {
   episodeProgress: MediaProgressingModel[] = [];
   ProgressState = ProgressStateMedia;
   srcEpisode: string = 'icon/episode.svg';
+
+  MediaType = MediaTypeModel;
 
   constructor(private readonly verifTimerShowService: VerifTimerShowService,
     private readonly compressedPosterService: CompressedPosterService,

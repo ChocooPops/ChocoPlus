@@ -37,7 +37,8 @@ export class MovieService {
           resolution: 'any quality',
           watchProgress: 0,
           stateProgress: ProgressStateMedia.NOT_WATCHED,
-          mediaType: MediaTypeModel.MOVIE
+          mediaType: MediaTypeModel.MOVIE,
+          isRecent: false
         }
         return of(movie);
       })
@@ -69,7 +70,8 @@ export class MovieService {
       srcBackgroundImage: movie.srcBackgroundImage ? movie.srcBackgroundImage || undefined : undefined,
       typeZoomX: undefined,
       typeZoomY: false,
-      mediaType: MediaTypeModel.MOVIE
+      mediaType: MediaTypeModel.MOVIE,
+      isRecent: movie.isRecent
     }
     if (movie.path) {
       movieTmp.path = movie.path;

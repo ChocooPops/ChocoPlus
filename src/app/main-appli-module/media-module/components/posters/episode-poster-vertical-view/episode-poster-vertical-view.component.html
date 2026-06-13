@@ -6,6 +6,9 @@
             <p class="index">{{ episode.episodeNumber}}</p>
         </div>
         <div class="container-poster" (click)="start.onClick()">
+
+            <app-news-alert [visibility]="true" [isRecent]="episode.isRecent" [mediaType]="MediaType.EPISODE"></app-news-alert>
+
             <div class="container-tmp-poster">
                 <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
                     [episode]="episode" [seasons]="series.seasons"></app-start-button>

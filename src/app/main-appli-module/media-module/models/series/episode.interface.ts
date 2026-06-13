@@ -14,6 +14,7 @@ export interface EpisodeModel {
     stateProgress: ProgressStateMedia,
     resolution: string,
     srcPoster: string | undefined,
+    isRecent: boolean,
 
     path?: string,
     frames?: number,

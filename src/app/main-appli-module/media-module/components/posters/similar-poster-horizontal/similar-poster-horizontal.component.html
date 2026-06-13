@@ -1,5 +1,8 @@
 <div class="container-horizontal-poster animationPosterAndLicense">
     <div class="container-main-poster" (click)="onClickMovie()">
+
+        <app-news-alert [visibility]="true" [isRecent]="media.isRecent" [mediaType]="media.mediaType"></app-news-alert>
+
         @if(srcPoster != undefined) {
         <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()" class="img-poster">
         }

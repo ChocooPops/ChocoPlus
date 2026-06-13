@@ -7,11 +7,12 @@ import { MylistButtonComponent } from '../../button/mylist-button/mylist-button.
 import { SelectionType } from '../../../models/selection-type.enum';
 import { TitleCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { NewsAlertComponent } from '../news-alert/news-alert.component';
 
 @Component({
   selector: 'app-horizontal-poster',
   standalone: true,
-  imports: [NgClass, TranslatePipe, StartButtonComponent, ModifyButtonComponent, MylistButtonComponent, TitleCasePipe],
+  imports: [NgClass, NewsAlertComponent, TranslatePipe, StartButtonComponent, ModifyButtonComponent, MylistButtonComponent, TitleCasePipe],
   templateUrl: './horizontal-poster.component.html',
   styleUrls: ['./horizontal-poster.component.css', '../../../../common-module/styles/animation.css', '../../../../common-module/styles/movie-button.css']
 })

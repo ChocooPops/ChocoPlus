@@ -40,7 +40,8 @@ export class NewsVideoRunningService {
         mediaLibraryId: 'undefined',
         typeZoomX: false,
         typeZoomY: false,
-        mediaType: mediaType
+        mediaType: mediaType,
+        isRecent: false
       }
     }
   }

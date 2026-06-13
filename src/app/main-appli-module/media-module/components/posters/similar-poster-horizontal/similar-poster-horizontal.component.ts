@@ -10,11 +10,12 @@ import { MediaTypeModel } from '../../../models/media-type.enum';
 import { MovieModel } from '../../../models/movie-model';
 import { SeriesModel } from '../../../models/series/series.interface';
 import { TranslatePipe } from '@ngx-translate/core';
+import { NewsAlertComponent } from '../news-alert/news-alert.component';
 
 @Component({
   selector: 'app-similar-poster-horizontal',
   standalone: true,
-  imports: [MylistButtonComponent, StartButtonComponent, DatePipe, TranslatePipe],
+  imports: [MylistButtonComponent, StartButtonComponent, DatePipe, TranslatePipe, NewsAlertComponent],
   templateUrl: './similar-poster-horizontal.component.html',
   styleUrls: ['./similar-poster-horizontal.component.css', '../../../../common-module/styles/animation.css']
 })

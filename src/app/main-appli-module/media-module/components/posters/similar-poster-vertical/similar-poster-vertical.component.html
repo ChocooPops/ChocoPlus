@@ -3,6 +3,9 @@
     @for (media of medias; track $index) {
     @defer(on viewport) {
     <div class="container-media animationPosterAndLicense" [style.width.vw]="width">
+
+        <app-news-alert [visibility]="true" [isRecent]="media.isRecent" [mediaType]="media.mediaType"></app-news-alert>
+
         @if(media.description) {
         <div class="container-info-icon" (click)="$event.stopPropagation()">
             <img class="info-icon" [src]="srcIconInfo" alt="info">

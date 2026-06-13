@@ -12,11 +12,13 @@ import { GeometricDimensionSelectionModel } from '../../../models/geometric-dime
 import { StartButtonComponent } from '../../button/start-button/start-button.component';
 import { DatePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { NewsAlertComponent } from '../news-alert/news-alert.component';
+import { MediaTypeModel } from '../../../models/media-type.enum';
 
 @Component({
   selector: 'app-episode-poster-horizontal-view',
   standalone: true,
-  imports: [StartButtonComponent, DatePipe, TranslatePipe],
+  imports: [StartButtonComponent, DatePipe, TranslatePipe, NewsAlertComponent],
   templateUrl: './episode-poster-horizontal-view.component.html',
   styleUrls: ['./episode-poster-horizontal-view.component.css', '../../../../common-module/styles/animation.css'],
 })
@@ -34,6 +36,8 @@ export class EpisodePosterHorizontalViewComponent {
   gap!: number;
   srcIconInfo: string = 'icon/info.svg';
   srcEpisode: string = 'icon/episode.svg';
+
+  MediaType = MediaTypeModel;
 
   private subscription!: Subscription;
 

@@ -1,0 +1,11 @@
+@if (isRecent) {
+
+    @if (mediaType === MediaType.MOVIE) {
+        <p [class.visible]="visibility"> {{ 'NEWS_ALERT.MOVIE' | translate }} </p>
+    } @else if (mediaType === MediaType.SERIES) {
+        <p [class.visible]="visibility"> {{ 'NEWS_ALERT.SERIES' | translate }} </p>
+    } @else if (mediaType === MediaType.EPISODE) {
+        <p [class.visible]="visibility"> {{ 'NEWS_ALERT.EPISODE' | translate }} </p>
+    }
+
+}

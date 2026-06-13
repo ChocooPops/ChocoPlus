@@ -47,6 +47,7 @@ export class SeriesService {
       typeZoomX: undefined,
       typeZoomY: false,
       mediaType: MediaTypeModel.SERIES,
+      isRecent: series.isRecent ?? false,
       seasons: series.seasons && series.seasons.length > 0 ? this.createNewSeasons(series.seasons) : []
     }
 
@@ -94,6 +95,7 @@ export class SeriesService {
           typeZoomX: undefined,
           typeZoomY: false,
           mediaType: MediaTypeModel.SERIES,
+          isRecent: false,
           seasons: []
         }
         return of(series);

@@ -24,6 +24,7 @@ export interface MediaModel {
     typeZoomX: boolean | undefined;
     typeZoomY: boolean,
     mediaType: MediaTypeModel,
+    isRecent: boolean,
 
     path?: string
 }

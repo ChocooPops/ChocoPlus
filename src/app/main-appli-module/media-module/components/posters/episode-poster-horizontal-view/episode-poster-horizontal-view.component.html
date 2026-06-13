@@ -3,6 +3,9 @@
     @for (episode of episodes; track episode.id; let idx = $index) {
     @defer(on viewport) {
     <div class="container-episode animationPosterAndLicense" [style.max-width.vw]="width">
+
+        <app-news-alert [visibility]="true" [isRecent]="episode.isRecent" [mediaType]="MediaType.EPISODE"></app-news-alert>
+
         <div class="container-info-icon" (click)="$event.stopPropagation()">
             <img class="info-icon" [src]="srcIconInfo">
             <div class="info-tooltip">

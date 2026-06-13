@@ -621,5 +621,10 @@
     "SOUND MIXER": "音響ミキサー",
     "SOUND EFFECTS": "効果音",
     "SOUND DIRECTOR": "音響監督",
-    "SOUND DESIGNER": "サウンドデザイナー"
+    "SOUND DESIGNER": "サウンドデザイナー",
+    "NEWS_ALERT": {
+        "MOVIE": "新着",
+        "SERIES": "新エピソード",
+        "EPISODE": "新着"
+    }
 }

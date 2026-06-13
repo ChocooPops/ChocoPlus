@@ -621,5 +621,10 @@
     "SOUND MIXER": "Mixeur son",
     "SOUND EFFECTS": "Effets sonores",
     "SOUND DIRECTOR": "Directeur du son",
-    "SOUND DESIGNER": "Designer sonore"
+    "SOUND DESIGNER": "Designer sonore",
+    "NEWS_ALERT": {
+        "MOVIE": "Nouveau",
+        "SERIES": "Nouveaux épisodes",
+        "EPISODE": "Nouveau"
+    }
 }
