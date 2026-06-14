@@ -4,8 +4,9 @@ import { AuthService } from '../../../../launch-module/services/auth/auth.servic
 import { ChocoPlayerModel } from '../../models/choco-player.interface';
 import { MovieService } from '../../../media-module/services/movie/movie.service';
 import { SeriesService } from '../../../media-module/services/series/series.service';
-import { take } from 'rxjs';
+import { BehaviorSubject, Observable, take } from 'rxjs';
 import { HistoricWatchProgressService } from '../historic-watch-progress/historic-watch-progress.service';
+import { ProcessStatus } from '../../models/process-status.enum';
 
 declare const window: any;
 
@@ -20,14 +21,24 @@ export class StreamService {
   private readonly urlGetStreamNewsVideoRunning: string = 'stream-news';
   private readonly paramToken: string = 'token';
 
+  private csharpProcessStatusSubject: BehaviorSubject<ProcessStatus> = new BehaviorSubject<ProcessStatus>(ProcessStatus.CLOSED);
+  private csharpProcessStatus$: Observable<ProcessStatus> = this.csharpProcessStatusSubject.asObservable();
+
   constructor(private readonly authService: AuthService,
     private readonly movieService: MovieService,
     private readonly seriesService: SeriesService,
     private readonly historicWatchProgressService: HistoricWatchProgressService
   ) {
     window.electron.onChocoPlayerStatus((data: ChocoPlayerModel) => {
-      this.setWatchProgressByMedia(data);
+      if (data.status) this.csharpProcessStatusSubject.next(data.status);
+      if (data.status === ProcessStatus.CLOSED) {
+        this.setWatchProgressByMedia(data);
+      }
     });
+  }
+
+  public getCsharpProcessStatus(): Observable<ProcessStatus> {
+    return this.csharpProcessStatus$;
   }
 
   public getUrlStreamMovie(movieId: number): string {

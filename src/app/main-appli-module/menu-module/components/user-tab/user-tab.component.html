@@ -2,7 +2,16 @@
     
     <div class="container-menu-tab" (mouseleave)="onMouseLeave()" (mouseenter)="onMouseEnter()" (click)="onNavigateToUserPage()">
         <div class="container-pp">
+            
+            <span
+                class="pulse-dot"
+                [class.is-expected]="csharpProcessStatus === ProcessStatus.EXPECTED"
+                [class.is-launched]="csharpProcessStatus === ProcessStatus.LAUNCHED"
+                [class.is-hidden]="csharpProcessStatus === ProcessStatus.CLOSED"
+            ></span>
+
             <img [src]="user.profilPhoto" (error)="errorPpUser()">
+            
         </div>
         <div class="container-arrow">
             <div class="arrow-down" [ngClass]="classArrow"></div>

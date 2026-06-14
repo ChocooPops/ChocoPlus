@@ -1,3 +1,5 @@
+import { ProcessStatus } from "./process-status.enum";
+
 export interface ChocoPlayerModel {
     MediaId: number,
     Title: string,
@@ -7,5 +9,6 @@ export interface ChocoPlayerModel {
     WatchProgress: number,
     EpisodeId: number;
     SeasonIndex: number;
-    SeasonMenu: any[]
+    SeasonMenu: any[],
+    status?: ProcessStatus,
 }

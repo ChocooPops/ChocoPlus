@@ -6,6 +6,12 @@ const { exec } = require('child_process');
 const { spawn } = require("child_process");
 const fs = require('fs');
 
+const ProcessStatus = Object.freeze({
+  EXPECTED: "EXPECTED",
+  LAUNCHED: "LAUNCHED",
+  CLOSED: "CLOSED"
+});
+
 const envPath = app.isPackaged
   ? path.join(process.resourcesPath, '.env')
   : path.join(__dirname, '.env');
@@ -282,6 +288,8 @@ ipcMain.handle('secureStore:deleteRefreshToken', async () =>
 
 ipcMain.handle('launch-choco-player', async (event, dataObject) => {
   try {
+        
+    mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.EXPECTED });
 
     if (currentChocoPlayer?.MediaId === dataObject.MediaId && currentChocoPlayer?.EpisodeId === dataObject.EpisodeId) {
       return null;
@@ -325,6 +333,12 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
       }
     );
 
+    csharpProcess.on('spawn', () => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('choco-player-status', { ...dataObject, status: ProcessStatus.LAUNCHED });
+      }
+    });
+
     csharpProcess.stdout.on('data', (data) => {
       //console.log(`C# stdout: ${data}`);
     });
@@ -336,7 +350,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     csharpProcess.on('close', (code) => {
       //console.log(`C# process exited with code ${code}`);
       if (mainWindow && !mainWindow.isDestroyed()) {
-        mainWindow.webContents.send('choco-player-status', dataObject);
+        mainWindow.webContents.send('choco-player-status', { ...dataObject, status: ProcessStatus.CLOSED });
       }
       currentChocoPlayer = null;
       csharpProcess = null;
@@ -349,6 +363,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
 
     return 'C# Player lancé';
   } catch (err) {
+    mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
     throw new Error(err.message);
   }
 });

@@ -17,6 +17,8 @@ import { SeriesModel } from '../../../media-module/models/series/series.interfac
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TranslationLanguageService } from '../../../../common-module/services/translation-language/translation-language.service';
+import { ProcessStatus } from '../../../video-playing-module/models/process-status.enum';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-user-tab',
@@ -44,6 +46,9 @@ export class UserTabComponent {
   srcTraductionFill: string = 'icon/traduction-fill.svg';
   srcTraductionNotFill: string = 'icon/traduction-not-fill.svg';
 
+  csharpProcessStatus!: ProcessStatus;
+  ProcessStatus = ProcessStatus;
+
   constructor(private readonly userService: UserService,
     private readonly movieService: MovieService,
     //private router: Router,
@@ -52,7 +57,8 @@ export class UserTabComponent {
     private readonly authService: AuthService,
     private readonly seriesService: SeriesService,
     private readonly streamService: StreamService,
-    private readonly translationLanguageService: TranslationLanguageService
+    private readonly translationLanguageService: TranslationLanguageService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.userMenu = this.userParametersService.getAllUserTabMenu();
   }
@@ -73,7 +79,13 @@ export class UserTabComponent {
       this.translationLanguageService.getIsShowingKeys().subscribe((value) => {
         this.isShowingKeys = value;
       })
-    )
+    );
+    this.subscription.add(
+      this.streamService.getCsharpProcessStatus().subscribe((data: ProcessStatus) => {
+        this.csharpProcessStatus = data;
+        this.cdr.detectChanges();
+      })
+    );
   }
 
   onMouseEnter(): void {
