@@ -14,6 +14,13 @@ namespace ChocoPlayer
 {
     public class ChocoPlayer : Form
     {
+        public enum ProcessStatus
+        {
+            LAUNCHING,
+            NETWORK_SLOWDOWN,
+            STREAMING,
+            CLOSED
+        }
         // ── VLC ────────────────────────────────────────────────────────────────
         private LibVLC? _libVLC;
         private MediaPlayer? _mediaPlayer;
@@ -175,8 +182,29 @@ namespace ChocoPlayer
             _mediaPlayer.EncounteredError += (_, _) =>
             {
                 this.BeginInvoke(new Action(() =>
-                    MessageBox.Show("Erreur lors de la lecture du stream.", "Erreur",
+                    MessageBox.Show("Error reading the stream.", "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error)));
+            };
+
+            bool isBufferingStall = false;
+
+            _mediaPlayer.Opening += (_, _) =>
+                Console.WriteLine(ProcessStatus.NETWORK_SLOWDOWN);
+
+            _mediaPlayer.Buffering += (_, e) =>
+            {
+                if (e.Cache < 100 && !isBufferingStall)
+                {
+                    //$“[ChocoPlayer] Network interruption – buffering {e.Cache:F0}%”
+                    isBufferingStall = true;
+                    Console.WriteLine(ProcessStatus.NETWORK_SLOWDOWN); //Send the stream status to the ChocoPlus Electron interface
+                }
+                else if (e.Cache >= 100 && isBufferingStall)
+                {
+                    //“[ChocoPlayer] Resuming after a network interruption”
+                    isBufferingStall = false;
+                    Console.WriteLine(ProcessStatus.STREAMING); //Send the stream status to the ChocoPlus Electron interface
+                }
             };
 
             Player.SetMediaPlayer(_mediaPlayer);
@@ -349,8 +377,8 @@ namespace ChocoPlayer
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Impossible de lire le média : {ex.Message}",
-                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Unable to play the media : {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -917,8 +945,8 @@ namespace ChocoPlayer
 
             if (_mediaId == 0)
             {
-                MessageBox.Show("Impossible de charger les épisodes : ID de la série non défini.",
-                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Unable to load episodes: Series ID not defined.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -952,8 +980,8 @@ namespace ChocoPlayer
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Impossible de charger les épisodes :\n{ex.Message}",
-                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Unable to load the episodes :\n{ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _seasonsMenu?.ClearEpisodes();
             }
         }
@@ -1296,8 +1324,8 @@ namespace ChocoPlayer
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Impossible de lire l'épisode : {ex.Message}",
-                        "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Unable to play the episode : {ex.Message}",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

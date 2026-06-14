@@ -90,7 +90,7 @@ namespace DarkTitleBar
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DarkTitleBarManager] Erreur : {ex.Message}");
+                Console.WriteLine($"[DarkTitleBarManager] Error : {ex.Message}");
                 return false;
             }
         }
@@ -121,12 +121,12 @@ namespace DarkTitleBar
                     return DwmSetWindowAttribute(handle, DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1, ref value, sizeof(int)) == 0;
                 }
 
-                Console.WriteLine($"[DarkTitleBarManager] Windows build {build} ne supporte pas le mode sombre de la barre de titre");
+                Console.WriteLine($"[DarkTitleBarManager] Windows build {build} does not support dark mode for the title bar");
                 return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DarkTitleBarManager] Erreur Windows : {ex.Message}");
+                Console.WriteLine($"[DarkTitleBarManager] Windows Error: {ex.Message}");
                 return false;
             }
         }
@@ -143,7 +143,7 @@ namespace DarkTitleBar
 
                 if (nsWindow == IntPtr.Zero)
                 {
-                    Console.WriteLine("[DarkTitleBarManager] Impossible de récupérer la NSWindow");
+                    Console.WriteLine("[DarkTitleBarManager] Unable to retrieve the NSWindow");
                     return false;
                 }
 
@@ -164,7 +164,7 @@ namespace DarkTitleBar
 
                 if (darkAppearance == IntPtr.Zero)
                 {
-                    Console.WriteLine("[DarkTitleBarManager] Impossible de créer l'apparence sombre");
+                    Console.WriteLine("[DarkTitleBarManager] Unable to create the dark theme");
                     return false;
                 }
 
@@ -176,7 +176,7 @@ namespace DarkTitleBar
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DarkTitleBarManager] Erreur macOS : {ex.Message}");
+                Console.WriteLine($"[DarkTitleBarManager] MacOS Error: {ex.Message}");
                 return false;
             }
         }
@@ -249,7 +249,7 @@ namespace DarkTitleBar
             {
                 if (!IsGtkAvailable())
                 {
-                    Console.WriteLine("[DarkTitleBarManager] GTK n'est pas disponible sur ce système Linux");
+                    Console.WriteLine("[DarkTitleBarManager] GTK is not available on this Linux system");
                     return false;
                 }
 
@@ -257,7 +257,7 @@ namespace DarkTitleBar
 
                 if (settings == IntPtr.Zero)
                 {
-                    Console.WriteLine("[DarkTitleBarManager] Impossible de récupérer les paramètres GTK");
+                    Console.WriteLine("[DarkTitleBarManager] Unable to retrieve GTK settings");
                     return false;
                 }
 
@@ -268,7 +268,7 @@ namespace DarkTitleBar
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DarkTitleBarManager] Erreur Linux : {ex.Message}");
+                Console.WriteLine($"[DarkTitleBarManager] Linux Error: {ex.Message}");
                 return false;
             }
         }

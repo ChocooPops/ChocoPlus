@@ -50,23 +50,23 @@ namespace ChocoPlayer
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"[API] ✗ Erreur HTTP : {ex.Message}");
-                throw new Exception($"Impossible de se connecter à l'API : {ex.Message}", ex);
+                Console.WriteLine($"[API] ✗ Error HTTP : {ex.Message}");
+                throw new Exception($"Unable to connect to the API : {ex.Message}", ex);
             }
             catch (TaskCanceledException ex)
             {
                 Console.WriteLine($"[API] ✗ Timeout : {ex.Message}");
-                throw new Exception("La requête a expiré. Vérifiez que l'API est accessible.", ex);
+                throw new Exception("The request has expired. Please verify that the API is accessible.", ex);
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"[API] ✗ Erreur JSON : {ex.Message}");
+                Console.WriteLine($"[API] ✗ Error JSON : {ex.Message}");
                 Console.WriteLine($"[API] Position: Line {ex.LineNumber}, Offset {ex.BytePositionInLine}");
-                throw new Exception($"Réponse JSON invalide : {ex.Message}", ex);
+                throw new Exception($"Invalid JSON response : {ex.Message}", ex);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[API] ✗ Erreur inattendue : {ex.Message}");
+                Console.WriteLine($"[API] ✗ Unexpected error : {ex.Message}");
                 Console.WriteLine($"[API] Stack : {ex.StackTrace}");
                 throw;
             }

@@ -86,7 +86,7 @@ namespace ChocoPlayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erreur lors du chargement des icônes mini player: {ex.Message}");
+                Console.WriteLine($"Error loading mini player icons: {ex.Message}");
             }
         }
 
@@ -102,7 +102,7 @@ namespace ChocoPlayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erreur lors du chargement de {pngPath}: {ex.Message}");
+                Console.WriteLine($"Error loading {pngPath}: {ex.Message}");
                 return null;
             }
         }

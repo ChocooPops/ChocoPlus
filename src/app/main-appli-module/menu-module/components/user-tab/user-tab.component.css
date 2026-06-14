@@ -180,11 +180,15 @@
     transform 0.3s ease;
 }
 
-.pulse-dot.is-expected {
+.pulse-dot.is-launching {
   --pulse-rgb: 220, 38, 38;
 }
 
-.pulse-dot.is-launched {
+.pulse-dot.is-network-slowdown {
+  --pulse-rgb: 112, 171, 243;
+}
+
+.pulse-dot.is-streaming {
   --pulse-rgb: 255, 211, 1;
 }
 

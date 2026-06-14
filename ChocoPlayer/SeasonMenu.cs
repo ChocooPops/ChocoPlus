@@ -657,7 +657,7 @@ namespace ChocoPlayer
                     {
                         if (skBitmap == null)
                         {
-                            Console.WriteLine($"Impossible de décoder l'image: {imageUrl}");
+                            Console.WriteLine($"Unable to decode the image: {imageUrl}");
                             return;
                         }
 
@@ -684,7 +684,7 @@ namespace ChocoPlayer
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"ERREUR chargement image {imageUrl}: {ex.Message}");
+                    Console.WriteLine($"ERROR loading image {imageUrl}: {ex.Message}");
                 }
             });
 

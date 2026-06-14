@@ -5,8 +5,9 @@
             
             <span
                 class="pulse-dot"
-                [class.is-expected]="csharpProcessStatus === ProcessStatus.EXPECTED"
-                [class.is-launched]="csharpProcessStatus === ProcessStatus.LAUNCHED"
+                [class.is-launching]="csharpProcessStatus === ProcessStatus.LAUNCHING"
+                [class.is-network-slowdown]="csharpProcessStatus === ProcessStatus.NETWORK_SLOWDOWN"
+                [class.is-launched]="csharpProcessStatus === ProcessStatus.STREAMING"
                 [class.is-hidden]="csharpProcessStatus === ProcessStatus.CLOSED"
             ></span>
 

@@ -7,8 +7,9 @@ const { spawn } = require("child_process");
 const fs = require('fs');
 
 const ProcessStatus = Object.freeze({
-  EXPECTED: "EXPECTED",
-  LAUNCHED: "LAUNCHED",
+  LAUNCHING: "LAUNCHING",
+  NETWORK_SLOWDOWN: "NETWORK_SLOWDOWN",
+  STREAMING: "STREAMING",
   CLOSED: "CLOSED"
 });
 
@@ -289,7 +290,7 @@ ipcMain.handle('secureStore:deleteRefreshToken', async () =>
 ipcMain.handle('launch-choco-player', async (event, dataObject) => {
   try {
         
-    mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.EXPECTED });
+    mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.LAUNCHING });
 
     if (currentChocoPlayer?.MediaId === dataObject.MediaId && currentChocoPlayer?.EpisodeId === dataObject.EpisodeId) {
       return null;
@@ -333,14 +334,21 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
       }
     );
 
-    csharpProcess.on('spawn', () => {
-      if (mainWindow && !mainWindow.isDestroyed()) {
-        mainWindow.webContents.send('choco-player-status', { ...dataObject, status: ProcessStatus.LAUNCHED });
-      }
-    });
+    // csharpProcess.on('spawn', () => {
+    //   if (mainWindow && !mainWindow.isDestroyed()) {
+    //     mainWindow.webContents.send('choco-player-status', { ...dataObject, status: ProcessStatus.LAUNCHING });
+    //   }
+    // });
 
     csharpProcess.stdout.on('data', (data) => {
-      //console.log(`C# stdout: ${data}`);
+      const message = data.toString().trim();
+
+      if (!mainWindow || mainWindow.isDestroyed()) return;
+
+      if (Object.values(ProcessStatus).includes(message)) {
+        mainWindow.webContents.send('choco-player-status', { ...dataObject, status: message });
+      }
+
     });
 
     csharpProcess.stderr.on('data', (data) => {
@@ -361,7 +369,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
       csharpProcess = null;
     });
 
-    return 'C# Player lancé';
+    return 'C# Player launched';
   } catch (err) {
     mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
     throw new Error(err.message);
