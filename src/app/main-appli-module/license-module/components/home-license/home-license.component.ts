@@ -20,6 +20,7 @@ export class HomeLicenseComponent {
   @Input()
   licenceHome !: LicenseModel;
   srcIcon !: String | undefined;
+  isImageLoaded: boolean = false;
   zIndex !: number;
   subscription: Subscription = new Subscription();
   dimension !: DimensionModel;
@@ -51,6 +52,10 @@ export class HomeLicenseComponent {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  onLoadImage(): void {
+    this.isImageLoaded = true;
   }
 
   onErrorImage(): void {

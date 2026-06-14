@@ -1,8 +1,11 @@
 <div [style.height.vw]="dimension.height" [style.width.vw]="dimension.width" class="container-license-home animationPosterAndLicense"
     (click)="onClick()" (mouseenter)="onMouseEnter()" [style.z-index]="zIndex">
     @if(srcIcon !== undefined) {
-    <img [src]="srcIcon" loading="lazy" [alt]="licenceHome.name" (error)="onErrorImage()">
-    }@else {
+    <img [src]="srcIcon" loading="lazy" [alt]="licenceHome.name"
+        (load)="onLoadImage()" (error)="onErrorImage()"
+        [class.image-loaded]="isImageLoaded">
+    }
+    @if(srcIcon === undefined || !isImageLoaded) {
     <p class="title-license-home"> {{licenceHome.name}}</p>
     }
 </div>

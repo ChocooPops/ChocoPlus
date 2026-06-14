@@ -1,10 +1,11 @@
 <div class="containerLicenceSearch animationPosterAndLicense" [style.height.vw]="dimension.height" [style.width.vw]="dimension.width"
     (click)="onClick()">
     @if(srcIcon !== undefined) {
-    <div class="containerImageLicense">
-        <img [src]="srcIcon" loading="lazy" (error)="onErrorImage()">
+    <div class="containerImageLicense" [class.image-loaded]="isImageLoaded">
+        <img [src]="srcIcon" loading="lazy" (load)="onLoadImage()" (error)="onErrorImage()">
     </div>
-    }@else {
+    }
+    @if(srcIcon === undefined || !isImageLoaded) {
     <p class="titleLicenceSearch">{{licenseSearch.name}}</p>
     }
 </div>

@@ -21,6 +21,7 @@ export class SearchLicenseComponent {
 
   dimension !: DimensionModel;
   srcIcon: string | undefined;
+  isImageLoaded: boolean = false;
   subscription: Subscription = new Subscription();
 
   constructor(private router: Router,
@@ -39,6 +40,10 @@ export class SearchLicenseComponent {
         }
       })
     )
+  }
+
+  onLoadImage(): void {
+    this.isImageLoaded = true;
   }
 
   onErrorImage(): void {
