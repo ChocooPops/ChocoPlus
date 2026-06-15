@@ -5,11 +5,12 @@ import { ScrollButtonComponent } from '../scroll-button/scroll-button.component'
 import { SpecialPosterComponent } from '../../posters/special-poster/special-poster.component';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { SelectionTranslatePipe } from '../../../../../common-module/pipe/selection-translate';
 
 @Component({
   selector: 'app-special-selection',
   standalone: true,
-  imports: [NgClass, ScrollButtonComponent, PaginationComponent, SpecialPosterComponent],
+  imports: [NgClass, ScrollButtonComponent, PaginationComponent, SpecialPosterComponent, SelectionTranslatePipe],
   templateUrl: './special-selection.component.html',
   styleUrls: ['./special-selection.component.css', '../selection.style.css']
 })

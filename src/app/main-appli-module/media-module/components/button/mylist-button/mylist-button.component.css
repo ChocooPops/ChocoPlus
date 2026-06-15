@@ -1,3 +1,15 @@
 .cursor-pointer {
     cursor: pointer;
 }
+
+.icon--enter {
+  display: none;
+}
+
+.iconWrap:hover .icon--enter {
+  display: block;
+}
+
+.iconWrap:hover .icon--leave {
+  display: none;
+}

@@ -21,7 +21,6 @@ export class MylistButtonComponent {
   @Input() media!: MediaModel;
 
   isInList: boolean = false;
-  isHover: boolean = false;
 
   srcNotListEnter: string = 'icon/notInMyListEnter.svg';
   srcNotListLeave: string = 'icon/notInMyListLeave.svg';
@@ -54,13 +53,6 @@ export class MylistButtonComponent {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  onMouseEnter(): void { 
-    this.isHover = true; 
-  }
-  onMouseLeave(): void { 
-    this.isHover = false; 
   }
 
   onClick(): void {

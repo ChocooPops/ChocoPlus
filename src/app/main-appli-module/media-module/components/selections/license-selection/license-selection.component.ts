@@ -5,11 +5,12 @@ import { ScrollButtonComponent } from '../scroll-button/scroll-button.component'
 import { LicensePosterComponent } from '../../posters/license-poster/license-poster.component';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { SelectionTranslatePipe } from '../../../../../common-module/pipe/selection-translate';
 
 @Component({
   selector: 'app-license-selection',
   standalone: true,
-  imports: [NgClass, ScrollButtonComponent, PaginationComponent, LicensePosterComponent],
+  imports: [NgClass, ScrollButtonComponent, PaginationComponent, LicensePosterComponent, SelectionTranslatePipe],
   templateUrl: './license-selection.component.html',
   styleUrls: ['./license-selection.component.css', '../selection.style.css']
 })

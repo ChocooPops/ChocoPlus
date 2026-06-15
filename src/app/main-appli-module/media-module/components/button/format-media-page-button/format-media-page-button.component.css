@@ -5,3 +5,15 @@
 .horizontal {
     transform: rotate(90deg);
 }
+
+.icon--enter {
+  display: none;
+}
+
+.iconWrap:hover .icon--enter {
+  display: block;
+}
+
+.iconWrap:hover .icon--leave {
+  display: none;
+}

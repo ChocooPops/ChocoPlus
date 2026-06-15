@@ -20,20 +20,11 @@ export class ModifyButtonComponent {
   @Input() idMedia !: number;
   @Input() mediaType !: MediaTypeModel;
 
-  isHover: boolean = false;
   srcImageEnter: String = "icon/modifyEnter.svg";
   srcImageLeave: String = "icon/modifyLeave.svg"
   modify: String = "icon/modify.svg";
 
   constructor(private readonly editionParametersService: EditionParametersService) { }
-
-  onMouseEnter(): void {
-    this.isHover = true;
-  }
-
-  onMouseLeave(): void {
-    this.isHover = false;
-  }
 
   onClick(): void {
     if (!this.cursor) return;

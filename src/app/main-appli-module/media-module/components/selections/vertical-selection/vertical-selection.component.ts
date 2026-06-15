@@ -5,11 +5,12 @@ import { ScrollButtonComponent } from '../scroll-button/scroll-button.component'
 import { VerticalPosterComponent } from '../../posters/vertical-poster/vertical-poster.component';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { SelectionTranslatePipe } from '../../../../../common-module/pipe/selection-translate';
 
 @Component({
   selector: 'app-vertical-selection',
   standalone: true,
-  imports: [NgClass, ScrollButtonComponent, PaginationComponent, VerticalPosterComponent],
+  imports: [NgClass, ScrollButtonComponent, PaginationComponent, VerticalPosterComponent, SelectionTranslatePipe],
   templateUrl: './vertical-selection.component.html',
   styleUrls: ['./vertical-selection.component.css', '../selection.style.css']
 })

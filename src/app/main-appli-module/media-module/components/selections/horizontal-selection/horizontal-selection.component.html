@@ -1,7 +1,7 @@
 <div class="container-movie-selection">
     <div class="containerHeader">
         <div class="containerTitle" [style.padding-left.vw]="marginLeftTitle">
-            <p> {{selection.name}} </p>
+            <p> {{ selection.name | selectiontranslate }} </p>
         </div>
         <app-pagination [pagination]="pagination" [marginLeft]="marginLeft"></app-pagination>
     </div>

@@ -5,11 +5,12 @@ import { HorizontalPosterComponent } from '../../posters/horizontal-poster/horiz
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { ScrollButtonComponent } from '../scroll-button/scroll-button.component';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { SelectionTranslatePipe } from '../../../../../common-module/pipe/selection-translate';
 
 @Component({
   selector: 'app-horizontal-selection',
   standalone: true,
-  imports: [NgClass, ScrollButtonComponent, HorizontalPosterComponent, PaginationComponent],
+  imports: [NgClass, ScrollButtonComponent, HorizontalPosterComponent, PaginationComponent, SelectionTranslatePipe],
   templateUrl: './horizontal-selection.component.html',
   styleUrls: ['./horizontal-selection.component.css', '../selection.style.css']
 })

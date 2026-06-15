@@ -13,7 +13,6 @@ import { FormatMediaPageService } from '../../../services/format-media-page/form
 })
 export class FormatMediaPageButtonComponent {
 
-  isHovering: boolean = false;
   srcButton = 'icon/format-media-page.svg';
   srcButtonPressed = 'icon/format-media-page-pressed.svg';
   subscription !: Subscription;
@@ -38,14 +37,6 @@ export class FormatMediaPageButtonComponent {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-  }
-
-  onMouseEnter(): void {
-    this.isHovering = true;
-  }
-
-  onMouseLeave(): void {
-    this.isHovering = false;
   }
 
   onClick(): void {

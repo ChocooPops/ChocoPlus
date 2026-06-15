@@ -1,19 +1,13 @@
 <div class="container" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}">
     @if(!typeButton) {
-    <div [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}"
-        (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+    <div class="iconWrap"
+        [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}">
         @if(isInList) {
-        @if(isHover) {
-        <img [src]="srcInListEnter">
+        <img class="icon icon--leave" [src]="srcInListLeave">
+        <img class="icon icon--enter" [src]="srcInListEnter">
         }@else {
-        <img [src]="srcInListLeave">
-        }
-        }@else {
-        @if(isHover) {
-        <img [src]="srcNotListEnter">
-        }@else {
-        <img [src]="srcNotListLeave">
-        }
+        <img class="icon icon--leave" [src]="srcNotListLeave">
+        <img class="icon icon--enter" [src]="srcNotListEnter">
         }
     </div>
     }@else {
