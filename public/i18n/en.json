@@ -201,7 +201,9 @@
             "EDITION_PAGE": "Edition page",
             "USER_PAGE": "User page",
             "LAST_PAGE_VISITED": "Last page visited",
-            "LAUNCH_PAGE": "Launch page"
+            "LAUNCH_PAGE": "Launch page",
+            "LAUNCH_LICENSE": "Launch license",
+            "SELECT_LICENSE": "Select a license"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "Viewing the database can consume a lot of resources on less powerful computers",

@@ -19,6 +19,8 @@ import { NewsVideoRunningModel } from '../../../main-appli-module/news-module/mo
 export class LoadOpeningPageService {
   private readonly lastPageVisited: string = 'LAST_PAGE_VISITED';
   private readonly openingPage: string = 'OPENING_PAGE';
+  private readonly lastLicenseIdVisited: string = 'LAST_LICENSE_ID_VISITED';
+  private readonly openingLicenseId: string = 'OPENING_LICENSE_ID';
 
   constructor(
     private selectionService: SelectionService,
@@ -57,6 +59,22 @@ export class LoadOpeningPageService {
       this.setOpeningPage(PageModel.PAGE_HOME);
       return PageModel.PAGE_HOME;
     }
+  }
+
+  public setLastLicenseIdVisited(id: number): void {
+    localStorage.setItem(this.lastLicenseIdVisited, id.toString());
+  }
+  public getLastLicenseIdVisited(): number | null {
+    const idStr: string | null = localStorage.getItem(this.lastLicenseIdVisited);
+    return idStr !== null ? Number(idStr) : null;
+  }
+
+  public setOpeningLicenseId(id: number): void {
+    localStorage.setItem(this.openingLicenseId, id.toString());
+  }
+  public getOpeningLicenseId(): number | null {
+    const idStr: string | null = localStorage.getItem(this.openingLicenseId);
+    return idStr !== null ? Number(idStr) : null;
   }
 
   public loadHomePageDataAndNavigate(): void {
@@ -203,6 +221,20 @@ export class LoadOpeningPageService {
         //   this.router.navigateByUrl('main-app/my-list');
         // });
       });
+  }
+
+  public loadLicensePageDataAndNavigate(): void {
+    const openingPage: PageModel = this.getOpeningPage();
+    const id: number | null = openingPage === PageModel.DEFAULT_PAGE
+      ? this.getLastLicenseIdVisited()
+      : this.getOpeningLicenseId();
+    if (id !== null) {
+      this.licenseService.fetchLicenseById(id).pipe(take(1)).subscribe(() => {
+        this.router.navigateByUrl(`main-app/license/${id}`);
+      });
+    } else {
+      this.loadHomePageDataAndNavigate();
+    }
   }
 
   public loadEditionPageDataAndNavigate(): void {

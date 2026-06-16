@@ -201,7 +201,9 @@
             "EDITION_PAGE": "編集ページ",
             "USER_PAGE": "ユーザーページ",
             "LAST_PAGE_VISITED": "最後に訪問したページ",
-            "LAUNCH_PAGE": "起動ページ"
+            "LAUNCH_PAGE": "起動ページ",
+            "LAUNCH_LICENSE": "起動ライセンス",
+            "SELECT_LICENSE": "ライセンスを選択"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "データベースの表示は、性能の低いコンピューターで大量のリソースを消費する可能性があります",

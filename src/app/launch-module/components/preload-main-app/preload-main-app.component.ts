@@ -73,6 +73,8 @@ export class PreloadMainAppComponent {
       this.loadOpeningPageService.loadEditionPageDataAndNavigate();
     } else if (page === PageModel.PAGE_USER) {
       this.loadOpeningPageService.loadUserPageDataAndNavigate();
+    } else if (page === PageModel.PAGE_LICENSE) {
+      this.loadOpeningPageService.loadLicensePageDataAndNavigate();
     } else {
       this.loadOpeningPageService.loadHomePageDataAndNavigate();
     }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ParameterAppliService } from '../../service/parameter-appli/parameter-appli.service';
 import { InputRadioButtonComponent } from '../../../edition-module/components/input-radio-button/input-radio-button.component';
+import { InputSelectComponent } from '../../../edition-module/components/input-select/input-select.component';
 import { ParamaterAppliModel } from '../../dto/parameter-appli.interface';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
@@ -10,7 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-parameter-appli',
   standalone: true,
-  imports: [InputRadioButtonComponent, TranslatePipe],
+  imports: [InputRadioButtonComponent, InputSelectComponent, TranslatePipe],
   templateUrl: './parameter-appli.component.html',
   styleUrl: './parameter-appli.component.css'
 })
@@ -22,6 +23,7 @@ export class ParameterAppliComponent {
   radioButtonPosterLicense: ParamaterAppliModel[] = [];
   radioButtonPosterFormat: ParamaterAppliModel[] = [];
   radioButtonOtherOption: ParamaterAppliModel[] = [];
+  showLicenseSelect: boolean = false;
 
   constructor(private readonly parameterAppliService: ParameterAppliService,
     private readonly compressedPosterService: CompressedPosterService,
@@ -33,6 +35,15 @@ export class ParameterAppliComponent {
     this.radioButtonPosterLicense = this.parameterAppliService.getRadioButtonForPosterLicense();
     this.radioButtonPosterFormat = this.parameterAppliService.getRadioButtonForFormatPoster();
     this.radioButtonOtherOption = this.parameterAppliService.getRadioButtonOtherOption();
+    this.showLicenseSelect = this.parameterAppliService.isLicensePageSelected();
+  }
+
+  get availableLicenses(): { id: number; name: string }[] {
+    return this.parameterAppliService.getAvailableLicenses();
+  }
+
+  get selectedLicenseId(): number | null {
+    return this.parameterAppliService.getSelectedLicenseId();
   }
 
   onChangePosterFilm(idParam: number, idRadioButton: number): void {
@@ -49,6 +60,11 @@ export class ParameterAppliComponent {
 
   onChangeOpeningPage(idParam: number, idRadioButton: number): void {
     this.parameterAppliService.onChangeEmitToOpeningPage(idParam, idRadioButton);
+    this.showLicenseSelect = this.parameterAppliService.isLicensePageSelected();
+  }
+
+  onLicenseSelect(id: number): void {
+    this.parameterAppliService.onSelectLicense(id);
   }
 
   onClickResetMediaParameters(): void {

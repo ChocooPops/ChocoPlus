@@ -9,6 +9,9 @@ import { PageModel } from '../../../../launch-module/models/page.enum';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { FormatMediaPageService } from '../../../media-module/services/format-media-page/format-media-page-button.service';
 import { FormatMediaPageModel } from '../../../media-module/models/format-media-page-enum';
+import { LicenseService } from '../../../license-module/service/license/licence.service';
+import { LicenseModel } from '../../../license-module/model/license.interface';
+import { take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +21,12 @@ export class ParameterAppliService {
   constructor(private readonly formatPosterService: FormatPosterService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly loadOpeningPageService: LoadOpeningPageService,
-    private readonly formatMediaPageService: FormatMediaPageService
+    private readonly formatMediaPageService: FormatMediaPageService,
+    private readonly licenseService: LicenseService
   ) { }
 
   private id: number = 0;
+  private availableLicenses: { id: number; name: string }[] = [];
 
   private radioButtonPosterFilm: ParamaterAppliModel[] = [
     {
@@ -219,6 +224,12 @@ export class ParameterAppliService {
         },
         {
           id: this.getId(),
+          name: "USER.APP_SETTINGS.LICENSE_PAGE",
+          value: PageModel.PAGE_LICENSE,
+          state: false
+        },
+        {
+          id: this.getId(),
           name: "USER.APP_SETTINGS.LAST_PAGE_VISITED",
           value: PageModel.DEFAULT_PAGE,
           state: false
@@ -348,6 +359,31 @@ export class ParameterAppliService {
         this.radioButtonOtherOption[0].radioButton[i].state = false;
       }
     }
+
+    //INIT LICENSE LIST FOR SELECT;
+    this.availableLicenses = [];
+    this.licenseService.fetchAllLicenseResearch().pipe(take(1)).subscribe((licenses: LicenseModel[]) => {
+      this.availableLicenses.push(...licenses.map((lic: LicenseModel) => ({ id: lic.id, name: lic.name })));
+    });
+    this.licenseService.fetchAllLicenseHome().pipe(take(1)).subscribe((licenses: LicenseModel[]) => {
+      this.availableLicenses.push(...licenses.map((lic: LicenseModel) => ({ id: lic.id, name: lic.name })));
+    });
+  }
+
+  public isLicensePageSelected(): boolean {
+    return this.loadOpeningPageService.getOpeningPage() === PageModel.PAGE_LICENSE;
+  }
+
+  public getAvailableLicenses(): { id: number; name: string }[] {
+    return this.availableLicenses;
+  }
+
+  public getSelectedLicenseId(): number | null {
+    return this.loadOpeningPageService.getOpeningLicenseId();
+  }
+
+  public onSelectLicense(id: number): void {
+    this.loadOpeningPageService.setOpeningLicenseId(id);
   }
 
   public getRadioButtonForPosterFilm(): ParamaterAppliModel[] {

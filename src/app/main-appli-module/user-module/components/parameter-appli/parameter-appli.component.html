@@ -56,6 +56,17 @@
                 (changeEmit)="onChangeOpeningPage(param.id, $event)"></app-input-radio-button>
         </div>
         }
+        <div class="container-license-select" [class.visible]="showLicenseSelect">
+            <div class="container-param">
+                <p class="title-param"> {{ 'USER.APP_SETTINGS.LAUNCH_LICENSE' | translate }} </p>
+                <app-input-select
+                    [options]="availableLicenses"
+                    [selectedId]="selectedLicenseId"
+                    [placeholder]="'USER.APP_SETTINGS.SELECT_LICENSE' | translate"
+                    (changeEmit)="onLicenseSelect($event)">
+                </app-input-select>
+            </div>
+        </div>
     </div>
 
 </div>

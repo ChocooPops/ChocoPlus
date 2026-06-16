@@ -1,0 +1,130 @@
+.input-select {
+  position: relative;
+  width: fit-content;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  min-width: 220px;
+  padding-inline: 14px;
+  border-radius: 3px;
+  border: 1.5px solid #2a2a2a;
+  background-color: #111;
+  cursor: pointer;
+  transition: border-color 0.2s, border-radius 0.3s;
+  position: relative;
+
+  &:hover {
+    border-color: #444;
+  }
+}
+
+.input-select.open .select-trigger {
+  border-color: #555;
+  border-radius: 3px 3px 0 0;
+}
+
+.select-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ccc;
+  font-family: 'Arial';
+  text-align: left;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  color: #555;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.input-select.open .chevron {
+  transform: rotate(180deg);
+}
+
+.select-dropdown {
+  position: absolute;
+  top: calc(100%);
+  left: 50%;
+  width: calc(100% - 6px);
+  max-height: calc(35px * 4);
+  background-color: #161616;
+  border: 1.5px solid #2a2a2a;
+  border-top: none;
+  border-radius: 0 0 3px 3px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  opacity: 0;
+  transform: translate(-50%, -6px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 100;
+}
+
+.height-tmp {
+  position: relative;
+  height: calc(35px * 5);
+}
+
+.select-dropdown::-webkit-scrollbar {
+  width: 2px;
+}
+
+.input-select.open .select-dropdown {
+  opacity: 1;
+  transform: translate(-50%, 0px);
+  pointer-events: all;
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  text-align: left;
+
+  &:hover {
+    background-color: #1e1e1e;
+  }
+
+  &.active {
+    background-color: #1c1c1c;
+  }
+  &.active .select-option-name {
+    color: #fff;
+  }
+}
+
+.select-option-name {
+  font-size: 13px;
+  color: #ccc;
+  font-family: 'Arial';
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.check {
+  margin-left: auto;
+  padding-left: 12px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}

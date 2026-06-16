@@ -201,7 +201,9 @@
             "EDITION_PAGE": "Page d'édition",
             "USER_PAGE": "Page de l'utilisateur",
             "LAST_PAGE_VISITED": "Dernière page visitée",
-            "LAUNCH_PAGE": "Page de démarrage"
+            "LAUNCH_PAGE": "Page de démarrage",
+            "LAUNCH_LICENSE": "Licence de démarrage",
+            "SELECT_LICENSE": "Sélectionner une licence"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "La visualisation de la base de donnée peut consommer énormément de ressource pour les ordinateurs les moins performant",

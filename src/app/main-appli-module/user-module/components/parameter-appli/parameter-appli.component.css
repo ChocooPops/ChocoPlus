@@ -63,6 +63,22 @@ app-input-radio-button {
   padding-left: 14px;
 }
 
+.container-license-select {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: max-height 0.35s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+
+.container-license-select.visible {
+  max-height: 300px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
 p {
   margin: 0;
   color: #ccc;

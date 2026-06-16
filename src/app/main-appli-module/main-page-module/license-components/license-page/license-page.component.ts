@@ -12,6 +12,8 @@ import { CompressedPosterService } from '../../../common-module/services/compres
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { LicenseService } from '../../../license-module/service/license/licence.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
+import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
+import { PageModel } from '../../../../launch-module/models/page.enum';
 
 @Component({
   selector: 'app-license-page',
@@ -43,7 +45,8 @@ export class LicensePageComponent {
     private readonly imagePreloaderService: ImagePreloaderService,
     private readonly formatPosterService: FormatPosterService,
     private readonly compressedPosterService: CompressedPosterService,
-    private readonly menuTabService: MenuTabService
+    private readonly menuTabService: MenuTabService,
+    private readonly loadOpeningPageService: LoadOpeningPageService
   ) {
     this.menuTabService.setActivateTransition(true);
   }
@@ -66,6 +69,8 @@ export class LicensePageComponent {
         return this.licenseService.fetchLicenseById(id);
       })
     ).pipe(take(1)).subscribe((data: LicenseModel) => {
+      this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_LICENSE);
+      this.loadOpeningPageService.setLastLicenseIdVisited(this.idLicense);
       const img: string[] = [];
       const srcLogoTmp: string | undefined = this.compressedPosterService.getLogoForLicense(data);
       const srcBackground: string | undefined = this.compressedPosterService.getBackgroundForLicense(data);
