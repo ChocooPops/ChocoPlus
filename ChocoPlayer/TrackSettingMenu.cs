@@ -184,7 +184,7 @@ namespace ChocoPlayer
             }
             currentY += 35;
 
-            // Ligne séparatrice
+            // Separator line
             // using (Pen pen = new Pen(Color.FromArgb(80, 255, 255, 255), 1))
             // {
             //     g2d.DrawLine(pen, PADDING, currentY, this.Width - PADDING, currentY);
@@ -346,29 +346,15 @@ namespace ChocoPlayer
                 }
             }
 
-            string text = track.Name;
             int textX = iconX + 20;
+            int maxTextWidth = width - (textX - startX) - 10;
 
             using (Font font = new Font("Segoe UI", 10, isSelected ? FontStyle.Bold : FontStyle.Regular))
             using (SolidBrush brush = new SolidBrush(isSelected ? Color.White : Color.FromArgb(220, 220, 220)))
+            using (StringFormat sf = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap })
             {
-                int maxTextWidth = width - (textX - startX) - 10;
-                int textWidth = (int)g2d.MeasureString(text, font).Width;
-
-                if (textWidth > maxTextWidth)
-                {
-                    while (textWidth > maxTextWidth - 30 && text.Length > 3)
-                    {
-                        text = text.Substring(0, text.Length - 1);
-                        textWidth = (int)g2d.MeasureString(text + "...", font).Width;
-                    }
-                    text += "...";
-                }
-
-                SizeF textSize = g2d.MeasureString(text, font);
-                int textY = itemY + (ITEM_HEIGHT - (int)textSize.Height) / 2;
-
-                g2d.DrawString(text, font, brush, textX, textY);
+                int textY = itemY + (ITEM_HEIGHT - font.Height) / 2;
+                g2d.DrawString(track.Name, font, brush, new RectangleF(textX, textY, maxTextWidth, font.Height + 4), sf);
             }
 
             if (isAudio)

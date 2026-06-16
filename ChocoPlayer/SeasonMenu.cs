@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -37,7 +38,10 @@ namespace ChocoPlayer
         private int _currentPlayingEpisodeId = -1;
 
         private static readonly HttpClient _httpClient = new HttpClient();
-        private Dictionary<string, Bitmap> _imageCache = new Dictionary<string, Bitmap>();
+        // ConcurrentDictionary: thread-safe access between the UI thread (read) and Task.Run (write)
+        private ConcurrentDictionary<string, Bitmap> _imageCache = new ConcurrentDictionary<string, Bitmap>();
+        // Guard to prevent multiple simultaneous downloads from the same URL
+        private ConcurrentDictionary<string, byte> _pendingDownloads = new ConcurrentDictionary<string, byte>();
 
         private Rectangle _headerRect;
         private Rectangle _dropdownRect;
@@ -140,10 +144,9 @@ namespace ChocoPlayer
             _episodes.Clear();
             _scrollOffset = 0;
 
+            _pendingDownloads.Clear();
             foreach (var img in _imageCache.Values)
-            {
                 img?.Dispose();
-            }
             _imageCache.Clear();
 
             RefreshImmediate();
@@ -320,8 +323,8 @@ namespace ChocoPlayer
             _headerRect = new Rectangle(0, 0, this.Width, HEADER_HEIGHT);
 
             using (SolidBrush brush = new SolidBrush(_headerColor))
+            using (GraphicsPath path = new GraphicsPath())
             {
-                GraphicsPath path = new GraphicsPath();
                 float radius = 12;
                 float diameter = radius * 2;
 
@@ -336,7 +339,6 @@ namespace ChocoPlayer
                 path.AddLine(_headerRect.X, _headerRect.Bottom, _headerRect.X, _headerRect.Y + radius);
 
                 path.CloseFigure();
-
                 g2d.FillPath(brush, path);
             }
 
@@ -589,17 +591,9 @@ namespace ChocoPlayer
 
             using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
+            using (StringFormat sf = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap })
             {
-                string title = episode.Title;
-                if (g2d.MeasureString(title, font).Width > contentWidth)
-                {
-                    while (g2d.MeasureString(title + "...", font).Width > contentWidth && title.Length > 10)
-                    {
-                        title = title.Substring(0, title.Length - 1);
-                    }
-                    title += "...";
-                }
-                g2d.DrawString(title, font, brush, contentX, contentY);
+                g2d.DrawString(episode.Title, font, brush, new RectangleF(contentX, contentY, contentWidth, font.Height + 4), sf);
             }
 
             contentY += 30;
@@ -634,16 +628,23 @@ namespace ChocoPlayer
 
         private void DrawEpisodeImage(Graphics g2d, string imageUrl, int x, int y, int width, int height)
         {
-            if (_imageCache.ContainsKey(imageUrl))
+            if (_imageCache.TryGetValue(imageUrl, out Bitmap? cached))
             {
                 using (GraphicsPath path = GetRoundedRectanglePath(x, y, width, height, 8))
                 {
                     Region currentClip = g2d.Clip.Clone();
                     g2d.SetClip(path, CombineMode.Intersect);
-                    g2d.DrawImage(_imageCache[imageUrl], x, y, width, height);
+                    g2d.DrawImage(cached, x, y, width, height);
                     g2d.Clip = currentClip;
                     currentClip.Dispose();
                 }
+                return;
+            }
+
+            // TryAdd returns false if the URL is already being downloaded
+            if (!_pendingDownloads.TryAdd(imageUrl, 0))
+            {
+                DrawImagePlaceholder(g2d, x, y, width, height);
                 return;
             }
 
@@ -652,54 +653,41 @@ namespace ChocoPlayer
                 try
                 {
                     byte[] imageBytes = await _httpClient.GetByteArrayAsync(imageUrl);
-
                     using (var skBitmap = SKBitmap.Decode(imageBytes))
                     {
-                        if (skBitmap == null)
-                        {
-                            Console.WriteLine($"Unable to decode the image: {imageUrl}");
-                            return;
-                        }
+                        if (skBitmap == null) return;
 
                         Bitmap bitmap = SKBitmapToBitmap(skBitmap);
 
-                        if (!_imageCache.ContainsKey(imageUrl))
-                        {
-                            _imageCache[imageUrl] = bitmap;
-                        }
-                        else
-                        {
+                        // TryAdd: if a concurrent entry already exists, we discard the duplicate
+                        if (!_imageCache.TryAdd(imageUrl, bitmap))
                             bitmap.Dispose();
-                        }
-
-                        try
-                        {
-                            this.Invoke((Action)(() => RefreshImmediate()));
-                        }
-                        catch
-                        {
-                            // Window might be closed
-                        }
                     }
+                    try { this.Invoke((Action)(() => RefreshImmediate())); }
+                    catch { /* window closed */ }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"ERROR loading image {imageUrl}: {ex.Message}");
                 }
+                finally
+                {
+                    _pendingDownloads.TryRemove(imageUrl, out _);
+                }
             });
 
+            DrawImagePlaceholder(g2d, x, y, width, height);
+        }
+
+        private static void DrawImagePlaceholder(Graphics g2d, int x, int y, int width, int height)
+        {
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 60, 60)))
-            {
                 g2d.FillRoundedRectangle(brush, x, y, width, height, 8);
-            }
+
             using (Font font = new Font("Segoe UI", 9))
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(120, 120, 120)))
-            {
-                StringFormat sf = new StringFormat();
-                sf.Alignment = StringAlignment.Center;
-                sf.LineAlignment = StringAlignment.Center;
+            using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
                 g2d.DrawString("Chargement...", font, brush, new Rectangle(x, y, width, height), sf);
-            }
         }
 
         private Bitmap SKBitmapToBitmap(SKBitmap skBitmap)

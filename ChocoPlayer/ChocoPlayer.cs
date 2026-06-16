@@ -55,7 +55,10 @@ namespace ChocoPlayer
         // ── Constants ──────────────────────────────────────────────────────────
         private const int FULLSCREEN_CONTROLS_WIDTH = 800;
         private const int HIDE_CONTROLS_DELAY = 2000;
-        private const int NETWORK_CACHE_MS = 3000;
+        private const int NETWORK_CACHE_MS = 1500;
+
+        // ── Local volume tracking (prevents outdated reads on high-speed presses) ──
+        private int _localVolume = 50;
 
         // ── Mouse / Controls visibility ────────────────────────────────────────
         private bool _controlsVisible = true;
@@ -157,7 +160,7 @@ namespace ChocoPlayer
 
                 // Hardware & threads
                 "--avcodec-hw=any",
-                "--avcodec-threads=0",          // 0 = auto (laisser libvlc choisir)
+                "--avcodec-threads=0",          // 0 = auto (let libvlc choose)
 
                 // Misc optimisations
                 "--no-plugins-cache",
@@ -166,7 +169,8 @@ namespace ChocoPlayer
                 "--drop-late-frames",
                 "--skip-frames",
                 "--avcodec-skiploopfilter=2",
-                "--avcodec-skip-idct=0",
+                "--avcodec-skip-idct=4",     // Skip IDCT on non-reference frames (H.265 CPU gain)
+                "--avcodec-fast",             // Enables ffmpeg's fast decoding mode
                 "--clock-jitter=0",
                 "--audio-resampler=soxr",
                 "--quiet",
@@ -178,6 +182,7 @@ namespace ChocoPlayer
                 Volume = 50,
                 Mute   = false,
             };
+            _localVolume = 50;
 
             _mediaPlayer.EncounteredError += (_, _) =>
             {
@@ -423,14 +428,14 @@ namespace ChocoPlayer
 
             _pendingSeekTime = Math.Clamp(timeMs, 0, _mediaPlayer.Length);
 
-            // Bloquer le timer de PlayerControls immédiatement pour éviter
-            // qu'il écrase la position affichée pendant le debounce
+            // Immediately block the PlayerControls timer to prevent
+            // it from overwriting the displayed position during the debounce
             _playerControls?.SetSeekPending(true);
 
             _seekDebounceTimer?.Stop();
             _seekDebounceTimer?.Dispose();
 
-            _seekDebounceTimer = new System.Windows.Forms.Timer { Interval = 150 };
+            _seekDebounceTimer = new System.Windows.Forms.Timer { Interval = 80 };
             _seekDebounceTimer.Tick += (_, _) =>
             {
                 _seekDebounceTimer?.Stop();
@@ -439,13 +444,12 @@ namespace ChocoPlayer
 
                 if (_mediaPlayer != null && _pendingSeekTime >= 0)
                 {
-                    _mediaPlayer.Time = _pendingSeekTime;
+                    long seekTarget   = _pendingSeekTime;
                     _pendingSeekTime  = -1;
+                    Task.Run(() => { if (_mediaPlayer != null) _mediaPlayer.Time = seekTarget; });
                 }
 
-                // Relâcher le timer de PlayerControls après un court délai
-                // supplémentaire le temps que VLC confirme la nouvelle position
-                var releaseTimer = new System.Windows.Forms.Timer { Interval = 200 };
+                var releaseTimer = new System.Windows.Forms.Timer { Interval = 120 };
                 releaseTimer.Tick += (_, _) =>
                 {
                     releaseTimer.Stop();
@@ -458,7 +462,7 @@ namespace ChocoPlayer
         }
 
         // ══════════════════════════════════════════════════════════════════════
-        // Volume debounce  (évite la latence sur le slider volume)
+        // Volume Debounce (prevents lag on the volume slider)
         // ══════════════════════════════════════════════════════════════════════
         private void SetVolumeDebounced(int volume)
         {
@@ -476,8 +480,9 @@ namespace ChocoPlayer
 
                 if (_mediaPlayer != null && _pendingVolume >= 0)
                 {
-                    _mediaPlayer.Volume = _pendingVolume;
-                    _pendingVolume      = -1;
+                    int vol = _pendingVolume;
+                    _pendingVolume = -1;
+                    Task.Run(() => { if (_mediaPlayer != null) _mediaPlayer.Volume = vol; });
                 }
             };
             _volumeDebounceTimer.Start();
@@ -872,14 +877,14 @@ namespace ChocoPlayer
         {
             _audioLanguageSelected = GetAudioTrackLanguage(index);
             Properties.Settings.Default.PreferredAudioLanguage = _audioLanguageSelected;
-            Properties.Settings.Default.Save();
+            Task.Run(() => Properties.Settings.Default.Save());
         }
 
         public void SetSubtitleIndexSelected(int index)
         {
             _subtitleLanguageSelected = GetSubtitleTrackLanguage(index);
             Properties.Settings.Default.PreferredSubtitleLanguage = _subtitleLanguageSelected;
-            Properties.Settings.Default.Save();
+            Task.Run(() => Properties.Settings.Default.Save());
         }
 
         private int FindAudioTrackByLanguage(string language)
@@ -1080,16 +1085,24 @@ namespace ChocoPlayer
                     return true;
 
                 case Keys.Up:
-                    _mediaPlayer.Volume = Math.Min(_mediaPlayer.Volume + volumeStep, 100);
-                    _playerControls?.SetVolume(_mediaPlayer.Volume);
-                    _keyActionOverlay?.ShowVolume(true, _mediaPlayer.Volume);
+                {
+                    int newVol = Math.Min(_localVolume + volumeStep, 100);
+                    _localVolume = newVol;
+                    SetVolumeDebounced(newVol);
+                    _playerControls?.SetVolume(newVol);
+                    _keyActionOverlay?.ShowVolume(true, newVol);
                     return true;
+                }
 
                 case Keys.Down:
-                    _mediaPlayer.Volume = Math.Max(_mediaPlayer.Volume - volumeStep, 0);
-                    _playerControls?.SetVolume(_mediaPlayer.Volume);
-                    _keyActionOverlay?.ShowVolume(false, _mediaPlayer.Volume);
+                {
+                    int newVol = Math.Max(_localVolume - volumeStep, 0);
+                    _localVolume = newVol;
+                    SetVolumeDebounced(newVol);
+                    _playerControls?.SetVolume(newVol);
+                    _keyActionOverlay?.ShowVolume(false, newVol);
                     return true;
+                }
 
                 case Keys.Space:
                     if (_mediaPlayer.IsPlaying)
@@ -1239,7 +1252,8 @@ namespace ChocoPlayer
             public void OnVolumeChanged(int volume)
             {
                 if (_p._mediaPlayer == null) return;
-                _p.SetVolumeDebounced(volume); // ✅ debounced
+                _p._localVolume = volume;
+                _p.SetVolumeDebounced(volume);
             }
 
             public void OnFullscreenClicked() => _p.ToggleFullscreen();
@@ -1268,14 +1282,16 @@ namespace ChocoPlayer
             public void OnAudioTrackSelected(int trackId)
             {
                 if (_p._mediaPlayer == null) return;
-                _p._mediaPlayer.SetAudioTrack(trackId);
+                var mp = _p._mediaPlayer;
+                Task.Run(() => mp.SetAudioTrack(trackId));
                 _p.SetAudioIndexSelected(trackId);
             }
 
             public void OnSubtitleTrackSelected(int trackId)
             {
                 if (_p._mediaPlayer == null) return;
-                _p._mediaPlayer.SetSpu(trackId);
+                var mp = _p._mediaPlayer;
+                Task.Run(() => mp.SetSpu(trackId));
                 _p.SetSubtitleIndexSelected(trackId);
             }
         }

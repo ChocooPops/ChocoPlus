@@ -82,6 +82,20 @@ namespace ChocoPlayer
         private bool _isFullscreen = false;
         private bool _hasSeasons = false;
 
+        // Cached GDI objects — avoids ~22 allocations per frame at 20 Hz
+        private Pen? _penTrackBg;
+        private Pen? _penTrackFg;
+        private SolidBrush? _brushAccent;
+        private Pen? _penPointRing;
+        private Font? _fontTime;
+        private SolidBrush? _brushWhite;
+        private SolidBrush? _brushButtonBg;
+        private Pen? _penButtonBorder;
+        private Pen? _penVolumeBg;
+        private Pen? _penVolumeFg;
+        private Font? _fontFallback;
+        private StringFormat? _sfCenter;
+
         public event EventHandler<ProgressHoverEventArgs>? ProgressHoverChanged;
 
         public class ProgressHoverEventArgs : EventArgs
@@ -104,13 +118,26 @@ namespace ChocoPlayer
             this.DoubleBuffered = true;
             LoadIcons();
 
+            _penTrackBg      = new Pen(Color.FromArgb(100, 100, 100), _lineHeight)     { StartCap = LineCap.Round, EndCap = LineCap.Round };
+            _penTrackFg      = new Pen(_colorYellow, _lineHeight)                       { StartCap = LineCap.Round, EndCap = LineCap.Round };
+            _brushAccent     = new SolidBrush(_colorYellow);
+            _penPointRing    = new Pen(_colorYellow, 2);
+            _fontTime        = new Font("Segoe UI", 9);
+            _brushWhite      = new SolidBrush(Color.White);
+            _brushButtonBg   = new SolidBrush(Color.FromArgb(60, 80, 80, 80));
+            _penButtonBorder = new Pen(Color.FromArgb(150, 150, 150), 2);
+            _penVolumeBg     = new Pen(Color.FromArgb(100, 100, 100), _volumeBarHeight) { StartCap = LineCap.Round, EndCap = LineCap.Round };
+            _penVolumeFg     = new Pen(_colorYellow, _volumeBarHeight)                  { StartCap = LineCap.Round, EndCap = LineCap.Round };
+            _fontFallback    = new Font("Segoe UI Symbol", 12, FontStyle.Bold);
+            _sfCenter        = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+
             CalculateTimeTextWidth();
 
             _updateTimer = new System.Windows.Forms.Timer();
             _updateTimer.Interval = 50;
             _updateTimer.Tick += (s, e) =>
             {
-                // Bloqué pendant drag ET pendant le debounce seek post-clic
+                // Locked during drag AND during the post-click seek debounce
                 if (!IsDragging)
                 {
                     UpdateProgressFromPlayer();
@@ -417,7 +444,11 @@ namespace ChocoPlayer
 
             if (totalTime > 0)
             {
-                _progress = (float)currentTime / totalTime;
+                float newProgress = (float)currentTime / totalTime;
+                // Avoid unnecessary repaints when the video is paused or when there is a sub-pixel shift
+                if (Math.Abs(newProgress - _progress) < 0.0001f)
+                    return;
+                _progress = newProgress;
             }
 
             UpdateTimeText();
@@ -458,46 +489,26 @@ namespace ChocoPlayer
             int lineEnd = this.Width - _rightMargin - _timeTextWidth - _timeTextGap;
             int lineWidth = lineEnd - _leftMargin;
 
-            using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), _lineHeight))
-            {
-                pen.StartCap = LineCap.Round;
-                pen.EndCap = LineCap.Round;
-                g2d.DrawLine(pen, _leftMargin, lineY, lineEnd, lineY);
-            }
+            g2d.DrawLine(_penTrackBg!, _leftMargin, lineY, lineEnd, lineY);
 
             int progressX = _leftMargin + (int)(_progress * lineWidth);
-            using (Pen pen = new Pen(_colorYellow, _lineHeight))
-            {
-                pen.StartCap = LineCap.Round;
-                pen.EndCap = LineCap.Round;
-                g2d.DrawLine(pen, _leftMargin, lineY, progressX, lineY);
-            }
+            g2d.DrawLine(_penTrackFg!, _leftMargin, lineY, progressX, lineY);
 
-            using (SolidBrush brush = new SolidBrush(_colorYellow))
-            {
-                g2d.FillEllipse(brush,
-                    progressX - _pointRadius,
-                    lineY - _pointRadius,
-                    _pointRadius * 2,
-                    _pointRadius * 2);
-            }
+            g2d.FillEllipse(_brushAccent!,
+                progressX - _pointRadius,
+                lineY - _pointRadius,
+                _pointRadius * 2,
+                _pointRadius * 2);
 
-            using (Pen pen = new Pen(_colorYellow, 2))
-            {
-                g2d.DrawEllipse(pen,
-                    progressX - _pointRadius,
-                    lineY - _pointRadius,
-                    _pointRadius * 2,
-                    _pointRadius * 2);
-            }
+            g2d.DrawEllipse(_penPointRing!,
+                progressX - _pointRadius,
+                lineY - _pointRadius,
+                _pointRadius * 2,
+                _pointRadius * 2);
 
-            using (Font font = new Font("Segoe UI", 9))
-            using (SolidBrush brush = new SolidBrush(Color.White))
-            {
-                int textX = this.Width - _rightMargin - _timeTextWidth;
-                int textY = lineY - 13;
-                g2d.DrawString(_timeText, font, brush, textX, textY);
-            }
+            int textX = this.Width - _rightMargin - _timeTextWidth;
+            int textY = lineY - 13;
+            g2d.DrawString(_timeText, _fontTime!, _brushWhite!, textX, textY);
 
             DrawButtons(g2d);
             DrawVolumeBar(g2d);
@@ -553,20 +564,12 @@ namespace ChocoPlayer
 
         private void DrawIconButton(Graphics g2d, int x, int y, Bitmap? icon, string fallbackText)
         {
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 80, 80, 80)))
-            {
-                g2d.FillRoundedRectangle(brush, x, y, _buttonSize, _buttonSize, 5);
-            }
-
-            using (Pen borderPen = new Pen(Color.FromArgb(150, 150, 150), 2))
-            {
-                g2d.DrawRoundedRectangle(borderPen, x, y, _buttonSize, _buttonSize, 5);
-            }
+            g2d.FillRoundedRectangle(_brushButtonBg!, x, y, _buttonSize, _buttonSize, 5);
+            g2d.DrawRoundedRectangle(_penButtonBorder!, x, y, _buttonSize, _buttonSize, 5);
 
             if (icon != null)
             {
                 int iconSize = (int)(_buttonSize * 0.6f);
-
                 int iconX = x + (_buttonSize - iconSize) / 2;
                 int iconY = y + (_buttonSize - iconSize) / 2;
 
@@ -578,17 +581,8 @@ namespace ChocoPlayer
             }
             else
             {
-                using (Font font = new Font("Segoe UI Symbol", 12, FontStyle.Bold))
-                using (SolidBrush textBrush = new SolidBrush(Color.White))
-                {
-                    RectangleF rect = new RectangleF(x, y, _buttonSize, _buttonSize);
-                    StringFormat sf = new StringFormat
-                    {
-                        Alignment = StringAlignment.Center,
-                        LineAlignment = StringAlignment.Center
-                    };
-                    g2d.DrawString(fallbackText, font, textBrush, rect, sf);
-                }
+                RectangleF rect = new RectangleF(x, y, _buttonSize, _buttonSize);
+                g2d.DrawString(fallbackText, _fontFallback!, _brushWhite!, rect, _sfCenter!);
             }
         }
 
@@ -596,38 +590,22 @@ namespace ChocoPlayer
         {
             int volumeY = _buttonsY + _buttonSize / 2;
 
-            using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), _volumeBarHeight))
-            {
-                pen.StartCap = LineCap.Round;
-                pen.EndCap = LineCap.Round;
-                g2d.DrawLine(pen, _volumeBarX, volumeY, _volumeBarX + _volumeBarWidth, volumeY);
-            }
+            g2d.DrawLine(_penVolumeBg!, _volumeBarX, volumeY, _volumeBarX + _volumeBarWidth, volumeY);
 
             int volumeProgressX = _volumeBarX + (int)(_volumeProgress * _volumeBarWidth);
-            using (Pen pen = new Pen(_colorYellow, _volumeBarHeight))
-            {
-                pen.StartCap = LineCap.Round;
-                pen.EndCap = LineCap.Round;
-                g2d.DrawLine(pen, _volumeBarX, volumeY, volumeProgressX, volumeY);
-            }
+            g2d.DrawLine(_penVolumeFg!, _volumeBarX, volumeY, volumeProgressX, volumeY);
 
-            using (SolidBrush brush = new SolidBrush(_colorYellow))
-            {
-                g2d.FillEllipse(brush,
-                    volumeProgressX - _volumePointRadius,
-                    volumeY - _volumePointRadius,
-                    _volumePointRadius * 2,
-                    _volumePointRadius * 2);
-            }
+            g2d.FillEllipse(_brushAccent!,
+                volumeProgressX - _volumePointRadius,
+                volumeY - _volumePointRadius,
+                _volumePointRadius * 2,
+                _volumePointRadius * 2);
 
-            using (Pen pen = new Pen(_colorYellow, 2))
-            {
-                g2d.DrawEllipse(pen,
-                    volumeProgressX - _volumePointRadius,
-                    volumeY - _volumePointRadius,
-                    _volumePointRadius * 2,
-                    _volumePointRadius * 2);
-            }
+            g2d.DrawEllipse(_penPointRing!,
+                volumeProgressX - _volumePointRadius,
+                volumeY - _volumePointRadius,
+                _volumePointRadius * 2,
+                _volumePointRadius * 2);
         }
 
         public void SetPlaying(bool playing)
@@ -699,6 +677,19 @@ namespace ChocoPlayer
                 _fullscreenIcon?.Dispose();
                 _fullscreenExitIcon?.Dispose();
                 _updateTimer?.Dispose();
+
+                _penTrackBg?.Dispose();
+                _penTrackFg?.Dispose();
+                _brushAccent?.Dispose();
+                _penPointRing?.Dispose();
+                _fontTime?.Dispose();
+                _brushWhite?.Dispose();
+                _brushButtonBg?.Dispose();
+                _penButtonBorder?.Dispose();
+                _penVolumeBg?.Dispose();
+                _penVolumeFg?.Dispose();
+                _fontFallback?.Dispose();
+                _sfCenter?.Dispose();
             }
             base.Dispose(disposing);
         }
