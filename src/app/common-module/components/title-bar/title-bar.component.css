@@ -3,7 +3,7 @@
     width: 100%;
     position: fixed;
     display: flex;
-    z-index: 999999999;
+    z-index: 9999999999;
     margin: 0;
     padding: 0;
 }
