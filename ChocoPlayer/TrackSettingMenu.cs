@@ -163,58 +163,73 @@ namespace ChocoPlayer
             g2d.SmoothingMode = SmoothingMode.AntiAlias;
             g2d.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-            using (SolidBrush brush = new SolidBrush(_backgroundColor))
+            // Fond avec bordure arrondie et bord d'accentuation en haut
+            using (var bgBrush = new SolidBrush(_backgroundColor))
+            using (var bgPath = new System.Drawing.Drawing2D.GraphicsPath())
             {
-                g2d.FillRectangle(brush, 0, 0, this.Width, this.Height);
+                int r = 10;
+                bgPath.AddArc(0, 0, r * 2, r * 2, 180, 90);
+                bgPath.AddArc(Width - r * 2, 0, r * 2, r * 2, 270, 90);
+                bgPath.AddArc(Width - r * 2, Height - r * 2, r * 2, r * 2, 0, 90);
+                bgPath.AddArc(0, Height - r * 2, r * 2, r * 2, 90, 90);
+                bgPath.CloseFigure();
+                g2d.FillPath(bgBrush, bgPath);
             }
 
-            using (Pen pen = new Pen(Color.FromArgb(100, 100, 100), 2))
-            {
-                g2d.DrawRectangle(pen, 1, 1, this.Width - 2, this.Height - 2);
-            }
+            // Bordure subtile
+            using (Pen pen = new Pen(Color.FromArgb(55, 255, 255, 255), 1))
+                g2d.DrawRoundedRectangle(pen, 1, 1, this.Width - 2, this.Height - 2, 10);
+
+            // Bande d'accent en haut (3px jaune)
+            using (var accentBrush = new SolidBrush(_accentColor))
+                g2d.FillRoundedRectangle(accentBrush, 0, 0, this.Width, 3, 3);
 
             _audioItems.Clear();
             _subtitleItems.Clear();
 
             int currentY = PADDING;
-            using (Font titleFont = new Font("Segoe UI", 14, FontStyle.Bold))
+            using (Font titleFont = new Font("Segoe UI", 13, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
-            {
                 g2d.DrawString("Paramètres de lecture", titleFont, brush, PADDING, currentY);
-            }
-            currentY += 35;
 
-            // Separator line
-            // using (Pen pen = new Pen(Color.FromArgb(80, 255, 255, 255), 1))
-            // {
-            //     g2d.DrawLine(pen, PADDING, currentY, this.Width - PADDING, currentY);
-            // }
-            currentY += 25;
+            currentY += 50;
 
-            int columnWidth = (this.Width - 3 * PADDING - COLUMN_SPACING) / 2;
-            int leftColumnX = PADDING;
+            // Ligne séparatrice sous le titre
+            using (Pen sep = new Pen(Color.FromArgb(40, 255, 255, 255), 1))
+                g2d.DrawLine(sep, PADDING, currentY, this.Width - PADDING, currentY);
+
+            currentY += 18;
+
+            int columnWidth  = (this.Width - 3 * PADDING - COLUMN_SPACING) / 2;
+            int leftColumnX  = PADDING;
             int rightColumnX = PADDING + columnWidth + COLUMN_SPACING;
 
+            // Séparateur vertical central
             int separatorX = leftColumnX + columnWidth + (COLUMN_SPACING / 2);
-            using (Pen pen = new Pen(Color.FromArgb(60, 255, 255, 255), 1))
-            {
+            using (Pen pen = new Pen(Color.FromArgb(40, 255, 255, 255), 1))
                 g2d.DrawLine(pen, separatorX, currentY, separatorX, this.Height - PADDING);
-            }
 
             DrawAudioSection(g2d, leftColumnX, currentY, columnWidth);
             DrawSubtitleSection(g2d, rightColumnX, currentY, columnWidth);
+        }
+
+        private void DrawSectionHeader(Graphics g2d, int x, int y, int width, string label)
+        {
+            // Petite pastille jaune + texte
+            using (var brush = new SolidBrush(_accentColor))
+                g2d.FillRectangle(brush, x, y + 4, 3, 14);
+
+            using (Font font = new Font("Segoe UI", 11, FontStyle.Bold))
+            using (SolidBrush brush = new SolidBrush(Color.White))
+                g2d.DrawString(label, font, brush, x + 10, y);
         }
 
         private void DrawAudioSection(Graphics g2d, int startX, int startY, int width)
         {
             int currentY = startY;
 
-            using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
-            using (SolidBrush brush = new SolidBrush(_accentColor))
-            {
-                g2d.DrawString("  Pistes Audio", font, brush, startX, currentY);
-            }
-            currentY += 45;
+            DrawSectionHeader(g2d, startX, currentY, width, "Pistes Audio");
+            currentY += 38;
 
             var audioTracks = Player.GetAudioTracks();
             int currentAudioTrack = Player.GetCurrentAudioTrack();
@@ -245,12 +260,8 @@ namespace ChocoPlayer
         {
             int currentY = startY;
 
-            using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
-            using (SolidBrush brush = new SolidBrush(_accentColor))
-            {
-                g2d.DrawString("  Sous-titres", font, brush, startX, currentY);
-            }
-            currentY += 45;
+            DrawSectionHeader(g2d, startX, currentY, width, "Sous-titres");
+            currentY += 38;
 
             var subtitleTracks = Player.GetSubtitleTracks();
             int currentSubTrack = Player.GetCurrentSubtitleTrack();

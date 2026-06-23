@@ -27,7 +27,7 @@ namespace ChocoPlayer
         public int EpisodeNumber { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }
-        public long Time { get; set; }
+        public long Duration { get; set; }
         public string Quality { get; set; }
         public string SrcPoster { get; set; }
 
@@ -50,7 +50,7 @@ namespace ChocoPlayer
             EpisodeNumber = episodeNumber;
             Description = description;
             Date = date;
-            Time = time;
+            Duration = time;
             Quality = quality;
             SrcPoster = srcPoster;
         }

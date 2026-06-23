@@ -288,6 +288,7 @@ namespace ChocoPlayer
             // Mini player button
             _miniPlayerButton = new MiniPlayerButton();
             _miniPlayerButton.SetMiniPlayerListener(new MiniPlayerListener(this));
+            _miniPlayerButton.SetTitle(title);
             this.Controls.Add(_miniPlayerButton);
 
             if (GetPropertiesIsMiniMode())
@@ -969,7 +970,7 @@ namespace ChocoPlayer
                 {
                     var items = episodes.Select(e => new SeasonsMenu.EpisodeItem(
                         e.Id, e.EpisodeNumber, e.Name, e.Description,
-                        FormatDuration(e.Time),
+                        FormatDuration(e.Duration),
                         _apiService.GetStreamUrl(seasonId, e.Id),
                         InsertIntoUrlBeforeFilename(e.SrcPoster, _episodeFormat)
                     )).ToList();
@@ -1021,6 +1022,7 @@ namespace ChocoPlayer
             parts = parts.Take(partIndex).ToList();
             parts.Add(newText);
             this.Text = string.Join(" - ", parts);
+            _miniPlayerButton?.SetTitle(string.Join(" - ", parts.Skip(1)));
 
             if (_isMiniMode) _miniPlayerButton?.Invalidate();
         }

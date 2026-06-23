@@ -515,45 +515,45 @@ namespace ChocoPlayer
 
         private void DrawEpisodeItem(Graphics g2d, EpisodeItem episode, int y, int index)
         {
-            bool isHovered = (index == _hoveredEpisodeIndex);
+            bool isHovered         = (index == _hoveredEpisodeIndex);
             bool isCurrentlyPlaying = (episode.Id == _currentPlayingEpisodeId);
 
             Rectangle rect = new Rectangle(_episodesRect.X, y, _episodesRect.Width, EPISODE_HEIGHT);
 
+            // Ombre portée (légère)
             if (isHovered || isCurrentlyPlaying)
             {
-                using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(30, 0, 0, 0)))
-                {
-                    g2d.FillRoundedRectangle(shadowBrush, rect.X + 2, rect.Y + 2, rect.Width, rect.Height, 10);
-                }
+                using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(25, 0, 0, 0)))
+                    g2d.FillRoundedRectangle(shadowBrush, rect.X + 3, rect.Y + 3, rect.Width, rect.Height, 10);
             }
 
-            Color bgColor = isCurrentlyPlaying ? Color.FromArgb(50, 50, 50) :
-                           isHovered ? _itemHoverColor : Color.FromArgb(40, 40, 40);
+            // Fond carte
+            Color bgColor = isCurrentlyPlaying ? Color.FromArgb(52, 52, 52)
+                          : isHovered          ? _itemHoverColor
+                          :                      Color.FromArgb(38, 38, 38);
 
             using (SolidBrush brush = new SolidBrush(bgColor))
-            {
                 g2d.FillRoundedRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height, 10);
-            }
 
+            // Bordure gauche colorée pour "en lecture"
             if (isCurrentlyPlaying)
             {
-                using (Pen pen = new Pen(_accentColor, 3))
-                {
-                    g2d.DrawRoundedRectangle(pen, rect.X + 2, rect.Y + 2, rect.Width - 4, rect.Height - 4, 10);
-                }
+                using (SolidBrush accentBar = new SolidBrush(_accentColor))
+                    g2d.FillRoundedRectangle(accentBar, rect.X, rect.Y + 8, 4, rect.Height - 16, 2);
+
+                using (Pen pen = new Pen(Color.FromArgb(90, _accentColor), 1))
+                    g2d.DrawRoundedRectangle(pen, rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2, 10);
             }
             else if (isHovered)
             {
-                using (Pen pen = new Pen(_accentColor, 2))
-                {
+                using (Pen pen = new Pen(Color.FromArgb(50, 255, 255, 255), 1))
                     g2d.DrawRoundedRectangle(pen, rect.X + 1, rect.Y + 1, rect.Width - 2, rect.Height - 2, 10);
-                }
             }
 
-            int imageWidth = 200;
-            int imageHeight = 112;
-            int imageX = rect.X + 15;
+            // Miniature
+            int imageWidth  = 195;
+            int imageHeight = 110;
+            int imageX = rect.X + 16;
             int imageY = rect.Y + (rect.Height - imageHeight) / 2;
 
             if (!string.IsNullOrEmpty(episode.ImageUrl))
@@ -562,67 +562,53 @@ namespace ChocoPlayer
             }
             else
             {
-                using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 60, 60)))
-                {
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(55, 55, 55)))
                     g2d.FillRoundedRectangle(brush, imageX, imageY, imageWidth, imageHeight, 8);
-                }
 
-                using (Font iconFont = new Font("Segoe UI", 24))
-                using (SolidBrush iconBrush = new SolidBrush(Color.FromArgb(100, 100, 100)))
-                {
-                    StringFormat sf = new StringFormat();
-                    sf.Alignment = StringAlignment.Center;
-                    sf.LineAlignment = StringAlignment.Center;
+                using (Font iconFont = new Font("Segoe UI", 22))
+                using (SolidBrush iconBrush = new SolidBrush(Color.FromArgb(90, 90, 90)))
+                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
                     g2d.DrawString("🎬", iconFont, iconBrush, new Rectangle(imageX, imageY, imageWidth, imageHeight), sf);
-                }
             }
 
-            int contentX = imageX + imageWidth + 20;
-            int contentY = rect.Y + 18;
-            int contentWidth = rect.Width - (contentX - rect.X) - 20;
+            int contentX     = imageX + imageWidth + 18;
+            int contentY     = rect.Y + 16;
+            int contentWidth = rect.Width - (contentX - rect.X) - 16;
 
-            using (Font font = new Font("Segoe UI", 8, FontStyle.Bold))
-            using (SolidBrush brush = new SolidBrush(_accentColor))
+            // Badge "EP XX" en pill shape
+            string badge = $"ÉP. {episode.EpisodeNumber}";
+            using (Font badgeFont = new Font("Segoe UI", 7.5f, FontStyle.Bold))
             {
-                g2d.DrawString($"ÉPISODE {episode.EpisodeNumber}", font, brush, contentX, contentY);
+                SizeF bSize = g2d.MeasureString(badge, badgeFont);
+                int bW = (int)bSize.Width + 10, bH = (int)bSize.Height + 4;
+
+                using (SolidBrush accentBg = new SolidBrush(Color.FromArgb(255, 211, 1)))
+                    g2d.FillRoundedRectangle(accentBg, contentX, contentY, bW, bH, bH / 2);
+
+                using (SolidBrush darkBrush = new SolidBrush(Color.FromArgb(20, 20, 20)))
+                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                    g2d.DrawString(badge, badgeFont, darkBrush, new RectangleF(contentX, contentY, bW, bH), sf);
+
+                contentY += bH + 8;
             }
 
-            contentY += 30;
-
+            // Titre
             using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
             using (StringFormat sf = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap })
-            {
                 g2d.DrawString(episode.Title, font, brush, new RectangleF(contentX, contentY, contentWidth, font.Height + 4), sf);
-            }
 
-            contentY += 30;
+            contentY += 42;
 
+            // Durée + état lecture
             using (Font font = new Font("Segoe UI", 9))
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(160, 160, 160)))
             {
-                string description = ""; //episode.Description ?? "";
-                if (g2d.MeasureString(description, font).Width > contentWidth)
-                {
-                    while (g2d.MeasureString(description + "...", font).Width > contentWidth && description.Length > 20)
-                    {
-                        description = description.Substring(0, description.Length - 1);
-                    }
-                    description += "...";
-                }
-                g2d.DrawString(description, font, brush, contentX, contentY);
-            }
-            contentY += 22;
+                string durationText = $"⏱  {episode.Duration}";
+                if (isCurrentlyPlaying) durationText += "   ▶  En lecture";
 
-            using (Font font = new Font("Segoe UI", 9))
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(180, 180, 180)))
-            {
-                string durationText = $"⏱ {episode.Duration}";
-                if (isCurrentlyPlaying)
-                {
-                    durationText += "  •  ▶ En lecture";
-                }
-                g2d.DrawString(durationText, font, brush, contentX, contentY);
+                Color textColor = isCurrentlyPlaying ? Color.FromArgb(255, 211, 1) : Color.FromArgb(160, 160, 160);
+                using (SolidBrush brush = new SolidBrush(textColor))
+                    g2d.DrawString(durationText, font, brush, contentX, contentY);
             }
         }
 
