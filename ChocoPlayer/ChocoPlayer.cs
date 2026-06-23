@@ -737,15 +737,15 @@ namespace ChocoPlayer
             {
                 int controlsX = (this.ClientSize.Width - FULLSCREEN_CONTROLS_WIDTH) / 2;
                 _playerControls.SetBounds(controlsX, this.ClientSize.Height - controlsHeight, FULLSCREEN_CONTROLS_WIDTH, controlsHeight);
-                _trackSettingsMenu!.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true);
-                _seasonsMenu?.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true);
+                _trackSettingsMenu!.SetPosition(this.ClientSize.Width, this.ClientSize.Height - controlsHeight, true,  this.ClientSize.Width, this.ClientSize.Height, titleBarHeight);
+                _seasonsMenu?.SetPosition(this.ClientSize.Width,        this.ClientSize.Height - controlsHeight, true,  this.ClientSize.Width, this.ClientSize.Height, titleBarHeight);
             }
             else
             {
                 _playerControls.SetBounds(0, this.ClientSize.Height - controlsHeight, this.ClientSize.Width, controlsHeight);
-                _trackSettingsMenu!.SetPosition(_playerControls.GetSettingX(), this.ClientSize.Height - controlsHeight, false);
+                _trackSettingsMenu!.SetPosition(_playerControls.GetSettingX(),    this.ClientSize.Height - controlsHeight, false, this.ClientSize.Width, this.ClientSize.Height, titleBarHeight);
                 if (_hasSeasons && _seasonsMenu != null)
-                    _seasonsMenu.SetPosition(_playerControls.GetSeasonsButtonX(), this.ClientSize.Height - controlsHeight, false);
+                    _seasonsMenu.SetPosition(_playerControls.GetSeasonsButtonX(), this.ClientSize.Height - controlsHeight, false, this.ClientSize.Width, this.ClientSize.Height, titleBarHeight);
             }
 
             _clickOverlay?.BringToFront();

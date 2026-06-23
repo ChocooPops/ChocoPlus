@@ -20,10 +20,22 @@ namespace ChocoPlayer
         private const int MENU_HEIGHT = 650;
         private const int PADDING = 20;
         private const int HEADER_HEIGHT = 60;
-        private const int EPISODE_HEIGHT = 140;
         private const int EPISODE_SPACING = 15;
         private const int SEASON_ITEM_HEIGHT = 55;
         private const int BORDER_WIDTH = 2;
+
+        private int _episodeHeight = 140;
+        private int _sizeLevel = 3;
+        private float FontHeader    => _sizeLevel switch { 0 => 10f,  1 => 11f,  2 => 12f,  _ => 13f };
+        private float FontDropdown  => _sizeLevel switch { 0 => 8f,   1 => 9f,   2 => 10f,  _ => 11f };
+        private float FontEpTitle   => _sizeLevel switch { 0 => 9f,   1 => 10f,  2 => 11f,  _ => 12f };
+        private float FontSmall     => _sizeLevel switch { 0 => 7.5f, 1 => 8f,   2 => 8.5f, _ => 9f };
+        private float FontBadge     => _sizeLevel switch { 0 => 6f,   1 => 6.5f, 2 => 7f,   _ => 7.5f };
+        private int   ImgW          => _sizeLevel switch { 0 => 110,  1 => 140,  2 => 165,  _ => 195 };
+        private int   ImgH          => _sizeLevel switch { 0 => 65,   1 => 80,   2 => 95,   _ => 110 };
+        private int   CardTopPad    => _sizeLevel switch { 0 => 8,    1 => 10,   2 => 12,   _ => 16 };
+        private int   TitleSpacing  => _sizeLevel switch { 0 => 26,   1 => 30,   2 => 36,   _ => 42 };
+        private int   EmojiIconSize => _sizeLevel switch { 0 => 14,   1 => 16,   2 => 18,   _ => 22 };
 
         private ISeasonSelectionListener? _listener;
         private Color _accentColor = Color.FromArgb(255, 211, 1);
@@ -69,14 +81,14 @@ namespace ChocoPlayer
 
         private void CalculateMaxScroll()
         {
-            int totalEpisodesHeight = _episodes.Count * (EPISODE_HEIGHT + EPISODE_SPACING);
-            int availableHeight = MENU_HEIGHT - HEADER_HEIGHT - PADDING * 2;
+            int totalEpisodesHeight = _episodes.Count * (_episodeHeight + EPISODE_SPACING);
+            int availableHeight = this.Height - HEADER_HEIGHT - PADDING * 2;
             _maxScrollOffset = Math.Max(0, totalEpisodesHeight - availableHeight);
         }
 
         private void CalculateMaxDropdownScroll()
         {
-            int maxDropdownHeight = MENU_HEIGHT - HEADER_HEIGHT - 10;
+            int maxDropdownHeight = this.Height - HEADER_HEIGHT - 10;
             int totalSeasonsHeight = _seasons.Count * SEASON_ITEM_HEIGHT;
             _maxDropdownScrollOffset = Math.Max(0, totalSeasonsHeight - maxDropdownHeight);
         }
@@ -121,16 +133,26 @@ namespace ChocoPlayer
             }
         }
 
-        public void SetPosition(int buttonX, int buttonY, bool isFullScreen)
+        public void SetPosition(int buttonX, int buttonY, bool isFullScreen, int windowWidth, int windowHeight, int topReserved = 0)
         {
-            if (isFullScreen)
-            {
-                this.SetBounds((buttonX - MENU_WIDTH) / 2, buttonY - MENU_HEIGHT - 20, MENU_WIDTH, MENU_HEIGHT);
-            }
-            else
-            {
-                this.SetBounds(buttonX - MENU_WIDTH, buttonY - MENU_HEIGHT - 20, MENU_WIDTH, MENU_HEIGHT);
-            }
+            int menuW, menuH;
+            if (windowWidth >= 1400)      { menuW = MENU_WIDTH; menuH = MENU_HEIGHT; _sizeLevel = 3; _episodeHeight = 140; }
+            else if (windowWidth >= 1000) { menuW = 680;        menuH = 560;         _sizeLevel = 2; _episodeHeight = 120; }
+            else if (windowWidth >= 500)  { menuW = 520;        menuH = 480;         _sizeLevel = 1; _episodeHeight = 100; }
+            else                          { menuW = 400;        menuH = 340;         _sizeLevel = 0; _episodeHeight = 85; }
+
+            int gap = Math.Clamp((buttonY - topReserved) / 35, 4, 20);
+            menuH = Math.Min(menuH, Math.Max(80, buttonY - topReserved - gap));
+            this.Size = new Size(menuW, menuH);
+
+            int x = isFullScreen
+                ? (buttonX - menuW) / 2
+                : Math.Max(0, buttonX - menuW);
+
+            this.SetBounds(x, buttonY - menuH - gap, menuW, menuH);
+
+            CalculateMaxScroll();
+            CalculateMaxDropdownScroll();
         }
 
         public void SetEpisodes(List<EpisodeItem> episodes)
@@ -202,7 +224,7 @@ namespace ChocoPlayer
             else if (!_isDropdownOpen && _episodesRect.Contains(e.Location))
             {
                 int relativeY = e.Y - _episodesRect.Y + _scrollOffset;
-                int itemIndex = relativeY / (EPISODE_HEIGHT + EPISODE_SPACING);
+                int itemIndex = relativeY / (_episodeHeight + EPISODE_SPACING);
 
                 if (itemIndex >= 0 && itemIndex < _episodes.Count)
                 {
@@ -267,7 +289,7 @@ namespace ChocoPlayer
             if (!_isDropdownOpen && _episodesRect.Contains(e.Location))
             {
                 int relativeY = e.Y - _episodesRect.Y + _scrollOffset;
-                int itemIndex = relativeY / (EPISODE_HEIGHT + EPISODE_SPACING);
+                int itemIndex = relativeY / (_episodeHeight + EPISODE_SPACING);
 
                 if (itemIndex >= 0 && itemIndex < _episodes.Count)
                 {
@@ -365,7 +387,7 @@ namespace ChocoPlayer
                 ? $"{Locale.Get("season.season")} {_seasons[_currentSeasonIndex].SeasonNumber}"
                 : Locale.Get("season.select");
 
-            using (Font font = new Font("Segoe UI", 13, FontStyle.Bold))
+            using (Font font = new Font("Segoe UI", FontHeader, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
             {
                 g2d.DrawString(headerText, font, brush, PADDING, (_headerRect.Height - font.Height) / 2);
@@ -413,7 +435,7 @@ namespace ChocoPlayer
 
         private void DrawDropdown(Graphics g2d)
         {
-            int maxDropdownHeight = MENU_HEIGHT - HEADER_HEIGHT - 10;
+            int maxDropdownHeight = this.Height - HEADER_HEIGHT - 10;
             int dropdownHeight = Math.Min(_seasons.Count * SEASON_ITEM_HEIGHT, maxDropdownHeight);
 
             _dropdownRect = new Rectangle(PADDING, HEADER_HEIGHT + 5, this.Width - PADDING * 2, dropdownHeight);
@@ -451,7 +473,7 @@ namespace ChocoPlayer
                 }
 
                 Color textColor = isSelected ? _accentColor : Color.White;
-                using (Font font = new Font("Segoe UI", 11, isSelected ? FontStyle.Bold : FontStyle.Regular))
+                using (Font font = new Font("Segoe UI", FontDropdown, isSelected ? FontStyle.Bold : FontStyle.Regular))
                 using (SolidBrush brush = new SolidBrush(textColor))
                 {
                     g2d.DrawString($"{Locale.Get("season.season")} {_seasons[i].SeasonNumber}", font, brush, itemRect.X + 15, itemRect.Y + (itemRect.Height - font.Height) / 2);
@@ -500,7 +522,7 @@ namespace ChocoPlayer
         {
             if (_episodes.Count == 0)
             {
-                using (Font font = new Font("Segoe UI", 12))
+                using (Font font = new Font("Segoe UI", FontEpTitle))
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(150, 150, 150)))
                 {
                     StringFormat sf = new StringFormat();
@@ -522,9 +544,9 @@ namespace ChocoPlayer
 
             for (int i = 0; i < _episodes.Count; i++)
             {
-                int episodeY = _episodesRect.Y + i * (EPISODE_HEIGHT + EPISODE_SPACING) - _scrollOffset;
+                int episodeY = _episodesRect.Y + i * (_episodeHeight + EPISODE_SPACING) - _scrollOffset;
 
-                if (episodeY + EPISODE_HEIGHT < _episodesRect.Y || episodeY > _episodesRect.Bottom)
+                if (episodeY + _episodeHeight < _episodesRect.Y || episodeY > _episodesRect.Bottom)
                     continue;
 
                 DrawEpisodeItem(g2d, _episodes[i], episodeY, i);
@@ -539,7 +561,7 @@ namespace ChocoPlayer
             bool isHovered         = (index == _hoveredEpisodeIndex);
             bool isCurrentlyPlaying = (episode.Id == _currentPlayingEpisodeId);
 
-            Rectangle rect = new Rectangle(_episodesRect.X, y, _episodesRect.Width, EPISODE_HEIGHT);
+            Rectangle rect = new Rectangle(_episodesRect.X, y, _episodesRect.Width, _episodeHeight);
 
             // Ombre portée (légère)
             if (isHovered || isCurrentlyPlaying)
@@ -589,8 +611,8 @@ namespace ChocoPlayer
             }
 
             // Miniature
-            int imageWidth  = 195;
-            int imageHeight = 110;
+            int imageWidth  = ImgW;
+            int imageHeight = ImgH;
             int imageX = rect.X + 16;
             int imageY = rect.Y + (rect.Height - imageHeight) / 2;
 
@@ -603,19 +625,19 @@ namespace ChocoPlayer
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(55, 55, 55)))
                     g2d.FillRoundedRectangle(brush, imageX, imageY, imageWidth, imageHeight, 8);
 
-                using (Font iconFont = new Font("Segoe UI", 22))
+                using (Font iconFont = new Font("Segoe UI", EmojiIconSize))
                 using (SolidBrush iconBrush = new SolidBrush(Color.FromArgb(90, 90, 90)))
                 using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
                     g2d.DrawString("🎬", iconFont, iconBrush, new Rectangle(imageX, imageY, imageWidth, imageHeight), sf);
             }
 
             int contentX     = imageX + imageWidth + 18;
-            int contentY     = rect.Y + 16;
+            int contentY     = rect.Y + CardTopPad;
             int contentWidth = rect.Width - (contentX - rect.X) - 16;
 
             // Badge "EP XX" en pill shape
             string badge = $"{Locale.Get("season.episode")} {episode.EpisodeNumber}";
-            using (Font badgeFont = new Font("Segoe UI", 7.5f, FontStyle.Bold))
+            using (Font badgeFont = new Font("Segoe UI", FontBadge, FontStyle.Bold))
             {
                 SizeF bSize = g2d.MeasureString(badge, badgeFont);
                 int bW = (int)bSize.Width + 10, bH = (int)bSize.Height + 4;
@@ -631,15 +653,15 @@ namespace ChocoPlayer
             }
 
             // Titre
-            using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
+            using (Font font = new Font("Segoe UI", FontEpTitle, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
             using (StringFormat sf = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap })
                 g2d.DrawString(episode.Title, font, brush, new RectangleF(contentX, contentY, contentWidth, font.Height + 4), sf);
 
-            contentY += 42;
+            contentY += TitleSpacing;
 
             // Durée + état lecture
-            using (Font font = new Font("Segoe UI", 9))
+            using (Font font = new Font("Segoe UI", FontSmall))
             {
                 string durationText = $"⏱  {episode.Duration}";
                 if (isCurrentlyPlaying) durationText += $"   ▶  {Locale.Get("season.playing")}";
@@ -703,12 +725,12 @@ namespace ChocoPlayer
             DrawImagePlaceholder(g2d, x, y, width, height);
         }
 
-        private static void DrawImagePlaceholder(Graphics g2d, int x, int y, int width, int height)
+        private void DrawImagePlaceholder(Graphics g2d, int x, int y, int width, int height)
         {
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(60, 60, 60)))
                 g2d.FillRoundedRectangle(brush, x, y, width, height, 8);
 
-            using (Font font = new Font("Segoe UI", 9))
+            using (Font font = new Font("Segoe UI", FontSmall))
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(120, 120, 120)))
             using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
                 g2d.DrawString(Locale.Get("season.loading"), font, brush, new Rectangle(x, y, width, height), sf);
