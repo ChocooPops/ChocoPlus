@@ -26,9 +26,12 @@ namespace ChocoPlayer
         private System.Windows.Forms.Timer? _seekResetTimer;
         private const int DISPLAY_DURATION_MS = 1000;
         private const int SEEK_RESET_MS = 1000;
- 
+
         private const int PADDING = 12;
         private static readonly Color BG_COLOR = Color.FromArgb(0x14, 0x14, 0x14);
+
+        private LinearGradientBrush? _brushBackground;
+        private Size _lastSize = Size.Empty;
 
         private static readonly Size SIZE_SEEK     = new Size(104, 74);
         private static readonly Size SIZE_VOLUME   = new Size(124, 74);
@@ -111,7 +114,22 @@ namespace ChocoPlayer
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-            g.Clear(BG_COLOR);
+            if (this.Size != _lastSize && this.Width > 0 && this.Height > 0)
+            {
+                _brushBackground?.Dispose();
+                _brushBackground = new LinearGradientBrush(
+                    new Point(0, 0), new Point(0, this.Height),
+                    Color.FromArgb(24, 24, 24),
+                    Color.FromArgb(10, 10, 10));
+                _lastSize = this.Size;
+            }
+            if (_brushBackground != null)
+                g.FillRectangle(_brushBackground, 0, 0, Width, Height);
+            else
+                g.Clear(BG_COLOR);
+
+            using (var sepPen = new Pen(Color.FromArgb(45, 255, 255, 255), 1))
+                g.DrawLine(sepPen, 0, 0, Width, 0);
 
             if (_currentAction == ActionType.None) return;
 
@@ -271,6 +289,17 @@ namespace ChocoPlayer
             using var brush = new SolidBrush(Color.White);
             g.FillRectangle(brush, cx - gap / 2 - bw, cy - bh / 2, bw, bh);
             g.FillRectangle(brush, cx + gap / 2, cy - bh / 2, bw, bh);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _brushBackground?.Dispose();
+                _hideTimer?.Dispose();
+                _seekResetTimer?.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

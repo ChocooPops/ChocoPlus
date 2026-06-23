@@ -31,6 +31,9 @@ namespace ChocoPlayer
         private Color _headerColor = Color.FromArgb(35, 35, 35);
         private Color _itemHoverColor = Color.FromArgb(48, 48, 48);
 
+        private LinearGradientBrush? _brushBackground;
+        private Size _lastSize = Size.Empty;
+
         private int _currentSeasonIndex = 0;
         private bool _isDropdownOpen = false;
         private int _hoveredSeasonIndex = -1;
@@ -290,9 +293,25 @@ namespace ChocoPlayer
             g2d.SmoothingMode = SmoothingMode.AntiAlias;
             g2d.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            using (SolidBrush bgBrush = new SolidBrush(_backgroundColor))
+            // Gradient background clipé sur la forme arrondie — recréé uniquement au resize
+            if (this.Size != _lastSize && this.Width > 0 && this.Height > 0)
             {
-                g2d.FillRoundedRectangle(bgBrush, 0, 0, this.Width, this.Height, 12);
+                _brushBackground?.Dispose();
+                _brushBackground = new LinearGradientBrush(
+                    new Point(0, 0), new Point(0, this.Height),
+                    Color.FromArgb(24, 24, 24),
+                    Color.FromArgb(10, 10, 10));
+                _lastSize = this.Size;
+            }
+            if (_brushBackground != null)
+            {
+                using (GraphicsPath clipPath = GetRoundedRectanglePath(0, 0, this.Width, this.Height, 12))
+                {
+                    Region oldClip = g2d.Clip;
+                    g2d.SetClip(clipPath, CombineMode.Intersect);
+                    g2d.FillRectangle(_brushBackground, 0, 0, Width, Height);
+                    g2d.Clip = oldClip;
+                }
             }
 
             DrawHeader(g2d);
@@ -399,10 +418,12 @@ namespace ChocoPlayer
 
             _dropdownRect = new Rectangle(PADDING, HEADER_HEIGHT + 5, this.Width - PADDING * 2, dropdownHeight);
 
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(40, 40, 40)))
-            {
-                g2d.FillRoundedRectangle(brush, _dropdownRect.X, _dropdownRect.Y, _dropdownRect.Width, _dropdownRect.Height, 8);
-            }
+            using (var bgBrush = new LinearGradientBrush(
+                new Point(_dropdownRect.X, _dropdownRect.Y),
+                new Point(_dropdownRect.X, _dropdownRect.Bottom),
+                Color.FromArgb(42, 42, 42),
+                Color.FromArgb(26, 26, 26)))
+                g2d.FillRoundedRectangle(bgBrush, _dropdownRect.X, _dropdownRect.Y, _dropdownRect.Width, _dropdownRect.Height, 8);
 
             Rectangle clipRect = new Rectangle(_dropdownRect.X, _dropdownRect.Y, _dropdownRect.Width, _dropdownRect.Height);
             Region oldClip = g2d.Clip;
@@ -528,12 +549,29 @@ namespace ChocoPlayer
             }
 
             // Fond carte
-            Color bgColor = isCurrentlyPlaying ? Color.FromArgb(52, 52, 52)
-                          : isHovered          ? _itemHoverColor
-                          :                      Color.FromArgb(38, 38, 38);
-
-            using (SolidBrush brush = new SolidBrush(bgColor))
-                g2d.FillRoundedRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height, 10);
+            if (isCurrentlyPlaying)
+            {
+                using (var bgBrush = new LinearGradientBrush(
+                    new Point(rect.X, rect.Y),
+                    new Point(rect.X, rect.Bottom),
+                    Color.FromArgb(62, 58, 38),
+                    Color.FromArgb(38, 36, 22)))
+                    g2d.FillRoundedRectangle(bgBrush, rect.X, rect.Y, rect.Width, rect.Height, 10);
+            }
+            else if (isHovered)
+            {
+                using (SolidBrush brush = new SolidBrush(_itemHoverColor))
+                    g2d.FillRoundedRectangle(brush, rect.X, rect.Y, rect.Width, rect.Height, 10);
+            }
+            else
+            {
+                using (var bgBrush = new LinearGradientBrush(
+                    new Point(rect.X, rect.Y),
+                    new Point(rect.X, rect.Bottom),
+                    Color.FromArgb(44, 44, 44),
+                    Color.FromArgb(28, 28, 28)))
+                    g2d.FillRoundedRectangle(bgBrush, rect.X, rect.Y, rect.Width, rect.Height, 10);
+            }
 
             // Bordure gauche colorée pour "en lecture"
             if (isCurrentlyPlaying)
@@ -774,6 +812,12 @@ namespace ChocoPlayer
                 Path = path;
                 ImageUrl = imageUrl;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _brushBackground?.Dispose();
+            base.Dispose(disposing);
         }
 
         public interface ISeasonSelectionListener

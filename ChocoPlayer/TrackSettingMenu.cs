@@ -26,6 +26,9 @@ namespace ChocoPlayer
 
         private int _hoveredItemId = -999;
 
+        private LinearGradientBrush? _brushBackground;
+        private Size _lastSize = Size.Empty;
+
         public TrackSettingsMenu()
         {
             this.BackColor = Color.Transparent;
@@ -163,9 +166,18 @@ namespace ChocoPlayer
             g2d.SmoothingMode = SmoothingMode.AntiAlias;
             g2d.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-            // Fond
-            using (var bgBrush = new SolidBrush(_backgroundColor))
-                g2d.FillRectangle(bgBrush, 0, 0, this.Width, this.Height);
+            // Gradient background — recréé uniquement au resize
+            if (this.Size != _lastSize && this.Width > 0 && this.Height > 0)
+            {
+                _brushBackground?.Dispose();
+                _brushBackground = new LinearGradientBrush(
+                    new Point(0, 0), new Point(0, this.Height),
+                    Color.FromArgb(24, 24, 24),
+                    Color.FromArgb(10, 10, 10));
+                _lastSize = this.Size;
+            }
+            if (_brushBackground != null)
+                g2d.FillRectangle(_brushBackground, 0, 0, Width, Height);
 
             // Bordure subtile
             using (Pen pen = new Pen(Color.FromArgb(55, 255, 255, 255), 1))
@@ -387,6 +399,12 @@ namespace ChocoPlayer
                 Width = width;
                 Height = height;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _brushBackground?.Dispose();
+            base.Dispose(disposing);
         }
 
         public interface ITrackSelectionListener

@@ -67,6 +67,7 @@ namespace ChocoPlayer
         private DateTime _lastMouseMoveTime;
         private bool _wasMouseButtonDown = false;
         private bool _isDraggingOrResizingFromTitleBar = false;
+        private bool _windowWasInactive = false;
 
         // ── Mini mode ──────────────────────────────────────────────────────────
         private bool _isMiniMode = false;
@@ -79,8 +80,8 @@ namespace ChocoPlayer
         private int _pendingVolume = -1;
 
         // ── Win32 ──────────────────────────────────────────────────────────────
-        private const int WM_NCLBUTTONDOWN = 0xA1;
-        private const int WM_SYSCOMMAND    = 0x0112;
+        private const int WM_NCLBUTTONDOWN  = 0xA1;
+        private const int WM_SYSCOMMAND     = 0x0112;
         private const int SC_MAXIMIZE      = 0xF030;
         private const int SC_RESTORE       = 0xF120;
         private const int HTLEFT           = 10;
@@ -130,6 +131,7 @@ namespace ChocoPlayer
 
             this.FormClosing += ChocoPlayer_FormClosing;
             this.Resize      += ChocoPlayer_Resize;
+            this.Deactivate  += (_, _) => _windowWasInactive = true;
 
             if (!string.IsNullOrEmpty(videoPath))
                 OpenFile(videoPath);
@@ -667,6 +669,12 @@ namespace ChocoPlayer
         private void ClickOverlay_MouseDown(object? sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left || _mediaPlayer == null) return;
+
+            if (_windowWasInactive)
+            {
+                _windowWasInactive = false;
+                return;
+            }
 
             bool menuWasVisible = false;
             if (_trackSettingsMenu != null && _trackSettingsMenu.Visible) { _trackSettingsMenu.Hide(); menuWasVisible = true; }
