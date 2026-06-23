@@ -326,7 +326,7 @@ namespace ChocoPlayer
 
                 if (seasons != null)
                 {
-                    var seasonItems = seasons.Select(s => new SeasonsMenu.SeasonItem(s.Id, s.Name)).ToList();
+                    var seasonItems = seasons.Select(s => new SeasonsMenu.SeasonItem(s.Id, s.Name, s.SeasonNumber)).ToList();
                     int idx = seasonIndex > 0 ? seasonIndex : 0;
                     _seasonsMenu.LoadSeasons(seasonItems, idx);
                     LoadEpisodesForSeason(seasons[idx].Id);

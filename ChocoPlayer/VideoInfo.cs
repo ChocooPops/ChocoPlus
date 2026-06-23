@@ -19,5 +19,6 @@ namespace ChocoPlayer
         public int EpisodeId { get; set; }
         public int SeasonIndex { get; set; }
         public List<Season>? SeasonMenu { get; set; }
+        public string? Language { get; set; }
     }
 }

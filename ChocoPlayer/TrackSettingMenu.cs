@@ -163,26 +163,17 @@ namespace ChocoPlayer
             g2d.SmoothingMode = SmoothingMode.AntiAlias;
             g2d.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-            // Fond avec bordure arrondie et bord d'accentuation en haut
+            // Fond
             using (var bgBrush = new SolidBrush(_backgroundColor))
-            using (var bgPath = new System.Drawing.Drawing2D.GraphicsPath())
-            {
-                int r = 10;
-                bgPath.AddArc(0, 0, r * 2, r * 2, 180, 90);
-                bgPath.AddArc(Width - r * 2, 0, r * 2, r * 2, 270, 90);
-                bgPath.AddArc(Width - r * 2, Height - r * 2, r * 2, r * 2, 0, 90);
-                bgPath.AddArc(0, Height - r * 2, r * 2, r * 2, 90, 90);
-                bgPath.CloseFigure();
-                g2d.FillPath(bgBrush, bgPath);
-            }
+                g2d.FillRectangle(bgBrush, 0, 0, this.Width, this.Height);
 
             // Bordure subtile
             using (Pen pen = new Pen(Color.FromArgb(55, 255, 255, 255), 1))
-                g2d.DrawRoundedRectangle(pen, 1, 1, this.Width - 2, this.Height - 2, 10);
+                g2d.DrawRectangle(pen, 1, 1, this.Width - 2, this.Height - 2);
 
             // Bande d'accent en haut (3px jaune)
             using (var accentBrush = new SolidBrush(_accentColor))
-                g2d.FillRoundedRectangle(accentBrush, 0, 0, this.Width, 3, 3);
+                g2d.FillRectangle(accentBrush, 0, 0, this.Width, 3);
 
             _audioItems.Clear();
             _subtitleItems.Clear();
@@ -190,7 +181,7 @@ namespace ChocoPlayer
             int currentY = PADDING;
             using (Font titleFont = new Font("Segoe UI", 13, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
-                g2d.DrawString("Paramètres de lecture", titleFont, brush, PADDING, currentY);
+                g2d.DrawString(Locale.Get("track.title"), titleFont, brush, PADDING, currentY);
 
             currentY += 50;
 
@@ -228,7 +219,7 @@ namespace ChocoPlayer
         {
             int currentY = startY;
 
-            DrawSectionHeader(g2d, startX, currentY, width, "Pistes Audio");
+            DrawSectionHeader(g2d, startX, currentY, width, Locale.Get("track.audio"));
             currentY += 38;
 
             var audioTracks = Player.GetAudioTracks();
@@ -239,7 +230,7 @@ namespace ChocoPlayer
                 using (Font font = new Font("Segoe UI", 10))
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(150, 150, 150)))
                 {
-                    g2d.DrawString("Aucune piste disponible", font, brush, startX + 5, currentY);
+                    g2d.DrawString(Locale.Get("track.no_audio"), font, brush, startX + 5, currentY);
                 }
             }
             else
@@ -260,7 +251,7 @@ namespace ChocoPlayer
         {
             int currentY = startY;
 
-            DrawSectionHeader(g2d, startX, currentY, width, "Sous-titres");
+            DrawSectionHeader(g2d, startX, currentY, width, Locale.Get("track.subtitles"));
             currentY += 38;
 
             var subtitleTracks = Player.GetSubtitleTracks();
@@ -270,7 +261,7 @@ namespace ChocoPlayer
             bool isHoveredDisable = _hoveredItemId == -1 + 2000;
 
             currentY = DrawModernTrackItem(g2d,
-                new TrackInfo(-1, "Désactiver"),
+                new TrackInfo(-1, Locale.Get("track.disable")),
                 startX, currentY, width, isDisabled, isHoveredDisable, false);
 
             //_subtitleItems.Add(new TrackItem(-1, startX, currentY - ITEM_HEIGHT, width, ITEM_HEIGHT));
@@ -281,7 +272,7 @@ namespace ChocoPlayer
                 using (Font font = new Font("Segoe UI", 10))
                 using (SolidBrush brush = new SolidBrush(Color.FromArgb(150, 150, 150)))
                 {
-                    g2d.DrawString("Aucun sous-titre disponible", font, brush, startX + 5, currentY);
+                    g2d.DrawString(Locale.Get("track.no_subtitles"), font, brush, startX + 5, currentY);
                 }
             }
             else

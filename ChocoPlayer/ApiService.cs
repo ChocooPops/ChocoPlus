@@ -24,6 +24,7 @@ namespace ChocoPlayer
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", _token);
             _httpClient.DefaultRequestHeaders.Add(HEADER_NAME, HEADER_SECRET);
+            _httpClient.DefaultRequestHeaders.Add("Accept-Language", Locale.Language);
         }
 
         public async Task<List<Episode>?> GetEpisodesBySeasonAsync(int seriesId, int seasonId)

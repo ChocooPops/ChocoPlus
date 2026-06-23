@@ -30,6 +30,8 @@ static class Program
             }
         }
 
+        Locale.SetLanguage(videoInfo?.Language ?? "en");
+
         Application.Run(new ChocoPlayer(
             videoInfo?.MediaId ?? 0,
             videoInfo?.BaseUrl ?? "",

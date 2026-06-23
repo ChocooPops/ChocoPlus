@@ -7,6 +7,7 @@ import { SeriesService } from '../../../media-module/services/series/series.serv
 import { BehaviorSubject, Observable, take } from 'rxjs';
 import { HistoricWatchProgressService } from '../historic-watch-progress/historic-watch-progress.service';
 import { ProcessStatus } from '../../models/process-status.enum';
+import { TranslationLanguageService } from '../../../../common-module/services/translation-language/translation-language.service';
 
 declare const window: any;
 
@@ -27,7 +28,8 @@ export class StreamService {
   constructor(private readonly authService: AuthService,
     private readonly movieService: MovieService,
     private readonly seriesService: SeriesService,
-    private readonly historicWatchProgressService: HistoricWatchProgressService
+    private readonly historicWatchProgressService: HistoricWatchProgressService,
+    private readonly translationLanguageService: TranslationLanguageService
   ) {
     window.electron.onChocoPlayerStatus((data: ChocoPlayerModel) => {
       if (data.status) this.csharpProcessStatusSubject.next(data.status);
@@ -57,6 +59,11 @@ export class StreamService {
   }
 
   public async launchJavaAppToMovie(chocoPlayer: ChocoPlayerModel): Promise<void> {
+    if (this.translationLanguageService.getIsShowingKeysValue()) {
+      chocoPlayer.Language = 'none';
+    } else {
+      chocoPlayer.Language = this.translationLanguageService.getCurrentLangValue();
+    }
     await window.electron.invoke('launch-choco-player', chocoPlayer);
   }
 

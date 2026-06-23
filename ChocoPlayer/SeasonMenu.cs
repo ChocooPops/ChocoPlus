@@ -343,8 +343,8 @@ namespace ChocoPlayer
             }
 
             string headerText = _seasons.Count > 0 && _currentSeasonIndex < _seasons.Count
-                ? _seasons[_currentSeasonIndex].Name
-                : "Sélectionner une saison";
+                ? $"{Locale.Get("season.season")} {_seasons[_currentSeasonIndex].SeasonNumber}"
+                : Locale.Get("season.select");
 
             using (Font font = new Font("Segoe UI", 13, FontStyle.Bold))
             using (SolidBrush brush = new SolidBrush(Color.White))
@@ -433,7 +433,7 @@ namespace ChocoPlayer
                 using (Font font = new Font("Segoe UI", 11, isSelected ? FontStyle.Bold : FontStyle.Regular))
                 using (SolidBrush brush = new SolidBrush(textColor))
                 {
-                    g2d.DrawString(_seasons[i].Name, font, brush, itemRect.X + 15, itemRect.Y + (itemRect.Height - font.Height) / 2);
+                    g2d.DrawString($"{Locale.Get("season.season")} {_seasons[i].SeasonNumber}", font, brush, itemRect.X + 15, itemRect.Y + (itemRect.Height - font.Height) / 2);
                 }
 
                 if (isSelected)
@@ -487,7 +487,7 @@ namespace ChocoPlayer
                     sf.LineAlignment = StringAlignment.Center;
 
                     Rectangle textRect = new Rectangle(0, HEADER_HEIGHT, this.Width, this.Height - HEADER_HEIGHT);
-                    g2d.DrawString("Aucun épisode disponible", font, brush, textRect, sf);
+                    g2d.DrawString(Locale.Get("season.no_episodes"), font, brush, textRect, sf);
                 }
                 return;
             }
@@ -576,7 +576,7 @@ namespace ChocoPlayer
             int contentWidth = rect.Width - (contentX - rect.X) - 16;
 
             // Badge "EP XX" en pill shape
-            string badge = $"ÉP. {episode.EpisodeNumber}";
+            string badge = $"{Locale.Get("season.episode")} {episode.EpisodeNumber}";
             using (Font badgeFont = new Font("Segoe UI", 7.5f, FontStyle.Bold))
             {
                 SizeF bSize = g2d.MeasureString(badge, badgeFont);
@@ -604,7 +604,7 @@ namespace ChocoPlayer
             using (Font font = new Font("Segoe UI", 9))
             {
                 string durationText = $"⏱  {episode.Duration}";
-                if (isCurrentlyPlaying) durationText += "   ▶  En lecture";
+                if (isCurrentlyPlaying) durationText += $"   ▶  {Locale.Get("season.playing")}";
 
                 Color textColor = isCurrentlyPlaying ? Color.FromArgb(255, 211, 1) : Color.FromArgb(160, 160, 160);
                 using (SolidBrush brush = new SolidBrush(textColor))
@@ -673,7 +673,7 @@ namespace ChocoPlayer
             using (Font font = new Font("Segoe UI", 9))
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(120, 120, 120)))
             using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                g2d.DrawString("Chargement...", font, brush, new Rectangle(x, y, width, height), sf);
+                g2d.DrawString(Locale.Get("season.loading"), font, brush, new Rectangle(x, y, width, height), sf);
         }
 
         private Bitmap SKBitmapToBitmap(SKBitmap skBitmap)
@@ -744,11 +744,13 @@ namespace ChocoPlayer
         {
             public int Id { get; set; }
             public string Name { get; set; }
+            public int SeasonNumber { get; set; }
 
-            public SeasonItem(int id, string name)
+            public SeasonItem(int id, string name, int seasonNumber)
             {
                 Id = id;
                 Name = name;
+                SeasonNumber = seasonNumber;
             }
         }
 
