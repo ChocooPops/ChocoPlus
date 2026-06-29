@@ -13,21 +13,21 @@ export class UserParametersService {
 
   private userTabMenu: MenuTabModel[] = [
     {
-      id: 1,
-      name: 'MENU.USER.HISTORIC',
-      otherName: 'MENU.USER.STATS',
-      type: MenuType.HISTORIC,
-      route: `${this.rootRouter}/historic`,
-      srcImage: `${this.rootImage}/historic.svg`,
-      isClicked: false
-    },
-    {
       id: 2,
       name: 'MENU.USER.MANAGE_PROFIL',
       otherName: 'MENU.USER.MY_PROFIL',
       type: MenuType.PROFIL,
       route: `${this.rootRouter}/edit-profil`,
       srcImage: `${this.rootImage}/edit-profil.svg`,
+      isClicked: false
+    },
+    {
+      id: 1,
+      name: 'MENU.USER.HISTORIC',
+      otherName: 'MENU.USER.STATS',
+      type: MenuType.HISTORIC,
+      route: `${this.rootRouter}/historic`,
+      srcImage: `${this.rootImage}/historic.svg`,
       isClicked: false
     },
     {

@@ -280,6 +280,16 @@ namespace ChocoPlayer
                 }
             };
 
+            _playerControls.MouseDown += (_, e) =>
+            {
+                if (e.Button != MouseButtons.Left) return;
+                Point cp = e.Location;
+                if (_seasonsMenu?.Visible == true && !_playerControls.IsClickOnSeasonsButton(cp.X, cp.Y))
+                    _seasonsMenu.Hide();
+                if (_trackSettingsMenu?.Visible == true && !_playerControls.IsClickOnSettingsButton(cp.X, cp.Y))
+                    _trackSettingsMenu.Hide();
+            };
+
             // Track settings menu
             _trackSettingsMenu = new TrackSettingsMenu();
             _trackListener     = new TrackListener(this);
@@ -425,6 +435,11 @@ namespace ChocoPlayer
         // ══════════════════════════════════════════════════════════════════════
         // Seek debounce  (évite les seeks disque en rafale)
         // ══════════════════════════════════════════════════════════════════════
+        // Utilise la cible de seek déjà en attente (si présente) comme base,
+        // pour que les appels répétés (touche maintenue / clics rapides) s'accumulent
+        // au lieu de repartir de _mediaPlayer.Time qui n'a pas encore bougé.
+        private long GetSeekBaseTime() => _pendingSeekTime >= 0 ? _pendingSeekTime : (_mediaPlayer?.Time ?? 0);
+
         private void SeekTo(long timeMs)
         {
             if (_mediaPlayer == null) return;
@@ -621,7 +636,12 @@ namespace ChocoPlayer
                         {
                             bool noMenuOpen = (_trackSettingsMenu == null || !_trackSettingsMenu.Visible)
                                            && (_seasonsMenu      == null || !_seasonsMenu.Visible);
-                            if (noMenuOpen) HideControls();
+
+                            Point clientPos       = this.PointToClient(currentPosition);
+                            bool  isOverControls  = _playerControls != null
+                                                 && _playerControls.Bounds.Contains(clientPos);
+
+                            if (noMenuOpen && !isOverControls) HideControls();
                         }
                     }
                 }
@@ -1085,12 +1105,12 @@ namespace ChocoPlayer
             switch (keyData)
             {
                 case Keys.Right:
-                    SeekTo(_mediaPlayer.Time + seekMs);
+                    SeekTo(GetSeekBaseTime() + seekMs);
                     _keyActionOverlay?.ShowSeek(seekMs / 1000);
                     return true;
 
                 case Keys.Left:
-                    SeekTo(_mediaPlayer.Time - seekMs);
+                    SeekTo(GetSeekBaseTime() - seekMs);
                     _keyActionOverlay?.ShowSeek(-(seekMs / 1000));
                     return true;
 
@@ -1243,13 +1263,13 @@ namespace ChocoPlayer
             public void OnBackwardClicked()
             {
                 if (_p._mediaPlayer == null) return;
-                _p.SeekTo(_p._mediaPlayer.Time - 10_000); // ✅ debounced
+                _p.SeekTo(_p.GetSeekBaseTime() - 10_000);
             }
 
             public void OnForwardClicked()
             {
                 if (_p._mediaPlayer == null) return;
-                _p.SeekTo(_p._mediaPlayer.Time + 10_000); // ✅ debounced
+                _p.SeekTo(_p.GetSeekBaseTime() + 10_000);
             }
 
             public void OnVolumeClicked()

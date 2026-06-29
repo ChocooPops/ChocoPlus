@@ -15,6 +15,7 @@
   position: relative;
   overflow: hidden;
   color: var(--white);
+  z-index: 35;
 }
 
 .footer__deco {

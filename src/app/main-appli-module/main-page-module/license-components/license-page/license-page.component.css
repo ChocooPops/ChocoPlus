@@ -18,8 +18,8 @@
     left: 0;
     right: 0;
     height: 30%;
-    background: linear-gradient(to bottom, rgba(20, 20, 20, 0) 0%, rgb(20, 20, 20, 0.8) 100%);
-    z-index: 1;
+    background: linear-gradient(to bottom, rgba(20, 20, 20, 0) 0%, rgb(20, 20, 20, 0.7) 100%);
+    z-index: 30;
 }
 
 .container-logo {
