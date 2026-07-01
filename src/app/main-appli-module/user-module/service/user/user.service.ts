@@ -53,6 +53,7 @@ export class UserService {
   }
 
   public fetchCurrentUser(): Observable<UserModel> {
+    if (this.currentUserSubject.value) return of(this.currentUserSubject.value);
     return this.http.get<any>(`${this.apiUrlUser}/${this.urlCurrentUser}`).pipe(
       map((data: UserModel) => {
         data.dateBorn = new Date(data.dateBorn);

@@ -4,7 +4,7 @@
         <div class="container-image-research">
             <img [src]="srcImageResearch">
         </div>
-        <input type="text" formControlName="inputValue" [placeholder]="placeHolder | translate" />
+        <input #inputSearch type="text" formControlName="inputValue" [placeholder]="placeHolder | translate" />
     </form>
 
     @if(!displayMediaWanted) {

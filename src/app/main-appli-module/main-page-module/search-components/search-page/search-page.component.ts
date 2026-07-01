@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-tmp.component';
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -25,6 +25,8 @@ import { MediaSelectedService } from '../../../media-module/services/media-selec
   styleUrl: './search-page.component.css'
 })
 export class SearchPageComponent {
+
+  @ViewChild('inputSearch') inputSearch!: ElementRef<HTMLInputElement>;
 
   placeHolder = 'SEARCH_PAGE.PLACEHOLDER_RESEARCH_MOVIE_SERIES';
   title = 'SEARCH_PAGE.RESULT';
@@ -144,6 +146,10 @@ export class SearchPageComponent {
     this.subscription.unsubscribe();
     //this.abortController.abort();
     this.mediaSelectedService.clearSelection();
+  }
+
+  ngAfterViewInit(): void {
+    this.inputSearch.nativeElement.focus();
   }
 
   private preloadNewFormat(): void {

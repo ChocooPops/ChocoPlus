@@ -35,6 +35,11 @@ export class LoginComponent extends FormPageDirectiveAbstract {
   lastVersion!: VersionModel;
 
   override ngOnInit(): void {
+    const user: UserModel | undefined = this.userService.getCurrentUserValue();
+    if(user && user?.id > 0) {
+      this.navigateToStreamApp();
+    }
+
     this.formGroup = this.fb.group({
       inputEmail: ['', [Validators.required]],
       inputAccessKey: ['', [Validators.required]]

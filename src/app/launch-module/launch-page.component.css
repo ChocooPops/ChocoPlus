@@ -48,3 +48,13 @@
     position: absolute;
     z-index: 1;
 }
+
+.container-other-tab {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: absolute;
+    top: 0;
+    right: 160px;
+}

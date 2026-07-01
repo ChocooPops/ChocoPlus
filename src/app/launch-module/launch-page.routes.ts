@@ -22,5 +22,9 @@ export const launchRoutes: Routes = [
     {
         path: 'preload-offline-app',
         component: PreloadOfflineAppComponent
+    },
+    {
+        path: '**',
+        redirectTo: 'login'
     }
 ];

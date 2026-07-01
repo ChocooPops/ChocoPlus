@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Router, ActivatedRoute } from '@angular/router';
+import { RouterOutlet, Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, take } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '../main-appli-module/user-module/service/user/user.service';
@@ -10,11 +9,12 @@ import { AuthService } from './services/auth/auth.service';
 import { VersionService } from '../common-module/services/version/version.service';
 import { VersionModel } from './models/version.interface';
 import { BadVersionComponent } from './components/bad-version/bad-version.component';
+import { NavigationButtonComponent } from '../main-appli-module/menu-module/components/navigation-button/navigation-button.component';
 
 @Component({
   selector: 'app-launch-page',
   standalone: true,
-  imports: [RouterOutlet, BadVersionComponent],
+  imports: [RouterOutlet, BadVersionComponent, NavigationButtonComponent],
   templateUrl: './launch-page.component.html',
   styleUrls: ['./launch-page.component.css', '../../app/common-module/styles/loader.css']
 })

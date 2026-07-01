@@ -10,6 +10,7 @@ import { LoadOpeningPageService } from '../../services/load-opening-page/load-op
 import { PageModel } from '../../models/page.enum';
 import { TitleCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-preload-main-appli',
@@ -28,10 +29,12 @@ export class PreloadMainAppComponent {
   TypeButton = TypeButtonModel;
   nameButtonLogin = 'LAUNCH.LOGOUT';
 
-  constructor(private userService: UserService,
-    private authService: AuthService,
-    private electronService: ElectronService,
-    private loadOpeningPageService: LoadOpeningPageService
+  constructor(private readonly userService: UserService,
+    private readonly authService: AuthService,
+    private readonly electronService: ElectronService,
+    private readonly loadOpeningPageService: LoadOpeningPageService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -39,6 +42,8 @@ export class PreloadMainAppComponent {
       if (user) {
         this.srcPP = user.profilPhoto;
         this.pseudo = user.pseudo;
+      } else {
+        this.router.navigate(['login'], { relativeTo: this.route });
       }
     });
     this.userService.fetchMyMediaListByUserId().pipe(take(1)).subscribe(data => { });
