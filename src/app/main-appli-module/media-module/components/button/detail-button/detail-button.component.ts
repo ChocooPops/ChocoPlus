@@ -1,0 +1,23 @@
+import { Component, Input } from '@angular/core';
+import { MediaModel } from '../../../models/media.interface';
+import { MediaSelectedService } from '../../../services/media-selected/media-selected.service';
+
+@Component({
+  selector: 'app-detail-button',
+  standalone: true,
+  imports: [],
+  templateUrl: './detail-button.component.html',
+  styleUrls: ['./detail-button.component.css', '../../../../common-module/styles/movie-button.css']
+})
+export class DetailButtonComponent {
+
+  @Input() media!: MediaModel;
+  srcDetail: string = 'icon/detail.svg';
+
+  constructor(private readonly mediaSelectedService: MediaSelectedService) { }
+
+  onClick(): void {
+    this.mediaSelectedService.selectMedia(this.media);
+  }
+
+}

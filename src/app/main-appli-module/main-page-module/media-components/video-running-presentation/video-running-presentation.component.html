@@ -43,6 +43,7 @@
                                 @if(isVideoLoaded) {
                                 <app-cutoff-button (cutoffMedia)="stopStreamingVideo()"></app-cutoff-button>
                                 }
+                                <app-detail-button [media]="newsMedia.media"></app-detail-button>
                             </div>
                         </div>
                         <div class="container-row-button">

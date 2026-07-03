@@ -18,7 +18,7 @@ export class RestreamButtonComponent {
   @Output()
   emitNewStream = new EventEmitter<any>();
 
-  srcReset: string = 'icon/modify.svg';
+  srcReset: string = 'icon/restream.svg';
 
   onClick(): void {
     if (this.activateRetream) {

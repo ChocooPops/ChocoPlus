@@ -11,11 +11,12 @@ import { NewsVideoRunningModel } from '../../../news-module/models/news-video-ru
 import { StreamService } from '../../../video-playing-module/services/stream/stream.service';
 import { SeasonModel } from '../../../media-module/models/series/season.interface';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
+import { DetailButtonComponent } from '../../../media-module/components/button/detail-button/detail-button.component';
 
 @Component({
   selector: 'app-video-running-presentation',
   standalone: true,
-  imports: [ModifyButtonComponent, VolumeButtonComponent, RestreamButtonComponent, MylistButtonComponent, StartButtonComponent, NgClass, CutoffButtonComponent],
+  imports: [DetailButtonComponent, ModifyButtonComponent, VolumeButtonComponent, RestreamButtonComponent, MylistButtonComponent, StartButtonComponent, NgClass, CutoffButtonComponent],
   templateUrl: './video-running-presentation.component.html',
   styleUrls: ['./video-running-presentation.component.css', '../../../common-module/styles/animation.css']
 })
