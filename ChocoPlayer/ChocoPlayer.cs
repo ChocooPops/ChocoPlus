@@ -1197,6 +1197,11 @@ namespace ChocoPlayer
         // ══════════════════════════════════════════════════════════════════════
         private void ChocoPlayer_FormClosing(object? sender, FormClosingEventArgs e)
         {
+            if (_hasSeasons)
+                Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + _currentEpisodeId);
+            else
+                Console.WriteLine("UPDATE_PROGRESS : MOVIE : " + _mediaId);
+
             _mouseDetectionTimer?.Stop();
             _mouseDetectionTimer?.Dispose();
             _seekDebounceTimer?.Stop();
@@ -1346,6 +1351,8 @@ namespace ChocoPlayer
                     var oldMedia = _p._mediaPlayer?.Media;
                     _p._mediaPlayer?.Stop();
                     oldMedia?.Dispose();
+
+                    Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + _p._currentEpisodeId);
 
                     var newMedia = new Media(_p._libVLC, episodePath, FromType.FromLocation);
                     if (episodePath.StartsWith("http://") || episodePath.StartsWith("https://"))

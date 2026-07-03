@@ -13,6 +13,10 @@ const ProcessStatus = Object.freeze({
   CLOSED: "CLOSED"
 });
 
+const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
+const MOVIE = 'MOVIE';
+const EPISODE = 'EPISODE';
+
 const envPath = app.isPackaged
   ? path.join(process.resourcesPath, '.env')
   : path.join(__dirname, '.env');
@@ -239,18 +243,19 @@ ipcMain.handle('delete-cache', async () => {
   const ses = session.defaultSession;
 
   ses.clearCache().then(() => {
-    console.log('Cache vidé');
+    console.log('Cache cleared');
   });
 
   ses.clearStorageData({
     storages: ['cookies', 'sessionstorage', 'indexdb', 'websql', 'serviceworkers'],
     quotas: ['temporary', 'persistent', 'syncable']
   }).then(() => {
-    console.log('Données de stockage supprimées');
+    console.log('Deleted storage data');
   });
 })
 
 ipcMain.handle('reload-app', async () => {
+  await stopCSharpProcess(true);
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, '/dist/choco-plus/browser/index.html'),
@@ -346,7 +351,14 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
       if (!mainWindow || mainWindow.isDestroyed()) return;
 
       if (Object.values(ProcessStatus).includes(message)) {
-        mainWindow.webContents.send('choco-player-status', { ...dataObject, status: message });
+        mainWindow.webContents.send('choco-player-status', { status: message });
+      } else if (message.startsWith(UPDATE_PROGRESS)) {
+        const id = Number(message.split(' : ')[2].trim());
+        if (message.includes(MOVIE)) {
+          mainWindow.webContents.send('choco-player-status', { MediaId: id });
+        } else if (message.includes(EPISODE)) {
+          mainWindow.webContents.send('choco-player-status', { EpisodeId: id });
+        }
       }
 
     });
@@ -358,7 +370,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     csharpProcess.on('close', (code) => {
       //console.log(`C# process exited with code ${code}`);
       if (mainWindow && !mainWindow.isDestroyed()) {
-        mainWindow.webContents.send('choco-player-status', { ...dataObject, status: ProcessStatus.CLOSED });
+        mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
       }
       currentChocoPlayer = null;
       csharpProcess = null;

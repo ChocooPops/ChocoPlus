@@ -32,8 +32,10 @@ export class StreamService {
     private readonly translationLanguageService: TranslationLanguageService
   ) {
     window.electron.onChocoPlayerStatus((data: ChocoPlayerModel) => {
-      if (data.status) this.csharpProcessStatusSubject.next(data.status);
-      if (data.status === ProcessStatus.CLOSED) {
+      if (data.status && Object.values(ProcessStatus).includes(data.status)) {
+        this.csharpProcessStatusSubject.next(data.status);
+      }
+      if (data.MediaId || data.EpisodeId) {
         this.setWatchProgressByMedia(data);
       }
     });
