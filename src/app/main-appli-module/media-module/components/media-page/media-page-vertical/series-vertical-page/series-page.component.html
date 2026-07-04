@@ -93,8 +93,8 @@
     @if(type) {
     <div class="container-series">
         <div class="container-season">
-            @if(seasons.length > 0) {
-            @for(season of seasons; track season.id; let idx = $index) {
+            @if(series.seasons.length > 0) {
+            @for(season of series.seasons; track season.id; let idx = $index) {
             <div class="container-poster" (click)="onClickSeason(idx)">
                 @if(season.isClicked) {
                 <div class="container-icon-selected">

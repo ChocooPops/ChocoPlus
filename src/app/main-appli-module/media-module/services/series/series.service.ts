@@ -22,8 +22,9 @@ export class SeriesService {
   private readonly urlWatchProgress: string = 'watchProgress';
 
   private episodeMap: Map<number, EpisodeModel[]> = new Map();
+  private lastSeasonWatched: Map<number, number> = new Map();
 
-  constructor(private http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   public createNewSeries(series: any): SeriesModel {
     const seriesTmp: SeriesModel = {
@@ -48,7 +49,7 @@ export class SeriesService {
       typeZoomY: false,
       mediaType: MediaTypeModel.SERIES,
       isRecent: series.isRecent ?? false,
-      seasons: series.seasons && series.seasons.length > 0 ? this.createNewSeasons(series.seasons) : []
+      seasons: series.seasons && series.seasons.length > 0 ? this.createNewSeasons(series.seasons, series.lastSeasonWatched ?? 0) : []
     }
 
     if (series.path) {
@@ -58,12 +59,12 @@ export class SeriesService {
     return seriesTmp;
   }
 
-  private createNewSeasons(series: SeasonModel[]): SeasonModel[] {
-    return series.map((item: SeasonModel) => ({
+  private createNewSeasons(seasons: SeasonModel[], lastSeasonWatched: number): SeasonModel[] {
+    return seasons.map((item: SeasonModel) => ({
       ...item,
       name: item.name ? item.name : `Saison ${item.seasonNumber}`,
       srcPoster: item.srcPoster ? item.srcPoster : undefined,
-      isClicked: false,
+      isClicked: lastSeasonWatched === item.id ? true : false,
       episodes: item.episodes && item.episodes.length > 0 ? this.createNewEpisodes(item.episodes) : []
     }));
   }
@@ -116,6 +117,14 @@ export class SeriesService {
         return of([]);
       })
     );
+  }
+
+  public getLastSeasonWatchedBySeriesId(seriesId: number): number | undefined {
+    return this.lastSeasonWatched.get(seriesId);
+  }
+
+  public loadLastSeasonWatchedBySeriesId(seriesId: number, seasonId: number) {
+    this.lastSeasonWatched.set(seriesId, seasonId);
   }
 
   public fetchEpisodesBySeriesAndSeasonId(idSeries: number, idSeason: number): Observable<EpisodeModel[]> {

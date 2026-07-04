@@ -48,13 +48,6 @@ export abstract class SeriesPageAbstraction {
   similarMedias: MediaModel[] | undefined = undefined;
   similarMediasLoading: number[] = [];
 
-  seasons: {
-    id: number;
-    srcPoster: string | undefined;
-    name: string;
-    isClicked: boolean;
-    seasonNumber: number;
-  }[] = [];
   seasonsLoading: number[] = [];
   seasonsPosterTmp: number[] = [];
   episodes: EpisodeModel[] | undefined = [];
@@ -100,7 +93,6 @@ export abstract class SeriesPageAbstraction {
     this.genres = [];
     this.keyWords = [];
     this.episodes = [];
-    this.seasons = [];
     this.seasonsPosterTmp = [];
     this.description = '';
   }
@@ -132,16 +124,7 @@ export abstract class SeriesPageAbstraction {
 
   private initSeasons(): void {
     this.episodes = undefined;
-    this.series.seasons.forEach((season: SeasonModel) => {
-      this.seasons.push({
-        id: season.id,
-        srcPoster: this.compressedPosterService.getSeasonPoster(season),
-        name: season.name,
-        isClicked: season.isClicked,
-        seasonNumber: season.seasonNumber,
-      });
-    });
-    const iteration: number = 4 - this.seasons.length;
+    const iteration: number = 4 - this.series.seasons.length;
     for (let i = 0; i < iteration; i++) {
       this.seasonsPosterTmp.push(i);
     }
@@ -162,14 +145,16 @@ export abstract class SeriesPageAbstraction {
     return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  onClickSeason(index: number): void {
-    if (index < 0) return;
+  private resetIsClickedSeason(index: number): void {
     this.series.seasons.forEach((s, i) => {
       s.isClicked = i === index;
     });
-    this.seasons.forEach((s, i) => {
-      s.isClicked = i === index;
-    });
+  }
+
+  onClickSeason(index: number): void {
+    if (index < 0) return;
+    this.resetIsClickedSeason(index);
+    this.seriesService.loadLastSeasonWatchedBySeriesId(this.series.id, this.series.seasons[index].id);
     this.fetchEpisodeBySeason(this.series.seasons[index].id);
   }
 
@@ -256,7 +241,7 @@ export abstract class SeriesPageAbstraction {
   }
 
   onErrorPosterSeason(index: number): void {
-    this.seasons[index].srcPoster = undefined;
+    this.series.seasons[index].srcPoster = undefined;
   }
 
   onClickSimilarTitle(media: MediaModel): void {
@@ -265,15 +250,24 @@ export abstract class SeriesPageAbstraction {
 
   protected onLoadEpisodeByIdOrIndex(): void {
     if (this.series.seasons.length > 0) {
-      const index = this.series.seasons.findIndex(
-        (item: SeasonModel) => item.isClicked === true,
-      );
-      if (index >= 0) {
-        this.fetchEpisodeBySeason(this.series.seasons[index].id);
+      const lastSeasonWatched: number | undefined = this.seriesService.getLastSeasonWatchedBySeriesId(this.series.id);
+      let index: number = -1;
+      if (lastSeasonWatched) {
+        index = this.series.seasons.findIndex((item: SeasonModel) => item.id === lastSeasonWatched);
       } else {
-        this.series.seasons[0].isClicked = true;
-        this.seasons[0].isClicked = true;
+        index = this.series.seasons.findIndex(
+          (item: SeasonModel) => item.isClicked === true,
+        );
+      }
+
+      if (index >= 0) {
+        this.resetIsClickedSeason(index);
+        this.fetchEpisodeBySeason(this.series.seasons[index].id);
+        this.seriesService.loadLastSeasonWatchedBySeriesId(this.series.id, this.series.seasons[index].id);
+      } else {
+        this.resetIsClickedSeason(0);
         this.fetchEpisodeBySeason(this.series.seasons[0].id);
+        this.seriesService.loadLastSeasonWatchedBySeriesId(this.series.id, this.series.seasons[0].id);
       }
     }
   }

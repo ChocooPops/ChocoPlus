@@ -60,7 +60,7 @@
 
     <div class="container-second-line">
         <div class="container-seasons">
-            @for (season of seasons; track season.id; let idx = $index) {
+            @for (season of series.seasons; track season.id; let idx = $index) {
             <div class="container-season"
                 [ngClass]="{'season-clicked': season.isClicked, 'season-not-clicked': !season.isClicked}"
                 (click)="onClickSeason(idx)">
