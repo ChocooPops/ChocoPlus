@@ -18,6 +18,7 @@ import { SeriesModel } from '../../../media-module/models/series/series.interfac
 import { SeasonModel } from '../../../media-module/models/series/season.interface';
 import { EpisodeModel } from '../../../media-module/models/series/episode.interface';
 import { MediaCreditModel } from '../../../media-module/models/media-credit.interface';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -32,15 +33,22 @@ export class EditionSeriesService extends EditionMediaService {
   private editSeriesSubject: BehaviorSubject<EditSeriesModel> = new BehaviorSubject<EditSeriesModel>(this.getInitialSeries());
   private editSeries$: Observable<EditSeriesModel> = this.editSeriesSubject.asObservable();
 
-  private editSeasonSubject: BehaviorSubject<EditSeasonModel[]> = new BehaviorSubject<EditSeasonModel[]>([this.getNewSeason(this.editSeriesSubject.value.id, 1)]);
-  private editSeasons$: Observable<EditSeasonModel[]> = this.editSeasonSubject.asObservable();
+  private editSeasonSubject!: BehaviorSubject<EditSeasonModel[]>;
+  private editSeasons$!: Observable<EditSeasonModel[]>;
 
   private typeInfoDisplayed: boolean = false;
 
   constructor(http: HttpClient,
-    private seriesService: SeriesService
+    private readonly seriesService: SeriesService,
+    private readonly translateService: TranslateService
   ) {
     super(http);
+    this.editSeasonSubject = new BehaviorSubject<EditSeasonModel[]>([this.getNewSeason(this.editSeriesSubject.value.id, 1)]);
+    this.editSeasons$ = this.editSeasonSubject.asObservable();
+  }
+
+  private capitalize(text: string): string {
+    return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
   private getInitialSeries(): EditSeriesModel {
@@ -316,7 +324,7 @@ export class EditionSeriesService extends EditionMediaService {
     return {
       id: this.getId(),
       seasonId: seasonId,
-      name: undefined,
+      name: `${this.capitalize(this.translateService.instant('EPISODE'))} ${episodeNumber}`,
       episodeNumber: episodeNumber,
       description: undefined,
       date: new Date(),
@@ -331,7 +339,7 @@ export class EditionSeriesService extends EditionMediaService {
       id: id,
       mediaLibraryId: undefined,
       seriesId: seriesId,
-      name: "Saison " + seasonNumber,
+      name: `${this.capitalize(this.translateService.instant('SEASON'))} ${seasonNumber}`,
       seasonNumber: seasonNumber,
       srcPoster: undefined,
       episodes: [this.getNewEpisode(id, 1)]
@@ -348,6 +356,9 @@ export class EditionSeriesService extends EditionMediaService {
 
   public addNewSeason(): void {
     const editSeasons: EditSeasonModel[] = this.editSeasonSubject.value;
+    editSeasons.forEach((season: EditSeasonModel, idx: number) => {
+        season.seasonNumber = idx + 1;
+    });
     const newSeason: EditSeasonModel = this.getNewSeason(this.editSeriesSubject.value.id, editSeasons.length + 1);
     editSeasons.push(newSeason);
     this.editSeasonSubject.next(editSeasons);
@@ -359,13 +370,15 @@ export class EditionSeriesService extends EditionMediaService {
     }
     const seasons = [...current];
     seasons.splice(deletedIdx, 1);
-
-    // Réindexer / renommer
-    seasons.forEach((season, idx) => {
-      const num = idx + 1;
-      season.seasonNumber = num;
-      season.name = `Saison ${num}`;
+    seasons.forEach((season: EditSeasonModel, idx: number) => {
+        season.seasonNumber = idx + 1;
     });
+    // Reindex / Rename
+    // seasons.forEach((season, idx) => {
+    //   const num = idx + 1;
+    //   season.seasonNumber = num;
+    //   season.name = `${this.translateService.instant('SEASON')} ${num}`;
+    // });
 
     this.editSeasonSubject.next(seasons);
 
@@ -374,6 +387,9 @@ export class EditionSeriesService extends EditionMediaService {
 
   public addNewEpisode(seasonIdx: number): void {
     const seasons: EditSeasonModel[] = this.editSeasonSubject.value;
+    seasons[seasonIdx].episodes.forEach((episode: EditEpisodeModel, idx: number) => {
+      episode.episodeNumber = idx + 1;
+    });
     if (seasonIdx >= 0 && seasonIdx < seasons.length) {
       seasons[seasonIdx].episodes.push(this.getNewEpisode(seasons[seasonIdx].id, seasons[seasonIdx].episodes.length + 1));
       this.editSeasonSubject.next(seasons);
@@ -387,7 +403,7 @@ export class EditionSeriesService extends EditionMediaService {
         seasons[seasonIdx].episodes.splice(episodeIdx, 1);
         seasons[seasonIdx].episodes.forEach((episode: EditEpisodeModel, idx: number) => {
           episode.episodeNumber = idx + 1;
-        })
+        });
         this.editSeasonSubject.next(seasons);
       }
     }
