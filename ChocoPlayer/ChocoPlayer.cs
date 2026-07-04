@@ -453,7 +453,7 @@ namespace ChocoPlayer
             _seekDebounceTimer?.Stop();
             _seekDebounceTimer?.Dispose();
 
-            _seekDebounceTimer = new System.Windows.Forms.Timer { Interval = 80 };
+            _seekDebounceTimer = new System.Windows.Forms.Timer { Interval = 40 };
             _seekDebounceTimer.Tick += (_, _) =>
             {
                 _seekDebounceTimer?.Stop();
@@ -1246,16 +1246,14 @@ namespace ChocoPlayer
             public void OnProgressChanging(float progress)
             {
                 _isDragging = true;
+                if (_p._mediaPlayer == null) return;
+                long newTime = (long)(progress * _p._mediaPlayer.Length);
+                _p.SeekTo(newTime);
             }
 
-            // Called once when the user releases the scrubber
             public void OnProgressChanged(float progress)
             {
                 _isDragging = false;
-                if (_p._mediaPlayer == null) return;
-
-                long newTime = (long)(progress * _p._mediaPlayer.Length);
-                _p.SeekTo(newTime);
             }
 
             public void OnPlayPauseClicked(bool isPlaying)
