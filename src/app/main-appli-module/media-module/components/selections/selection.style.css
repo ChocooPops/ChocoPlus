@@ -43,6 +43,13 @@
     width: 100%;
 }
 
+.container-right-part {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+}
+
 @media (min-width: 1400px) {
     .containerHeader {
         font-size: 1.4vw;

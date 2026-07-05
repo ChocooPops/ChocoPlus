@@ -377,7 +377,8 @@
             "MESSAGE_DELETE": "This action will permanently delete the selection",
             "NORMAL_SELECTION": "Normal selection",
             "SPECIAL_SELECTION": "Special selection",
-            "PLACEHOLDER_NAME": "e.g.: Special selection on Thrillers"
+            "PLACEHOLDER_NAME": "e.g.: Special selection on Thrillers",
+            "SEE_EVERYTHING": "See everything"
         },
         "PAGE_SELECTION": {
             "SEARCH_SELECTION": "Search for a selection",
@@ -525,6 +526,7 @@
     "CONTAIN": "contains",
     "EPISODES": "Episodes",
     "EPISODE": "episode",
+    "SELECTION": "Selection",
     "SELECTIONS": "Selections",
     "LICENSE": "License",
     "NOT CONTAIN": "does not contain",

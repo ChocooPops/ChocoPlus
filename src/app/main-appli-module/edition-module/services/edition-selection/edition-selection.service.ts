@@ -9,6 +9,7 @@ import { MessageReturnedModel } from '../../../../common-module/models/message-r
 import { EditSelectionModel } from '../../../edition-module/models/edit-selection.interface';
 import { SelectionType } from '../../../media-module/models/selection-type.enum';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
+import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,8 @@ export class EditionSelectionService {
       id: -1,
       name: "",
       typeSelection: SelectionType.NORMAL_POSTER,
-      mediaList: []
+      mediaList: [],
+      createFrom: MediaTypeModel.OTHER
     }
   }
 

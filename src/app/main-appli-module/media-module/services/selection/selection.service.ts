@@ -23,17 +23,18 @@ export class SelectionService {
   selectionOnMoviePage: SelectionModel[] = [];
   selectionOnSeriesPage: SelectionModel[] = [];
 
-  constructor(private http: HttpClient,
-    private movieService: MovieService,
-    private seriesService: SeriesService
+  constructor(private readonly http: HttpClient,
+    private readonly movieService: MovieService,
+    private readonly seriesService: SeriesService
   ) { }
 
-  public createNewSelection(id: number, name: string, typeSelection: SelectionType, medias: MediaModel[]): SelectionModel {
+  public createNewSelection(id: number, name: string, typeSelection: SelectionType, medias: MediaModel[], createFrom: MediaTypeModel): SelectionModel {
     return {
       id: id,
       name: name,
       typeSelection: typeSelection,
-      mediaList: medias
+      mediaList: medias,
+      createFrom: createFrom
     }
   }
 
@@ -41,7 +42,7 @@ export class SelectionService {
     const medias: MediaModel[] = [];
     data.mediaList.forEach((media: MediaModel) => {
       if (!media || !media.title) {
-        console.warn('Invalid movie structure:', media);
+        console.warn('Invalid media structure:', media);
         return;
       }
       if (media.mediaType === MediaTypeModel.MOVIE) {
@@ -57,7 +58,8 @@ export class SelectionService {
       id: data.id,
       typeSelection: type,
       name: data.name,
-      mediaList: medias
+      mediaList: medias,
+      createFrom: data.createFrom
     }
     return mediaSelection;
   }
@@ -146,7 +148,8 @@ export class SelectionService {
           id: 0,
           typeSelection: SelectionType.NORMAL_POSTER,
           name: 'Nameless',
-          mediaList: []
+          mediaList: [],
+          createFrom: MediaTypeModel.OTHER
         }
         return of(mediaSelection);
       })

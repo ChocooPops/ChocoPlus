@@ -6,11 +6,12 @@ import { GeometricDimensionSelectionModel } from '../../../models/geometric-dime
 import { ScrollButtonComponent } from '../scroll-button/scroll-button.component';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { SelectionTranslatePipe } from '../../../../../common-module/pipe/selection-translate';
+import { SeeEverythingComponent } from '../see-everything/see-everything.component';
 
 @Component({
   selector: 'app-horizontal-selection',
   standalone: true,
-  imports: [NgClass, ScrollButtonComponent, HorizontalPosterComponent, PaginationComponent, SelectionTranslatePipe],
+  imports: [NgClass, SeeEverythingComponent, ScrollButtonComponent, HorizontalPosterComponent, PaginationComponent, SelectionTranslatePipe],
   templateUrl: './horizontal-selection.component.html',
   styleUrls: ['./horizontal-selection.component.css', '../selection.style.css']
 })

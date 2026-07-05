@@ -10,6 +10,7 @@ import { MessageReturnedModel } from '../../../../common-module/models/message-r
 import { EditLicenseModel } from '../../models/edit-license.interface';
 import { SelectionType } from '../../../media-module/models/selection-type.enum';
 import { LicenseService } from '../../../license-module/service/license/licence.service';
+import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -108,7 +109,8 @@ export class EditionLicenseService {
       id: -1,
       name: '',
       typeSelection: SelectionType.LICENSE_POSTER,
-      mediaList: []
+      mediaList: [],
+      createFrom: MediaTypeModel.OTHER
     }
   }
 

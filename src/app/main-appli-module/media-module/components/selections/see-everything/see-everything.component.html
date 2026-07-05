@@ -1,0 +1,9 @@
+@if (isUnlocked && isVisible) {
+<div class="container">
+    <p class="see-all" (click)="onClick()">
+        <span class="label">{{ "EDITION.SELECTION.SEE_EVERYTHING" | translate }}</span>
+        <span class="arrow">ᐳ</span>
+    </p>
+    <div [style.width.vw]="marginLeft"></div>
+</div>
+}

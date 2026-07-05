@@ -377,7 +377,8 @@
             "MESSAGE_DELETE": "Cette action supprimera définitivement la sélection",
             "NORMAL_SELECTION": "Sélection normale",
             "SPECIAL_SELECTION": "Sélection spéciale",
-            "PLACEHOLDER_NAME": "ex : Sélection spéciale sur les Polars"
+            "PLACEHOLDER_NAME": "ex : Sélection spéciale sur les Polars",
+            "SEE_EVERYTHING": "Tout voir"
         },
         "PAGE_SELECTION": {
             "SEARCH_SELECTION": "Rechercher une sélection",
@@ -511,7 +512,7 @@
         "CREW": "par l'équipe ChocoPlus"
     },
     "DECADE": "Décennie",
-    "CATEGORY": "Categorie",
+    "CATEGORY": "Catégorie",
     "MEDIA": "Média",
     "SERIES": "Séries",
     "SEASON": "Saison",
@@ -525,6 +526,7 @@
     "CONTAIN": "contient",
     "EPISODES": "Episodes",
     "EPISODE": "épisode",
+    "SELECTION": "Sélection",
     "SELECTIONS": "Sélections",
     "LICENSE": "Licence",
     "NOT CONTAIN": "ne contient pas",

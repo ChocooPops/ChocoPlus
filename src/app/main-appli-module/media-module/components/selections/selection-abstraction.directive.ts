@@ -7,6 +7,7 @@ import { MediaModel } from "../../models/media.interface";
 import { GeometricDimensionSelectionModel } from "../../models/geometric-dimension-selection.interface";
 import { FormatPosterModel } from "../../../common-module/models/format-poster.enum";
 import { PaginationPosterService } from "../../services/pagination-poster/pagination-poster.service";
+import { MediaTypeModel } from "../../models/media-type.enum";
 
 @Directive({})
 export abstract class SelectionAbstraction {
@@ -69,7 +70,8 @@ export abstract class SelectionAbstraction {
             id: 1,
             typeSelection: SelectionType.NORMAL_POSTER,
             name: "",
-            mediaList: structuredClone(this.selection.mediaList.slice(0, this.nbPosterPerLine + 1))
+            mediaList: structuredClone(this.selection.mediaList.slice(0, this.nbPosterPerLine + 1)),
+            createFrom: MediaTypeModel.OTHER
         };
         this.selectionShowed.mediaList[0].typeZoomX = true;
         if (this.selection.mediaList.length > this.nbPosterPerLine) {

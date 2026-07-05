@@ -3,7 +3,10 @@
         <div class="containerTitle" [style.padding-left.vw]="marginLeftTitle">
             <p> {{ selection.name | selectiontranslate }} </p>
         </div>
-        <app-pagination [pagination]="pagination" [marginLeft]="marginLeft"></app-pagination>
+        <div class="container-right-part">
+            <app-pagination [pagination]="pagination" [marginLeft]="marginLeft"></app-pagination>
+            <app-see-everything [selection]="selection" [marginLeft]="marginLeft" [nbPosterPerLine]="nbPosterPerLine"></app-see-everything>
+        </div>
     </div>
 
     <div class="container-line-film" [style.height.vw]="heightSelection" [style.margin-bottom.vw]="marginBottom">

@@ -137,26 +137,36 @@ export class NewsService {
     this.newsEditSubject.next(news);
   }
 
-  public moveNewsToTop(id: number): void {
+  public moveNewsToBottom(id: number): void {
     const newsList: NewsModel[] = this.newsEditSubject.value;
-    const index = newsList.findIndex(license => license.id === id);
+    const index = newsList.findIndex(news => news.id === id);
+
     if (index !== -1) {
-      const newIndex = Math.min(index + 1, newsList.length - 1);
+      const newIndex = index === 0
+        ? newsList.length - 1
+        : index - 1;
+
       const updated = [...newsList];
       const [moved] = updated.splice(index, 1);
       updated.splice(newIndex, 0, moved);
+
       this.newsEditSubject.next(updated);
     }
   }
 
-  public moveNewsToBottom(id: number): void {
+  public moveNewsToTop(id: number): void {
     const newsList: NewsModel[] = this.newsEditSubject.value;
     const index = newsList.findIndex(news => news.id === id);
+
     if (index !== -1) {
-      const newIndex = Math.max(index - 1, 0);
+      const newIndex = index === newsList.length - 1
+        ? 0
+        : index + 1;
+
       const updated = [...newsList];
       const [moved] = updated.splice(index, 1);
       updated.splice(newIndex, 0, moved);
+
       this.newsEditSubject.next(updated);
     }
   }

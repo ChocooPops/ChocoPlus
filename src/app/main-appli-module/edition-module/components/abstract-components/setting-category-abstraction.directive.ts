@@ -8,6 +8,7 @@ import { UnauthorizedError } from "./unauthorized-error-abstract.directive";
 import { MovieModel } from "../../../media-module/models/movie-model";
 import { SeriesModel } from "../../../media-module/models/series/series.interface";
 import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
+import { MediaTypeModel } from "../../../media-module/models/media-type.enum";
 
 @Directive({})
 export abstract class SettingCategoryAbstraction extends UnauthorizedError {
@@ -74,6 +75,7 @@ export abstract class SettingCategoryAbstraction extends UnauthorizedError {
             name: edit.nameSelection,
             typeSelection: SelectionType.NORMAL_POSTER,
             mediaList: edit.movies,
+            createFrom: MediaTypeModel.OTHER
         }]
     }
 
@@ -96,6 +98,7 @@ export abstract class SettingCategoryAbstraction extends UnauthorizedError {
             name: edit.nameSelection,
             typeSelection: SelectionType.NORMAL_POSTER,
             mediaList: edit.series,
+            createFrom: MediaTypeModel.OTHER
         }]
     }
 

@@ -88,10 +88,11 @@ export class LicenseService {
       }
     });
     const firstMediaSelection: SelectionModel = this.selectionService.createNewSelection(
-      0,
+      data.id,
       mediaList.length > 0 ? data.name : '',
       SelectionType.LICENSE_POSTER,
-      mediaList
+      mediaList,
+      MediaTypeModel.LICENSE
     );
     mediaSelectionList.push(firstMediaSelection);
     data.selectionList.forEach((mediaSelection: any) => {

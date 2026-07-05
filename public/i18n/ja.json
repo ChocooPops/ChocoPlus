@@ -377,7 +377,8 @@
             "MESSAGE_DELETE": "この操作によりセレクションが完全に削除されます",
             "NORMAL_SELECTION": "通常セレクション",
             "SPECIAL_SELECTION": "特別セレクション",
-            "PLACEHOLDER_NAME": "例：サスペンス特集セレクション"
+            "PLACEHOLDER_NAME": "例：サスペンス特集セレクション",
+            "SEE_EVERYTHING": "すべて表示"
         },
         "PAGE_SELECTION": {
             "SEARCH_SELECTION": "セレクションを検索",
@@ -525,6 +526,7 @@
     "CONTAIN": "含む",
     "EPISODES": "エピソード",
     "EPISODE": "エピソード",
+    "SELECTION": "選択",
     "SELECTIONS": "セレクション",
     "LICENSE": "ライセンス",
     "NOT CONTAIN": "含まない",
