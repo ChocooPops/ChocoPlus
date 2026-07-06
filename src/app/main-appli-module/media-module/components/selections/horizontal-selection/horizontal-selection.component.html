@@ -1,11 +1,11 @@
 <div class="container-movie-selection">
     <div class="containerHeader">
-        <div class="containerTitle" [style.padding-left.vw]="marginLeftTitle">
+        <div class="containerTitle" [style.padding-left.vw]="initialMarginLeft">
             <p> {{ selection.name | selectiontranslate }} </p>
         </div>
         <div class="container-right-part">
-            <app-pagination [pagination]="pagination" [marginLeft]="marginLeft"></app-pagination>
-            <app-see-everything [selection]="selection" [marginLeft]="marginLeft" [nbPosterPerLine]="nbPosterPerLine"></app-see-everything>
+            <app-pagination [pagination]="pagination" [marginLeft]="initialMarginLeft"></app-pagination>
+            <app-see-everything [selection]="selection" [marginLeft]="initialMarginLeft" [nbPosterPerLine]="nbPosterPerLine"></app-see-everything>
         </div>
     </div>
 

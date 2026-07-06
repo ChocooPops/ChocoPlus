@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { SavePathService } from '../../../common-module/services/save-path/save-path.service';
-import { Subscription } from 'rxjs';
+import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
+import { combineLatest, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navigation-button',
@@ -20,17 +21,24 @@ export class NavigationButtonComponent {
   public canGoBack!: boolean;
   public canGoForward!: boolean;
 
-  constructor(private readonly navigation: SavePathService) { }
+  constructor(private readonly navigation: SavePathService,
+    private readonly mediaSelectedService: MediaSelectedService) { }
 
   ngOnInit(): void {
     this.subscription.add(
-      this.navigation.getCanGoBack().subscribe((bool: boolean) => {
-        this.canGoBack = bool;
+      combineLatest([
+        this.navigation.getCanGoBack(),
+        this.mediaSelectedService.getCanGoBack()
+      ]).subscribe(([routeCanGoBack, mediaCanGoBack]: [boolean, boolean]) => {
+        this.canGoBack = routeCanGoBack || mediaCanGoBack;
       })
     );
     this.subscription.add(
-      this.navigation.getCanGoForward().subscribe((bool: boolean) => {
-        this.canGoForward = bool;
+      combineLatest([
+        this.navigation.getCanGoForward(),
+        this.mediaSelectedService.getCanGoForward()
+      ]).subscribe(([routeCanGoForward, mediaCanGoForward]: [boolean, boolean]) => {
+        this.canGoForward = routeCanGoForward || mediaCanGoForward;
       })
     )
   }
@@ -40,11 +48,19 @@ export class NavigationButtonComponent {
   }
 
   public goBack() {
-    this.navigation.back();
+    if (this.mediaSelectedService.canGoBack()) {
+      this.mediaSelectedService.back();
+    } else {
+      this.navigation.back();
+    }
   }
 
   public goForward() {
-    this.navigation.forward();
-  } 
+    if (this.mediaSelectedService.canGoForward()) {
+      this.mediaSelectedService.forward();
+    } else {
+      this.navigation.forward();
+    }
+  }
 
 }
