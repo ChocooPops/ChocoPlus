@@ -1,5 +1,6 @@
 <div class="container-horizontal-poster" [style.transform]="transformStyle" [style.z-index]="zIndex"
     [style.height.vw]="dimension.height" [style.width.vw]="dimension.width" (mouseleave)="onMouseLeave()"
+    (transitionend)="onTransitionEnd($event)"
     [ngClass]="{'container-horizontal-poster-pressed' : isHover, 'animationPosterAndLicense' : true}">
     
     <app-news-alert [visibility]="!isHover" [isRecent]="media.isRecent" [mediaType]="media.mediaType"></app-news-alert>

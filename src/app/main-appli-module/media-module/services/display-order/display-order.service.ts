@@ -8,7 +8,6 @@ export class DisplayOrderService {
   private initOrder: number = 10;
   private order: number = this.initOrder;
   private timerZoom: any;
-  private timerEndZoom: any;
   private refreshment: number = 500;
 
   public getOrderDisplay(): number {
@@ -36,20 +35,6 @@ export class DisplayOrderService {
     if (this.timerZoom) {
       clearTimeout(this.timerZoom);
       this.timerZoom = null;
-    }
-  }
-
-  public startTimerEndZoom(callback: () => void): void {
-    this.timerEndZoom = setTimeout(() => {
-      callback();
-      this.stopTimerEndZoom();
-    }, this.refreshment);
-  }
-
-  public stopTimerEndZoom(): void {
-    if (this.timerEndZoom) {
-      clearTimeout(this.timerEndZoom);
-      this.timerEndZoom = null;
     }
   }
 

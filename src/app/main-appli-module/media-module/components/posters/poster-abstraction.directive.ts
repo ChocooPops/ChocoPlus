@@ -143,9 +143,12 @@ export class PosterAbstraction {
         this.isHover = false;
         this.setTransformStyle(1, 0, 0);
         this.displayOrderService.stopTimerZoom();
-        this.displayOrderService.startTimerEndZoom(() => {
+    }
+
+    onTransitionEnd(event: TransitionEvent): void {
+        if (event.propertyName === 'transform' && !this.isHover) {
             this.zIndex = this.displayOrderService.getInitOrder();
-        })
+        }
     }
 
     private setTransformStyle(scale: number, translateX: number, translateY: number): void {

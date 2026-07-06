@@ -1,6 +1,7 @@
 <div #poster class="containerPoster" [style.height.vw]='dimension.height' [style.width.vw]='dimension.width'
     [ngClass]="{'containerPosterPressed' : isHover, 'heightForEdition' : displayOnEditionPage, 'animationPosterAndLicense' : true}"
-    [style.transform]="transformStyle" [style.z-index]="zIndex" (mouseleave)="onMouseLeave()">
+    [style.transform]="transformStyle" [style.z-index]="zIndex" (mouseleave)="onMouseLeave()"
+    (transitionend)="onTransitionEnd($event)">
     
     <app-news-alert [visibility]="!isHover" [isRecent]="media.isRecent" [mediaType]="media.mediaType"></app-news-alert>
 
