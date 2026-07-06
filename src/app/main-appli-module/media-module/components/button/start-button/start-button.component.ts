@@ -49,6 +49,7 @@ export class StartButtonComponent {
       Height: window.innerHeight,
       Width: window.innerWidth,
       WatchProgress: 0,
+      MediaType: this.media.mediaType,
       EpisodeId: -1,
       SeasonIndex: -1,
       SeasonMenu: []

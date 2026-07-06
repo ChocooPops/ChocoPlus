@@ -13,9 +13,20 @@ const ProcessStatus = Object.freeze({
   CLOSED: "CLOSED"
 });
 
-const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
-const MOVIE = 'MOVIE';
-const EPISODE = 'EPISODE';
+const UPDATE_PROGRESS = "UPDATE_PROGRESS";
+const NEW_EPISODE_ID = "NEW_EPISODE_ID";
+
+const MediaType = Object.freeze({
+  MOVIE: "MOVIE",
+  SERIES: "SERIES",
+  EPISODE: "EPISODE",
+  OTHER: "OTHER"
+});
+
+let mediaLaunched = {
+  id: 0,
+  type: MediaType.OTHER,
+}
 
 const envPath = app.isPackaged
   ? path.join(process.resourcesPath, '.env')
@@ -302,8 +313,23 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     }
     // Vérifier si un processus est déjà en cours d'exécution
     if (csharpProcess && !csharpProcess.killed) {
-      //console.log('ChocoPlayer est déjà en cours d\'exécution');
       await stopCSharpProcess(true);
+      if (mediaLaunched.type === MediaType.MOVIE) {
+        mainWindow.webContents.send('choco-player-status', { MediaId: mediaLaunched.id ?? 0 });
+      } else if (mediaLaunched.type === MediaType.SERIES) {
+        mainWindow.webContents.send('choco-player-status', { EpisodeId: mediaLaunched.id ?? 0 });
+      }
+    }
+
+    mediaLaunched.id = 0;
+    mediaLaunched.type = MediaType.OTHER;
+
+    if (dataObject.MediaType === MediaType.MOVIE) {
+      mediaLaunched.id = dataObject.MediaId;
+      mediaLaunched.type = dataObject.MediaType;
+    } else if (dataObject.MediaType === MediaType.SERIES) {
+      mediaLaunched.id = dataObject.EpisodeId;
+      mediaLaunched.type = dataObject.MediaType;
     }
 
     currentChocoPlayer = dataObject;
@@ -344,20 +370,36 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     //     mainWindow.webContents.send('choco-player-status', { ...dataObject, status: ProcessStatus.LAUNCHING });
     //   }
     // });
+  
+    csharpProcess.stdout.on('data', async (data) => {
+      const stdoutBuffer = data.toString();
 
-    csharpProcess.stdout.on('data', (data) => {
-      const message = data.toString().trim();
+      const lines = stdoutBuffer.split('\n');
 
-      if (!mainWindow || mainWindow.isDestroyed()) return;
+      for (const rawLine of lines) {
+        const message = rawLine.trim();
+        if (!mainWindow || mainWindow.isDestroyed()) return;
 
-      if (Object.values(ProcessStatus).includes(message)) {
-        mainWindow.webContents.send('choco-player-status', { status: message });
-      } else if (message.startsWith(UPDATE_PROGRESS)) {
-        const id = Number(message.split(' : ')[2].trim());
-        if (message.includes(MOVIE)) {
-          mainWindow.webContents.send('choco-player-status', { MediaId: id });
-        } else if (message.includes(EPISODE)) {
-          mainWindow.webContents.send('choco-player-status', { EpisodeId: id });
+        if (message.startsWith(NEW_EPISODE_ID) && mediaLaunched.type === MediaType.SERIES) {
+          const id = Number(message.split(' : ')[1].trim());
+          mediaLaunched.id = id;
+          //console.log(message + " --> " + id);
+          continue;
+        }
+
+        if (Object.values(ProcessStatus).includes(message)) {
+          mainWindow.webContents.send('choco-player-status', { status: message });
+          continue;
+        } else if (message.startsWith(UPDATE_PROGRESS)) {
+          const id = Number(message.split(' : ')[2].trim());
+          if (message.includes(MediaType.MOVIE)) {
+            mainWindow.webContents.send('choco-player-status', { MediaId: id });
+            continue;
+          } else if (message.includes(MediaType.EPISODE)) {
+            mainWindow.webContents.send('choco-player-status', { EpisodeId: id });
+            //console.log(message + " --> " + id);
+            continue;
+          }
         }
       }
 

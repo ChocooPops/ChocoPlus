@@ -19,6 +19,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TranslationLanguageService } from '../../../../common-module/services/translation-language/translation-language.service';
 import { ProcessStatus } from '../../../video-playing-module/models/process-status.enum';
 import { ChangeDetectorRef } from '@angular/core';
+import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 
 @Component({
   selector: 'app-user-tab',
@@ -114,6 +115,7 @@ export class UserTabComponent {
       EpisodeId: -1,
       SeasonIndex: -1,
       WatchProgress: 0,
+      MediaType: MediaTypeModel.MOVIE,
       SeasonMenu: []
     };
 
@@ -141,6 +143,7 @@ export class UserTabComponent {
       EpisodeId: episode.id,
       SeasonIndex: 0,
       WatchProgress: 0,
+      MediaType: MediaTypeModel.SERIES,
       SeasonMenu: series.seasons
         ? series.seasons.map(season => ({
             Id: season.id,
