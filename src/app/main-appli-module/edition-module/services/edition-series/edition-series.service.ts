@@ -612,6 +612,8 @@ export class EditionSeriesService extends EditionMediaService {
       horizontalPosterSameAsBackground: state,
       backgroundImage: series.srcBackgroundImage !== undefined ? series.srcBackgroundImage.toString() : undefined,
       seasons: [],
+
+      tmdbId: series.tmdbId,
       path: series.path
     }
     if (!series.srcPosterNormal && !series.srcPosterSpecial && !series.srcPosterLicense) {

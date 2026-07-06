@@ -356,6 +356,7 @@ export class EditionMovieService extends EditionMediaService {
       horizontalPosterSameAsBackground: state,
       backgroundImage: movie.srcBackgroundImage !== undefined ? movie.srcBackgroundImage.toString() : undefined,
 
+      tmdbId: movie.tmdbId,
       path: movie.path,
       bytes: movie.bytes,
       frames: movie.frames,

@@ -14,6 +14,10 @@
                 <p> {{ 'IDENTIFYING' | translate }} </p>
                 <app-input-number-edition [number]="editSeries.id" [disabled]="true"></app-input-number-edition>
             </div>
+            <div class="containerFieldToFill">
+                <p> {{ 'EDITION.TMDB_ID' | translate | titlecase }} </p>
+                <app-input-number-edition [number]="editSeries.tmdbId ?? -1" [disabled]="true"></app-input-number-edition>
+            </div>
             @if (editSeries.path && editSeries.path.trim() !== '') {
                 <div class="containerFieldToFill">
                     <p> {{ 'EDITION.FILE_CHEMIN' | translate }} </p>

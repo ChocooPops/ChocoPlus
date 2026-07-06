@@ -53,7 +53,8 @@ export class SeriesService {
     }
 
     if (series.path) {
-      seriesTmp.path = series.path
+      seriesTmp.tmdbId = series.tmdbId;
+      seriesTmp.path = series.path;
     }
 
     return seriesTmp;

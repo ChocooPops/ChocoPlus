@@ -74,6 +74,7 @@ export class MovieService {
       isRecent: movie.isRecent
     }
     if (movie.path) {
+      movieTmp.tmdbId = movie.tmdbId;
       movieTmp.path = movie.path;
       movieTmp.frames = movie.frames;
       movieTmp.bytes = movie.bytes;

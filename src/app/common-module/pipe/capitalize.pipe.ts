@@ -10,6 +10,7 @@ export class CapitalizePipe implements PipeTransform {
     if (!value || typeof value !== 'string') {
       return '';
     }
+    value = value.toLowerCase();
 
     return value.charAt(0).toUpperCase() + value.slice(1);
   }

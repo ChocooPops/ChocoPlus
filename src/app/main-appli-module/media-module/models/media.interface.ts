@@ -26,5 +26,6 @@ export interface MediaModel {
     mediaType: MediaTypeModel,
     isRecent: boolean,
 
+    tmdbId?: number,
     path?: string
 }

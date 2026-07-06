@@ -21,5 +21,6 @@ export interface EditionMediaModel {
     logo: string | ArrayBuffer | undefined | null,
     backgroundImage: string | ArrayBuffer | undefined | null,
 
+    tmdbId?: number,
     path?: string
 }
