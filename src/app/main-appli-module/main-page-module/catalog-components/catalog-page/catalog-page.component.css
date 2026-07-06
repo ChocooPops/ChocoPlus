@@ -75,6 +75,7 @@ p {
   display: flex;
   gap: 14px;
   align-items: flex-end;
+  margin-bottom: 2px;
 }
 
 .barre-separation {
@@ -114,7 +115,6 @@ p {
   }
 }
 
-/* Quand écran < 700px */
 @media (max-width: 890px) {
   .container-list {
     gap: 20px;
@@ -132,6 +132,7 @@ p {
   }
   .align-title-total {
     gap: 10px;
+    margin-bottom: 8px;
   }
 }
 
