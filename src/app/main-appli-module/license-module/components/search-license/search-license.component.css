@@ -12,7 +12,7 @@
     box-sizing: border-box;
 
     &:hover {
-        border: rgb(34, 34, 34) solid 2px;
+        border: #989898 solid 2px;
         transform: scale(1.1);
     }
 }
