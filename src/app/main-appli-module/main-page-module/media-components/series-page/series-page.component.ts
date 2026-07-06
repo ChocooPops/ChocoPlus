@@ -14,6 +14,7 @@ import { NewsVideoRunningModel } from '../../../news-module/models/news-video-ru
 import { NewsVideoRunningService } from '../../../news-module/services/news-video-running/news-video-running.service';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
+import { ScrollEventService } from '../../../common-module/services/scroll-event/scroll-event.service';
 
 @Component({
   selector: 'app-series-page',
@@ -37,8 +38,10 @@ export class SeriesPageComponent {
     private readonly formatPosterService: FormatPosterService,
     private readonly menuTabService: MenuTabService,
     private readonly newsVideoRunningService: NewsVideoRunningService,
-    private readonly loadOpeningPageService: LoadOpeningPageService
+    private readonly loadOpeningPageService: LoadOpeningPageService,
+    private readonly scrollEventService: ScrollEventService
   ) {
+    this.scrollEventService.checkTopAchievement();
     this.menuTabService.setActivateTransition(true);
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_SERIES);
   }

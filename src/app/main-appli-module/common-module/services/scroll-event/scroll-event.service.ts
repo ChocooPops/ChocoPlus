@@ -33,6 +33,13 @@ export class ScrollEventService {
     }
   }
 
+  public checkTopAchievement(): void {
+    if (this.containerElement) {
+      const scrollTop = this.containerElement.scrollTop;
+      this.isTopAchievementSubject.next(scrollTop > 10);
+    }
+  }
+  
   public IfTopScrollIsAchievement(): Observable<boolean> {
     return this.isTopAchievement$;
   }
