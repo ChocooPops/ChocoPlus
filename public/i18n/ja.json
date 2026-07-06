@@ -118,6 +118,7 @@
     },
     "SEARCH_PAGE": {
         "RESULT": "結果",
+        "RESULTS": "結果",
         "PLACEHOLDER_RESEARCH_MOVIE_SERIES": "映画、シリーズを検索..."
     },
     "MYLIST_PAGE": "あなたのリスト",

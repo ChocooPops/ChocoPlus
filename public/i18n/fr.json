@@ -118,6 +118,7 @@
     },
     "SEARCH_PAGE": {
         "RESULT": "Résultat",
+        "RESULTS": "Résultats",
         "PLACEHOLDER_RESEARCH_MOVIE_SERIES": "Rechercher un film, une série ..."
     },
     "MYLIST_PAGE": "Votre liste",

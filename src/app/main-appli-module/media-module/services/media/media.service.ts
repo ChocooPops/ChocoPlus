@@ -8,6 +8,7 @@ import { MediaModel } from '../../models/media.interface';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { SortCatalog } from '../../models/catalog/sort-catalog.enum';
 import { FILTERS } from '../../models/catalog/filters.interface';
+import { ResultCatalog } from '../../models/catalog/result-catalog.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -42,26 +43,32 @@ export class MediaService {
     )
   }
 
-  public fetchMediaByCatalogFilters(filters: FILTERS[], sortFilter: SortCatalog, orderDirection: boolean, count: number, offset: number): Observable<MediaModel[]> {
+  public fetchMediaByCatalogFilters(filters: FILTERS[], sortFilter: SortCatalog, orderDirection: boolean, count: number, offset: number): Observable<ResultCatalog> {
     let params = new HttpParams()
       .set('sortFilter', sortFilter)
       .set('orderDirection', String(orderDirection))
       .set('count', String(count))
       .set('offset', String(offset));
 
-    return this.http.post<any[]>(`${this.apiUrlMedia}/${this.urlCatalog}`, filters, { params }).pipe(
-      map((data: MediaModel[]) => {
+    return this.http.post<any>(`${this.apiUrlMedia}/${this.urlCatalog}`, filters, { params }).pipe(
+      map((data: ResultCatalog) => {
         const medias: MediaModel[] = [];
-        data.forEach((media: MediaModel) => {
+        data.medias.forEach((media: MediaModel) => {
           if (media.mediaType === MediaTypeModel.MOVIE) {
             medias.push(this.movieService.createNewMovie(media));
           } else if (media.mediaType === MediaTypeModel.SERIES) {
             medias.push(this.seriesService.createNewSeries(media));
           }
         });
-        return medias;
+        return {
+          medias: medias,
+          total: data.total
+        };
       }),
-      catchError(() => of([]))
+      catchError(() => of({
+        medias: [],
+        total: 0
+      }))
     );
   }
 

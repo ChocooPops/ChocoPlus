@@ -27,17 +27,20 @@ import { FilterType } from '../../../media-module/models/catalog/filter-type.enu
 import { TranslatePipe } from '@ngx-translate/core';
 import { OperatorPipe } from '../../../../common-module/pipe/operator.pipe';
 import { UpperCasePipe } from '@angular/common';
+import { ResultCatalog } from '../../../media-module/models/catalog/result-catalog.interface';
+import { LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-catalog-page',
   standalone: true,
-  imports: [OperatorPipe, UpperCasePipe, OtherFiltersComponent, TranslatePipe, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
+  imports: [OperatorPipe, LowerCasePipe, UpperCasePipe, OtherFiltersComponent, TranslatePipe, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
   templateUrl: './catalog-page.component.html',
-  styleUrl: './catalog-page.component.css'
+  styleUrls: ['./catalog-page.component.css', '../../../common-module/styles/animation.css']
 })
 export class CatalogPageComponent {
 
   medias: MediaModel[] | undefined = undefined;
+  total: number | undefined = undefined;
 
   subscription: Subscription = new Subscription();
   subscritpionPagination!: Subscription;
@@ -217,9 +220,9 @@ export class CatalogPageComponent {
         this.currentOffset
       )
       .pipe(take(1))
-      .subscribe((media: MediaModel[]) => {
-        if (media.length < this.PAGE_SIZE) this.hasMore = false;
-        if (this.medias) this.medias.push(...media);
+      .subscribe((result: ResultCatalog) => {
+        if (result.medias.length < this.PAGE_SIZE) this.hasMore = false;
+        if (this.medias) this.medias.push(...result.medias);
         this.isLoading = false;
         //this.abortController.abort();
         // const format: FormatPosterModel = this.formatPosterService.getFormatPosterCatalogValue();
@@ -237,6 +240,7 @@ export class CatalogPageComponent {
     this.hasMore = true;
     this.isLoading = false;
     this.medias = undefined;
+    this.total = undefined;
 
     if (this.subscriptionCatalog) this.subscriptionCatalog.unsubscribe();
 
@@ -249,9 +253,10 @@ export class CatalogPageComponent {
         0
       )
       .pipe(take(1))
-      .subscribe((media: MediaModel[]) => {
-        if (media.length < this.PAGE_SIZE) this.hasMore = false;
-        this.medias = media;
+      .subscribe((result: ResultCatalog) => {
+        if (result.medias.length < this.PAGE_SIZE) this.hasMore = false;
+        this.medias = result.medias;
+        this.total = result.total ?? 0;
         this.isLoading = false;
         // this.abortController.abort();
         // const format: FormatPosterModel = this.formatPosterService.getFormatPosterCatalogValue();
