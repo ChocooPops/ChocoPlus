@@ -57,7 +57,7 @@ export class MylistButtonComponent {
 
   onClick(): void {
     if (!this.cursor) return;
-    if (this.media) {
+    if (this.media && this.media.id && this.media.id > 0) {
       this.userService.fetchToggleMediaIntoList(this.media).pipe(take(1)).subscribe((data: MessageReturnedModel) => {
       });
     }

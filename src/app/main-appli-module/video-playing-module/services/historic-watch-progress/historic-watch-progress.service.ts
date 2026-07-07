@@ -17,8 +17,8 @@ export class HistoricWatchProgressService {
     }
     const newHistoric: MediaProgressingModel = {
       mediaId: movieId,
-      watchProgress: watchProgress,
-      stateProgress: stateProgress
+      watchProgress: watchProgress ?? 0,
+      stateProgress: stateProgress ?? ProgressStateMedia.NOT_WATCHED
     };
     this.historicMovieProgress.set(movieId, newHistoric);
     return newHistoric;
@@ -31,8 +31,8 @@ export class HistoricWatchProgressService {
     }
     const newHistoric: MediaProgressingModel = {
       mediaId: episodeId,
-      watchProgress: watchProgress,
-      stateProgress: stateProgress
+      watchProgress: watchProgress ?? 0,
+      stateProgress: stateProgress ?? ProgressStateMedia.NOT_WATCHED
     };
     this.historicEpisodeProgress.set(episodeId, newHistoric);
     return newHistoric;
@@ -42,8 +42,8 @@ export class HistoricWatchProgressService {
     if (watchProgress && stateProgress) {
       const historic = this.historicMovieProgress.get(movieId);
       if (historic) {
-        historic.watchProgress = watchProgress;
-        historic.stateProgress = stateProgress;
+        historic.watchProgress = watchProgress ?? 0;
+        historic.stateProgress = stateProgress ?? ProgressStateMedia.NOT_WATCHED;
       } else {
         this.getHistoricMovieProgressById(movieId, watchProgress, stateProgress);
       }
@@ -54,8 +54,8 @@ export class HistoricWatchProgressService {
     if (watchProgress && stateProgress) {
       const historic = this.historicEpisodeProgress.get(episodeId);
       if (historic) {
-        historic.watchProgress = watchProgress;
-        historic.stateProgress = stateProgress;
+        historic.watchProgress = watchProgress ?? 0;
+        historic.stateProgress = stateProgress ?? ProgressStateMedia.NOT_WATCHED;
       } else {
         this.getHistoricEpisodeProgressById(episodeId, watchProgress, stateProgress);
       }

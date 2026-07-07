@@ -29,7 +29,7 @@ export class MovieService {
       catchError((error) => {
         const movie: MovieModel = {
           id: 0,
-          title: "Nameless",
+          title: "ChocoPlus",
           mediaLibraryId: 'undefined',
           typeZoomX: undefined,
           typeZoomY: false,

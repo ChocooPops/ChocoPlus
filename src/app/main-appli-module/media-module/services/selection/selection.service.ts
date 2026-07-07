@@ -147,7 +147,7 @@ export class SelectionService {
         const mediaSelection: SelectionModel = {
           id: 0,
           typeSelection: SelectionType.NORMAL_POSTER,
-          name: 'Nameless',
+          name: 'ChocoPlus',
           mediaList: [],
           createFrom: MediaTypeModel.OTHER
         }

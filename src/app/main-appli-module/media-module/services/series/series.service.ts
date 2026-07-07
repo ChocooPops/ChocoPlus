@@ -92,7 +92,7 @@ export class SeriesService {
       catchError((error) => {
         const series: SeriesModel = {
           id: 0,
-          title: "Nameless",
+          title: "ChocoPlus",
           mediaLibraryId: 'undefined',
           typeZoomX: undefined,
           typeZoomY: false,

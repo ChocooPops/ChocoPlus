@@ -36,7 +36,7 @@ export class NewsVideoRunningService {
       media:
       {
         id: -1,
-        title: 'Nameless',
+        title: 'ChocoPlus',
         mediaLibraryId: 'undefined',
         typeZoomX: false,
         typeZoomY: false,

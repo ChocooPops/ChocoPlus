@@ -27,6 +27,7 @@ export class ModifyButtonComponent {
   constructor(private readonly editionParametersService: EditionParametersService) { }
 
   onClick(): void {
+    if (!this.idMedia || this.idMedia <= 0) return;
     if (!this.cursor) return;
     if (this.idMedia && this.mediaType) {
       if (this.mediaType === MediaTypeModel.MOVIE) {

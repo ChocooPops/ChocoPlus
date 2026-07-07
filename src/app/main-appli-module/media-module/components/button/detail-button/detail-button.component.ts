@@ -11,13 +11,13 @@ import { MediaSelectedService } from '../../../services/media-selected/media-sel
 })
 export class DetailButtonComponent {
 
-  @Input() media!: MediaModel;
+  @Input() media!: MediaModel | undefined;
   srcDetail: string = 'icon/detail.svg';
 
   constructor(private readonly mediaSelectedService: MediaSelectedService) { }
 
   onClick(): void {
-    this.mediaSelectedService.selectMedia(this.media);
+    if (this.media) this.mediaSelectedService.selectMedia(this.media);
   }
 
 }

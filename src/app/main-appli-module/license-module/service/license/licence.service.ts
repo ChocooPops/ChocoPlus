@@ -100,7 +100,7 @@ export class LicenseService {
     });
     const license: LicenseModel = {
       id: data.id || -1,
-      name: data.name || 'Nameless',
+      name: data.name || 'ChocoPlus',
       position: data.position || false,
       srcIcon: data.srcIcon ? data.srcIcon || undefined : undefined,
       srcLogo: data.srcLogo ? data.srcLogo || undefined : undefined,
@@ -164,7 +164,7 @@ export class LicenseService {
       catchError((error) => {
         const license: LicenseModel = {
           id: 0,
-          name: 'Nameless',
+          name: 'ChocoPlus',
           selectionList: [],
           visited: false
         }

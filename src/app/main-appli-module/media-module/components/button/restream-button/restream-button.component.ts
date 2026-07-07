@@ -9,11 +9,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class RestreamButtonComponent {
 
-  @Input()
-  idMovie!: number;
-
-  @Input()
-  activateRetream !: boolean;
+  @Input() mediaId!: number;
+  @Input() activateRetream !: boolean;
 
   @Output()
   emitNewStream = new EventEmitter<any>();
@@ -21,6 +18,7 @@ export class RestreamButtonComponent {
   srcReset: string = 'icon/restream.svg';
 
   onClick(): void {
+    if (!this.mediaId || this.mediaId <= 0) return;
     if (this.activateRetream) {
       this.emitNewStream.emit();
     }

@@ -37,7 +37,7 @@
                                 <app-volume-button (changeVolume)="setCurrentVolume($event)"
                                     [volume]="currentVolume"></app-volume-button>
                                 }@else {
-                                <app-restream-button [idMovie]="newsMedia.media.id" [activateRetream]="activateReStream"
+                                <app-restream-button [mediaId]="newsMedia.media.id" [activateRetream]="activateReStream"
                                     (emitNewStream)="setNewStream()"></app-restream-button>
                                 }
                                 @if(isVideoLoaded) {
