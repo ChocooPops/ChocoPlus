@@ -1,6 +1,8 @@
 {
   "name": "ChocoPlus",
   "version": "2.0.0",
+  "description": "A multimedia desktop app for movie lovers, featuring navigation and playback of movies and TV shows via a built-in VLC-based video player.",
+  "author": "ChocoPops",
   "main": "app.js",
   "private": true,
   "scripts": {
