@@ -103,6 +103,10 @@ p {
     padding-block: 1.3vw;
     margin: 0;
     overflow: hidden;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 /* Quand écran < 1400px */
