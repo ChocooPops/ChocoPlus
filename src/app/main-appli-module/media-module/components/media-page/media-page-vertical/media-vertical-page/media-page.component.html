@@ -8,6 +8,9 @@
             <div class="container-all-button">
                 <div class="container-groupe-button">
                     <app-start-button [media]="media" [seasons]="seasons"></app-start-button>
+                    @if(media.mediaType === MediaType.MOVIE && historicProgress && historicProgress.stateProgress !== ProgressState.NOT_WATCHED ) {
+                        <app-start-button [media]="media" [seasons]="seasons" [launch]="'start'"></app-start-button>
+                    }
                 </div>
                 <div class="container-groupe-button-other">
                     <app-mylist-button [media]="media"></app-mylist-button>
@@ -23,7 +26,7 @@
 
         @if(media.mediaType === MediaType.MOVIE) {
         <app-movie-vertical-page [movie]="transformMediaIntoMovie()" [displaying]="displaying"
-            (posterLoading)="onLoadPoster()"></app-movie-vertical-page>
+            (posterLoading)="onLoadPoster()" (setHistoric)="saveHistoric($event)"></app-movie-vertical-page>
         } @else if (media.mediaType === MediaType.SERIES) {
         <app-series-vertical-page [series]="transformMediaIntoSeries()"></app-series-vertical-page>
         }

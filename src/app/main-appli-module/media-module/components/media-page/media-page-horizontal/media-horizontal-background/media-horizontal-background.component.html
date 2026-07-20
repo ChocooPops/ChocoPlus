@@ -56,7 +56,12 @@
                 </div>
             </div>
             <div class="container-button">
-                <app-start-button [media]="media" class="start-button" [seasons]="seasons"></app-start-button>
+                @if(media.mediaType === MediaType.MOVIE && historicProgress.stateProgress !== ProgressState.NOT_WATCHED ) {
+                    <app-start-button [media]="media" [seasons]="seasons"></app-start-button>
+                    <app-start-button [media]="media" [seasons]="seasons" [launch]="'start'" class="start-button"></app-start-button>
+                }@else {
+                    <app-start-button [media]="media" [seasons]="seasons" class="start-button"></app-start-button>
+                }
                 <app-mylist-button [media]="media"></app-mylist-button>
                 <app-modify-button [idMedia]="media.id" [mediaType]="media.mediaType"></app-modify-button>
                 <app-format-media-page-button (click)="onClickFormatMediaPage()"></app-format-media-page-button>

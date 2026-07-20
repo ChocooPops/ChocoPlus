@@ -4,7 +4,8 @@
     @defer(on viewport) {
     <div class="container-episode animationPosterAndLicense" [style.max-width.vw]="width">
 
-        <app-news-alert [visibility]="true" [isRecent]="episode.isRecent" [mediaType]="MediaType.EPISODE"></app-news-alert>
+        <app-news-alert [visibility]="true" [isRecent]="episode.isRecent"
+            [mediaType]="MediaType.EPISODE"></app-news-alert>
 
         <div class="container-info-icon" (click)="$event.stopPropagation()">
             <img class="info-icon" [src]="srcIconInfo">
@@ -16,9 +17,13 @@
             <div class="container-tmp-poster">
                 <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
                     [episode]="episode" [seasons]="series.seasons"></app-start-button>
+                @if (episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
+                <app-start-button (click)="$event.stopPropagation()" [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                    [episode]="episode" [seasons]="series.seasons" [launch]="'start'"></app-start-button>
+                }
             </div>
             @if (episodePoster[idx]) {
-                <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
+            <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
             }
             @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
             <div class="container-progress">
@@ -28,12 +33,14 @@
         </div>
         <div class="container-other-info">
             <p class="title"> {{episode.episodeNumber}}. {{episode.name}} </p>
-            <p class="other-info"> {{ episode.resolution }} <br> {{ getTimerEpisode(episode.duration) }} <br> {{ episode.date | date:'d MMMM, y'}} </p>
+            <p class="other-info"> {{ episode.resolution }} <br> {{ getTimerEpisode(episode.duration) }} <br> {{
+                episode.date | date:'d MMMM, y'}} </p>
         </div>
     </div>
     } @placeholder {
     <div class="container-episode" [style.max-width.vw]="width">
-        <div class="container-poster container-animation-gradient-normal" [style.height.vw]="height" [style.width.vw]="width"></div>
+        <div class="container-poster container-animation-gradient-normal" [style.height.vw]="height"
+            [style.width.vw]="width"></div>
     </div>
     }
     }

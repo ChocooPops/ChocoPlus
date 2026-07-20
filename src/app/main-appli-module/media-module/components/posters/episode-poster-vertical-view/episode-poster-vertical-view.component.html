@@ -7,14 +7,19 @@
         </div>
         <div class="container-poster" (click)="start.onClick()">
 
-            <app-news-alert [visibility]="true" [isRecent]="episode.isRecent" [mediaType]="MediaType.EPISODE"></app-news-alert>
+            <app-news-alert [visibility]="true" [isRecent]="episode.isRecent"
+                [mediaType]="MediaType.EPISODE"></app-news-alert>
 
             <div class="container-tmp-poster">
                 <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
                     [episode]="episode" [seasons]="series.seasons"></app-start-button>
+                @if (episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
+                <app-start-button (click)="$event.stopPropagation()" [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                    [episode]="episode" [seasons]="series.seasons" [launch]="'start'"></app-start-button>
+                }
             </div>
             @if (episodePoster[idx]) {
-                <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
+            <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
             }
             @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
             <div class="container-progress">

@@ -1,13 +1,24 @@
 <div class="containerButton" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}">
     @if(!typeButton) {
+    @if (launch === 'play') {
     <div class="largestContainerButton" [ngClass]="{'animationToGrey' : true}">
-        <img [src]="srcStartIcon">
+        <img [src]="srcPlayIcon">
         <p>{{ 'BUTTON.PLAY' | translate }}</p>
     </div>
     }@else {
+    <div class="smallestContainerButton" [ngClass]="{'animationToGrey' : true}">
+        <img [src]="srcStartIcon">
+    </div>
+    }
+
+    }@else {
     <div class="containerStartButton"
         [ngClass]="{'containerMovieButton' : !typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : typeDisplaying}">
+        @if (launch === 'play') {
+        <img [src]="srcPlayButton">
+        }@else {
         <img [src]="srcStartButton">
+        }
     </div>
     }
 </div>

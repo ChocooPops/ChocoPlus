@@ -13,7 +13,6 @@ import { firstValueFrom, take } from 'rxjs';
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
 import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
 
 @Component({
   selector: 'app-start-button',
@@ -30,12 +29,16 @@ export class StartButtonComponent {
   @Input() media!: MediaModel;
   @Input() episode !: EpisodeModel;
   @Input() seasons !: SeasonModel[] | undefined;
+  @Input() launch: 'play' | 'start' = 'play';
 
   constructor(//private router: Router,
     private readonly streamService: StreamService,
     private readonly seriesService: SeriesService,
     private readonly historicWatchProgressService: HistoricWatchProgressService
   ) { }
+
+  srcPlayButton: string = "icon/play.svg";
+  srcPlayIcon: string = 'icon/play-icon.svg';
 
   srcStartButton: string = "icon/start.svg";
   srcStartIcon: string = 'icon/start-icon.svg';
@@ -57,8 +60,11 @@ export class StartButtonComponent {
       SeasonMenu: []
     }
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
-      const historicProgress: MediaProgressingModel = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, (this.media as MovieModel).watchProgress, (this.media as MovieModel).stateProgress);
-      chocoPlayer.WatchProgress = historicProgress.stateProgress === ProgressStateMedia.FINISHED ? 0 : historicProgress.watchProgress;
+      if (this.launch === 'play') {
+        const historicProgress: MediaProgressingModel = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, (this.media as MovieModel).watchProgress, (this.media as MovieModel).stateProgress);
+        //chocoPlayer.WatchProgress = historicProgress.stateProgress === ProgressStateMedia.FINISHED ? 0 : historicProgress.watchProgress;
+        chocoPlayer.WatchProgress = historicProgress.watchProgress;
+      }
       chocoPlayer.Url = this.streamService.getUrlStreamMovie(this.media.id);
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       if (this.episode && this.episode.id > 0) {
@@ -88,8 +94,11 @@ export class StartButtonComponent {
     chocoPlayer.EpisodeId = episode.id;
     chocoPlayer.Title = `${chocoPlayer.Title} - ${episode.name}`;
     if (this.seasons) chocoPlayer.SeasonIndex = this.getSeasonIndexFromEpisodeId(this.seasons, episode.seasonId);
-      const historicProgress: MediaProgressingModel = this.historicWatchProgressService.getHistoricEpisodeProgressById(episode.id, episode.watchProgress, episode.stateProgress);
-      chocoPlayer.WatchProgress = historicProgress.stateProgress === ProgressStateMedia.FINISHED ? 0 : historicProgress.watchProgress;
+      if (this.launch === 'play') {
+        const historicProgress: MediaProgressingModel = this.historicWatchProgressService.getHistoricEpisodeProgressById(episode.id, episode.watchProgress, episode.stateProgress);
+        //chocoPlayer.WatchProgress = historicProgress.stateProgress === ProgressStateMedia.FINISHED ? 0 : historicProgress.watchProgress;
+        chocoPlayer.WatchProgress = historicProgress.watchProgress;
+      }
       chocoPlayer.Url = this.streamService.getUrlStreamEpisode(this.media.id, episode.id ?? -1);
       chocoPlayer.SeasonMenu = this.seasons ? this.seasons.map((season: SeasonModel) => ({
         Id: season.id,

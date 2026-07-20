@@ -34,6 +34,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   
   @Input() displaying: boolean = false;
   @Output() posterLoading = new EventEmitter<void>();
+  @Output() setHistoric = new EventEmitter<MediaProgressingModel | undefined>();
 
   poster: string | undefined = undefined;
 
@@ -59,6 +60,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
     this.poster = undefined;
     this.duration = '';
     this.date = null;
+    this.setHistoric.emit(undefined);
   }
 
   protected initSpe(): void {
@@ -73,6 +75,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
       this.onLoadPoster();
     }
     this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.movie.id, this.movie.watchProgress, this.movie.stateProgress);
+    this.setHistoric.emit(this.historicProgress);
   }
 
   onErrorPoster(): void {

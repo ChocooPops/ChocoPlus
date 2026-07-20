@@ -9,6 +9,8 @@ import { MediaBackgroundVerticalComponent } from '../media-vertical-background/m
 import { MovieVerticalPageComponent } from '../movie-vertical-page/movie-page.component';
 import { SeriesVerticalPageComponent } from '../series-vertical-page/series-page.component';
 import { MediaPageAbstraction } from '../../media-page-abstraction.directive';
+import { ProgressStateMedia } from '../../../../models/progress-state-media.enum';
+import { MediaProgressingModel } from '../../../../../video-playing-module/models/media-progressing.interface';
 
 @Component({
   selector: 'app-media-vertical-page',
@@ -18,5 +20,12 @@ import { MediaPageAbstraction } from '../../media-page-abstraction.directive';
   styleUrls: ['./media-page.component.css', '../../../../../common-module/styles/animation.css']
 })
 export class MediaVerticalPageComponent extends MediaPageAbstraction {
+    
+    ProgressState = ProgressStateMedia;
+    historicProgress: MediaProgressingModel | undefined = undefined;
+
+    saveHistoric(historic: MediaProgressingModel | undefined): void {
+      this.historicProgress = historic;
+    }
 
 }

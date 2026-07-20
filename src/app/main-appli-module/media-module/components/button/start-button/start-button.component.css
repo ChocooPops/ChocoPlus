@@ -15,3 +15,8 @@
     width: 20px;
     margin-left: 3px;
 }
+
+.smallestContainerButton img {
+    height: 20px;
+    width: 20px;
+}
