@@ -63,6 +63,7 @@ p {
     align-items: center;
     transition: 0.3s background-color;
     cursor: pointer;
+    position: relative;
 
     p {
         margin: 0;
@@ -92,4 +93,15 @@ p {
     p {
         color: white;
     }
+}
+
+.news-alert-season {
+    height: 15px;
+    width: 15px;
+    background-color: #FFD301;
+    border-radius: 50px;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    opacity: 0.9;
 }

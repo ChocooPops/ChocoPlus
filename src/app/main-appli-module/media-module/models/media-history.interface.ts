@@ -5,7 +5,8 @@ export interface SeasonHistoryModel {
     seriesId: number,
     name: string,
     seasonNumber: number,
-    srcPoster: string | undefined
+    srcPoster: string | undefined,
+    isRecent: boolean
 }
 
 export interface MediaHistoryModel {

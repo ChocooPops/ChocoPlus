@@ -65,6 +65,9 @@
                 [ngClass]="{'season-clicked': season.isClicked, 'season-not-clicked': !season.isClicked}"
                 (click)="onClickSeason(idx)">
                 <p> S{{season.seasonNumber}} </p>
+                @if (season.isRecent) {
+                    <div class="news-alert-season"></div>
+                }
             </div>
             }
         </div>

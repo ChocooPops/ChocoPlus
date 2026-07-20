@@ -11,6 +11,7 @@
     justify-content: left;
     flex-wrap: wrap;
     gap: -5px;
+    position: relative;
 }
 
 .container-icon-selected {
@@ -22,7 +23,8 @@
     justify-content: center;
     align-items: center;
     bottom: 10px;
-    right: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     position: absolute;
     overflow: hidden;
 
@@ -32,8 +34,8 @@
 }
 
 .container-num-season {
-    height: 25px;
-    width: 25px;
+    height: 28px;
+    width: 28px;
     border-radius: 50px;
     background-color: #141414;
     display: flex;
@@ -42,13 +44,24 @@
     top: 10px;
     left: 10px;
     position: absolute;
-    overflow: hidden;
     
     p {
         color: #FFD301 !important;
         font-size: 10px !important;
         font-weight: bold;
+        background-color: transparent !important;
     }
+}
+
+.news-alert-season {
+    height: 12px;
+    width: 12px;
+    background-color: #FFD301;
+    border-radius: 50px;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    opacity: 0.9;
 }
 
 .container-media-infos-loader {

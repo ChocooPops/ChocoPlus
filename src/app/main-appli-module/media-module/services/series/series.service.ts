@@ -64,6 +64,7 @@ export class SeriesService {
     return seasons.map((item: SeasonModel) => ({
       ...item,
       name: item.name ? item.name : `Saison ${item.seasonNumber}`,
+      isRecent: item.isRecent ?? false,
       srcPoster: item.srcPoster ? item.srcPoster : undefined,
       isClicked: lastSeasonWatched === item.id ? true : false,
       episodes: item.episodes && item.episodes.length > 0 ? this.createNewEpisodes(item.episodes) : []

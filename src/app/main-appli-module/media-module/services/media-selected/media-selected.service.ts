@@ -110,7 +110,8 @@ export class MediaSelectedService {
           seriesId: season.seriesId,
           name: season.name,
           seasonNumber: season.seasonNumber,
-          srcPoster: season.srcPoster
+          srcPoster: season.srcPoster,
+          isRecent: season.isRecent
         }))
         : undefined,
       duration: media.mediaType === MediaTypeModel.MOVIE ? (media as MovieModel).duration : undefined,
@@ -146,6 +147,7 @@ export class MediaSelectedService {
           name: season.name,
           seasonNumber: season.seasonNumber,
           srcPoster: season.srcPoster,
+          isRecent: season.isRecent ?? false,
           isClicked: false,
           episodes: []
         }))

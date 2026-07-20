@@ -103,6 +103,9 @@
                 }
                 <div class="container-num-season">
                     <p>{{ season.seasonNumber}}</p>
+                    @if (season.isRecent) {
+                        <div class="news-alert-season"></div>
+                    }
                 </div>
                 <div class="container-tmp-poster"></div>
                 @if(season.srcPoster) {

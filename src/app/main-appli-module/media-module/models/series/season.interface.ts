@@ -9,6 +9,7 @@ export interface SeasonModel {
     srcPoster: string | undefined,
     isClicked: boolean,
     episodes: EpisodeModel[],
+    isRecent: boolean,
 
     path?: string
 }
