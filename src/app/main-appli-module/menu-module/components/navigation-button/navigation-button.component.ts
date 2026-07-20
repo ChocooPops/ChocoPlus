@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { SavePathService } from '../../../common-module/services/save-path/save-path.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { combineLatest, Subscription } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-navigation-button',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './navigation-button.component.html',
   styleUrl: './navigation-button.component.css'
 })

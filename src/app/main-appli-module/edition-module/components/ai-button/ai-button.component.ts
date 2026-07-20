@@ -1,10 +1,11 @@
 import { NgClass } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ai-button',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './ai-button.component.html',
   styleUrl: './ai-button.component.css'
 })

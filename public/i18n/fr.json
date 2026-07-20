@@ -631,5 +631,23 @@
         "MOVIE": "Nouveau",
         "SERIES": "Nouveaux épisodes",
         "EPISODE": "Nouveau"
+    },
+    "TUTO" : {
+        "PLAY": "Lecture",
+        "PLAY_BEGINNING": "Reprendre depuis le début",
+        "ADD_INTO_LIST": "Ajouter à votre liste",
+        "REMOVE_INTO_LIST": "Enlever de votre liste",
+        "EDIT_METADATA": "Modifier les métadonnées",
+        "SWITCH_LANDSCAPE_MODE": "Basculer au format horizontal",
+        "SWITCH_PORTRAIT_MODE": "Basculer au format vertical",
+        "MORE_INFORMATION": "Afficher plus de détails",
+        "PAUSE": "Couper la lecture",
+        "RESUME": "Relancer la lecture",
+        "MUTE": "Couper le son",
+        "UNMUTE": "Activer le son",
+        "CLOSE": "Fermer",
+        "CLICK_ARROW_BACK": "Cliquer pour revenir en arrière",
+        "CLICK_ARROW_FORWARD": "Cliquer pour avancer",
+        "RETRIEVE_METADATA_TO_MEDIA": "Récupérer les métadonnées associées aux médias"
     }
 }

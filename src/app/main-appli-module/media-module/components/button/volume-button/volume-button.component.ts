@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-volume-button',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './volume-button.component.html',
   styleUrls: ['./volume-button.component.css', '../../../../common-module/styles/movie-button.css']
 })

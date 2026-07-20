@@ -5,11 +5,12 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { filter } from 'rxjs/operators';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-change-format-poster',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TranslatePipe],
   templateUrl: './change-format-poster.component.html',
   styleUrl: './change-format-poster.component.css'
 })
@@ -20,11 +21,11 @@ export class ChangeFormatPosterComponent {
   format !: FormatPosterModel;
   currentRoute !: string;
   classFormatPoster: string = '';
-  formatPoster = FormatPosterModel;
+  FormatPoster = FormatPosterModel;
   isActivate: boolean = false;
 
-  constructor(private router: Router,
-    private formatPosterService: FormatPosterService,
+  constructor(private readonly router: Router,
+    private readonly formatPosterService: FormatPosterService,
   ) { }
 
   ngOnInit(): void {

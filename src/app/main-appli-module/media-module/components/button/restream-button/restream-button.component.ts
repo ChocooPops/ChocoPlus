@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-restream-button',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './restream-button.component.html',
   styleUrls: ['./restream-button.component.css', '../../../../common-module/styles/movie-button.css']
 })

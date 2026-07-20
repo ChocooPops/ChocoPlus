@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cutoff-button',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './cutoff-button.component.html',
   styleUrl: '../../../../common-module/styles/movie-button.css'
 })

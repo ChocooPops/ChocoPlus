@@ -1,4 +1,4 @@
-<div class="container-button" [ngClass]="{'cursor-pointer': cursor}">
+<div class="container-button" [ngClass]="{'cursor-pointer': cursor}" [title]="'TUTO.EDIT_METADATA' | translate">
     @if(!typeButton) {
     <div (click)="onClick()" class="iconWrap"
         [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}">

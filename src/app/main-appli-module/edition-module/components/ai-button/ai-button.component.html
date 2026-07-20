@@ -1,4 +1,4 @@
-<div class="container-ai-button" (click)="onClick()"
+<div class="container-ai-button" (click)="onClick()" [title]="'TUTO.RETRIEVE_METADATA_TO_MEDIA' | translate"
     [ngClass]="{'container-ai-button-loading' : botIsActivate, 'container-ai-button-not-loading' : !botIsActivate}">
     <img [src]="srcAiBot">
 </div>

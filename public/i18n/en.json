@@ -631,5 +631,23 @@
         "MOVIE": "New",
         "SERIES": "New episodes",
         "EPISODE": "New"
+    },
+    "TUTO": {
+        "PLAY": "Play",
+        "PLAY_BEGINNING": "Restart from the beginning",
+        "ADD_INTO_LIST": "Add to your list",
+        "REMOVE_INTO_LIST": "Remove from your list",
+        "EDIT_METADATA": "Edit metadata",
+        "SWITCH_LANDSCAPE_MODE": "Switch to landscape mode",
+        "SWITCH_PORTRAIT_MODE": "Switch to portrait mode",
+        "MORE_INFORMATION": "Show more details",
+        "PAUSE": "Pause playback",
+        "RESUME": "Resume playback",
+        "MUTE": "Mute",
+        "UNMUTE": "Unmute",
+        "CLOSE": "Close",
+        "CLICK_ARROW_BACK": "Click to go back",
+        "CLICK_ARROW_FORWARD": "Click to go forward",
+        "RETRIEVE_METADATA_TO_MEDIA": "Retrieve the metadata associated with the media"
     }
 }

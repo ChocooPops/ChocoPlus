@@ -631,5 +631,23 @@
         "MOVIE": "新着",
         "SERIES": "新エピソード",
         "EPISODE": "新着"
+    },
+    "TUTO": {
+        "PLAY": "再生",
+        "PLAY_BEGINNING": "最初から再生",
+        "ADD_INTO_LIST": "マイリストに追加",
+        "REMOVE_INTO_LIST": "リストから削除する",
+        "EDIT_METADATA": "メタデータを編集",
+        "SWITCH_LANDSCAPE_MODE": "横向き表示に切り替え",
+        "SWITCH_PORTRAIT_MODE": "縦向き表示に切り替え",
+        "MORE_INFORMATION": "詳細を表示",
+        "PAUSE": "一時停止",
+        "RESUME": "再生を再開",
+        "MUTE": "ミュート",
+        "UNMUTE": "ミュート解除",
+        "CLOSE": "閉じる",
+        "CLICK_ARROW_BACK": "クリックして戻る",
+        "CLICK_ARROW_FORWARD": "クリックして進む",
+        "RETRIEVE_METADATA_TO_MEDIA": "メディアに関連付けられたメタデータを取得する"
     }
 }

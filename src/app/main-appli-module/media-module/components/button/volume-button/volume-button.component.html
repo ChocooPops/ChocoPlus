@@ -1,4 +1,4 @@
-<div class="containerButtonForPresentation" (click)="onVolumeChange()">
+<div class="containerButtonForPresentation" (click)="onVolumeChange()" [title]="(state ? 'TUTO.MUTE' : 'TUTO.UNMUTE') | translate">
     @if(state) {
     <img [src]="srcSound">
     }@else {

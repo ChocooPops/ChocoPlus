@@ -1,4 +1,4 @@
-<div class="containerButton" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}">
+<div class="containerButton" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}" [title]="(launch === 'play' ? 'TUTO.PLAY' : 'TUTO.PLAY_BEGINNING') | translate">
     @if(!typeButton) {
     @if (launch === 'play') {
     <div class="largestContainerButton" [ngClass]="{'animationToGrey' : true}">

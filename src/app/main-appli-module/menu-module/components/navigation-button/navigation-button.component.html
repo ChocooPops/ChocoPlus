@@ -1,12 +1,12 @@
 <div class="container-navigation">
-    <div class="container-arrow" (click)="goBack()">
+    <div class="container-arrow" (click)="goBack()" [title]="'TUTO.CLICK_ARROW_BACK' | translate">
         @if(canGoBack) {
             <img [src]="arrowLeft">
         } @else {
             <img [src]="arrowLeftDisable">
         }
     </div>
-    <div class="container-arrow" (click)="goForward()">
+    <div class="container-arrow" (click)="goForward()" [title]="'TUTO.CLICK_ARROW_FORWARD' | translate">
         @if(canGoForward) {
             <img [src]="arrowRight">
         } @else {

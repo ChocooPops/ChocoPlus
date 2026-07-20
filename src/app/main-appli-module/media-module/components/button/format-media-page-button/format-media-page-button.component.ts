@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { NgClass } from '@angular/common';
 import { FormatMediaPageModel } from '../../../models/format-media-page-enum';
 import { FormatMediaPageService } from '../../../services/format-media-page/format-media-page-button.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-format-media-page-button',
@@ -21,14 +22,20 @@ export class FormatMediaPageButtonComponent {
   verticalClass: string = 'vertical';
   horizontalClass: string = 'horizontal';
 
-  constructor(private readonly formatMediaPageService: FormatMediaPageService) { }
+  title!: string;
+
+  constructor(private readonly formatMediaPageService: FormatMediaPageService,
+    private readonly translateService: TranslateService
+  ) { }
 
   ngOnInit(): void {
     this.subscription = this.formatMediaPageService.fetchCurrentFormatMediaPage().subscribe((value: FormatMediaPageModel) => {
       if (value === FormatMediaPageModel.VERTICAL) {
         this.currentClass = this.verticalClass;
+        this.title = this.translateService.instant('TUTO.SWITCH_LANDSCAPE_MODE');
       } else {
         this.currentClass = this.horizontalClass;
+        this.title = this.translateService.instant('TUTO.SWITCH_PORTRAIT_MODE');
       }
     });
   }

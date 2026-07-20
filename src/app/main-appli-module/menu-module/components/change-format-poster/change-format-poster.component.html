@@ -1,4 +1,4 @@
-<div class="container-format-poster" (click)="onToggleFormatPoster()">
+<div class="container-format-poster" (click)="onToggleFormatPoster()" [title]="(format === FormatPoster.HORIZONTAL ? 'TUTO.SWITCH_PORTRAIT_MODE' : 'TUTO.SWITCH_LANDSCAPE_MODE') | translate">
   <div class="format-poster" [ngClass]="[classFormatPoster, isActivate ? 'white' : 'grey']">
   </div>
 </div>
