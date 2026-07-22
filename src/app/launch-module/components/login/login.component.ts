@@ -3,17 +3,18 @@ import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormPageDirectiveAbstract } from '../form-page.directive';
 import { ButtonFormComponent } from '../button-form/button-form.component';
 import { LoginModel } from '../../models/login.model';
-import { catchError, forkJoin, switchMap, throwError } from 'rxjs';
+import { catchError, forkJoin, switchMap, throwError, take } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserModel } from '../../../main-appli-module/user-module/dto/user.model';
 import { VersionModel } from '../../models/version.interface';
 import { BadVersionComponent } from '../bad-version/bad-version.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonFormComponent, BadVersionComponent, TranslatePipe],
+  imports: [ReactiveFormsModule, ButtonFormComponent, BadVersionComponent, TranslatePipe, NgClass],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css', '../../styles/form.css', '../../styles/input-form.css']
 })
@@ -33,21 +34,28 @@ export class LoginComponent extends FormPageDirectiveAbstract {
 
   isGoodVersion: boolean = true;
   lastVersion!: VersionModel;
+  display: boolean = false;
 
   override ngOnInit(): void {
     const user: UserModel | undefined = this.userService.getCurrentUserValue();
     if(user && user?.id > 0) {
       this.navigateToStreamApp();
+    } else {
+      this.verifUserAlreadyConnectedService.setUserConnected(false);
+      this.verifUserAlreadyConnected();
     }
+    this.initForm();
+  }
 
+  private initForm(): void {
     this.formGroup = this.fb.group({
       inputEmail: ['', [Validators.required]],
       inputAccessKey: ['', [Validators.required]]
-    })
+    });
     this.formGroup.get(this.formControlAccessKey)?.valueChanges.subscribe(value => {
       this.type = 'password';
       this.srcImageKey = this.srcNotVisible;
-    })
+    });
   }
 
   override onSubmit(): void {
@@ -64,6 +72,23 @@ export class LoginComponent extends FormPageDirectiveAbstract {
         this.activateSubmit = true;
       }
     }
+  }
+
+  private verifUserAlreadyConnected(): void {
+    this.userService.fetchCurrentUser().pipe(take(1)).subscribe({
+      next: (user: UserModel) => {
+        if (user && user?.id > 0) {
+          this.navigateToStreamApp();
+        } else {
+          this.verifUserAlreadyConnectedService.setUserConnected(true);
+          this.display = true;
+        }
+      },
+      error: (error: any) => {
+        this.verifUserAlreadyConnectedService.setUserConnected(true);
+        this.display = true;
+      },
+    })
   }
 
   private verifAuthLogin(login: LoginModel): void {

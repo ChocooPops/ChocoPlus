@@ -648,6 +648,16 @@
         "CLOSE": "閉じる",
         "CLICK_ARROW_BACK": "クリックして戻る",
         "CLICK_ARROW_FORWARD": "クリックして進む",
-        "RETRIEVE_METADATA_TO_MEDIA": "メディアに関連付けられたメタデータを取得する"
+        "RETRIEVE_METADATA_TO_MEDIA": "メディアに関連付けられたメタデータを取得する",
+        "RESET": "リセット",
+        "REFRESH": "更新",
+        "HIDDE_NODE": "ノードを非表示",
+        "DISPLAY_NODE": "ノードを表示",
+        "HIDDE_TITLE_NODE": "ノードのタイトルを非表示",
+        "DISPLAY_TITLE_NODE": "ノードのタイトルを表示",
+        "EDIT_NODE": "ノードを編集",
+        "ISOLATE_GRAPH": "ノード周辺のグラフを分離",
+        "ASCENDING_SORT": "昇順に並べ替え",
+        "DESCENDING_SORT": "降順に並べ替え"
     }
 }

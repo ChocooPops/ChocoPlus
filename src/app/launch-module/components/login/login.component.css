@@ -1,3 +1,7 @@
+.opacity-null {
+    opacity: 0;
+}
+
 .container-textarea {
     height: auto;
     width: auto;

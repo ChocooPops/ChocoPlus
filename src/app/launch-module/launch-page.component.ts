@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, Router, ActivatedRoute } from '@angular/router';
-import { forkJoin, take } from 'rxjs';
+import { forkJoin, Subscription, take } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '../main-appli-module/user-module/service/user/user.service';
 import { ImagePreloaderService } from '../common-module/services/image-preloader/image-preloader.service';
@@ -10,6 +10,7 @@ import { VersionService } from '../common-module/services/version/version.servic
 import { VersionModel } from './models/version.interface';
 import { BadVersionComponent } from './components/bad-version/bad-version.component';
 import { NavigationButtonComponent } from '../main-appli-module/menu-module/components/navigation-button/navigation-button.component';
+import { VerifUserAlreadyConnectedService } from './services/verif-user-already-connected/verif-user-already-connected.service';
 
 @Component({
   selector: 'app-launch-page',
@@ -25,17 +26,26 @@ export class LaunchPageComponent {
   isGoodVersion: boolean = false;
   lastVersion!: VersionModel;
 
+  private subscription!: Subscription;
+  userAlreadyConnected!: boolean;
+
   constructor(private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly userService: UserService,
     private readonly imagePreloaderService: ImagePreloaderService,
     private readonly authService: AuthService,
-    private readonly versionService: VersionService
+    private readonly versionService: VersionService,
+    private readonly verifUserAlreadyConnectedService: VerifUserAlreadyConnectedService
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.subscription = this.verifUserAlreadyConnectedService.getIfUserIsAlreadyConnected().subscribe((data: boolean) => {
+      this.userAlreadyConnected = data;
+    });
+
     await this.authService.initFromSecureStore();
     const currentVersion: string = await this.versionService.getCurrentVersion();
+
     forkJoin({
       user: this.userService.fetchCurrentUser(),
       version: this.versionService.fetchLastVersion()
@@ -69,6 +79,12 @@ export class LaunchPageComponent {
         this.isLoading = false;
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   setGoodVersion(): void {

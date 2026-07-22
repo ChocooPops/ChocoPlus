@@ -648,6 +648,16 @@
         "CLOSE": "Close",
         "CLICK_ARROW_BACK": "Click to go back",
         "CLICK_ARROW_FORWARD": "Click to go forward",
-        "RETRIEVE_METADATA_TO_MEDIA": "Retrieve the metadata associated with the media"
+        "RETRIEVE_METADATA_TO_MEDIA": "Retrieve the metadata associated with the media",
+        "RESET": "Reset",
+        "REFRESH": "Refresh",
+        "HIDDE_NODE": "Hide nodes",
+        "DISPLAY_NODE": "Show nodes",
+        "HIDDE_TITLE_NODE": "Hide node titles",
+        "DISPLAY_TITLE_NODE": "Show node titles",
+        "EDIT_NODE": "Edit node",
+        "ISOLATE_GRAPH": "Isolate graph around node",
+        "ASCENDING_SORT": "Sort ascending",
+        "DESCENDING_SORT": "Sort descending"
     }
 }

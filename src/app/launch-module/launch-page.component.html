@@ -3,18 +3,25 @@
         <app-navigation-button></app-navigation-button>
     </div>
 
-    <div class="container-launch-page">
-        <div class="container-logo">
-            <img [src]="srcLogo" alt="logo">
-        </div>
-        @if(isLoading) {
-        <div class="container-loading">
-            <div class="little-spinner"></div>
-        </div>
-        }@else if (isGoodVersion) {
-        <router-outlet></router-outlet>
-        }@else {
-        <app-bad-version [version]="lastVersion" (onContinue)="setGoodVersion()"></app-bad-version>
+    <div class="container-launch-page-wrapper">
+        @if(isLoading || !userAlreadyConnected) {
+            <div class="container-loading-wrapper">
+                <div class="container-loading">
+                    <div class="little-spinner"></div>
+                </div>
+            </div>
         }
+        <div class="container-launch-page">
+            <div class="container-logo">
+                <img [src]="srcLogo" alt="logo">
+            </div>
+            @if (!isLoading) {
+                @if (isGoodVersion) {
+                    <router-outlet></router-outlet>
+                }@else {
+                    <app-bad-version [version]="lastVersion" (onContinue)="setGoodVersion()"></app-bad-version>
+                }
+            }
+        </div>
     </div>
 </div>

@@ -6,6 +6,7 @@ import { TypeButtonModel } from "../models/type-button.model";
 import { UserService } from "../../main-appli-module/user-module/service/user/user.service";
 import { ImagePreloaderService } from "../../common-module/services/image-preloader/image-preloader.service";
 import { VersionService } from "../../common-module/services/version/version.service";
+import { VerifUserAlreadyConnectedService } from "../services/verif-user-already-connected/verif-user-already-connected.service";
 
 @Directive({})
 export abstract class FormPageDirectiveAbstract {
@@ -25,7 +26,8 @@ export abstract class FormPageDirectiveAbstract {
         protected readonly authService: AuthService,
         protected readonly userService: UserService,
         protected readonly imagePreloaderService: ImagePreloaderService,
-        protected readonly versionService: VersionService
+        protected readonly versionService: VersionService,
+        protected readonly verifUserAlreadyConnectedService: VerifUserAlreadyConnectedService
     ) { }
 
     abstract ngOnInit(): void;

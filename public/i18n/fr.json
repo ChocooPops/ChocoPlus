@@ -648,6 +648,16 @@
         "CLOSE": "Fermer",
         "CLICK_ARROW_BACK": "Cliquer pour revenir en arrière",
         "CLICK_ARROW_FORWARD": "Cliquer pour avancer",
-        "RETRIEVE_METADATA_TO_MEDIA": "Récupérer les métadonnées associées aux médias"
+        "RETRIEVE_METADATA_TO_MEDIA": "Récupérer les métadonnées associées aux médias",
+        "RESET": "Réinitialiser",
+        "REFRESH": "Rafraîchir",
+        "HIDDE_NODE": "Masquer les nœuds",
+        "DISPLAY_NODE": "Afficher les nœuds",
+        "HIDDE_TITLE_NODE": "Masquer les titres des nœuds",
+        "DISPLAY_TITLE_NODE": "Afficher les titres des nœuds",
+        "EDIT_NODE": "Editer le nœud",
+        "ISOLATE_GRAPH": "Isoler le graphe autour du nœud",
+        "ASCENDING_SORT": "Trie par ordre croissant",
+        "DESCENDING_SORT": "Trie par ordre décroissant"
     }
 }

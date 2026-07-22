@@ -1,4 +1,4 @@
-<div class="container-login">
+<div class="container-login" [ngClass]="{'opacity-null': !display}">
     
     @if (!isGoodVersion) {
         <app-bad-version [version]="lastVersion" (onContinue)="setGoodVersion()"></app-bad-version>
