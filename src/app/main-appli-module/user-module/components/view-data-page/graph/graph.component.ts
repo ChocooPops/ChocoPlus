@@ -47,7 +47,10 @@ export class GraphComponent {
 
   public legends: LegendModel[] = [];
   public nodeClicked: GraphNode[] | undefined;
-  public srcImageName: string = 'icon/name.svg';
+
+  public srcImageDisplayTitle: string = 'icon/traduction-fill.svg';
+  public srcImageHiddeTitle: string = 'icon/traduction-not-fill.svg';
+
   public srcImageGraph: string = 'icon/graph.svg';
   public srcImageSearch: string = 'icon/research.svg';
   public srcImageArrow: string = 'icon/arrow-2.svg';

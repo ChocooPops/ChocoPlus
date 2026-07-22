@@ -657,6 +657,7 @@
         "DISPLAY_TITLE_NODE": "Afficher les titres des nœuds",
         "EDIT_NODE": "Editer le nœud",
         "ISOLATE_GRAPH": "Isoler le graphe autour du nœud",
+        "CANCEL_ISOLATE_GRAPH": "Annuler l'isolation du graphe",
         "ASCENDING_SORT": "Trie par ordre croissant",
         "DESCENDING_SORT": "Trie par ordre décroissant"
     }

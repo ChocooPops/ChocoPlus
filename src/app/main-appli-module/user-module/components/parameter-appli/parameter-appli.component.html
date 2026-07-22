@@ -3,7 +3,7 @@
     <div class="container-zone-concerned">
         <div class="title">
             <p> {{ 'USER.APP_SETTINGS.MOVIE_TV_POSTERS' | translate }} </p>
-            <div class="container-reset" (click)="onClickResetMediaParameters()">
+            <div class="container-reset" (click)="onClickResetMediaParameters()" [title]="'TUTO.RESET' | translate">
                 <img [src]="srcReset">
             </div>
         </div>
@@ -19,7 +19,7 @@
     <div class="container-zone-concerned">
         <div class="title">
             <p> {{ 'USER.APP_SETTINGS.LICENSE_POSTERS' | translate }} </p>
-            <div class="container-reset" (click)="onClickResetLicenseParameters()">
+            <div class="container-reset" (click)="onClickResetLicenseParameters()" [title]="'TUTO.RESET' | translate">
                 <img [src]="srcReset">
             </div>
         </div>

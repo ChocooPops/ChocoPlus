@@ -657,6 +657,7 @@
         "DISPLAY_TITLE_NODE": "Show node titles",
         "EDIT_NODE": "Edit node",
         "ISOLATE_GRAPH": "Isolate graph around node",
+        "CANCEL_ISOLATE_GRAPH": "Undo graph isolation",
         "ASCENDING_SORT": "Sort ascending",
         "DESCENDING_SORT": "Sort descending"
     }

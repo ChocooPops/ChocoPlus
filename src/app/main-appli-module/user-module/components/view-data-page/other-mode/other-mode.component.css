@@ -24,11 +24,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: color 0.3s ease-out, background-color 0.3s ease-out;
+    transition: color 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out;
     cursor: pointer;
 
     &:hover {
-        background-color: var(--grey);
+        border-color: #606060;
+        background-color: #606060;
         color: var(--white-dark);
     }
 
@@ -38,7 +39,8 @@
 }
 
 .cliqued {
-    background-color: var(--grey);
+    border-color: #606060;
+    background-color: #606060;
     color: var(--white-dark);
 }
 

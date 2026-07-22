@@ -3,7 +3,7 @@
     <div class="container-overview">
         <div class="title">
             <p> {{'USER.VIEW_METADATA.OVERVIEW' | translate }} </p>
-            <img class="img-button" [src]="srcImageName" [ngClass]="{'img-border' : labelsVisible}"
+            <img class="img-button img-border" [src]="labelsVisible ? srcImageDisplayTitle : srcImageHiddeTitle" [title]="(labelsVisible ? 'TUTO.HIDDE_TITLE_NODE' : 'TUTO.DISPLAY_TITLE_NODE') | translate"
                 (click)="toggleLabels()">
             <form [formGroup]="formGroup">
                 <input type="text" [formControlName]="formInputSearch" (keydown.enter)="onSearchNode()">
@@ -19,9 +19,9 @@
                 </div>
                 <div class="container-is-visible" (click)="onClickVisibilityLegends(legend)">
                     @if(legend.isVisible) {
-                    <img [src]="srcVisible">
+                    <img [src]="srcVisible" [title]="('TUTO.HIDDE_NODE' | translate) + ' ' + (legend.name | translate | titlecase)">
                     }@else {
-                    <img [src]="srcNotVisible">
+                    <img [src]="srcNotVisible" [title]="('TUTO.DISPLAY_NODE' | translate) + ' ' + (legend.name | translate | titlecase)">
                     }
                 </div>
             </div>
@@ -31,9 +31,9 @@
         <div class="container-node-clicked">
             <div class="title">
                 <p> {{'USER.VIEW_METADATA.NODE_INFO' | translate }}</p>
-                <img class="img-button" [src]="srcImageGraph" [ngClass]="{'img-border' : isNewGraph}"
+                <img class="img-button" [src]="srcImageGraph" [ngClass]="{'img-border' : isNewGraph}" [title]="(isNewGraph ? 'TUTO.CANCEL_ISOLATE_GRAPH' : 'TUTO.ISOLATE_GRAPH') | translate"
                     (click)="createNewGraphAccordingToNodeClicked()">
-                <img class="img-button-edit" [src]="srcEdition" (click)="onClickEdit()">
+                <img class="img-button-edit" [src]="srcEdition" (click)="onClickEdit()" [title]="'TUTO.EDIT_NODE' | translate">
             </div>
 
             <div class="container-field">

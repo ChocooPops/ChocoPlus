@@ -657,6 +657,7 @@
         "DISPLAY_TITLE_NODE": "ノードのタイトルを表示",
         "EDIT_NODE": "ノードを編集",
         "ISOLATE_GRAPH": "ノード周辺のグラフを分離",
+        "CANCEL_ISOLATE_GRAPH": "グラフの隔離を解除する",
         "ASCENDING_SORT": "昇順に並べ替え",
         "DESCENDING_SORT": "降順に並べ替え"
     }

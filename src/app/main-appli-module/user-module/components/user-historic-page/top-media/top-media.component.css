@@ -32,7 +32,7 @@
 
     .refresh-btn {
       padding: 8px 16px;
-      background: var(--grey);
+      background: #606060;
       color: #141414;
       border: none;
       border-radius: 8px;
@@ -100,13 +100,13 @@
       }
 
       &:hover:not(:disabled) {
-        border-color: #9b9b9b;
+        border-color: #606060;
         transform: translateY(-2px);
       }
 
       &.active {
-        background: #9b9b9b;
-        border-color: #9b9b9b;
+        background: #606060;
+        border-color: #606060;
 
         .filter-label {
           color: #141414;

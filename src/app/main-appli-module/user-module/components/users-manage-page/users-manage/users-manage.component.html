@@ -1,7 +1,7 @@
 <app-popup (emitActionData)="onEmitDelete()"></app-popup>
 <div class="container">
     <div class="container-select">
-        <div class="container-reset" (click)="onClickReset()">
+        <div class="container-reset" (click)="onClickReset()" [title]="'TUTO.REFRESH' | translate">
             <img [src]="srcReset">
         </div>
         <div class="select" #inputSelect (click)="onClickSelection()"

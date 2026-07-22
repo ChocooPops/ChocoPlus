@@ -23,9 +23,9 @@
                 <app-filter [filter]="mediaTypeFilter" (onClicked)="onSelectedMediaTypeFilter($event)"></app-filter>
                 <app-sort [sorts]="sortFilter" (onClicked)="onSelectedSortFilter($event)"></app-sort>
                 @if(orderDirection) {
-                <img class="order-direction" [src]="srcAsc" (click)="toggleOrderDirection()">
+                <img class="order-direction" [src]="srcAsc" (click)="toggleOrderDirection()" [title]="'TUTO.ASCENDING_SORT' | translate">
                 } @else {
-                <img class="order-direction" [src]="srcDesc" (click)="toggleOrderDirection()">
+                <img class="order-direction" [src]="srcDesc" (click)="toggleOrderDirection()" [title]="'TUTO.DESCENDING_SORT' | translate">
                 }
             </div>
             <div class="barre-separation"> </div>

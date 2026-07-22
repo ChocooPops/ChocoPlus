@@ -4,7 +4,7 @@
     <div class="containerFieldToFill">
         <div class="container-title-reset">
             <p> {{ 'EDITION.ADVANCED_SETTINGS.MANAGER_VERSION' | translate }} </p>
-            <div class="container-reset" (click)="onClickReset()">
+            <div class="container-reset" (click)="onClickReset()" [title]="'TUTO.REFRESH' | translate">
                 <img [src]="srcReset">
             </div>
         </div>

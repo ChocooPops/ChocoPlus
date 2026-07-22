@@ -2,7 +2,7 @@
 
   <div class="header">
     <h2>{{ 'USER.HISTORIC.VIEWING_STAT' | translate }}</h2>
-    <button class="refresh-btn" (click)="refresh()" [disabled]="loading">
+    <button class="refresh-btn" (click)="refresh()" [disabled]="loading" [title]="'TUTO.REFRESH' | translate">
       @if(loading) {
       <img [src]="srcLoading">
       }@else {
