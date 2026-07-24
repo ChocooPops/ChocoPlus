@@ -21,7 +21,7 @@
             @if (episodePoster[idx]) {
             <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
             }
-            @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
+            @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED && episodeProgress[idx].watchProgress > 0 && episodeProgress[idx].watchProgress < 100) {
             <div class="container-progress">
                 <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>
             </div>

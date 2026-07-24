@@ -27,7 +27,7 @@
             </div>
             @if (media.mediaType === MediaType.MOVIE) {
             <div class="separation-bar">
-                @if(historicProgress.stateProgress !== ProgressState.NOT_WATCHED) {
+                @if(historicProgress.stateProgress !== ProgressState.NOT_WATCHED && historicProgress.watchProgress > 0 && historicProgress.watchProgress < 100) {
                 <div class="progress" [style.width.%]="historicProgress.watchProgress"></div>
                 }
             </div>

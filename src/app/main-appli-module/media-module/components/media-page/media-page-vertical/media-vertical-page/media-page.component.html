@@ -8,7 +8,7 @@
             <div class="container-all-button">
                 <div class="container-groupe-button">
                     <app-start-button [media]="media" [seasons]="seasons"></app-start-button>
-                    @if(media.mediaType === MediaType.MOVIE && historicProgress && historicProgress.stateProgress !== ProgressState.NOT_WATCHED ) {
+                    @if(media.mediaType === MediaType.MOVIE && historicProgress && historicProgress.stateProgress !== ProgressState.NOT_WATCHED && historicProgress.watchProgress > 0 && historicProgress.watchProgress < 100) {
                         <app-start-button [media]="media" [seasons]="seasons" [launch]="'start'"></app-start-button>
                     }
                 </div>
