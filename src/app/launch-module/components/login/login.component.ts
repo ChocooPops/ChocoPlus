@@ -47,6 +47,10 @@ export class LoginComponent extends FormPageDirectiveAbstract {
     this.initForm();
   }
 
+  ngOnDestroy(): void {
+    this.verifUserAlreadyConnectedService.setUserConnected(true);
+  }
+
   private initForm(): void {
     this.formGroup = this.fb.group({
       inputEmail: ['', [Validators.required]],
