@@ -6,5 +6,6 @@ export interface NewsVideoRunningModel {
     srcBackground: string | undefined,
     startShow: string,
     endShow: string,
+    activated: boolean,
     media: MediaModel,
 }

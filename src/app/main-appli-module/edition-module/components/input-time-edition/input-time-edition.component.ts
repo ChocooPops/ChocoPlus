@@ -11,15 +11,13 @@ import { SimpleChanges } from '@angular/core';
 })
 export class InputTimeEditionComponent {
 
-
-  @Input()
-  time!: string;
-
-  @Output()
-  onInputChange = new EventEmitter<string>();
+  @Input() time!: string;
+  @Output() onInputChange = new EventEmitter<string>();
 
   formGroup!: FormGroup;
-  constructor(private fb: FormBuilder) { }
+  
+  constructor(private readonly fb: FormBuilder) { }
+
   ngOnInit(): void {
     this.loadFormGroup();
   }

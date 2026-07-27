@@ -11,14 +11,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class InputRadioButtonComponent {
 
-  @Input()
-  radioButton !: SimpleModel[];
+  @Input() radioButton !: SimpleModel[];
+  @Input() group !: String;
 
-  @Input()
-  group !: String;
-
-  @Output()
-  changeEmit = new EventEmitter<number>
+  @Output() changeEmit = new EventEmitter<number>
 
   onRadioChange(value: number) {
     this.changeEmit.emit(value);

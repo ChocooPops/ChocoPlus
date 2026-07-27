@@ -33,6 +33,7 @@ export class NewsVideoRunningService {
       srcBackground: undefined,
       startShow: '',
       endShow: '',
+      activated: false,
       media:
       {
         id: -1,
@@ -57,6 +58,7 @@ export class NewsVideoRunningService {
             srcBackground: data.srcBackground ? data.srcBackground : undefined,
             startShow: data.startShow ? data.startShow : '00:10:00',
             endShow: data.endShow ? data.endShow : '00:11:30',
+            activated: data.activated ? true : false,
             media: movie
           }
           return this.firstMoviePresentation;
@@ -81,6 +83,7 @@ export class NewsVideoRunningService {
             srcBackground: data.srcBackground ? data.srcBackground : undefined,
             startShow: data.startShow ? data.startShow : '00:04:00',
             endShow: data.endShow ? data.endShow : '00:05:30',
+            activated: data.activated ? true : false,
             media: series
           }
           return this.firstSeriesPresentation;

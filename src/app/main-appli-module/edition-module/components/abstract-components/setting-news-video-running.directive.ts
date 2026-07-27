@@ -68,4 +68,8 @@ export abstract class SettingNewsVideoRunning extends UnauthorizedError {
         this.editNewsVideoRunningService.modifyMediaLibraryId(info.id, info.name);
     }
 
+    protected modifyActivatedMedia(info: SimpleModel): void {
+        this.editNewsVideoRunningService.modifyActivatedMedia(info.id, info.value ?? false);
+    }
+
 } 

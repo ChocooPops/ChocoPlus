@@ -15,8 +15,9 @@
         @for(videoRunning of editNewsRunningVideo; track videoRunning) {
         <app-edit-new-video-running (deleteNews)="deleteMediaIntoNews($event)"
             (modifyStartShow)="modifyStartShowById($event)" (modifyEndShow)="modifyEndShowById($event)"
-            (modifySrcBackground)="modifySrcBackground($event)"
+            (modifySrcBackground)="modifySrcBackground($event)" (modifyActivated)="modifyActivatedMedia($event)"
             [videoRunning]="videoRunning"></app-edit-new-video-running>
+            <div class="barre-separation-news"></div>
         }
     </div>
 

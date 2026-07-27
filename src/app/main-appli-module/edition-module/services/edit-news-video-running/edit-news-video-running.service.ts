@@ -56,6 +56,7 @@ export class EditNewsVideoRunningService {
             srcBackground: item.srcBackground,
             startShow: item.startShow,
             endShow: item.endShow,
+            activated: item.activated ? true : false,
             media: movie
           })
         })
@@ -80,6 +81,7 @@ export class EditNewsVideoRunningService {
             srcBackground: item.srcBackground,
             startShow: item.startShow,
             endShow: item.endShow,
+            activated: item.activated ? true : false,
             media: series
           })
         })
@@ -100,10 +102,11 @@ export class EditNewsVideoRunningService {
         id: this.getId(),
         mediaLibraryId: media.mediaType === MediaTypeModel.MOVIE ? media.mediaLibraryId : undefined,
         srcBackground: media.srcBackgroundImage,
-        startShow: media.startShow ? media.startShow : '00:00:00',
-        endShow: media.endShow ? media.endShow : '00:00:00',
+        startShow: media.startShow ? media.startShow : '00:01:30',
+        endShow: media.endShow ? media.endShow : '00:03:00',
+        activated: true,
         media: media
-      })
+      });
     }
     this.editNewsVideoRunningSubject.next(news);
   }
@@ -136,6 +139,7 @@ export class EditNewsVideoRunningService {
     const index: number = news.findIndex((item: NewsVideoRunningModel) => item.id === id);
     if (index >= 0) {
       news[index].srcBackground = srcBackground;
+      this.editNewsVideoRunningSubject.next(news);
     }
   }
 
@@ -144,6 +148,16 @@ export class EditNewsVideoRunningService {
     const index: number = news.findIndex((item: NewsVideoRunningModel) => item.id === id);
     if (index >= 0) {
       news[index].mediaLibraryId = mediaLibraryId;
+      this.editNewsVideoRunningSubject.next(news);
+    }
+  }
+
+  public modifyActivatedMedia(id: number, activated: boolean): void {
+    const news: NewsVideoRunningModel[] = this.editNewsVideoRunningSubject.value;
+    const index: number = news.findIndex((item: NewsVideoRunningModel) => item.id === id);
+    if (index >= 0) {
+      news[index].activated = activated;
+      this.editNewsVideoRunningSubject.next(news);
     }
   }
 
@@ -185,8 +199,9 @@ export class EditNewsVideoRunningService {
       mediaType: news.media.mediaType,
       srcBackground: news.srcBackground,
       startShow: news.startShow,
+      activated: news.activated,
       endShow: news.endShow
-    }))
+    }));
   }
 
 }

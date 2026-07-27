@@ -19,7 +19,12 @@
                     [time]="videoRunning.endShow"></app-input-time-edition>
             </div>
         </div>
-
+        <div class="containerFieldToFill">
+            <div class="container-info">
+                <p> {{ 'EDITION.NEWS.ACTIVATED' | translate }} : </p>
+                <app-input-radio-button [radioButton]="radioButton" (changeEmit)="onChangeActivated($event)"></app-input-radio-button>
+            </div>
+        </div>
         <div class="container-background" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeaving()"
             [ngClass]="'animationEditField'">
             <img class="img-choosen" [src]="currentBack">

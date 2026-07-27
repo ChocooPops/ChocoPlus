@@ -180,7 +180,13 @@ span {
 .container-news-running-video {
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    gap: 45px;
+}
+
+.barre-separation-news {
+    width: 100%;
+    height: 1px;
+    background-color: #2a2a2a;
 }
 
 .container-add-episode {

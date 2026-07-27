@@ -309,7 +309,8 @@
         "NEWS": {
             "ADD_MOVIE_INTO_NEWS": "Add a movie as news",
             "ADD_SERIES_INTO_NEWS": "Add a series as news",
-            "MESSAGE_MODIFY": "Save changes?"
+            "MESSAGE_MODIFY": "Save changes?",
+            "ACTIVATED": "Activation"
         },
         "CREDIT": {
             "POSTER_CREDIT": "Credit poster",

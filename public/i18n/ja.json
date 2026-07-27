@@ -309,7 +309,8 @@
         "NEWS": {
             "ADD_MOVIE_INTO_NEWS": "映画をニュースとして追加",
             "ADD_SERIES_INTO_NEWS": "シリーズをニュースとして追加",
-            "MESSAGE_MODIFY": "変更を保存しますか？"
+            "MESSAGE_MODIFY": "変更を保存しますか？",
+            "ACTIVATED": "有効化"
         },
         "CREDIT": {
             "POSTER_CREDIT": "クレジットポスター",

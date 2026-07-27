@@ -10,11 +10,12 @@ import { SeriesModel } from '../../../media-module/models/series/series.interfac
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { EditNewsSeriesRunningComponent } from '../edit-news-series-running/edit-news-series-running.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputRadioButtonComponent } from '../input-radio-button/input-radio-button.component';
 
 @Component({
   selector: 'app-edit-new-video-running',
   standalone: true,
-  imports: [TranslatePipe, InputTimeEditionComponent, ButtonDeleteComponent, NgClass, EditNewsSeriesRunningComponent],
+  imports: [TranslatePipe, InputRadioButtonComponent, InputTimeEditionComponent, ButtonDeleteComponent, NgClass, EditNewsSeriesRunningComponent],
   templateUrl: './edit-new-video-running.component.html',
   styleUrls: ['./edit-new-video-running.component.css', '../../styles/edition.css']
 })
@@ -30,12 +31,37 @@ export class EditNewVideoRunningComponent {
   @Output() modifyMediaLibraryId = new EventEmitter<SimpleModel>();
   @Output() modifyStartShow = new EventEmitter<SimpleModel>();
   @Output() modifyEndShow = new EventEmitter<SimpleModel>();
+  @Output() modifyActivated = new EventEmitter<SimpleModel>();
   @Output() modifySrcBackground = new EventEmitter<SimpleModel>();
   @Output() deleteNews = new EventEmitter<number>();
 
-  constructor(private compressedPosterService: CompressedPosterService) { }
+  radioButton!: SimpleModel[];
+  private static buttonId: number = 0;
+
+  constructor(private readonly compressedPosterService: CompressedPosterService) { }
 
   ngOnInit(): void {
+    this.radioButton = [
+      {
+        id: EditNewVideoRunningComponent.getButtonId(),
+        name: 'YES',
+        value: true,
+        state: false
+      },
+      {
+        id: EditNewVideoRunningComponent.getButtonId(),
+        name: 'NO',
+        value: false,
+        state: false
+      }
+    ];
+
+    if (this.videoRunning.activated) {
+      this.radioButton[0].state = true;
+    } else {
+      this.radioButton[1].state = true;
+    }
+
     this.currentBack = this.compressedPosterService.getBackgroundForNewsVideoRunning(this.videoRunning, this.currentScale);
     this.backAvailable = Array.from(
       new Set([
@@ -65,6 +91,16 @@ export class EditNewVideoRunningComponent {
   onChangeMediaLibraryId(mediaLibraryId: string): void {
     this.modifyMediaLibraryId.emit({ id: this.videoRunning.id, name: mediaLibraryId });
   }
+  onChangeActivated(id: number): void {
+    let value!: boolean;
+    const button: SimpleModel | undefined = this.radioButton.find((item) => item.id === id);
+    if (button) {
+      value = button.value;
+    } else {
+      value = true;
+    }
+    this.modifyActivated.emit({ id: this.videoRunning.id, name: 'activated', value: value });
+  }
   onClickDelete(): void {
     this.deleteNews.emit(this.videoRunning.id);
   }
@@ -79,6 +115,11 @@ export class EditNewVideoRunningComponent {
 
   onErrorImageLogo(): void {
     this.poster = undefined;
+  }
+
+  private static getButtonId(): number {
+    EditNewVideoRunningComponent.buttonId ++;
+    return EditNewVideoRunningComponent.buttonId;
   }
 
 }
