@@ -20,6 +20,11 @@
     </div>
 
     <div class="containerFieldToFill">
+        <p>{{ 'EDITION.CATEGORY.TRANSLATION_NAME' | translate }} </p>
+        <app-input-text-edition [text]="editCategory.translatedName" placeHolder="-" [disabled]="true"></app-input-text-edition>
+    </div>
+
+    <div class="containerFieldToFill">
         <p> {{ 'EDITION.TMDB_ID' | translate }} <span>*</span></p>
         <app-input-number-edition [placeHolder]="placeholderTextTmdbId" (onInputChange)="onChangeTmdbId($event)" [number]="editCategory.tmdbId" (onInputChange)="onChangeTmdbId($event)"></app-input-number-edition>
     </div>

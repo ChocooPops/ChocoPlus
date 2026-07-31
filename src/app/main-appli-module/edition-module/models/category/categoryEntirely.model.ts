@@ -5,6 +5,7 @@ export interface CategoryEntirelyModel {
     id: number,
     tmdbId: number | undefined,
     translationKey: string,
+    translatedName: string,
     nameSelection: string,
     movies: MovieModel[],
     series : SeriesModel[]

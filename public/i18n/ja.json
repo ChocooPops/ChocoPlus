@@ -334,6 +334,7 @@
         "CATEGORY": {
             "SEARCH_CATEGORY": "カテゴリーを検索：",
             "TRANSLATION_KEY": "翻訳キー",
+            "TRANSLATION_NAME": "キーのシステム翻訳",
             "CATEGORY_NAME": "カテゴリー名",
             "SELECTION_NAME": "セレクション名",
             "ADD_MOVIE_INTO_CATGEORY": "セレクションに映画を追加",

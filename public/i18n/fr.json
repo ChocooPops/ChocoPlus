@@ -334,6 +334,7 @@
         "CATEGORY": {
             "SEARCH_CATEGORY": "Rechercher une catégorie :",
             "TRANSLATION_KEY": "Clé de traduction",
+            "TRANSLATION_NAME": "Traduction système de la clé",
             "CATEGORY_NAME": "Nom de la catégorie",
             "SELECTION_NAME": "Nom de la selection",
             "ADD_MOVIE_INTO_CATGEORY": "Ajouter un film dans la sélection",

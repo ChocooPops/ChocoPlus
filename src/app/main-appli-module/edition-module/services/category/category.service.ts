@@ -10,6 +10,7 @@ import { MovieService } from '../../../media-module/services/movie/movie.service
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { MovieModel } from '../../../media-module/models/movie-model';
 import { SeriesService } from '../../../media-module/services/series/series.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,7 @@ export class CategoryService {
   private editCategory$: Observable<CategoryEntirelyModel> = this.editCategorySubject.asObservable();
 
   constructor(private readonly http: HttpClient,
+    private readonly translateService: TranslateService,
     private readonly movieService: MovieService,
     private readonly seriesService: SeriesService
   ) {
@@ -35,6 +37,7 @@ export class CategoryService {
       id: -1,
       tmdbId: undefined,
       translationKey: '',
+      translatedName: '',
       nameSelection: '',
       movies: [],
       series: []
@@ -57,7 +60,8 @@ export class CategoryService {
   }
 
   public modifyTranslationKeyCategory(translationKey: string): void {
-    this.updateEditCategory({ translationKey: translationKey });
+    const translatedName: string = this.translateService.instant(translationKey);
+    this.updateEditCategory({ translationKey: translationKey, translatedName: translatedName });
   }
 
   public modifyTmdbId(tmdbId: number): void {
@@ -140,6 +144,9 @@ export class CategoryService {
     if (this.categoriesSubject.value.length <= 0) {
       return this.http.get<any>(`${this.apiUrl}/all-categories`).pipe(
         map((data: CategorySimpleModel[]) => {
+          data.forEach((cat: CategorySimpleModel) => {
+            cat.translatedName = this.translateService.instant(cat.translationKey);
+          });
           this.categoriesSubject.next(data);
           return this.categoriesSubject.value;
         }),
@@ -155,7 +162,7 @@ export class CategoryService {
   public setEditCategoryByResearch(id: number): void {
     this.fetchCategoryEntirelyById(id).pipe(take(1)).subscribe((data: CategoryEntirelyModel) => {
       this.editCategorySubject.next(data);
-    })
+    });
   }
 
   public fetchCategoryEntirelyById(id: number): Observable<CategoryEntirelyModel> {
@@ -174,6 +181,7 @@ export class CategoryService {
           id: data.id,
           tmdbId: data.tmdbId,
           translationKey: data.translationKey,
+          translatedName: this.translateService.instant(data.translationKey),
           nameSelection: data.nameSelection,
           movies: medias,
           series: series
@@ -192,7 +200,8 @@ export class CategoryService {
           categories.push({
             id: data.other.id,
             tmdbId: this.editCategorySubject.value.tmdbId,
-            translationKey: this.editCategorySubject.value.translationKey
+            translationKey: this.editCategorySubject.value.translationKey,
+            translatedName: this.translateService.instant(this.editCategorySubject.value.translationKey)
           });
           this.categoriesSubject.next(categories);
         }
@@ -253,13 +262,13 @@ export class CategoryService {
     const input = this.normalizeText(searchStr.trim());
     if (input.length < 3) {
       return categories.filter(category =>
-        this.normalizeText(category.translationKey).startsWith(input)
+        this.normalizeText(category.translatedName).startsWith(input)
       );
     }
     const startsWithMatches: CategorySimpleModel[] = [];
     const fuzzyMatches: CategorySimpleModel[] = [];
     for (const category of categories) {
-      const normalized = this.normalizeText(category.translationKey);
+      const normalized = this.normalizeText(category.translatedName);
 
       if (normalized.startsWith(input)) {
         startsWithMatches.push(category);
