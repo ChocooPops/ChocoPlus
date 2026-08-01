@@ -60,7 +60,12 @@ export class CategoryService {
   }
 
   public modifyTranslationKeyCategory(translationKey: string): void {
-    const translatedName: string = this.translateService.instant(translationKey);
+    let translatedName!: string;
+    if (!translationKey || translationKey.trim() === '') {
+      translatedName = '';
+    } else {
+      translatedName = this.translateService.instant(translationKey);
+    }
     this.updateEditCategory({ translationKey: translationKey, translatedName: translatedName });
   }
 
@@ -219,7 +224,7 @@ export class CategoryService {
         }
         return data;
       })
-    )
+    );
   }
 
   public fetchDeleteCategory(): Observable<MessageReturnedModel> {
@@ -234,7 +239,7 @@ export class CategoryService {
         }
         return data;
       })
-    )
+    );
   }
 
   private getCategoryModelFormated(category: CategoryEntirelyModel): CategoryModel {
@@ -252,14 +257,14 @@ export class CategoryService {
 
   private normalizeText(str: string): string {
     return str
-      .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase();
+      .toLowerCase()
+      .trim();
   }
 
   public filterCategoriesByFuzzyStart(searchStr: string, categoriesAlreadyGet: CategorySimpleModel[], maxDistance = 1): CategorySimpleModel[] {
     const categories: CategorySimpleModel[] = this.getSymmetricDifference(categoriesAlreadyGet, this.categoriesSubject.value);
-    const input = this.normalizeText(searchStr.trim());
+    const input = this.normalizeText(searchStr);
     if (input.length < 3) {
       return categories.filter(category =>
         this.normalizeText(category.translatedName).startsWith(input)
