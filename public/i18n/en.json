@@ -329,7 +329,9 @@
             "MESSAGE_DELETE": "This action will permanently delete the associated credit",
             "PLACEHOLDER_FULLNAME": "e.g.: Hiroshi Kamiya",
             "PLACEHOLDER_ORIGINAL_FULLNAME": "e.g.: 神谷浩史",
-            "PLACEHOLDER_POSTER": "e.g.: Photo of Bryan Cranston"
+            "PLACEHOLDER_POSTER": "e.g.: Photo of Bryan Cranston",
+            "HIDE_ROWS": "Hide rows",
+            "SHOW_ROWS": "Show rows"
         },
         "CATEGORY": {
             "SEARCH_CATEGORY": "Search for a category:",

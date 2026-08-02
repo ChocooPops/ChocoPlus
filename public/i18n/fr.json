@@ -329,7 +329,9 @@
             "MESSAGE_DELETE": "Cette action supprimera définitvement le crédit associé",
             "PLACEHOLDER_FULLNAME": "ex: Hiroshi Kamiya",
             "PLACEHOLDER_ORIGINAL_FULLNAME": "ex: 神谷浩史",
-            "PLACEHOLDER_POSTER": "ex: Photo de Bryan Cranston"
+            "PLACEHOLDER_POSTER": "ex: Photo de Bryan Cranston",
+            "HIDE_ROWS": "Cacher les lignes",
+            "SHOW_ROWS": "Montrer les lignes"
         },
         "CATEGORY": {
             "SEARCH_CATEGORY": "Rechercher une catégorie :",

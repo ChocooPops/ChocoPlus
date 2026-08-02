@@ -70,14 +70,14 @@
 
 .container-tabs-plus {
     position: absolute;
-    top: 40px;
+    top: 51px;
     left: 50%;
     transform: translateX(-50%);
     width: 150px;
     height: auto;
     background-color: #181818;
-    transition: 0.1s visibility;
-    transition-delay: 0.1s;
+    transition: 0.12s visibility;
+    transition-delay: 0.12s;
     visibility: hidden;
 }
 

@@ -329,7 +329,9 @@
             "MESSAGE_DELETE": "この操作により関連するクレジットが完全に削除されます",
             "PLACEHOLDER_FULLNAME": "例：神谷浩史",
             "PLACEHOLDER_ORIGINAL_FULLNAME": "例：神谷浩史",
-            "PLACEHOLDER_POSTER": "例：ブライアン・クランストンの写真"
+            "PLACEHOLDER_POSTER": "例：ブライアン・クランストンの写真",
+            "HIDE_ROWS": "行を非表示にする",
+            "SHOW_ROWS": "行を表示する"
         },
         "CATEGORY": {
             "SEARCH_CATEGORY": "カテゴリーを検索：",

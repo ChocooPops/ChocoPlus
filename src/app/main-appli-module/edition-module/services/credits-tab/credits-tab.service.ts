@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class CreditsTabService {
 
 
-  private isBodyVisibleSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  private isBodyVisibleSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isBodyVisible$: Observable<boolean> = this.isBodyVisibleSubject.asObservable();
 
   public getIsBodyVisible(): Observable<boolean> {
