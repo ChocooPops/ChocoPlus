@@ -2,31 +2,35 @@
     @for(episode of episodes; track episode.id; let idx = $index) {
     @defer(on viewport) {
     <div class="container-episode animationPosterAndLicense">
-        <div class="container-index">
-            <p class="index">{{ episode.episodeNumber}}</p>
-        </div>
-        <div class="container-poster" (click)="start.onClick()">
 
-            <app-news-alert [visibility]="true" [isRecent]="episode.isRecent"
-                [mediaType]="MediaType.EPISODE"></app-news-alert>
+        <div class="container-index-episode">
+            <div class="container-index">
+                <p class="index">{{ episode.episodeNumber}}</p>
+            </div>
+            <div class="container-poster" (click)="start.onClick()">
 
-            <div class="container-tmp-poster">
-                <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
-                    [episode]="episode" [seasons]="series.seasons"></app-start-button>
-                @if (episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
-                <app-start-button (click)="$event.stopPropagation()" [typeButton]="true" [typeDisplaying]="true" [media]="series"
-                    [episode]="episode" [seasons]="series.seasons" [launch]="'start'"></app-start-button>
+                <app-news-alert [visibility]="true" [isRecent]="episode.isRecent"
+                    [mediaType]="MediaType.EPISODE"></app-news-alert>
+
+                <div class="container-tmp-poster">
+                    <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                        [episode]="episode" [seasons]="series.seasons"></app-start-button>
+                    @if (episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
+                    <app-start-button (click)="$event.stopPropagation()" [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                        [episode]="episode" [seasons]="series.seasons" [launch]="'start'"></app-start-button>
+                    }
+                </div>
+                @if (episodePoster[idx]) {
+                <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
+                }
+                @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED && episodeProgress[idx].watchProgress > 0 && episodeProgress[idx].watchProgress < 100) {
+                <div class="container-progress">
+                    <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>
+                </div>
                 }
             </div>
-            @if (episodePoster[idx]) {
-            <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
-            }
-            @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED && episodeProgress[idx].watchProgress > 0 && episodeProgress[idx].watchProgress < 100) {
-            <div class="container-progress">
-                <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>
-            </div>
-            }
         </div>
+
         <div class="container-info">
             <p class="title"> {{ episode.name }} </p>
             @if(notRunning) {
@@ -38,6 +42,10 @@
             </div>
             }
         </div>
+
+    </div>
+    <div class="container-barre-separation">
+        <div class="barre-separation"></div>
     </div>
     } @placeholder {
     <div class="container-episode">
