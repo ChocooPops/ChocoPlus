@@ -58,6 +58,11 @@
     .container-movie-selection {
         gap: 1vw;
     }
+
+    p {
+        border-left: solid 4.5px #FFD301;
+        padding-left: 12px;
+    }
 }
 
 /* Quand écran < 1400px */
@@ -68,6 +73,11 @@
 
     .container-movie-selection {
         gap: 1.5vw;
+    }
+
+    p {
+        border-left: solid 4px #FFD301;
+        padding-left: 10px;
     }
 }
 
@@ -80,6 +90,11 @@
     .container-movie-selection {
         gap: 2vw;
     }
+
+    p {
+        border-left: solid 3px #FFD301;
+        padding-left: 10px;
+    }
 }
 
 /* Quand écran < 700px */
@@ -90,5 +105,10 @@
 
     .container-movie-selection {
         gap: 2.7vw;
+    }
+
+    p {
+        border-left: solid 3px #FFD301;
+        padding-left: 8px;
     }
 }
