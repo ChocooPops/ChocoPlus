@@ -111,24 +111,24 @@ export class FiltersCatalogService {
     name: 'MEDIA',
     type: FilterType.MEDIA,
     filters: [
-    {
-      id: this.getId(),
-      name: 'ALL',
-      value: MediaTypeModel.ALL,
-      isSelected: 2,
-    },
-    {
-      id: this.getId(),
-      name: 'MOVIES',
-      value: MediaTypeModel.MOVIE,
-      isSelected: 0,
-    },
-    {
-      id: this.getId(),
-      name: 'SERIES',
-      value: MediaTypeModel.SERIES,
-      isSelected: 0,
-    },
+      {
+        id: this.getId(),
+        name: 'ALL',
+        value: MediaTypeModel.ALL,
+        isSelected: 2,
+      },
+      {
+        id: this.getId(),
+        name: 'MOVIES',
+        value: MediaTypeModel.MOVIE,
+        isSelected: 0,
+      },
+      {
+        id: this.getId(),
+        name: 'SERIES',
+        value: MediaTypeModel.SERIES,
+        isSelected: 0,
+      }
     ]
   }
 
@@ -163,6 +163,12 @@ export class FiltersCatalogService {
       value: SortCatalog.SHUFFLE,
       isSelected: 1,
     },
+    {
+      id: this.getId(),
+      name: 'FILTER.SORT_ALREADY_WATCHED',
+      value: SortCatalog.ALREADY_WATCHED,
+      isSelected: 0,
+    }
   ];
 
   private orderDirectionSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
@@ -231,6 +237,10 @@ export class FiltersCatalogService {
   public toggleOrderDirectionSort(): void {
     const bool: boolean = this.orderDirectionSubject.value;
     this.orderDirectionSubject.next(!bool);
+  }
+
+  public setOrderDirectionSort(direction: boolean): void {
+    this.orderDirectionSubject.next(direction);
   }
 
   public onSelectedDecadeFilter(filtre: FILTERS): void {
@@ -317,6 +327,16 @@ export class FiltersCatalogService {
       }
     });
     return sort;
+  }
+
+  public setSelectedSortFilterByValue(value: SortCatalog) {
+    this.sortFilter.some((item) => {
+      if(item.value === value) {
+        item.isSelected = 1;
+      } else {
+        item.isSelected = 0;
+      }
+    });
   }
 
   public setFilterFromMediaPage(filtres: FILTERS[]): void {

@@ -253,7 +253,8 @@
         "SORT_RELEASE_DATE": "Release date",
         "SORT_ADDED_DATE": "Added date",
         "SORT_DURATION": "Duration",
-        "SORT_SHUFFLE": "Shuffle"
+        "SORT_SHUFFLE": "Shuffle",
+        "SORT_ALREADY_WATCHED": "Already watched"
     },
     "EDITION": {
         "START_SHOW": "Start",

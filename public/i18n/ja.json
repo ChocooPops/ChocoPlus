@@ -253,7 +253,8 @@
         "SORT_RELEASE_DATE": "公開日",
         "SORT_ADDED_DATE": "追加日",
         "SORT_DURATION": "時間",
-        "SORT_SHUFFLE": "シャッフル"
+        "SORT_SHUFFLE": "シャッフル",
+        "SORT_ALREADY_WATCHED": "すでに視聴済み"
     },
     "EDITION": {
         "START_SHOW": "開始",

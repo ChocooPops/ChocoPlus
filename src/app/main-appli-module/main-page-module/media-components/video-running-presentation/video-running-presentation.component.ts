@@ -175,4 +175,8 @@ export class VideoRunningPresentationComponent {
     return texte.substring(0, indexCoupe).trim();
   }
 
+  onErrorBackground(): void {
+    this.srcBackground = undefined;
+  }
+
 }

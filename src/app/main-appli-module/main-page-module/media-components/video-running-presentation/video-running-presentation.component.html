@@ -3,7 +3,7 @@
         <div class="container-video">
             @if(!isVideoLoaded) {
             @if(srcBackground) {
-            <img [src]="srcBackground" loading="lazy" [ngClass]="'animationPosterAndLicense'">
+            <img [src]="srcBackground" loading="lazy" [ngClass]="'animationPosterAndLicense'" (error)="onErrorBackground()">
             }
             }
             <video #videoElement [ngClass]="{'display-video' : isVideoLoaded, 'hidde-video' : !isVideoLoaded}" autoplay>
