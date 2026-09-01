@@ -125,7 +125,11 @@
     "USER": {
         "HISTORIC": {
             "TOP_TITLE": "最も視聴されたコンテンツ トップ10",
+            "RECENT_TITLE": "視聴履歴",
+            "VIEW_MODE_TOP": "現在のトップ",
+            "VIEW_MODE_HISTORIC": "履歴",
             "ERROR_TOP": "トップ10の読み込みエラー",
+            "ERROR_HISTORIC": "履歴の読み込みエラー",
             "ANY_MEDIA": "視聴したメディアがありません",
             "VIEWING_TIME": "視聴時間",
             "TOTAL": "合計",

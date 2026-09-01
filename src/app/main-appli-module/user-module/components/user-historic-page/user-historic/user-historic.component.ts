@@ -16,6 +16,8 @@ import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 export class UserHistoricComponent {
 
   @Input() userId!: number;
+  @Input() changeParametersSelected: boolean = true;
+
   @ViewChild('container') containerRef!: ElementRef<HTMLDivElement>;
 
   colPercent = 70;
@@ -25,7 +27,13 @@ export class UserHistoricComponent {
   private activeDivider: HTMLElement | null = null;
 
   constructor(private readonly userParametersService: UserParametersService) {
-    this.userParametersService.initAllClickedValue(MenuType.HISTORIC);
+  
+  }
+
+  ngOnInit(): void {
+    if (this.changeParametersSelected) {
+      this.userParametersService.initAllClickedValue(MenuType.HISTORIC);
+    }
   }
 
   onDividerMouseDown(event: MouseEvent, type: 'col' | 'row'): void {

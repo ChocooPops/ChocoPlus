@@ -43,12 +43,13 @@ export class MediaService {
     )
   }
 
-  public fetchMediaByCatalogFilters(filters: FILTERS[], sortFilter: SortCatalog, orderDirection: boolean, count: number, offset: number): Observable<ResultCatalog> {
+  public fetchMediaByCatalogFilters(filters: FILTERS[], sortFilter: SortCatalog, orderDirection: boolean, count: number, offset: number, userId: number = 0): Observable<ResultCatalog> {
     let params = new HttpParams()
       .set('sortFilter', sortFilter)
       .set('orderDirection', String(orderDirection))
       .set('count', String(count))
-      .set('offset', String(offset));
+      .set('offset', String(offset))
+      .set('userId', String(userId));
 
     return this.http.post<any>(`${this.apiUrlMedia}/${this.urlCatalog}`, filters, { params }).pipe(
       map((data: ResultCatalog) => {

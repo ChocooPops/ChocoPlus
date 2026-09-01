@@ -14,7 +14,7 @@
     <div class="container-details">
         @if(detailType) {
         <div class="container-detail">
-            <app-user-historic [userId]="user.id"></app-user-historic>
+            <app-user-historic [userId]="user.id" [changeParametersSelected]="false"></app-user-historic>
         </div>
         }@else {
         <div class="container-info">

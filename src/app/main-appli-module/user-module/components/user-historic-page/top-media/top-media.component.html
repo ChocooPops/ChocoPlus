@@ -1,12 +1,23 @@
 <div class="top-media-container">
     <div class="header">
-        <h2>{{'USER.HISTORIC.TOP_TITLE' | translate }}</h2>
+        <h2>{{ (viewMode === 'historic' ? 'USER.HISTORIC.RECENT_TITLE' : 'USER.HISTORIC.TOP_TITLE') | translate }}</h2>
         <button class="refresh-btn" (click)="refresh()" [disabled]="loading" [title]="'TUTO.REFRESH' | translate">
             @if(loading) {
             <img [src]="srcLoading">
             }@else {
             <img [src]="srcReset">
             }
+        </button>
+    </div>
+
+    <div class="mode-toggle">
+        <button class="mode-btn" [class.active]="viewMode === 'top'" [disabled]="loading"
+            (click)="setViewMode('top')">
+            {{ 'USER.HISTORIC.VIEW_MODE_TOP' | translate }}
+        </button>
+        <button class="mode-btn" [class.active]="viewMode === 'historic'" [disabled]="loading"
+            (click)="setViewMode('historic')">
+            {{ 'USER.HISTORIC.VIEW_MODE_HISTORIC' | translate }}
         </button>
     </div>
 
@@ -34,10 +45,11 @@
     </div>
     }
 
-    @if(!loading && !error && topMediaData) {
+    @if(!loading && !error && viewMode === 'top' && topMediaData) {
     <div #mediaList class="media-list">
         @for (media of topMediaData.topMedia; track media) {
-        <div class="media-item" [class]="getRankClass(media.rank)">
+        @defer (on viewport) {
+        <div class="media-item fade-in" [class]="getRankClass(media.rank)">
 
             <div class="rank-badge" [style.background]="getRankColor(media.rank)">
                 <span class="rank-number">{{ media.rank }}</span>
@@ -73,12 +85,49 @@
                 </div>
             </div>
         </div>
+        } @placeholder {
+        <div class="media-item media-item-placeholder"></div>
+        }
         }
     </div>
     }
 
-    <div class="empty"
-        [style.display]="!loading && !error && ((topMediaData?.topMedia ?? []).length === 0) ? 'flex' : 'none'">
+    @if(!loading && !error && viewMode === 'historic' && historicMediaList.length > 0) {
+    <div #mediaList class="media-list">
+        @for (media of historicMediaList; track media.id) {
+        @defer (on viewport) {
+        <div class="media-item fade-in">
+            <div class="media-poster">
+                <img [src]="getHistoricPosterUrl(media)" [alt]="media.title" class="poster-image" draggable="false">
+
+                <div class="type-badge">
+                    {{ getMediaIcon(media.mediaType) }}
+                </div>
+
+                @if(hasWatchProgress(media)) {
+                <div class="container-progress">
+                    <div class="progress" [style.width.%]="getWatchProgress(media)"></div>
+                </div>
+                }
+            </div>
+
+            <div class="media-info">
+                <h3 class="media-title">{{ media.title }}</h3>
+            </div>
+        </div>
+        } @placeholder {
+        <div class="media-item media-item-placeholder"></div>
+        }
+        }
+        @if(loadingMore) {
+        <div class="media-item loading-more">
+            <div class="spinner"></div>
+        </div>
+        }
+    </div>
+    }
+
+    <div class="empty" [style.display]="!loading && !error && isListEmpty() ? 'flex' : 'none'">
         <p>{{'USER.HISTORIC.ANY_MEDIA' | translate }}</p>
     </div>
 

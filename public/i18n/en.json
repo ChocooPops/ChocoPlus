@@ -125,7 +125,11 @@
     "USER": {
         "HISTORIC": {
             "TOP_TITLE": "Top 10 most watched content",
+            "RECENT_TITLE": "Viewing history",
+            "VIEW_MODE_TOP": "Current top",
+            "VIEW_MODE_HISTORIC": "History",
             "ERROR_TOP": "Error loading top 10",
+            "ERROR_HISTORIC": "Error loading history",
             "ANY_MEDIA": "No media watched",
             "VIEWING_TIME": "Viewing Time",
             "TOTAL": "TOTAL",
