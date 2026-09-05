@@ -58,6 +58,7 @@ export class SelectionService {
       id: data.id,
       typeSelection: type,
       name: data.name,
+      isOrderRandom: data.isOrderRandom ? true : false,
       mediaList: medias,
       createFrom: data.createFrom
     }

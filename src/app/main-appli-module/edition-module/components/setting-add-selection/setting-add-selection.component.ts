@@ -21,7 +21,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   standalone: true,
   imports: [TranslatePipe, SelectionOverviewComponent, InputResearchSeriesComponent, PopupComponent, ButtonRemoveComponent, ButtonSaveComponent, InputRadioButtonComponent, InputResearchMovieComponent, InputTextEditionComponent],
   templateUrl: './setting-add-selection.component.html',
-  styleUrls: ['./setting-add-selection.component.css', '../../styles/edition.css']
+  styleUrls: ['../../styles/edition.css', './setting-add-selection.component.css']
 })
 export class SettingAddSelectionComponent extends SettingSelectionAbstraction {
 

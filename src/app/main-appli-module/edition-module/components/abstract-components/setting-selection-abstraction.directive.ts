@@ -15,7 +15,9 @@ export abstract class SettingSelectionAbstraction extends UnauthorizedError {
 
     placeHolderNameSelection = "EDITION.SELECTION.PLACEHOLDER_NAME";
     radioButtonTypeSelection: SimpleModel[] = [];
+    radioButtonDisplayType: SimpleModel[] = [];
     groupTypeSelection: string = "groupTypeSelection";
+    groupDisplayType: string = "groupDisplayType";
     groupPosition: string = "groupPosition";
     editSelection !: SelectionModel;
     selectionTabFormated: SelectionModel[] = [];
@@ -48,6 +50,11 @@ export abstract class SettingSelectionAbstraction extends UnauthorizedError {
                 this.radioButtonTypeSelection = data;
             })
         )
+        this.subscription.add(
+            this.editionSelectionService.getRadioButtonDisplayType().subscribe((data: SimpleModel[]) => {
+                this.radioButtonDisplayType = data;
+            })
+        )
     }
 
     protected unsubscribeEditSelection(): void {
@@ -62,6 +69,10 @@ export abstract class SettingSelectionAbstraction extends UnauthorizedError {
 
     protected changeTypeSelection(id: number): void {
         this.editionSelectionService.modifyTypeSelection(id);
+    }
+
+    protected changeDisplayType(id: number): void {
+        this.editionSelectionService.modifyDisplayType(id);
     }
 
     protected addMediaIntoSelection(newMedia: MediaModel): void {

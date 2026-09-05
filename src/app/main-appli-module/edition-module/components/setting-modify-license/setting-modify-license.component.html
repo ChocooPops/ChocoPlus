@@ -15,7 +15,7 @@
 
     <div class="containerFieldToFill">
         <p> {{ 'EDITION.LICENSE.LICENSE_LOCATION' | translate }} <span>*</span></p>
-        <app-input-radio-button (changeEmit)="modifyLicensePosition($event)"
+        <app-input-radio-button (changeEmit)="modifyLicensePosition($event)" [group]="groupLocationLicense"
             [radioButton]="radioButtonLocationLicense"></app-input-radio-button>
     </div>
 
@@ -54,6 +54,10 @@
     </div>
 
     <div class="containerFieldToFill">
+        <p> {{ 'EDITION.DISPLAY_TYPE' | translate }} : </p>
+        <app-input-radio-button [radioButton]="radioButtonMediaDisplayType" [group]="groupMediaDisplayType"
+            (changeEmit)="modifyMediaDisplayType($event)"></app-input-radio-button>
+            
         <app-selection-overview [mediaSelectionList]="mediasIntoLicense" (moveMediaLeftEmit)="moveMediaLeft($event)"
             (moveMediaRightEmit)="moveMediaRight($event)"
             (removeMediaEmit)="removeMedia($event)"></app-selection-overview>
@@ -64,8 +68,12 @@
         <app-input-research-selection (addContentResearched)="addMediaSelection($event)"></app-input-research-selection>
     </div>
 
-    <div class="containerFieldToFill">
+    <div class="containerFieldToFill">    
         @if(editLicense.selectionList) {
+        <p> {{ 'EDITION.DISPLAY_TYPE' | translate }} : </p>
+        <app-input-radio-button [radioButton]="radioButtonSelectionDisplayType" [group]="groupSelectionDisplayType"
+            (changeEmit)="modifySelectionDisplayType($event)"></app-input-radio-button>
+
         <app-selection-overview (moveSelectionBottomEmit)="moveSelectionBottom($event)"
             (moveSelectionTopEmit)="moveSelectionTop($event)" (removeSelectionEmit)="removeSelection($event)"
             [mediaSelectionList]="allSelectionsIntoLicense" [displaButtonForMediaLicense]="false"

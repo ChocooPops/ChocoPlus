@@ -278,6 +278,9 @@
         "TMDB_ID": "TMDB ID",
         "PLACEHOLDER_TMDB": "e.g.: 8596",
         "FILE_CHEMIN": "File path",
+        "BY_ORDER": "In order",
+        "BY_RANDOM": "Random",
+        "DISPLAY_TYPE": "Display",
         "UNAUTHORIZED": {
             "ADD": "You are not authorized to add data.",
             "MODIFY": "You are not authorized to edit data.",

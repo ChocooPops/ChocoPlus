@@ -51,9 +51,13 @@
     </div>
 
     <div class="containerFieldToFill">
+        <p> {{ 'EDITION.DISPLAY_TYPE' | translate }} : </p>
+        <app-input-radio-button [radioButton]="radioButtonDisplayType" [group]="groupDisplayType"
+            (changeEmit)="changeDisplayType($event)"></app-input-radio-button>
+
         <app-selection-overview [mediaSelectionList]="selectionTabFormated" (moveMediaLeftEmit)="moveMediaLeft($event)"
-            (moveMediaRightEmit)="moveMediaRight($event)"
-            (removeMediaEmit)="removeMedia($event)"></app-selection-overview>
+                (moveMediaRightEmit)="moveMediaRight($event)"
+                (removeMediaEmit)="removeMedia($event)"></app-selection-overview>
     </div>
 
     <div class="containerFieldToFill">

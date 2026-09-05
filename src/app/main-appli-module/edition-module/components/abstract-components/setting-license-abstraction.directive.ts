@@ -12,8 +12,11 @@ import { EditionParametersService } from "../../services/edition-parameters/edit
 @Directive({})
 export abstract class SettingLicenseAbstraction extends UnauthorizedError {
 
-    editLicense !: LicenseModel;
-    radioButtonLocationLicense !: SimpleModel[];
+    editLicense!: LicenseModel;
+    radioButtonLocationLicense!: SimpleModel[];
+    radioButtonMediaDisplayType!: SimpleModel[];
+    radioButtonSelectionDisplayType!: SimpleModel[];
+
     mediasIntoLicense: SelectionModel[] = [];
     allSelectionsIntoLicense: SelectionModel[] = [];
 
@@ -21,6 +24,11 @@ export abstract class SettingLicenseAbstraction extends UnauthorizedError {
     placeHolderInputButton = 'EDITION.LICENSE.PLACEHOLDER_ICON';
     placeHolderInputBack = 'EDITION.LICENSE.PLACEHOLDER_BACK';
     placeHolderInputLogo = 'EDITION.LICENSE.PLACEHOLDER_LOGO';
+
+    groupLocationLicense: string = 'groupLocationLicense';
+    groupMediaDisplayType: string = 'groupMediaDisplayType';
+    groupSelectionDisplayType: string = 'groupSelectionDisplayType';
+
     subscription: Subscription = new Subscription;
 
     constructor(protected readonly editionLicenseService: EditionLicenseService,
@@ -46,17 +54,27 @@ export abstract class SettingLicenseAbstraction extends UnauthorizedError {
                 }
                 this.editLicense = data;
             })
-        )
+        );
         this.subscription.add(
             this.editionLicenseService.getMediasIntoLicense().subscribe((data: SelectionModel) => {
                 this.mediasIntoLicense = this.getFormatMediaSelectionInTab(data);
             })
-        )
+        );
         this.subscription.add(
             this.editionLicenseService.getRadiouttonLocatioonLicense().subscribe((data: SimpleModel[]) => {
                 this.radioButtonLocationLicense = data;
             })
-        )
+        );
+        this.subscription.add(
+            this.editionLicenseService.getRadioButtonMediaDisplayType().subscribe((data: SimpleModel[]) => {
+                this.radioButtonMediaDisplayType = data;
+            })
+        );
+        this.subscription.add(
+            this.editionLicenseService.getRadioButtonSelectionDisplayType().subscribe((data: SimpleModel[]) => {
+                this.radioButtonSelectionDisplayType = data;
+            })
+        );
     }
 
     protected unsubscribeEditLicence(): void {
@@ -67,6 +85,14 @@ export abstract class SettingLicenseAbstraction extends UnauthorizedError {
 
     protected modifyLicensePosition(id: number): void {
         this.editionLicenseService.modifyLicensePosition(id);
+    }
+
+    protected modifyMediaDisplayType(id: number): void {
+        this.editionLicenseService.modifyMediaDisplayType(id);
+    }
+
+    protected modifySelectionDisplayType(id: number): void {
+        this.editionLicenseService.modifySelectionDisplayType(id);
     }
 
     protected modifyNameLicense(name: string) {

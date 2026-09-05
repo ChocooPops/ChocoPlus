@@ -105,6 +105,8 @@ export class LicenseService {
       srcIcon: data.srcIcon ? data.srcIcon || undefined : undefined,
       srcLogo: data.srcLogo ? data.srcLogo || undefined : undefined,
       srcBackground: data.srcBackground ? data.srcBackground || undefined : undefined,
+      isMediaOrderRandom: data.isMediaOrderRandom ? true : false,
+      isSelectionOrderRandom: data.isSelectionOrderRandom ? true : false,
       selectionList: mediaSelectionList || undefined,
       visited: true
     }

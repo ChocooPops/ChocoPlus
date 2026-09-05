@@ -20,6 +20,12 @@ export class EditionLicenseService {
   private radioButtonLocationLicenseSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitialRaduiButtonLocationLicense());
   private radioButtonLocationLicense$: Observable<SimpleModel[]> = this.radioButtonLocationLicenseSubject.asObservable();
 
+  private radioButtonMediaDisplayTypeSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitialButtonDisplayType(3, 4));
+  private radioButtonMediaDisplayType$: Observable<SimpleModel[]> = this.radioButtonMediaDisplayTypeSubject.asObservable();
+
+  private radioButtonSelectionDisplayOrderSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitialButtonDisplayType(5, 6));
+  private radioButtonSelectionDisplayOrder$: Observable<SimpleModel[]> = this.radioButtonSelectionDisplayOrderSubject.asObservable();
+
   private editLicenseSubject: BehaviorSubject<LicenseModel> = new BehaviorSubject<LicenseModel>(this.getInitialLicense());
   private editLicense$: Observable<LicenseModel> = this.editLicenseSubject.asObservable();
 
@@ -33,8 +39,8 @@ export class EditionLicenseService {
   private urlModifyLicense: string = 'modify';
   private urlDeleteLicense: string = 'delete';
 
-  constructor(private http: HttpClient,
-    private licenseService: LicenseService
+  constructor(private readonly http: HttpClient,
+    private readonly licenseService: LicenseService
   ) {
     this.addMediasContainesIntoLicenseIntoLicense();
   }
@@ -62,6 +68,16 @@ export class EditionLicenseService {
     } else {
       this.modifyLicensePosition(1);
     }
+    if (license.isMediaOrderRandom) {
+      this.modifyMediaDisplayType(4);
+    } else {
+      this.modifyMediaDisplayType(3);
+    }
+    if (license.isSelectionOrderRandom) {
+      this.modifySelectionDisplayType(6);
+    } else {
+      this.modifySelectionDisplayType(5);
+    }
   }
 
   private addMediasContainesIntoLicenseIntoLicense(): void {
@@ -85,6 +101,23 @@ export class EditionLicenseService {
       {
         id: 2,
         name: 'USER.APP_SETTINGS.HOME_PAGE',
+        value: true,
+        state: false
+      }
+    ]
+  }
+
+  private getInitialButtonDisplayType(id1: number, id2: number) {
+    return [
+      {
+        id: id1,
+        name: 'EDITION.BY_ORDER',
+        value: false,
+        state: true
+      },
+      {
+        id: id2,
+        name: 'EDITION.BY_RANDOM',
         value: true,
         state: false
       }
@@ -122,6 +155,14 @@ export class EditionLicenseService {
     return this.radioButtonLocationLicense$;
   }
 
+  public getRadioButtonMediaDisplayType(): Observable<SimpleModel[]> {
+    return this.radioButtonMediaDisplayType$;
+  }
+
+  public getRadioButtonSelectionDisplayType(): Observable<SimpleModel[]> {
+    return this.radioButtonSelectionDisplayOrder$;
+  }
+
   public getMediasIntoLicense(): Observable<SelectionModel> {
     return this.mediasIntoLicense$;
   }
@@ -131,10 +172,26 @@ export class EditionLicenseService {
       ...radio,
       state: radio.id === id
     }));
-
     this.radioButtonLocationLicenseSubject.next(updatedSelection);
-
     const updatedLicense: LicenseModel = { ...this.editLicenseSubject.value, position: updatedSelection.find(item => item.id === id)?.value };
+    this.editLicenseSubject.next(updatedLicense);
+  }
+  public modifyMediaDisplayType(id: number): void {
+    const updatedSelection: SimpleModel[] = this.radioButtonMediaDisplayTypeSubject.value.map(radio => ({
+      ...radio,
+      state: radio.id === id
+    }));
+    this.radioButtonMediaDisplayTypeSubject.next(updatedSelection);
+    const updatedLicense: LicenseModel = { ...this.editLicenseSubject.value, isMediaOrderRandom: updatedSelection.find(item => item.id === id)?.value };
+    this.editLicenseSubject.next(updatedLicense);
+  }
+  public modifySelectionDisplayType(id: number): void {
+    const updatedSelection: SimpleModel[] = this.radioButtonSelectionDisplayOrderSubject.value.map(radio => ({
+      ...radio,
+      state: radio.id === id
+    }));
+    this.radioButtonSelectionDisplayOrderSubject.next(updatedSelection);
+    const updatedLicense: LicenseModel = { ...this.editLicenseSubject.value, isSelectionOrderRandom: updatedSelection.find(item => item.id === id)?.value };
     this.editLicenseSubject.next(updatedLicense);
   }
 
@@ -275,6 +332,8 @@ export class EditionLicenseService {
   public resetAllEditLicense(): void {
     this.editLicenseSubject.next(this.getInitialLicense());
     this.radioButtonLocationLicenseSubject.next(this.getInitialRaduiButtonLocationLicense());
+    this.radioButtonMediaDisplayTypeSubject.next(this.getInitialButtonDisplayType(3, 4));
+    this.radioButtonSelectionDisplayOrderSubject.next(this.getInitialButtonDisplayType(5, 6));
     this.mediasIntoLicenseSubject.next(this.getInitialMediaIntoLicense());
     this.addMediasContainesIntoLicenseIntoLicense();
     this.nameFirstSelection = '';
@@ -352,6 +411,8 @@ export class EditionLicenseService {
       srcIcon: license.srcIcon,
       srcLogo: license.srcLogo,
       srcBackground: license.srcBackground,
+      isSelectionOrderRandom: license.isSelectionOrderRandom ?? false,
+      isMediaOrderRandom: license.isMediaOrderRandom ?? false,
       mediaList: mediaList,
       selectionList: mediaSelectionList
     }

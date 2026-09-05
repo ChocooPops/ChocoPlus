@@ -278,6 +278,9 @@
         "TMDB_ID": "TMDB ID",
         "PLACEHOLDER_TMDB": "例：8596",
         "FILE_CHEMIN": "ファイルパス",
+        "BY_ORDER": "順番通りに",
+        "BY_RANDOM": "ランダム",
+        "DISPLAY_TYPE": "表示",
         "UNAUTHORIZED": {
             "ADD": "データを追加する権限がありません。",
             "MODIFY": "データを編集する権限がありません。",

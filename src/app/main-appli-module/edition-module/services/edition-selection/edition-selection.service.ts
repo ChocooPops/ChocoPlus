@@ -33,11 +33,29 @@ export class EditionSelectionService {
     ]
   }
 
+  public getInitialDisplayType(): SimpleModel[] {
+    return [
+      {
+        id: 3,
+        name: 'EDITION.BY_ORDER',
+        value: false,
+        state: true
+      },
+      {
+        id: 4,
+        name: 'EDITION.BY_RANDOM',
+        value: true,
+        state: false
+      }
+    ]
+  }
+
   public getInitialSelection(): SelectionModel {
     return {
       id: -1,
       name: "",
       typeSelection: SelectionType.NORMAL_POSTER,
+      isOrderRandom: false,
       mediaList: [],
       createFrom: MediaTypeModel.OTHER
     }
@@ -54,6 +72,9 @@ export class EditionSelectionService {
 
   private radioButtonTypeSelectionSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitiakButtonTypeSelection())
   private radioButtonTypeSelection$: Observable<SimpleModel[]> = this.radioButtonTypeSelectionSubject.asObservable();
+
+  private radioButtonDisplayTypeSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitialDisplayType())
+  private radioButtonDisplayType$: Observable<SimpleModel[]> = this.radioButtonDisplayTypeSubject.asObservable();
 
   private editSelectionSubject: BehaviorSubject<SelectionModel> = new BehaviorSubject<SelectionModel>(this.getInitialSelection());
   private editSelection$: Observable<SelectionModel> = this.editSelectionSubject.asObservable();
@@ -74,6 +95,10 @@ export class EditionSelectionService {
     return this.radioButtonTypeSelection$;
   }
 
+  public getRadioButtonDisplayType(): Observable<SimpleModel[]> {
+    return this.radioButtonDisplayType$;
+  }
+
   public modifySelectionName(nameSelection: string): void {
     this.editSelection.name = nameSelection;
     this.updateSelection();
@@ -86,6 +111,16 @@ export class EditionSelectionService {
     }));
     this.radioButtonTypeSelectionSubject.next(updatedButtons);
     this.editSelection.typeSelection = this.radioButtonTypeSelectionSubject.value.find(item => item.id === id)?.value || '';
+    this.updateSelection();
+  }
+
+  public modifyDisplayType(id: number): void {
+    const updatedButtons: SimpleModel[] = this.radioButtonDisplayTypeSubject.getValue().map(radio => ({
+      ...radio,
+      state: radio.id === id,
+    }));
+    this.radioButtonDisplayTypeSubject.next(updatedButtons);
+    this.editSelection.isOrderRandom = this.radioButtonDisplayTypeSubject.value.find(item => item.id === id)?.value || false;
     this.updateSelection();
   }
 
@@ -126,6 +161,7 @@ export class EditionSelectionService {
   public resetAllEditSelection(): void {
     this.editSelectionSubject.next(this.getInitialSelection());
     this.radioButtonTypeSelectionSubject.next(this.getInitiakButtonTypeSelection());
+    this.radioButtonDisplayTypeSubject.next(this.getInitialDisplayType());
   }
 
   public setEditSelectionById(id: number): void {
@@ -140,6 +176,11 @@ export class EditionSelectionService {
       this.modifyTypeSelection(1);
     } else if (selection.typeSelection === SelectionType.SPECIAL_POSTER) {
       this.modifyTypeSelection(2);
+    }
+    if (selection.isOrderRandom) {
+      this.modifyDisplayType(4);
+    } else {
+      this.modifyDisplayType(3);
     }
   }
 
@@ -193,6 +234,7 @@ export class EditionSelectionService {
     return {
       id: selection.id,
       selectionType: selection.typeSelection,
+      isOrderRandom: selection.isOrderRandom ?? false,
       name: selection.name,
       mediaList: medias
     }

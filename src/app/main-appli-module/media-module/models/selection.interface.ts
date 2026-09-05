@@ -6,6 +6,7 @@ export interface SelectionModel {
     id: number,
     typeSelection: SelectionType,
     name: string,
+    isOrderRandom?: boolean,
     mediaList: MediaModel[],
     createFrom: MediaTypeModel
 }

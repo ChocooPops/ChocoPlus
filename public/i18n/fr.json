@@ -278,6 +278,9 @@
         "TMDB_ID": "TMDB ID",
         "PLACEHOLDER_TMDB": "ex: 8596",
         "FILE_CHEMIN": "Chemin du fichier",
+        "BY_ORDER": "Dans l'ordre",
+        "BY_RANDOM": "Aléatoire",
+        "DISPLAY_TYPE": "Affichage",
         "UNAUTHORIZED": {
             "ADD": "Vous n'êtes pas autorisé à ajouter des données.",
             "MODIFY": "Vous n'êtes pas autorisé à modifier des données.",
