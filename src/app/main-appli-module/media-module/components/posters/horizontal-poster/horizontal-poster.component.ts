@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { PosterAbstraction } from '../poster-abstraction.directive';
 import { NgClass } from '@angular/common';
 import { StartButtonComponent } from '../../button/start-button/start-button.component';
@@ -8,6 +8,7 @@ import { SelectionType } from '../../../models/selection-type.enum';
 import { TitleCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NewsAlertComponent } from '../news-alert/news-alert.component';
+import { MediaLogoDisplayService } from '../../../../common-module/services/media-logo-display/media-logo-display.service';
 
 @Component({
   selector: 'app-horizontal-poster',
@@ -20,6 +21,9 @@ export class HorizontalPosterComponent extends PosterAbstraction {
 
   override typePoster: SelectionType = SelectionType.HORIZONTAL_POSTER;
   protected override transformScale: number = 1.7;
+
+  private readonly mediaLogoDisplayService = inject(MediaLogoDisplayService);
+  showLogo: boolean = this.mediaLogoDisplayService.getShowLogo();
 
   logoLoaded: boolean = false;
 

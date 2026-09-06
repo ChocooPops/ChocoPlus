@@ -13,7 +13,7 @@
         <div class="set-position">
             <div class="container-movie-information">
                 <div class="container-info-absolute">
-                    @if(srcLogo) {
+                    @if(showLogo && srcLogo) {
                     <div class="container-logo"
                         [ngClass]="{'size-logo-during-streaming' : isVideoLoaded, 'size-logo-not-during-streaming' : !isVideoLoaded, 'enable-logo-transition' : activateTransition, 'disable-logo-transition' : !activateTransition}">
                         <img [src]="srcLogo" loading="lazy" (error)="onErrorImageLogo()">

@@ -1,6 +1,6 @@
 <div class="containerMovieBackground">
     <div class="containerLogo" [ngClass]="{'container-animation-gradient-normal' : !displaying}">
-        @if(srcLogo != undefined) {
+        @if(showLogo && srcLogo != undefined) {
         <img [src]="srcLogo" loading="lazy" (error)="onErrorImageLogo()" (load)="onLogoLoad()"
             [style.opacity]="displaying ? '1' : '0'">
         } @else {

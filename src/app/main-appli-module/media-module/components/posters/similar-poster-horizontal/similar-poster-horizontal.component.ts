@@ -11,6 +11,7 @@ import { MovieModel } from '../../../models/movie-model';
 import { SeriesModel } from '../../../models/series/series.interface';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NewsAlertComponent } from '../news-alert/news-alert.component';
+import { MediaLogoDisplayService } from '../../../../common-module/services/media-logo-display/media-logo-display.service';
 
 @Component({
   selector: 'app-similar-poster-horizontal',
@@ -29,13 +30,16 @@ export class SimilarPosterHorizontalComponent {
   date !: Date;
   srcPoster: string | undefined = undefined;
   srcLogo: string | undefined = undefined;
+  showLogo: boolean = true;
   MediaType = MediaTypeModel;
   nbSeason !: number;
 
   constructor(private compressedPosterService: CompressedPosterService,
-    private verifTimerShowService: VerifTimerShowService) { }
+    private verifTimerShowService: VerifTimerShowService,
+    private readonly mediaLogoDisplayService: MediaLogoDisplayService) { }
 
   ngOnInit(): void {
+    this.showLogo = this.mediaLogoDisplayService.getShowLogo();
     this.srcPoster = this.compressedPosterService.getPosterMedia(SelectionType.HORIZONTAL_POSTER, this.media);
     this.srcLogo = this.compressedPosterService.getLogoForMedia(this.media);
     this.description = this.media.description || '';

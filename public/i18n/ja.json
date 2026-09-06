@@ -211,7 +211,10 @@
             "SELECT_LICENSE": "ライセンスを選択",
             "AUTO_PLAY_VIDEO": "紹介動画の自動再生",
             "ACTIVATED": "有効",
-            "DEACTIVATED": "無効"
+            "DEACTIVATED": "無効",
+            "MEDIA_LOGO_DISPLAY": "ポスターにロゴまたはタイトルを表示",
+            "SHOW_LOGO": "ロゴ",
+            "SHOW_TITLE": "タイトル"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "データベースの表示は、性能の低いコンピューターで大量のリソースを消費する可能性があります",

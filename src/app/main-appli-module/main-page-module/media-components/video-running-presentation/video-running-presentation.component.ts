@@ -7,6 +7,7 @@ import { VolumeButtonComponent } from '../../../media-module/components/button/v
 import { RestreamButtonComponent } from '../../../media-module/components/button/restream-button/restream-button.component';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import { AutoPlayVideoService } from '../../../common-module/services/auto-play-video/auto-play-video.service';
+import { MediaLogoDisplayService } from '../../../common-module/services/media-logo-display/media-logo-display.service';
 import { CutoffButtonComponent } from '../../../media-module/components/button/cutoff-button/cutoff-button.component';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
 import { StreamService } from '../../../video-playing-module/services/stream/stream.service';
@@ -33,6 +34,7 @@ export class VideoRunningPresentationComponent {
   activateTransition: boolean = true;
 
   srcLogo !: string | undefined;
+  showLogo: boolean = true;
   srcBackground !: string | undefined;
   description: string | undefined = undefined;
   countMax: number = 300;
@@ -43,10 +45,12 @@ export class VideoRunningPresentationComponent {
 
   constructor(private readonly compressedPosterService: CompressedPosterService,
     private readonly streamService: StreamService,
-    private readonly autoPlayVideoService: AutoPlayVideoService
+    private readonly autoPlayVideoService: AutoPlayVideoService,
+    private readonly mediaLogoDisplayService: MediaLogoDisplayService
   ) { }
 
   ngOnInit(): void {
+    this.showLogo = this.mediaLogoDisplayService.getShowLogo();
     this.srcLogo = this.compressedPosterService.getLogoForMediaPresentationTopHead(this.newsMedia.media);
     this.srcBackground = this.compressedPosterService.getBackgroundForNewsVideoRunning(this.newsMedia);
     this.seasons = (this.newsMedia.media as SeriesModel).seasons;

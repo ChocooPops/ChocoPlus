@@ -7,7 +7,7 @@
         <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()" class="img-poster">
         }
         <div class="container-logo">
-            @if(srcLogo != undefined) {
+            @if(showLogo && srcLogo != undefined) {
             <img [src]="srcLogo" (error)="onErrorLogo()" class="img-logo">
             }@else {
             <p> {{ media.title }}</p>

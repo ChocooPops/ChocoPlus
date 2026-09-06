@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { MediaModel } from '../../../../models/media.interface';
 import { CompressedPosterService } from '../../../../../common-module/services/compressed-poster/compressed-poster.service';
+import { MediaLogoDisplayService } from '../../../../../common-module/services/media-logo-display/media-logo-display.service';
 import { SelectionType } from '../../../../models/selection-type.enum';
 import { StartButtonComponent } from '../../../button/start-button/start-button.component';
 import { ModifyButtonComponent } from '../../../button/modify-button/modify-button.component';
@@ -36,6 +37,7 @@ export class MediaHorizontalBackgroundComponent {
 
   srcPoster!: string | undefined;
   srcLogo!: string | undefined;
+  showLogo: boolean = true;
   srcBackground!: string | undefined;
   title!: string;
 
@@ -54,7 +56,8 @@ export class MediaHorizontalBackgroundComponent {
 
   constructor(private readonly compressedPosterService: CompressedPosterService,
     private readonly verifTimerShowService: VerifTimerShowService,
-    private readonly historicWatchProgressService: HistoricWatchProgressService
+    private readonly historicWatchProgressService: HistoricWatchProgressService,
+    private readonly mediaLogoDisplayService: MediaLogoDisplayService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -66,13 +69,14 @@ export class MediaHorizontalBackgroundComponent {
   private init(): void {
     this.resetLoading();
 
+    this.showLogo = this.mediaLogoDisplayService.getShowLogo();
     this.srcPoster = this.compressedPosterService.getPosterMedia(SelectionType.SPECIAL_POSTER, this.media, ScalePoster.SCALE_ORIGINAL);
     this.srcLogo = this.compressedPosterService.getLogoForMediaPresentation(this.media);
     this.srcBackground = this.compressedPosterService.getBackgroundForMediaPresentation(this.media);
     this.title = this.media.title;
 
     if (!this.srcPoster) this.onPosterLoad();
-    if (!this.srcLogo) this.onLogoLoad();
+    if (!this.srcLogo || !this.showLogo) this.onLogoLoad();
     if (!this.srcBackground) this.onBackgroundLoad();
 
     if (this.media.mediaType === MediaTypeModel.MOVIE) {

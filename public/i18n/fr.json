@@ -211,7 +211,10 @@
             "SELECT_LICENSE": "Sélectionner une licence",
             "AUTO_PLAY_VIDEO": "Lecture automatique de la vidéo de présentation",
             "ACTIVATED": "Activée",
-            "DEACTIVATED": "Désactivée"
+            "DEACTIVATED": "Désactivée",
+            "MEDIA_LOGO_DISPLAY": "Affichage du logo ou du titre sur les posters",
+            "SHOW_LOGO": "Logo",
+            "SHOW_TITLE": "Titre"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "La visualisation de la base de donnée peut consommer énormément de ressource pour les ordinateurs les moins performant",

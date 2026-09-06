@@ -12,11 +12,11 @@
             [style.opacity]="imageLoaded ? '1' : '0'">
         }
         <div class="container-logo">
-            @if(srcLogo != undefined) {
+            @if(showLogo && srcLogo != undefined) {
             <img [src]="srcLogo" loading="lazy" decoding="async" (error)="onErrorLogo()" (load)="onLogoLoad()"
                 [style.opacity]="logoLoaded && imageLoaded ? '1' : '0'">
             }
-            @if(srcLogo == undefined || !logoLoaded || !imageLoaded) {
+            @if(!showLogo || srcLogo == undefined || !logoLoaded || !imageLoaded) {
             <p> {{ media.title }}</p>
             }
         </div>

@@ -7,7 +7,7 @@
     </div>
 
     <div class="container-logo">
-        @if(srcLogo) {
+        @if(showLogo && srcLogo) {
         <img [src]="srcLogo" (error)="onErrorLogo()">
         }@else {
         <p class="title"> {{ news.media.title }} </p>

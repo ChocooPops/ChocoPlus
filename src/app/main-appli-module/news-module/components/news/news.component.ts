@@ -6,6 +6,7 @@ import { NgClass } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PaginationNewsService } from '../../services/pagination-news/pagination-news.service';
 import { DimensionModel } from '../../../../common-module/models/dimension.interface';
+import { MediaLogoDisplayService } from '../../../common-module/services/media-logo-display/media-logo-display.service';
 
 @Component({
   selector: 'app-news',
@@ -22,15 +23,18 @@ export class NewsComponent {
 
   constructor(private compressedPosterService: CompressedPosterService,
     private mediaSelectedService: MediaSelectedService,
-    private paginationNewsService: PaginationNewsService
+    private paginationNewsService: PaginationNewsService,
+    private readonly mediaLogoDisplayService: MediaLogoDisplayService
   ) { }
 
   srcLogo: string | undefined = undefined;
+  showLogo: boolean = true;
   orientationClass!: string;
   subscription: Subscription = new Subscription();
   dimension!: DimensionModel;
 
   ngOnInit(): void {
+    this.showLogo = this.mediaLogoDisplayService.getShowLogo();
     this.srcLogo = this.compressedPosterService.getLogoForMediaPresentationTopHead(this.news.media);
     this.srcBackground = this.compressedPosterService.getBackgroundForNewsToHome(this.news);
     this.subscription.add(

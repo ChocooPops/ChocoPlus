@@ -211,7 +211,10 @@
             "SELECT_LICENSE": "Select a license",
             "AUTO_PLAY_VIDEO": "Autoplay presentation video",
             "ACTIVATED": "Enabled",
-            "DEACTIVATED": "Disabled"
+            "DEACTIVATED": "Disabled",
+            "MEDIA_LOGO_DISPLAY": "Show logo or title on posters",
+            "SHOW_LOGO": "Logo",
+            "SHOW_TITLE": "Title"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "Viewing the database can consume a lot of resources on less powerful computers",
