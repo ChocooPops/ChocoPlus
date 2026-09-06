@@ -46,7 +46,7 @@ export class EditionLicenseService {
   }
 
   public setEditLicenseById(id: number): void {
-    this.licenseService.fetchLicenseById(id).pipe(take(1)).subscribe((license: LicenseModel) => {
+    this.licenseService.fetchLicenseByIdSetOrder(id).pipe(take(1)).subscribe((license: LicenseModel) => {
       this.setLicenseWanted(license);
     });
   }
@@ -345,7 +345,7 @@ export class EditionLicenseService {
     return this.http.post<any>(`${this.apiUrlLicense}/${this.urlAddLicense}`, newLicense).pipe(
       map((data: MessageReturnedModel) => {
         if (data.state && data.other) {
-          this.licenseService.fetchLicenseById(data.other.id).pipe(take(1)).subscribe((license: LicenseModel) => {
+          this.licenseService.fetchLicenseByIdSetOrder(data.other.id).pipe(take(1)).subscribe((license: LicenseModel) => {
             license.visited = true;
             this.setLicenseWanted(license);
             if (newLicense.position) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LicenseModel } from '../../model/license.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
 import { Observable, catchError, map, of } from 'rxjs';
 import { MediaModel } from '../../../media-module/models/media.interface';
@@ -23,10 +23,10 @@ export class LicenseService {
   private urlResearchLicense: string = 'research-page';
   private urlWantedLicense: string = 'research';
 
-  constructor(private http: HttpClient,
-    private movieService: MovieService,
-    private seriesService: SeriesService,
-    private selectionService: SelectionService
+  constructor(private readonly http: HttpClient,
+    private readonly movieService: MovieService,
+    private readonly seriesService: SeriesService,
+    private readonly selectionService: SelectionService
   ) { }
 
   public fetchAllLicenseHome(): Observable<LicenseModel[]> {
@@ -148,6 +148,24 @@ export class LicenseService {
         return this.fetchLicenseByIdPrivate(id, -1, false);
       }
     }
+  }
+
+  public fetchLicenseByIdSetOrder(id: number): Observable<LicenseModel> {
+    const params = new HttpParams().set('setOrder', 1)
+    return this.http.get<any>(`${this.apiUrlLicense}/${id}`, { params } ).pipe(
+      map((data) => {
+        return this.createNewLicense(data);;
+      }),
+      catchError((error) => {
+        const license: LicenseModel = {
+          id: 0,
+          name: 'ChocoPlus',
+          selectionList: [],
+          visited: false
+        }
+        return of(license);
+      })
+    )
   }
 
   private fetchLicenseByIdPrivate(id: number, index: number, state: boolean): Observable<LicenseModel> {

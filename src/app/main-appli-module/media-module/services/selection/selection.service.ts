@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SelectionModel } from '../../models/selection.interface';
 import { MediaModel } from '../../models/media.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, map, catchError } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { SelectionType } from '../../models/selection-type.enum';
@@ -139,7 +139,8 @@ export class SelectionService {
   }
 
   fetchSelectionById(id: number): Observable<SelectionModel> {
-    return this.http.get<any>(`${this.apiUrlSelection}/${id}`).pipe(
+    const params = new HttpParams().set('setOrder', 1)
+    return this.http.get<any>(`${this.apiUrlSelection}/${id}`, { params }).pipe(
       map((data: any) => {
         const mediaSelection: SelectionModel = this.createNewSelectionByFetch(data);
         return mediaSelection;
