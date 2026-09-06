@@ -10,6 +10,10 @@
 
     @if(selections) {
     <div class="containerFieldToFill">
+        <p> {{ 'EDITION.DISPLAY_TYPE' | translate }} : </p>
+        <app-input-radio-button [radioButton]="radioButtonDisplayType"
+            (changeEmit)="onModifyOrderType($event)"></app-input-radio-button>
+            
         <app-selection-overview [mediaSelectionList]="selections"
             (moveSelectionBottomEmit)="moveSelectionOnTheBottomOfPage($event)"
             (moveSelectionTopEmit)="moveSelectionOnTheTopOfPage($event)"

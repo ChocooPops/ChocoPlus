@@ -5,12 +5,14 @@ import { Subscription, take } from "rxjs";
 import { EditionSelectionPageService } from "../../services/edition-selection-page/edition-selection-page.service";
 import { SelectionService } from "../../../media-module/services/selection/selection.service";
 import { EditionParametersService } from "../../services/edition-parameters/edition-parameters.service";
+import { SimpleModel } from "../../../../common-module/models/simple-model";
 
 @Directive({})
 export abstract class SettingSelectionPageAbstract extends UnauthorizedError {
 
     protected selections: SelectionModel[] | undefined = undefined;
     protected subscription: Subscription = new Subscription();
+    radioButtonDisplayType: SimpleModel[] = [];
 
     constructor(protected editionSelectionPageService: EditionSelectionPageService,
         protected selectionService: SelectionService,
@@ -25,6 +27,11 @@ export abstract class SettingSelectionPageAbstract extends UnauthorizedError {
                 this.selections = data;
             })
         );
+        this.subscription.add(
+            this.editionSelectionPageService.getRadioButtonDisplayType().subscribe((data: SimpleModel[]) => {
+                this.radioButtonDisplayType = data
+            })
+        )
         this.loadSelectionByPage();
     }
 
@@ -51,6 +58,10 @@ export abstract class SettingSelectionPageAbstract extends UnauthorizedError {
 
     protected moveSelectionOnTheBottomOfPage(id: number): void {
         this.editionSelectionPageService.moveSelectionOnTheBottomOfPage(id);
+    }
+
+    protected onModifyOrderType(id: number): void {
+        this.editionSelectionPageService.modifyOrderType(id);
     }
 
 }

@@ -12,6 +12,10 @@
 
     <div class="containerFieldToFill">
         @if(newsList) {
+        <p> {{ 'EDITION.DISPLAY_TYPE' | translate }} : </p>
+        <app-input-radio-button [radioButton]="radioButtonDisplayType"
+            (changeEmit)="onModifyOrderType($event)"></app-input-radio-button>
+
         <app-news-overview [newsList]="newsList" (emitDeleteNews)="onDeleteMediaIntoNews($event)"
             (emitOrientationNews)="onModifyOrientationByNewsId($event)" (emitTop)="onMoveNewsToTop($event)"
             (emitBottom)="onMoveNewsTopBottom($event)"

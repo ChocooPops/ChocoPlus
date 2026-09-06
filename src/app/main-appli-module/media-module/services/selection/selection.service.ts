@@ -84,6 +84,22 @@ export class SelectionService {
     }
   }
 
+  public fetchSelectionOnHomePageByOrder(): Observable<SelectionModel[]> {
+    const params = new HttpParams().set('setOrder', 1)
+    return this.http.get<any[]>(`${this.apiUrlSelection}/${this.urlRandomSelectionHome}`, { params }).pipe(
+      map((data) => {
+        const selections: SelectionModel[] = [];
+        data.forEach((mediaSelection) => {
+          selections.push(this.createNewSelectionByFetch(mediaSelection));
+        });
+        return selections;
+      }),
+      catchError((error) => {
+        return of([])
+      })
+    );
+  }
+  
   fetchRandomSelectionOnMoviePage(): Observable<SelectionModel[]> {
     if (this.selectionOnMoviePage.length <= 0) {
       return this.http.get<any[]>(`${this.apiUrlSelection}/${this.urlRandomMediaSelectionByType}/${MediaTypeModel.MOVIE}`).pipe(

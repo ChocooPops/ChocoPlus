@@ -16,11 +16,12 @@ import { SimpleModel } from '../../../../common-module/models/simple-model';
 import { MenuType } from '../../../menu-module/model/menu-type.enum';
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputRadioButtonComponent } from '../input-radio-button/input-radio-button.component';
 
 @Component({
   selector: 'app-setting-modify-news',
   standalone: true,
-  imports: [PopupComponent, TranslatePipe, InputResearchSeriesComponent, InputResearchMovieComponent, ButtonRemoveComponent, ButtonSaveComponent, NewsOverviewComponent],
+  imports: [PopupComponent, InputRadioButtonComponent, TranslatePipe, InputResearchSeriesComponent, InputResearchMovieComponent, ButtonRemoveComponent, ButtonSaveComponent, NewsOverviewComponent],
   templateUrl: './setting-modify-news.component.html',
   styleUrls: ['./setting-modify-news.component.css', '../../../../common-module/styles/loader.css', '../../styles/edition.css']
 })
@@ -29,9 +30,10 @@ export class SettingModifyNewsComponent extends UnauthorizedError {
   protected override menuType: MenuType = MenuType.MODIFY_NEWS_HOME;
 
   newsList: NewsModel[] | undefined = undefined;
+  radioButtonDisplayType: SimpleModel[] = [];
   private subscription: Subscription = new Subscription();
   private messageDeleting = "EDITION.NEWS.MESSAGE_MODIFY";
-
+  
   constructor(private readonly newsService: NewsService,
     editionParametersService: EditionParametersService
   ) {
@@ -48,10 +50,16 @@ export class SettingModifyNewsComponent extends UnauthorizedError {
         this.displayLoader = false;
       })
     );
+    this.subscription.add(
+      this.newsService.getRadioButtonDisplayType().subscribe((data: SimpleModel[]) => {
+        this.radioButtonDisplayType = data
+      })
+    )
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.newsService.resetEditNews();
   }
 
   onAddMediaIntoNews(media: MediaModel): void {
@@ -76,6 +84,10 @@ export class SettingModifyNewsComponent extends UnauthorizedError {
 
   onMoveNewsTopBottom(id: number): void {
     this.newsService.moveNewsToBottom(id);
+  }
+
+  onModifyOrderType(id: number): void {
+    this.newsService.modifyOrderType(id);
   }
 
   resetEditNews(): void {

@@ -16,7 +16,7 @@ import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 })
 export class EditionSelectionService {
 
-  public getInitiakButtonTypeSelection(): SimpleModel[] {
+  public getInitialButtonTypeSelection(): SimpleModel[] {
     return [
       {
         id: 1,
@@ -61,8 +61,8 @@ export class EditionSelectionService {
     }
   }
 
-  constructor(private http: HttpClient,
-    private selectionService: SelectionService
+  constructor(private readonly http: HttpClient,
+    private readonly selectionService: SelectionService
   ) { }
 
   private appiUrlSelection: string = `${environment.apiUrlSelection}`;
@@ -70,7 +70,7 @@ export class EditionSelectionService {
   private urlModifySelection: string = 'modify';
   private urlDeleteSelection: string = 'delete';
 
-  private radioButtonTypeSelectionSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitiakButtonTypeSelection())
+  private radioButtonTypeSelectionSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitialButtonTypeSelection())
   private radioButtonTypeSelection$: Observable<SimpleModel[]> = this.radioButtonTypeSelectionSubject.asObservable();
 
   private radioButtonDisplayTypeSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitialDisplayType())
@@ -160,7 +160,7 @@ export class EditionSelectionService {
 
   public resetAllEditSelection(): void {
     this.editSelectionSubject.next(this.getInitialSelection());
-    this.radioButtonTypeSelectionSubject.next(this.getInitiakButtonTypeSelection());
+    this.radioButtonTypeSelectionSubject.next(this.getInitialButtonTypeSelection());
     this.radioButtonDisplayTypeSubject.next(this.getInitialDisplayType());
   }
 

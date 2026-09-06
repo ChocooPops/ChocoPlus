@@ -4,5 +4,6 @@ export interface NewsModel {
     id: number,
     srcBackground: string | undefined,
     orientation: number,
+    isOrderRandom: boolean,
     media: MediaModel
 }

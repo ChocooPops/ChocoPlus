@@ -13,11 +13,12 @@ import { SelectionService } from '../../../media-module/services/selection/selec
 import { EditionParametersService } from '../../services/edition-parameters/edition-parameters.service';
 import { EditionSelectionPageService } from '../../services/edition-selection-page/edition-selection-page.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputRadioButtonComponent } from '../input-radio-button/input-radio-button.component';
 
 @Component({
   selector: 'app-modify-home-page',
   standalone: true,
-  imports: [TranslatePipe, PopupComponent, InputResearchSelectionComponent, SelectionOverviewComponent, ButtonRemoveComponent, ButtonSaveComponent],
+  imports: [TranslatePipe, PopupComponent, InputRadioButtonComponent, InputResearchSelectionComponent, SelectionOverviewComponent, ButtonRemoveComponent, ButtonSaveComponent],
   templateUrl: './setting-modify-home-page-selections.component.html',
   styleUrls: ['./setting-modify-home-page-selections.component.css', '../../styles/edition.css', '../../../../common-module/styles/loader.css']
 })

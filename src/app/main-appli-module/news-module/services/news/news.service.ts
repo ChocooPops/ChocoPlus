@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { NewsModel } from '../../models/news.interface';
 import { BehaviorSubject, catchError, map, Observable, of, take } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
@@ -9,11 +9,29 @@ import { MessageReturnedModel } from '../../../../common-module/models/message-r
 import { NewsWritedModel } from '../../models/news-writed.interface';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SeriesService } from '../../../media-module/services/series/series.service';
+import { SimpleModel } from '../../../../common-module/models/simple-model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewsService {
+
+  public getInitialDisplayType(): SimpleModel[] {
+    return [
+      {
+        id: 1,
+        name: 'EDITION.BY_ORDER',
+        value: false,
+        state: true
+      },
+      {
+        id: 2,
+        name: 'EDITION.BY_RANDOM',
+        value: true,
+        state: false
+      }
+    ]
+  }
 
   private apiUrlNews: string = `${environment.apiNews}`;
   private news: NewsModel[] = [];
@@ -21,9 +39,12 @@ export class NewsService {
   private newsEditSubject: BehaviorSubject<NewsModel[]> = new BehaviorSubject<NewsModel[]>([]);
   private newsEdit$: Observable<NewsModel[]> = this.newsEditSubject.asObservable();
 
-  constructor(private http: HttpClient,
-    private movieService: MovieService,
-    private seriesService: SeriesService
+  private radioButtonDisplayTypeSubject: BehaviorSubject<SimpleModel[]> = new BehaviorSubject<SimpleModel[]>(this.getInitialDisplayType())
+  private radioButtonDisplayType$: Observable<SimpleModel[]> = this.radioButtonDisplayTypeSubject.asObservable();
+
+  constructor(private readonly http: HttpClient,
+    private readonly movieService: MovieService,
+    private readonly seriesService: SeriesService
   ) { }
 
   private getId(): number {
@@ -31,29 +52,57 @@ export class NewsService {
     return (edit.length > 0 ? Math.max(...edit.map(item => item.id)) : 0) + 1;
   }
 
+  public getRadioButtonDisplayType(): Observable<SimpleModel[]> {
+    return this.radioButtonDisplayType$;
+  }
+
+  private createTabAllNews(data: any[]): NewsModel[] {
+    const news: NewsModel[] = [];
+    data.forEach((item: NewsModel) => {
+      if (item.media.mediaType === MediaTypeModel.MOVIE) {
+        news.push({
+          id: item.id,
+          srcBackground: item.srcBackground || undefined,
+          orientation: item.orientation || 3,
+          isOrderRandom: item.isOrderRandom ? true : false,
+          media: this.movieService.createNewMovie(item.media)
+        });
+      } else if (item.media.mediaType === MediaTypeModel.SERIES) {
+        news.push({
+          id: item.id,
+          srcBackground: item.srcBackground || undefined,
+          orientation: item.orientation || 3,
+          isOrderRandom: item.isOrderRandom ? true : false,
+          media: this.seriesService.createNewSeries(item.media)
+        });
+      }
+    });
+    return news;
+  }
+
+  public fetchAllNewsByOrder(): Observable<NewsModel[]> {
+    const params = new HttpParams().set('setOrder', 1)
+    return this.http.get<any>(`${this.apiUrlNews}`, { params }).pipe(
+        map((data: NewsModel[]) => {
+          const news: NewsModel[] = this.createTabAllNews(data);
+          if (news && news.length > 0 && news[0].isOrderRandom) {
+            this.modifyOrderType(2);
+          } else {
+            this.modifyOrderType(1);
+          }
+          return news;
+        }),
+        catchError(() => {
+          return of([]);
+        })
+      )
+  }
+
   public fetchGetAllNews(): Observable<NewsModel[]> {
     if (this.news.length <= 0) {
       return this.http.get<any>(`${this.apiUrlNews}`).pipe(
         map((data: NewsModel[]) => {
-          const news: NewsModel[] = [];
-          data.forEach((item: NewsModel) => {
-            if (item.media.mediaType === MediaTypeModel.MOVIE) {
-              news.push({
-                id: item.id,
-                srcBackground: item.srcBackground || undefined,
-                orientation: item.orientation || 3,
-                media: this.movieService.createNewMovie(item.media)
-              });
-            } else if (item.media.mediaType === MediaTypeModel.SERIES) {
-              news.push({
-                id: item.id,
-                srcBackground: item.srcBackground || undefined,
-                orientation: item.orientation || 3,
-                media: this.seriesService.createNewSeries(item.media)
-              });
-            }
-          });
-          return this.news = news;
+          return this.news = this.createTabAllNews(data);
         }),
         catchError(() => {
           return of([]);
@@ -65,6 +114,7 @@ export class NewsService {
   }
 
   public fetchModifyNews(): Observable<MessageReturnedModel> {
+    const isOrderRandom: boolean = this.radioButtonDisplayTypeSubject.value.find((item) => item.state)?.value ?? false;
     const news: NewsModel[] = this.newsEditSubject.value;
     const updatedNews: NewsWritedModel[] = [];
     news.forEach((item: NewsModel) => {
@@ -75,7 +125,7 @@ export class NewsService {
         mediaId: item.media.id
       })
     });
-    return this.http.put<any>(`${this.apiUrlNews}`, updatedNews).pipe(
+    return this.http.put<any>(`${this.apiUrlNews}`, { updatedNews, isOrderRandom }).pipe(
       map((data: MessageReturnedModel) => {
         if (data.state) {
           this.news = [];
@@ -91,7 +141,7 @@ export class NewsService {
   }
 
   public setNewsEdit(): void {
-    this.fetchGetAllNews().pipe(take(1)).subscribe((data: NewsModel[]) => {
+    this.fetchAllNewsByOrder().pipe(take(1)).subscribe((data: NewsModel[]) => {
       this.newsEditSubject.next(data);
     });
   }
@@ -105,6 +155,7 @@ export class NewsService {
         id: this.getId(),
         srcBackground: media.srcBackgroundImage,
         orientation: 3,
+        isOrderRandom: false,
         media: media
       });
       this.newsEditSubject.next([...news]);
@@ -169,6 +220,19 @@ export class NewsService {
 
       this.newsEditSubject.next(updated);
     }
+  }
+
+  public modifyOrderType(id: number): void {
+    const updatedButtons: SimpleModel[] = this.radioButtonDisplayTypeSubject.getValue().map(radio => ({
+      ...radio,
+      state: radio.id === id,
+    }));
+    this.radioButtonDisplayTypeSubject.next(updatedButtons);
+  }
+
+  public resetEditNews(): void {
+    this.newsEditSubject.next([]);
+    this.radioButtonDisplayTypeSubject.next(this.getInitialDisplayType());
   }
 
 }
