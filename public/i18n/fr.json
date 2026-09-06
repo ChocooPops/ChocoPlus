@@ -208,7 +208,10 @@
             "LAST_PAGE_VISITED": "Dernière page visitée",
             "LAUNCH_PAGE": "Page de démarrage",
             "LAUNCH_LICENSE": "Licence de démarrage",
-            "SELECT_LICENSE": "Sélectionner une licence"
+            "SELECT_LICENSE": "Sélectionner une licence",
+            "AUTO_PLAY_VIDEO": "Lecture automatique de la vidéo de présentation",
+            "ACTIVATED": "Activée",
+            "DEACTIVATED": "Désactivée"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "La visualisation de la base de donnée peut consommer énormément de ressource pour les ordinateurs les moins performant",

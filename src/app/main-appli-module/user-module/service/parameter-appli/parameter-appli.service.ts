@@ -11,6 +11,7 @@ import { FormatMediaPageService } from '../../../media-module/services/format-me
 import { FormatMediaPageModel } from '../../../media-module/models/format-media-page-enum';
 import { LicenseService } from '../../../license-module/service/license/licence.service';
 import { LicenseModel } from '../../../license-module/model/license.interface';
+import { AutoPlayVideoService } from '../../../common-module/services/auto-play-video/auto-play-video.service';
 import { take } from 'rxjs';
 
 @Injectable({
@@ -22,7 +23,8 @@ export class ParameterAppliService {
     private readonly compressedPosterService: CompressedPosterService,
     private readonly loadOpeningPageService: LoadOpeningPageService,
     private readonly formatMediaPageService: FormatMediaPageService,
-    private readonly licenseService: LicenseService
+    private readonly licenseService: LicenseService,
+    private readonly autoPlayVideoService: AutoPlayVideoService
   ) { }
 
   private id: number = 0;
@@ -236,6 +238,25 @@ export class ParameterAppliService {
         },
       ],
       call: null
+    },
+    {
+      id: this.getId(),
+      name: "USER.APP_SETTINGS.AUTO_PLAY_VIDEO",
+      radioButton: [
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.ACTIVATED",
+          value: true,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.DEACTIVATED",
+          value: false,
+          state: false
+        }
+      ],
+      call: null
     }
   ]
 
@@ -358,6 +379,14 @@ export class ParameterAppliService {
       } else {
         this.radioButtonOtherOption[0].radioButton[i].state = false;
       }
+    }
+
+    //INIT AUTO PLAY VIDEO BUTTON;
+    const callBackAutoPlayVideo: any = (state: boolean) => this.autoPlayVideoService.setAutoPlayVideo(state);
+    this.radioButtonOtherOption[1].call = callBackAutoPlayVideo;
+    const currentAutoPlayVideo: boolean = this.autoPlayVideoService.getAutoPlayVideo();
+    for (let i: number = 0; i < this.radioButtonOtherOption[1].radioButton.length; i++) {
+      this.radioButtonOtherOption[1].radioButton[i].state = this.radioButtonOtherOption[1].radioButton[i].value === currentAutoPlayVideo;
     }
 
     //INIT LICENSE LIST FOR SELECT;

@@ -208,7 +208,10 @@
             "LAST_PAGE_VISITED": "Last page visited",
             "LAUNCH_PAGE": "Launch page",
             "LAUNCH_LICENSE": "Launch license",
-            "SELECT_LICENSE": "Select a license"
+            "SELECT_LICENSE": "Select a license",
+            "AUTO_PLAY_VIDEO": "Autoplay presentation video",
+            "ACTIVATED": "Enabled",
+            "DEACTIVATED": "Disabled"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "Viewing the database can consume a lot of resources on less powerful computers",

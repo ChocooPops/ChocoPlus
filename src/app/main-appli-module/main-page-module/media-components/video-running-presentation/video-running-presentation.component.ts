@@ -6,6 +6,7 @@ import { MylistButtonComponent } from '../../../media-module/components/button/m
 import { VolumeButtonComponent } from '../../../media-module/components/button/volume-button/volume-button.component';
 import { RestreamButtonComponent } from '../../../media-module/components/button/restream-button/restream-button.component';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
+import { AutoPlayVideoService } from '../../../common-module/services/auto-play-video/auto-play-video.service';
 import { CutoffButtonComponent } from '../../../media-module/components/button/cutoff-button/cutoff-button.component';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
 import { StreamService } from '../../../video-playing-module/services/stream/stream.service';
@@ -41,7 +42,8 @@ export class VideoRunningPresentationComponent {
   private isVisible = false;
 
   constructor(private readonly compressedPosterService: CompressedPosterService,
-    private readonly streamService: StreamService
+    private readonly streamService: StreamService,
+    private readonly autoPlayVideoService: AutoPlayVideoService
   ) { }
 
   ngOnInit(): void {
@@ -55,7 +57,11 @@ export class VideoRunningPresentationComponent {
   }
 
   ngAfterViewInit(): void {
-    this.startStreamingVideo();
+    if (this.autoPlayVideoService.getAutoPlayVideo()) {
+      this.startStreamingVideo();
+    } else {
+      this.activateReStream = true;
+    }
     if (this.newsMedia.mediaLibraryId) {
       this.observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
