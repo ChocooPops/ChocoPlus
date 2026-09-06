@@ -346,7 +346,7 @@ export class EditionLicenseService {
       map((data: MessageReturnedModel) => {
         if (data.state && data.other) {
           this.licenseService.fetchLicenseByIdSetOrder(data.other.id).pipe(take(1)).subscribe((license: LicenseModel) => {
-            license.visited = true;
+            license.visited = false;
             this.setLicenseWanted(license);
             if (newLicense.position) {
               this.licenseService.addLicenseHome(license);

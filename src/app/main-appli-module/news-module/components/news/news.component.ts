@@ -21,9 +21,9 @@ export class NewsComponent {
   @Input() orientation!: number;
   @Input() srcBackground!: string | undefined;
 
-  constructor(private compressedPosterService: CompressedPosterService,
-    private mediaSelectedService: MediaSelectedService,
-    private paginationNewsService: PaginationNewsService,
+  constructor(private readonly compressedPosterService: CompressedPosterService,
+    private readonly mediaSelectedService: MediaSelectedService,
+    private readonly paginationNewsService: PaginationNewsService,
     private readonly mediaLogoDisplayService: MediaLogoDisplayService
   ) { }
 
