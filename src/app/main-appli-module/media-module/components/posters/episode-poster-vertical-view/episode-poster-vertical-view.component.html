@@ -32,7 +32,10 @@
         </div>
 
         <div class="container-info">
-            <p class="title"> {{ episode.name }} </p>
+            <div class="container-title-row">
+                <p class="title"> {{ episode.name }} </p>
+                <app-download-button [mediaId]="episode.seriesId" [mediaType]="MediaType.EPISODE" [seasonId]="episode.seasonId" [episodeId]="episode.id"></app-download-button>
+            </div>
             @if(notRunning) {
             <p class="description"> {{ episode.description }} </p>
             <div class="container-other-info">

@@ -1,0 +1,82 @@
+.btn-ring {
+    position: relative;
+    overflow: hidden;
+    border-radius: 100px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    border-style: solid;
+}
+
+.btn-download-icon {
+    position: relative;
+    z-index: 2;
+}
+
+.wave-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #FFD301;
+    transition: height 0.3s linear;
+    overflow: visible;
+    z-index: 1;
+}
+
+.wave-fill .wave {
+    position: absolute;
+    top: -8px;
+    left: -50%;
+    width: 200%;
+    height: 16px;
+    animation: wave-move 1.8s linear infinite;
+}
+
+.wave-fill .wave path {
+    fill: #FFD301;
+}
+
+@keyframes wave-move {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.btn-ring-to-download {
+    border-color: #919191;
+    background-color: transparent;
+
+    img {
+        filter: brightness(0) saturate(100%)
+          invert(60%)
+          sepia(0%)
+          saturate(0%)
+          hue-rotate(0deg)
+          brightness(95%)
+          contrast(90%);
+    }
+}
+
+.btn-ring-to-download:hover {
+    border-color: white;
+
+    img {
+        filter: brightness(0) invert(1);
+    }
+}
+
+.btn-ring-to-delete {
+    border-color: #FFD301;
+    background-color: #FFD301;
+
+    img {
+        filter: brightness(0);
+    }
+}

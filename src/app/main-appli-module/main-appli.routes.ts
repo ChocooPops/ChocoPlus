@@ -28,6 +28,10 @@ export const mainAppliRoutes: Routes = [
         loadComponent: () => import('./main-page-module/my-list-components/my-list-page/my-list-page.component').then(m => m.MyListPageComponent)
     },
     {
+        path: 'downloads',
+        loadComponent: () => import('./main-page-module/download-components/downloaded-media-page/downloaded-media-page.component').then(m => m.DownloadedMediaPageComponent)
+    },
+    {
         path: 'license/:id',
         loadComponent: () => import('./main-page-module/license-components/license-page/license-page.component').then(m => m.LicensePageComponent)
     },

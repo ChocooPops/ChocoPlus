@@ -9,6 +9,7 @@ import { MediaTypeModel } from '../../models/media-type.enum';
 import { SortCatalog } from '../../models/catalog/sort-catalog.enum';
 import { FILTERS } from '../../models/catalog/filters.interface';
 import { ResultCatalog } from '../../models/catalog/result-catalog.interface';
+import { MediaInfoModel } from '../../models/media-info.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ import { ResultCatalog } from '../../models/catalog/result-catalog.interface';
 export class MediaService {
 
   private apiUrlMedia: string = `${environment.apiUrlMedia}`;
+  private readonly apiUrlMediaInfo: string = 'media-info';
   private urlResearch: string = 'research';
   private urlCatalog: string = 'catalog';
 
@@ -23,6 +25,22 @@ export class MediaService {
     private readonly movieService: MovieService,
     private readonly seriesService: SeriesService
   ) { }
+
+  public fetchMediaById(mediaId: number): Observable<MediaModel | null> {
+    return this.http.get<any>(`${this.apiUrlMedia}/${mediaId}`).pipe(
+      map((media: MediaModel) => {
+        if (media.mediaType === MediaTypeModel.MOVIE) {
+          return this.movieService.createNewMovie(media);
+        } else if (media.mediaType === MediaTypeModel.SERIES) {
+          return this.seriesService.createNewSeries(media);
+        }
+        return null;
+      }),
+      catchError(() => {
+        return of(null)
+      })
+    )
+  }
 
   public fetchResearchMediaByKeyword(keyword: string): Observable<MediaModel[]> {
     return this.http.get<any[]>(`${this.apiUrlMedia}/${this.urlResearch}/${keyword}`).pipe(
@@ -70,6 +88,23 @@ export class MediaService {
         medias: [],
         total: 0
       }))
+    );
+  }
+
+  public fetchGetMediaInfoById(mediaId: number): Observable<MediaInfoModel | null> {
+    return this.http.get<any>(`${this.apiUrlMedia}/${this.apiUrlMediaInfo}/${mediaId}`).pipe(
+      map((data: any) => {
+        if (!data.id) return null;
+        const mediaInfo: MediaInfoModel = {
+          id: data.id,
+          casts: data.casts ?? [],
+          crews: data.crews ?? [],
+          categories: data.categories ?? [],
+          keyWords: data.keyWords ?? []
+        };
+        return mediaInfo;
+      }),
+      catchError(() => of(null))
     );
   }
 

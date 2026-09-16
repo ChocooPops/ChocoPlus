@@ -17,7 +17,14 @@ contextBridge.exposeInMainWorld('electron', {
   deleteRefreshToken: () => ipcRenderer.invoke('secureStore:deleteRefreshToken'),
 
   onChocoPlayerStatus: (callback) => ipcRenderer.on('choco-player-status', (_event, data) => callback(data)),
-  
+
+  downloadMedia: (payload) => ipcRenderer.invoke('download-media', payload),
+  listDownloads: () => ipcRenderer.invoke('list-downloads'),
+  isMovieDownloaded: (movieId) => ipcRenderer.invoke('is-movie-downloaded', movieId), 
+  isEpisodeDownloaded: (data) => ipcRenderer.invoke('is-episode-downloaded', data), 
+  deleteDownload: (key) => ipcRenderer.invoke('delete-download', key),
+  onDownloadProgress: (callback) => ipcRenderer.on('download-progress', (_event, data) => callback(data)),
+
   getVersion: () => ipcRenderer.invoke('get-version'),
   
   openExternal: (url) => ipcRenderer.invoke('open-external', url),

@@ -8,11 +8,12 @@ import { UserTabComponent } from '../user-tab/user-tab.component';
 import { ChangeFormatPosterComponent } from '../change-format-poster/change-format-poster.component';
 import { MenuTabService } from '../../service/menu-tab/menu-tab.service';
 import { NavigationButtonComponent } from '../navigation-button/navigation-button.component';
+import { DownloadMenuButtonComponent } from '../download-menu-button/download-menu-button.component';
 
 @Component({
   selector: 'app-menu-bar',
   standalone: true,
-  imports: [MenuTabComponent, NgClass, UserTabComponent, ChangeFormatPosterComponent, NavigationButtonComponent],
+  imports: [MenuTabComponent, NgClass, UserTabComponent, ChangeFormatPosterComponent, NavigationButtonComponent, DownloadMenuButtonComponent],
   templateUrl: './menu-bar.component.html',
   styleUrls: ['./menu-bar.component.css']
 })

@@ -15,6 +15,7 @@ export class SeriesService {
 
   private readonly apiUrlSeries = `${environment.apiUrlSeries}`;
   private readonly urlResearchSeries: string = 'research';
+  private readonly urlEpisode: string = 'episode';
   private readonly urlEpisodes: string = 'episodes';
   private readonly urlRandomSeries: string = 'random-series';
   private readonly urlFirstEpisode: string = 'first-episode';
@@ -142,6 +143,17 @@ export class SeriesService {
       }),
       catchError(() => {
         return of([]);
+      })
+    )
+  }
+
+  public fetchEpisodeById(episodeId: number): Observable<EpisodeModel> {
+    return this.http.get<any>(`${this.apiUrlSeries}/${this.urlEpisode}/${episodeId}`).pipe(
+      map((episode: EpisodeModel) => {
+        return episode;
+      }),
+      catchError((error: any) => {
+        throw error
       })
     )
   }

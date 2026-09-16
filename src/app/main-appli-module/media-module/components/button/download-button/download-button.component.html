@@ -1,0 +1,17 @@
+
+<div class="btn-ring" [ngClass]="downloaded ? 'btn-ring-to-delete' : 'btn-ring-to-download'"
+    [style.height.px]="heightCircle" [style.width.px]="heightCircle"
+    [style.border-width.px]="widthBorder" (click)="onClick()">
+
+    @if(downloading) {
+    <div class="wave-fill" [style.height.%]="progress">
+        <svg class="wave" viewBox="0 0 400 20" preserveAspectRatio="none">
+            <path
+                d="M0 10 C 25 0, 75 0, 100 10 C 125 20, 175 20, 200 10 C 225 0, 275 0, 300 10 C 325 20, 375 20, 400 10 V20 H0 Z">
+            </path>
+        </svg>
+    </div>
+    }
+
+    <img class="btn-download-icon" [src]="srcDownload" [style.height.px]="heightIcon" [style.width.px]="heightIcon">
+</div>

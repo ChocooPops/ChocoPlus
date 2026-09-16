@@ -50,7 +50,8 @@
             "CATALOG": "カタログ",
             "MYLIST": "マイリスト",
             "EDITION": "編集",
-            "MORE": "もっと見る"
+            "MORE": "もっと見る",
+            "DOWNLOADS": "ダウンロード"
         },
         "USER": {
             "HISTORIC": "履歴",
@@ -122,6 +123,13 @@
         "PLACEHOLDER_RESEARCH_MOVIE_SERIES": "映画、シリーズを検索..."
     },
     "MYLIST_PAGE": "あなたのリスト",
+    "DOWNLOAD": {
+        "PAGE_TITLE": "ダウンロード",
+        "DOWNLOAD": "ダウンロード",
+        "DOWNLOADING": "ダウンロード中",
+        "DOWNLOADED": "ダウンロード済み",
+        "DELETE_DOWNLOAD": "ダウンロードを削除"
+    },
     "USER": {
         "HISTORIC": {
             "TOP_TITLE": "最も視聴されたコンテンツ トップ10",
@@ -202,6 +210,7 @@
             "SEARCH_PAGE": "検索ページ",
             "LICENSE_PAGE": "ライセンスページ",
             "MYLIST_PAGE": "マイリストページ",
+            "DOWNLOAD_PAGE": "ダウンロードページ",
             "DYNAMIC_MEDIA_PAGE": "ダイナミックメディアページ",
             "EDITION_PAGE": "編集ページ",
             "USER_PAGE": "ユーザーページ",

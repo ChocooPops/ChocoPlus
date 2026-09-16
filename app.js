@@ -5,6 +5,9 @@ const keytar = require('keytar');
 const { exec } = require('child_process');
 const { spawn } = require("child_process");
 const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const { error } = require('console');
 
 const ProcessStatus = Object.freeze({
   LAUNCHING: "LAUNCHING",
@@ -63,6 +66,8 @@ if (!gotTheLock) {
 // Chemin du fichier de configuration
 const userDataPath = app.getPath('userData');
 const windowStateFile = path.join(userDataPath, 'window-state.json');
+const downloadsRootPath = path.join(userDataPath, 'downloads');
+const FILE_METADATA = 'metadata.json'
 
 // Fonction pour charger l'état de la fenêtre
 function loadWindowState() {
@@ -150,7 +155,7 @@ function createWindow() {
   );
 
   // Ouvrir les outils de développement si nécessaire
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   // Suppression de la barre de menu
   mainWindow.setMenu(null);
@@ -176,6 +181,240 @@ function createWindow() {
     mainWindow = null;
   });
 }
+
+async function downloadImage(imageUrl, targetDir) {
+  if (!imageUrl) return null;
+  return new Promise((resolve, reject) => {
+    try {
+      const protocol = imageUrl.startsWith('https') ? https : http;
+      const fileName = path.basename(new URL(imageUrl).pathname);
+      const filePath = path.join(targetDir, fileName);
+
+      const file = fs.createWriteStream(filePath);
+
+      protocol.get(imageUrl, (response) => {
+        // Vérifier le code de statut
+        if (response.statusCode !== 200) {
+          file.destroy();
+          fs.unlink(filePath, () => {});
+          return resolve(null);
+        }
+
+        response.pipe(file);
+
+        file.on('finish', () => {
+          file.close();
+          // Retourner le chemin en format file://
+          const fileUrl = `file:///${filePath.replace(/\\/g, '/')}`;
+          resolve(fileUrl);
+        });
+
+        file.on('error', (err) => {
+          fs.unlink(filePath, () => {});
+          reject(err);
+        });
+      }).on('error', (err) => {
+        fs.unlink(filePath, () => {});
+        reject(err);
+      });
+    } catch (error) {
+      resolve(null)
+    }
+  });
+}
+
+async function downloadImageArray(imageUrls, imagesDir) {
+  if (!Array.isArray(imageUrls)) return [];
+  
+  return Promise.all(
+    imageUrls.map(url => 
+      downloadImage(url, imagesDir).catch(() => '')
+    )
+  );
+}
+
+function hasMediaDownloaded(mediaId) {
+  try {
+    const downloadDirMedia = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
+    if (fs.existsSync(downloadDirMedia)) {
+      const fileContent = fs.readFileSync(downloadDirMedia, 'utf-8');
+      if (!fileContent.trim()) {
+        return false;
+      }
+      const metadata = JSON.parse(fileContent);
+      return metadata.media.id;
+    } else {
+      return false;
+    }
+  } catch(error) {
+    return false;
+  }
+}
+
+function hasEpisodeDownloaded(seriesId, seasonId, episodeId) {
+ try {
+    const downloadDirEpisode = path.join(downloadsRootPath, String(seriesId), String(seasonId), String(episodeId), FILE_METADATA);
+    if (fs.existsSync(downloadDirEpisode)) {
+      const fileContent = fs.readFileSync(downloadDirEpisode, 'utf-8');
+      if (!fileContent.trim()) {
+        return false;
+      }
+      const metadata = JSON.parse(fileContent);
+      return metadata.id;
+    } else {
+      return false;
+    }
+  } catch(error) {
+    return false;
+  }
+}
+
+ipcMain.handle('download-media', async (event, data) => {
+  
+  const { media, info, seasonId, episode, mediaType } = data || {};
+
+  const mediaIdStr = String(media.id);
+  const downloadDirMedia = path.join(downloadsRootPath, mediaIdStr);
+
+  try {
+
+    let key = '';
+    if (mediaType === MediaType.MOVIE) {
+      key = `${MediaType.MOVIE}-${media.id}`;
+    } else if (mediaType === MediaType.EPISODE) {
+      key = `${MediaType.EPISODE}-${episode.id}`;
+    }
+
+    if (!hasMediaDownloaded(media.id)) {
+      const mediaIdStr = String(media.id);
+      const downloadDirMedia = path.join(downloadsRootPath, mediaIdStr);
+      const imagesDirMedia = path.join(downloadDirMedia, 'images');
+
+      delete media.typeZoomX;
+      delete media.typeZoomY;
+      delete media.typeZoomY;
+      delete media.categories;
+      delete media.credits;
+      delete media.isRecent;
+      delete media.otherTitles;
+      delete media.watchProgress;
+      delete media.stateProgress;
+
+      if (info.casts && Array.isArray(info.casts)) {
+        info.casts.forEach((cast) => {
+          cast.srcPoster = null;    
+        });
+      }
+      if (info.crews && Array.isArray(info.crews)) {
+        info.crews.forEach((crew) => {
+          crew.srcPoster = null;    
+        });
+      }
+      if (media.seasons && Array.isArray(media.seasons)) {
+        media.seasons.forEach((season) => {
+          delete season.isRecent;
+          delete season.isClicked;
+        });
+      }
+
+      fs.mkdirSync(downloadDirMedia, { recursive: true });
+      fs.mkdirSync(imagesDirMedia, { recursive: true });
+
+      const imageSources = {
+        arrays: ['srcPosterNormal', 'srcPosterHorizontal', 'srcPosterLicense', 'srcPosterSpecial'],
+        singles: ['srcBackgroundImage', 'srcLogo']
+      };
+
+      for (const field of imageSources.arrays) {
+        if (media[field]) {
+          try {
+            media[field] = await downloadImageArray(media[field], imagesDirMedia);
+          } catch(error) {
+            media[field] = null;
+          }
+        }
+      }
+      for (const field of imageSources.arrays) {
+        if (media[field]) {
+          media[field] = media[field].filter(result => result);
+        }
+      }
+      for (const field of imageSources.singles) {
+        if (media[field]) {
+          try {
+            media[field] = await downloadImage(media[field], imagesDirMedia);
+          } catch(error) {
+            media[field] = null;
+          }
+        }
+      }
+      if (media.seasons && Array.isArray(media.seasons)) {
+        for (const [index, season] of media.seasons.entries()) {
+          media.seasons[index].srcPoster = await downloadImage(season.srcPoster, imagesDirMedia);
+          delete media.seasons[index].episodes;
+        }
+      }
+      fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info }, null, 2));
+    
+      if (mediaType === MediaType.MOVIE) {
+
+      }
+    
+    }
+
+    if (mediaType === MediaType.EPISODE && seasonId && episode && !hasEpisodeDownloaded(media.id, seasonId, episode.id)) {
+      const seriesIdStr = String(seasonId);
+      const episodeIdStr = String(episode.id);
+
+      const downloadDirEpisode = path.join(downloadDirMedia, seriesIdStr, episodeIdStr);
+      const imagesDirEpisode = path.join(downloadDirEpisode, 'images');
+
+      fs.mkdirSync(downloadDirEpisode, { recursive: true });
+      fs.mkdirSync(imagesDirEpisode, { recursive: true });
+
+      episode.srcPoster = await downloadImage(episode.srcPoster, imagesDirEpisode)
+      fs.writeFileSync(path.join(downloadDirEpisode, FILE_METADATA), JSON.stringify(episode, null, 2));
+    }
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('download-progress', { key, percent: 100 });
+    }
+
+  } catch(error) {
+    fs.rmSync(downloadDirMedia, { recursive: true, force: true });
+    throw error;
+  }
+});
+
+ipcMain.handle('list-downloads', () => {
+  const entries = fs.readdirSync(downloadsRootPath, { withFileTypes: true });
+  const downloads = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const metadataPath = path.join(downloadsRootPath, entry.name, 'metadata.json');
+    if (!fs.existsSync(metadataPath)) continue;
+    try {
+    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+      downloads.push( metadata.media );
+    } catch (error) {
+      // Corrupt metadata: This entry is ignored
+    }
+  }
+  return downloads;
+});
+
+ipcMain.handle('is-movie-downloaded', (event, movieId) => {
+  return hasMediaDownloaded(movieId);
+});
+
+ipcMain.handle('is-episode-downloaded', (event, data) => {
+  const { seriesId, seasonId, episodeId } = data;
+  return hasEpisodeDownloaded(seriesId, seasonId, episodeId);
+})
+
+ipcMain.handle('delete-download', async (event, key) => {
+});
 
 app.on('ready', createWindow);
 

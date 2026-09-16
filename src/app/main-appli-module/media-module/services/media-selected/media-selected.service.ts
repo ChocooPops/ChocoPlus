@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { MediaModel } from '../../models/media.interface';
 import { MediaHistoryModel, SeasonHistoryModel } from '../../models/media-history.interface';
 import { MediaInfoModel } from '../../models/media-info.interface';
@@ -10,6 +10,7 @@ import { SeasonModel } from '../../models/series/season.interface';
 import { ProgressStateMedia } from '../../models/progress-state-media.enum';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { MediaService } from '../media/media.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,9 @@ export class MediaSelectedService {
   private canGoBack$ = this.canGoBackSubject.asObservable();
   private canGoForward$ = this.canGoForwardSubject.asObservable();
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient,
+    private readonly mediaService: MediaService
+  ) { }
 
   selectMedia(media: MediaModel): void {
     this.history = this.history.slice(0, this.currentIndex + 1);
@@ -177,25 +180,15 @@ export class MediaSelectedService {
       return of(cached);
     }
 
-    return this.http.get<any>(`${this.apiUrlMedia}/${this.apiUrlMediaInfo}/${mediaId}`).pipe(
-      map((data: any) => {
-        if (!data.id) return null;
-
-        const mediaInfo: MediaInfoModel = {
-          id: data.id,
-          casts: data.casts ?? [],
-          crews: data.crews ?? [],
-          categories: data.categories ?? [],
-          keyWords: data.keyWords ?? []
-        };
-
-        this.mediaInfoMap.set(mediaId, mediaInfo);
-        if (this.mediaInfoMap.size > this.LIMIT_CACHE) {
-          this.deleteFirstKey();
+    return this.mediaService.fetchGetMediaInfoById(mediaId).pipe(
+      tap((mediaInfo: MediaInfoModel | null) => {
+        if (mediaInfo) {
+          this.mediaInfoMap.set(mediaId, mediaInfo);
+          if (this.mediaInfoMap.size > this.LIMIT_CACHE) {
+            this.deleteFirstKey();
+          }
         }
-        return mediaInfo;
-      }),
-      catchError(() => of(null))
+      })
     );
   }
 

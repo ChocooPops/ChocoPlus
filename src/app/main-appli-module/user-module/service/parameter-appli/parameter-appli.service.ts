@@ -167,6 +167,12 @@ export class ParameterAppliService {
     },
     {
       id: this.getId(),
+      name: "USER.APP_SETTINGS.DOWNLOAD_PAGE",
+      radioButton: this.getRadioButtonForAllFormatPoster(),
+      call: null
+    },
+    {
+      id: this.getId(),
       name: "USER.APP_SETTINGS.DYNAMIC_MEDIA_PAGE",
       radioButton: this.getRadioButtonForMediaFormat(),
       call: null
@@ -212,6 +218,12 @@ export class ParameterAppliService {
           id: this.getId(),
           name: "USER.APP_SETTINGS.MYLIST_PAGE",
           value: PageModel.PAGE_MYLIST,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.DOWNLOAD_PAGE",
+          value: PageModel.PAGE_DOWNLOAD,
           state: false
         },
         {
@@ -373,9 +385,10 @@ export class ParameterAppliService {
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterResearch(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterLicense(format),
       (format: FormatPosterModel) => this.formatPosterService.setFormatPosterMyList(format),
+      (format: FormatPosterModel) => this.formatPosterService.setFormatPosterDownload(format),
       (format: FormatMediaPageModel) => this.formatMediaPageService.setFormatPosterHome(format)
     ]
-    const format: (FormatPosterModel | FormatMediaPageModel)[] = [this.formatPosterService.getFormatPosterHomeValue(), this.formatPosterService.getFormatPosterMovieValue(), this.formatPosterService.getFormatPosterSeriesValue(), this.formatPosterService.getFormatPosterCatalogValue(), this.formatPosterService.getFormatPosterResearchValue(), this.formatPosterService.getFormatPosterLicenseValue(), this.formatPosterService.getFormatPosterMyListValue(), this.formatMediaPageService.getCurrentFormatMediaPageValue()];
+    const format: (FormatPosterModel | FormatMediaPageModel)[] = [this.formatPosterService.getFormatPosterHomeValue(), this.formatPosterService.getFormatPosterMovieValue(), this.formatPosterService.getFormatPosterSeriesValue(), this.formatPosterService.getFormatPosterCatalogValue(), this.formatPosterService.getFormatPosterResearchValue(), this.formatPosterService.getFormatPosterLicenseValue(), this.formatPosterService.getFormatPosterMyListValue(), this.formatPosterService.getFormatPosterDownloadValue(), this.formatMediaPageService.getCurrentFormatMediaPageValue()];
     if (this.radioButtonFormatPoster.length === format.length) {
       for (let i: number = 0; i < this.radioButtonFormatPoster.length; i++) {
         this.radioButtonFormatPoster[i].call = callBackFormatPoster[i];

@@ -9,7 +9,6 @@ import { MylistButtonComponent } from '../../../button/mylist-button/mylist-butt
 import { FormatMediaPageButtonComponent } from '../../../button/format-media-page-button/format-media-page-button.component';
 import { NgClass } from '@angular/common';
 import { ScalePoster } from '../../../../../common-module/models/scale-poster.enum';
-import { BidiModule } from "@angular/cdk/bidi";
 import { MediaTypeModel } from '../../../../models/media-type.enum';
 import { VerifTimerShowService } from '../../../../../common-module/services/verif-timer/verif-timer-show.service';
 import { MovieModel } from '../../../../models/movie-model';
@@ -20,11 +19,12 @@ import { ProgressStateMedia } from '../../../../models/progress-state-media.enum
 import { MediaProgressingModel } from '../../../../../video-playing-module/models/media-progressing.interface';
 import { HistoricWatchProgressService } from '../../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { DownloadButtonComponent } from '../../../button/download-button/download-button.component';
 
 @Component({
   selector: 'app-media-horizontal-background',
   standalone: true,
-  imports: [NgClass, TranslatePipe, DatePipe, StartButtonComponent, ModifyButtonComponent, MylistButtonComponent, FormatMediaPageButtonComponent, BidiModule],
+  imports: [NgClass, TranslatePipe, DatePipe, StartButtonComponent, ModifyButtonComponent, MylistButtonComponent, FormatMediaPageButtonComponent, DownloadButtonComponent],
   templateUrl: './media-horizontal-background.component.html',
   styleUrls: ['./media-horizontal-background.component.css', '../../../../../common-module/styles/animation.css'],
 })

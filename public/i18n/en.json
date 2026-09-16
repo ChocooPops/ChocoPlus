@@ -50,7 +50,8 @@
             "CATALOG": "Catalog",
             "MYLIST": "My list",
             "EDITION": "Edit",
-            "MORE": "More"
+            "MORE": "More",
+            "DOWNLOADS": "Downloads"
         },
         "USER": {
             "HISTORIC": "History",
@@ -122,6 +123,13 @@
         "PLACEHOLDER_RESEARCH_MOVIE_SERIES": "Search for a movie, a series ..."
     },
     "MYLIST_PAGE": "Your list",
+    "DOWNLOAD": {
+        "PAGE_TITLE": "Downloads",
+        "DOWNLOAD": "Download",
+        "DOWNLOADING": "Downloading",
+        "DOWNLOADED": "Downloaded",
+        "DELETE_DOWNLOAD": "Delete download"
+    },
     "USER": {
         "HISTORIC": {
             "TOP_TITLE": "Top 10 most watched content",
@@ -202,6 +210,7 @@
             "SEARCH_PAGE": "Search page",
             "LICENSE_PAGE": "License page",
             "MYLIST_PAGE": "MyList page",
+            "DOWNLOAD_PAGE": "Downloads page",
             "DYNAMIC_MEDIA_PAGE": "Dynamic media page",
             "EDITION_PAGE": "Edition page",
             "USER_PAGE": "User page",

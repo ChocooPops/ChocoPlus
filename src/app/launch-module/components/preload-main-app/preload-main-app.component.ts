@@ -74,6 +74,8 @@ export class PreloadMainAppComponent {
       this.loadOpeningPageService.loadCatalogPageDataAndNavigate();
     } else if (page === PageModel.PAGE_MYLIST) {
       this.loadOpeningPageService.loadMyListPageDataAndNavigate();
+    } else if (page === PageModel.PAGE_DOWNLOAD) {
+      this.loadOpeningPageService.loadDownloadPageDataAndNavigate();
     } else if (page === PageModel.PAGE_EDITION) {
       this.loadOpeningPageService.loadEditionPageDataAndNavigate();
     } else if (page === PageModel.PAGE_USER) {

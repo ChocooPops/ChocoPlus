@@ -14,11 +14,12 @@ import { DatePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NewsAlertComponent } from '../news-alert/news-alert.component';
 import { MediaTypeModel } from '../../../models/media-type.enum';
+import { DownloadButtonComponent } from '../../button/download-button/download-button.component';
 
 @Component({
   selector: 'app-episode-poster-horizontal-view',
   standalone: true,
-  imports: [StartButtonComponent, DatePipe, TranslatePipe, NewsAlertComponent],
+  imports: [StartButtonComponent, DatePipe, TranslatePipe, NewsAlertComponent, DownloadButtonComponent],
   templateUrl: './episode-poster-horizontal-view.component.html',
   styleUrls: ['./episode-poster-horizontal-view.component.css', '../../../../common-module/styles/animation.css'],
 })

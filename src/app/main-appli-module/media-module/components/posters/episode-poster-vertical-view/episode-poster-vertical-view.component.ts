@@ -10,11 +10,12 @@ import { HistoricWatchProgressService } from '../../../../video-playing-module/s
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
 import { NewsAlertComponent } from '../news-alert/news-alert.component';
 import { MediaTypeModel } from '../../../models/media-type.enum';
+import { DownloadButtonComponent } from '../../button/download-button/download-button.component';
 
 @Component({
   selector: 'app-episode-poster-vertical-view',
   standalone: true,
-  imports: [DatePipe, NewsAlertComponent, StartButtonComponent],
+  imports: [DatePipe, NewsAlertComponent, StartButtonComponent, DownloadButtonComponent],
   templateUrl: './episode-poster-vertical-view.component.html',
   styleUrls: ['./episode-poster-vertical-view.component.css', '../../../../common-module/styles/animation.css']
 })

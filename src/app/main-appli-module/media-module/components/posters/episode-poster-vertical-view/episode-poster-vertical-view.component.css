@@ -33,11 +33,19 @@
     font-size: 26px;
 }
 
+.container-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
 .title {
     font-size: 20px;
     font-weight: bold;
     color: white;
 }
+
 
 .description {
     font-size: 16px;

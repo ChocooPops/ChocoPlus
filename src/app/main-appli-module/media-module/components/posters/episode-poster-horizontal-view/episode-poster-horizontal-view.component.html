@@ -32,7 +32,10 @@
             }
         </div>
         <div class="container-other-info">
-            <p class="title"> {{episode.episodeNumber}}. {{episode.name}} </p>
+            <div class="container-title-row">
+                <p class="title"> {{episode.episodeNumber}}. {{episode.name}} </p>
+                <app-download-button [mediaId]="episode.seriesId" [mediaType]="MediaType.EPISODE" [seasonId]="episode.seasonId" [episodeId]="episode.id"></app-download-button>
+            </div>
             <p class="other-info"> {{ episode.resolution }} <br> {{ getTimerEpisode(episode.duration) }} <br> {{
                 episode.date | date:'d MMMM, y'}} </p>
         </div>

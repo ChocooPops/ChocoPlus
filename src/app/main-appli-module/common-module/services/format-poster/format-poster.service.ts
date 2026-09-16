@@ -14,6 +14,7 @@ export class FormatPosterService {
   private readonly formatLicense: string = 'FORMAT_LICENSE';
   private readonly formatMyList: string = 'FORMAT_MYLIST';
   private readonly formatCatalog: string = 'FORMAT_CATALOG';
+  private readonly formatDownload: string = 'FORMAT_DOWNLOAD';
 
   private formatPosterHomeSubject: BehaviorSubject<FormatPosterModel> = new BehaviorSubject<FormatPosterModel>(this.initFormatPoster(this.formatHome));
   private formatPosterHome$: Observable<FormatPosterModel> = this.formatPosterHomeSubject.asObservable();
@@ -36,6 +37,9 @@ export class FormatPosterService {
   private formatPosterCatalogSubject: BehaviorSubject<FormatPosterModel> = new BehaviorSubject<FormatPosterModel>(this.initFormatPoster(this.formatCatalog));
   private formatPosterCatalog$: Observable<FormatPosterModel> = this.formatPosterCatalogSubject.asObservable();
 
+  private formatPosterDownloadSubject: BehaviorSubject<FormatPosterModel> = new BehaviorSubject<FormatPosterModel>(this.initFormatPoster(this.formatDownload));
+  private formatPosterDownload$: Observable<FormatPosterModel> = this.formatPosterDownloadSubject.asObservable();
+
 
   public fetchFormatPosterHome(): Observable<FormatPosterModel> {
     return this.formatPosterHome$;
@@ -57,6 +61,9 @@ export class FormatPosterService {
   }
   public fetchFormatPosterCatalog(): Observable<FormatPosterModel> {
     return this.formatPosterCatalog$;
+  }
+  public fetchFormatPosterDownload(): Observable<FormatPosterModel> {
+    return this.formatPosterDownload$;
   }
 
   public setFormatPosterHome(format: FormatPosterModel): void {
@@ -87,6 +94,10 @@ export class FormatPosterService {
     localStorage.setItem(this.formatCatalog, format);
     this.formatPosterCatalogSubject.next(format);
   }
+  public setFormatPosterDownload(format: FormatPosterModel): void {
+    localStorage.setItem(this.formatDownload, format);
+    this.formatPosterDownloadSubject.next(format);
+  }
 
   public getFormatPosterHomeValue(): FormatPosterModel {
     return this.formatPosterHomeSubject.value;
@@ -108,6 +119,9 @@ export class FormatPosterService {
   }
   public getFormatPosterCatalogValue(): FormatPosterModel {
     return this.formatPosterCatalogSubject.value;
+  }
+  public getFormatPosterDownloadValue(): FormatPosterModel {
+    return this.formatPosterDownloadSubject.value;
   }
 
   private initFormatPoster(format: string): any {

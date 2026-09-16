@@ -51,7 +51,6 @@
     position: absolute;
     bottom: -14px;
     display: flex;
-    justify-content: center;
     margin-left: 60px;
     gap: 45px;
 }
@@ -59,14 +58,14 @@
 .container-groupe-button {
     width: auto;
     display: flex;
-    justify-content: center;
+    align-items: center;
     gap: 20px;
 }
 
 .container-groupe-button-other {
     width: auto;
     display: flex;
-    justify-content: center;
+    align-items: center;
     gap: 15px;
 }
 

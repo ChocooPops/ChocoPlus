@@ -69,6 +69,13 @@
   color: white;
 }
 
+.container-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .container-other-info {
   margin-left: 15px;
   display: flex;

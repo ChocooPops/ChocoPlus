@@ -65,6 +65,10 @@ export class CompressedPosterService {
   }
 
   public insertIntoUrlBeforeFilename(url: string, insert: ScalePoster): string {
+    if (url.startsWith('file://') || url.startsWith('file:\\')) {
+      // Fichier téléchargé localement : pas de variantes de résolution, on garde le chemin tel quel.
+      return url;
+    }
     if (insert !== ScalePoster.SCALE_ORIGINAL && !url.includes(insert)) {
       const urlParts = url.split('/');
 
@@ -84,36 +88,36 @@ export class CompressedPosterService {
     let src: string | undefined = undefined;
     let currentScale !: ScalePoster;
     if (type === SelectionType.NORMAL_POSTER) {
-      if (media.srcPosterNormal !== undefined) {
+      if (media.srcPosterNormal && media.srcPosterNormal.length > 0) {
         src = media.srcPosterNormal[0];
-      } else if (media.srcPosterSpecial !== undefined) {
+      } else if (media.srcPosterSpecial && media.srcPosterSpecial.length > 0) {
         src = media.srcPosterSpecial[0];
-      } else if (media.srcPosterLicense !== undefined) {
+      } else if (media.srcPosterLicense && media.srcPosterLicense.length > 0) {
         src = media.srcPosterLicense[0];
       }
       currentScale = this.currentScaleNormalVerticalPoster;
     } else if (type === SelectionType.SPECIAL_POSTER) {
-      if (media.srcPosterSpecial !== undefined) {
+      if (media.srcPosterSpecial && media.srcPosterSpecial.length > 0) {
         src = media.srcPosterSpecial[0];
-      } else if (media.srcPosterNormal !== undefined) {
+      } else if (media.srcPosterNormal && media.srcPosterNormal.length > 0) {
         src = media.srcPosterNormal[0];
-      } else if (media.srcPosterLicense !== undefined) {
+      } else if (media.srcPosterLicense && media.srcPosterLicense.length > 0) {
         src = media.srcPosterLicense[0];
       }
       currentScale = this.currentScaleSpecialAndLicensePoster;
     } else if (type === SelectionType.LICENSE_POSTER) {
-      if (media.srcPosterLicense !== undefined) {
+      if (media.srcPosterLicense && media.srcPosterLicense.length > 0) {
         src = media.srcPosterLicense[0];
-      } else if (media.srcPosterSpecial != undefined) {
+      } else if (media.srcPosterSpecial && media.srcPosterSpecial.length > 0) {
         src = media.srcPosterSpecial[0];
-      } else if (media.srcPosterNormal != undefined) {
+      } else if (media.srcPosterNormal && media.srcPosterNormal.length > 0) {
         src = media.srcPosterNormal[0];
       }
       currentScale = this.currentScaleSpecialAndLicensePoster;
     } else if (type === SelectionType.HORIZONTAL_POSTER) {
-      if (media.srcPosterHorizontal !== undefined) {
+      if (media.srcPosterHorizontal && media.srcPosterHorizontal.length > 0) {
         src = media.srcPosterHorizontal[0];
-      } else if (media.srcBackgroundImage !== undefined) {
+      } else if (media.srcBackgroundImage && media.srcBackgroundImage.length > 0) {
         src = media.srcBackgroundImage;
       } else {
         src = undefined;
@@ -127,6 +131,33 @@ export class CompressedPosterService {
         src = this.insertIntoUrlBeforeFilename(src, currentScale);
       }
     }
+    return src;
+  }
+
+  public getPosterMediaFromPoster(type: SelectionType, poster: string | undefined, scale: ScalePoster | undefined = undefined): string | undefined {
+    if (!poster) return undefined;
+
+    let currentScale !: ScalePoster;
+    let src: string = poster;
+
+    if (type === SelectionType.NORMAL_POSTER) {
+      currentScale = this.currentScaleNormalVerticalPoster;
+    } else if (type === SelectionType.SPECIAL_POSTER) {
+      currentScale = this.currentScaleSpecialAndLicensePoster;
+    } else if (type === SelectionType.LICENSE_POSTER) {
+      currentScale = this.currentScaleSpecialAndLicensePoster;
+    } else if (type === SelectionType.HORIZONTAL_POSTER) {
+      currentScale = this.currentScaleHorizontalPoster;
+    }
+
+    if (src) {
+      if (scale) {
+        src = this.insertIntoUrlBeforeFilename(src, scale);
+      } else {
+        src = this.insertIntoUrlBeforeFilename(src, currentScale);
+      }
+    }
+
     return src;
   }
 
