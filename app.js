@@ -380,6 +380,7 @@ ipcMain.handle('download-media', async (event, data) => {
       mainWindow.webContents.send('download-progress', { key, percent: 100 });
     }
 
+    return { success: true }
   } catch(error) {
     fs.rmSync(downloadDirMedia, { recursive: true, force: true });
     throw error;
@@ -404,7 +405,7 @@ ipcMain.handle('list-downloads', () => {
   return downloads;
 });
 
-ipcMain.handle('is-movie-downloaded', (event, movieId) => {
+ipcMain.handle('is-media-downloaded', (event, movieId) => {
   return hasMediaDownloaded(movieId);
 });
 

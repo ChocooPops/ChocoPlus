@@ -39,12 +39,29 @@ export class DownloadButtonComponent implements OnInit, OnDestroy {
       this.heightIcon = 14;
       this.widthBorder = 1.5;
     }
-    this.checkAlreadyDownloaded();
-    if (this.mediaType === MediaTypeModel.MOVIE) {
-      this.key = `${MediaTypeModel.MOVIE}-${this.mediaId}`;
-    } else if (this.mediaType === MediaTypeModel.EPISODE) {
-      this.key = `${MediaTypeModel.EPISODE}-${this.episodeId}`;
+
+    this.key = this.mediaType === MediaTypeModel.EPISODE
+      ? `${MediaTypeModel.EPISODE}-${this.episodeId}`
+      : `${MediaTypeModel.MOVIE}-${this.mediaId}`;
+
+    if (this.downloadService.isDownloadInProgress(this.key)) {
+      this.resumeProgressTracking();
+    } else {
+      this.checkAlreadyDownloaded();
     }
+  }
+
+  private resumeProgressTracking(): void {
+    this.downloading = true;
+
+    this.progressSubscription?.unsubscribe();
+    this.progressSubscription = this.downloadService.getDownloadProgress(this.key).subscribe((percent: number) => {
+      this.progress = percent;
+      if (percent >= 100) {
+        this.downloading = false;
+        this.downloaded = true;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -54,7 +71,7 @@ export class DownloadButtonComponent implements OnInit, OnDestroy {
   private checkAlreadyDownloaded(): void {
     const isDownloaded$: Observable<boolean> = this.mediaType === MediaTypeModel.EPISODE
       ? this.downloadService.isEpisodeDownloaded(this.mediaId, this.seasonId, this.episodeId)
-      : this.downloadService.isMovieDownloaded(this.mediaId);
+      : this.downloadService.isMediaDownloaded(this.mediaId);
 
     isDownloaded$.pipe(take(1)).subscribe((downloaded: boolean) => {
       this.downloaded = downloaded;

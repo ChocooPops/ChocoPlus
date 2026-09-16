@@ -42,6 +42,11 @@ export class DownloadService {
     return this.getOrCreateProgressSubject(key).asObservable();
   }
 
+  public isDownloadInProgress(key: string): boolean {
+    const subject: BehaviorSubject<number> | undefined = this.progressSubjects.get(key);
+    return subject !== undefined && subject.getValue() < 100;
+  }
+
   private compressedAllPosterFromMedia(media: MediaModel): MediaModel {
     const compressPosters = (posters: (string | undefined)[] | undefined, type: SelectionType): string[] =>
       (posters ?? [])
@@ -92,7 +97,6 @@ export class DownloadService {
         }) as Promise<void>);
       }),
       catchError((error) => {
-        console.error('Erreur:', error);
         return throwError(() => error);
       })
     );
@@ -100,28 +104,51 @@ export class DownloadService {
 
   public downloadEpisode(seriesId: number, seasonId: number, episodeId: number): Observable<void> {
     this.getOrCreateProgressSubject(`${MediaTypeModel.EPISODE}-${episodeId}`).next(0);
-    
-    return forkJoin({
-      media: this.mediaService.fetchMediaById(seriesId),
-      info: this.mediaService.fetchGetMediaInfoById(seriesId),
-      episode: this.seriesService.fetchEpisodeById(episodeId)
-    }).pipe(
+
+    return this.isMediaDownloaded(seriesId).pipe(
       take(1),
-      switchMap((data: {
-        media: MediaModel | null,
-        info: MediaInfoModel | null,
-        episode: EpisodeModel | null
-      }) => {        
-        if (!data.media || !data.info || !data.episode) {
-          return throwError(() => new Error('Hollow data'));
+      switchMap((seriesAlreadyDownloaded: boolean) => {
+        if (seriesAlreadyDownloaded) {
+          return this.seriesService.fetchEpisodeById(episodeId).pipe(
+            take(1),
+            switchMap((episode: EpisodeModel | null) => {
+              if (!episode) {
+                return throwError(() => new Error('Hollow data'));
+              }
+              return from(window.electron.downloadMedia({
+                media: { id: seriesId },
+                info: { id: seriesId },
+                seasonId: seasonId,
+                episode: this.compressedAllPosterFromEpisode(episode),
+                mediaType: MediaTypeModel.EPISODE
+              }) as Promise<void>);
+            })
+          );
         }
-        return from(window.electron.downloadMedia({
-          media: this.compressedAllPosterFromMedia(data.media),
-          info: data.info,
-          seasonId: seasonId,
-          episode: this.compressedAllPosterFromEpisode(data.episode),
-          mediaType: MediaTypeModel.EPISODE
-        }) as Promise<void>);
+
+        return forkJoin({
+          media: this.mediaService.fetchMediaById(seriesId),
+          info: this.mediaService.fetchGetMediaInfoById(seriesId),
+          episode: this.seriesService.fetchEpisodeById(episodeId)
+        }).pipe(
+          take(1),
+          switchMap((data: {
+            media: MediaModel | null,
+            info: MediaInfoModel | null,
+            episode: EpisodeModel | null
+          }) => {
+            if (!data.media || !data.info || !data.episode) {
+              return throwError(() => new Error('Hollow data'));
+            }
+            return from(window.electron.downloadMedia({
+              media: this.compressedAllPosterFromMedia(data.media),
+              info: data.info,
+              seasonId: seasonId,
+              episode: this.compressedAllPosterFromEpisode(data.episode),
+              mediaType: MediaTypeModel.EPISODE
+            }) as Promise<void>);
+          })
+        );
       }),
       catchError((error) => {
         return throwError(() => error);
@@ -137,8 +164,8 @@ export class DownloadService {
     );
   }
 
-  public isMovieDownloaded(movieId: number): Observable<boolean> {
-    return from(window.electron.isMovieDownloaded(movieId) as Promise<boolean>).pipe(
+  public isMediaDownloaded(movieId: number): Observable<boolean> {
+    return from(window.electron.isMediaDownloaded(movieId) as Promise<boolean>).pipe(
       map((records: boolean) => {
         return records;
       })
