@@ -128,7 +128,12 @@
         "DOWNLOAD": "Télécharger",
         "DOWNLOADING": "Téléchargement en cours",
         "DOWNLOADED": "Téléchargé",
-        "DELETE_DOWNLOAD": "Supprimer le téléchargement"
+        "DELETE_DOWNLOAD": "Supprimer le téléchargement",
+        "STORAGE_TITLE": "Répartition du stockage",
+        "STORAGE_OTHER": "Autres applications",
+        "STORAGE_DOWNLOADS": "Téléchargement ChocoPlus",
+        "STORAGE_CACHE": "Cache ChocoPlus",
+        "STORAGE_AVAILABLE": "Disponible"
     },
     "USER": {
         "HISTORIC": {

@@ -10,6 +10,7 @@ import { SeriesService } from '../series/series.service';
 import { EpisodeModel } from '../../models/series/episode.interface';
 import { SeriesModel } from '../../models/series/series.interface';
 import { SeasonModel } from '../../models/series/season.interface';
+import { StorageInfoModel } from '../../models/storage-info.interface';
 
 declare const window: any;
 
@@ -182,6 +183,10 @@ export class DownloadService {
 
   public deleteDownloadsForMedia(media: MediaModel): Observable<void> {
     return of();
+  }
+
+  public getStorageInfo(): Observable<StorageInfoModel> {
+    return from(window.electron.getStorageInfo() as Promise<StorageInfoModel>);
   }
 
 }

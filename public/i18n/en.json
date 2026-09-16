@@ -128,7 +128,12 @@
         "DOWNLOAD": "Download",
         "DOWNLOADING": "Downloading",
         "DOWNLOADED": "Downloaded",
-        "DELETE_DOWNLOAD": "Delete download"
+        "DELETE_DOWNLOAD": "Delete download",
+        "STORAGE_TITLE": "Storage breakdown",
+        "STORAGE_OTHER": "Other apps",
+        "STORAGE_DOWNLOADS": "ChocoPlus downloads",
+        "STORAGE_CACHE": "ChocoPlus cache",
+        "STORAGE_AVAILABLE": "Available"
     },
     "USER": {
         "HISTORIC": {

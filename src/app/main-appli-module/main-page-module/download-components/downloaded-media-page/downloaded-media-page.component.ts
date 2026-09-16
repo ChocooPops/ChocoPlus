@@ -8,11 +8,13 @@ import { FormatPosterService } from '../../../common-module/services/format-post
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { DownloadService } from '../../../media-module/services/download/download.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { StorageRepartitionComponent } from '../storage-repartition/storage-repartition.component';
 
 @Component({
   selector: 'app-downloaded-media-page',
   standalone: true,
-  imports: [MenuTmpComponent, GridListComponent],
+  imports: [MenuTmpComponent, GridListComponent, TranslatePipe, StorageRepartitionComponent],
   templateUrl: './downloaded-media-page.component.html',
   styleUrl: './downloaded-media-page.component.css'
 })

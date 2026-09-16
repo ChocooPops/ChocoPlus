@@ -1,0 +1,131 @@
+.storage-repartition {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 260px;
+    max-width: 420px;
+    width: 100%;
+}
+
+.storage-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white-dark, #E6E6E6);
+    text-align: right;
+}
+
+.storage-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.storage-bar {
+    position: relative;
+    display: flex;
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    overflow: visible;
+    background-color: #1a1a1a;
+}
+
+.segment {
+    position: relative;
+    height: 100%;
+    cursor: default;
+    transition: filter 0.2s ease;
+}
+
+.segment:first-child {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+}
+
+.segment:last-child {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+.segment:hover {
+    filter: brightness(1.2);
+}
+
+.segment-other {
+    background-color: #70ABF3;
+}
+
+.segment-downloads {
+    background-color: #FFD301;
+}
+
+.segment-cache {
+    background-color: #E6E6E6;
+}
+
+.segment-free {
+    background-color: #737373;
+}
+
+.storage-total {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--white-dark, #E6E6E6);
+    white-space: nowrap;
+}
+
+.tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: var(--white-dark, #E6E6E6);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #1a1a1a;
+}
+
+.dot {
+    height: 8px;
+    width: 8px;
+    min-width: 8px;
+    border-radius: 50%;
+}
+
+.dot-other {
+    background-color: #70ABF3;
+}
+
+.dot-downloads {
+    background-color: #FFD301;
+}
+
+.dot-cache {
+    background-color: #E6E6E6;
+}
+
+.dot-free {
+    background-color: #737373;
+}

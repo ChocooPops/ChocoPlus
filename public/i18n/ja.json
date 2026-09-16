@@ -128,7 +128,12 @@
         "DOWNLOAD": "ダウンロード",
         "DOWNLOADING": "ダウンロード中",
         "DOWNLOADED": "ダウンロード済み",
-        "DELETE_DOWNLOAD": "ダウンロードを削除"
+        "DELETE_DOWNLOAD": "ダウンロードを削除",
+        "STORAGE_TITLE": "ストレージの内訳",
+        "STORAGE_OTHER": "他のアプリ",
+        "STORAGE_DOWNLOADS": "ChocoPlusのダウンロード",
+        "STORAGE_CACHE": "ChocoPlusのキャッシュ",
+        "STORAGE_AVAILABLE": "空き容量"
     },
     "USER": {
         "HISTORIC": {

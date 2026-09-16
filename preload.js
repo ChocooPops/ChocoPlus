@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld('electron', {
   isEpisodeDownloaded: (data) => ipcRenderer.invoke('is-episode-downloaded', data), 
   deleteDownload: (key) => ipcRenderer.invoke('delete-download', key),
   onDownloadProgress: (callback) => ipcRenderer.on('download-progress', (_event, data) => callback(data)),
+  getStorageInfo: () => ipcRenderer.invoke('get-storage-info'),
 
   getVersion: () => ipcRenderer.invoke('get-version'),
   

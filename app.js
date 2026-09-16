@@ -269,6 +269,53 @@ function hasEpisodeDownloaded(seriesId, seasonId, episodeId) {
   }
 }
 
+const CACHE_FOLDER_NAMES = ['Cache', 'Code Cache', 'GPUCache', 'DawnGraphiteCache', 'DawnWebGPUCache', 'Shared Dictionary'];
+
+function getDiskUsage(targetPath) {
+  try {
+    const stats = fs.statfsSync(targetPath);
+    return {
+      totalBytes: stats.blocks * stats.bsize,
+      freeBytes: stats.bavail * stats.bsize
+    };
+  } catch (error) {
+    return { totalBytes: 0, freeBytes: 0 };
+  }
+}
+
+function getFolderSizeBytes(dirPath) {
+  let total = 0;
+  try {
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const entryPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        total += getFolderSizeBytes(entryPath);
+      } else if (entry.isFile()) {
+        try {
+          total += fs.statSync(entryPath).size;
+        } catch (error) {
+          // Fichier illisible : on l'ignore.
+        }
+      }
+    }
+  } catch (error) {
+    // Dossier inexistant ou illisible.
+  }
+  return total;
+}
+
+ipcMain.handle('get-storage-info', () => {
+  const { totalBytes, freeBytes } = getDiskUsage(userDataPath);
+  const downloadsBytes = getFolderSizeBytes(downloadsRootPath);
+  const cacheBytes = CACHE_FOLDER_NAMES.reduce(
+    (sum, name) => sum + getFolderSizeBytes(path.join(userDataPath, name)),
+    0
+  );
+
+  return { totalBytes, freeBytes, downloadsBytes, cacheBytes };
+});
+
 ipcMain.handle('download-media', async (event, data) => {
   
   const { media, info, seasonId, episode, mediaType } = data || {};
