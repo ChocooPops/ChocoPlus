@@ -7,6 +7,7 @@
                 <div class="tooltip" [class.tooltip-visible]="hoveredSegment === 'other'">
                     <span class="dot dot-other"></span>
                     <span>{{ 'DOWNLOAD.STORAGE_OTHER' | translate }}</span>
+                    <span class="tooltip-size">{{ formatGo(otherBytes) }} Go</span>
                 </div>
             </div>
             <div class="segment segment-downloads" [style.width.%]="animated ? percentDownloads : 0"
@@ -14,6 +15,7 @@
                 <div class="tooltip" [class.tooltip-visible]="hoveredSegment === 'downloads'">
                     <span class="dot dot-downloads"></span>
                     <span>{{ 'DOWNLOAD.STORAGE_DOWNLOADS' | translate }}</span>
+                    <span class="tooltip-size">{{ formatGo(downloadsBytes) }} Go</span>
                 </div>
             </div>
             <div class="segment segment-cache" [style.width.%]="animated ? percentCache : 0"
@@ -21,6 +23,7 @@
                 <div class="tooltip" [class.tooltip-visible]="hoveredSegment === 'cache'">
                     <span class="dot dot-cache"></span>
                     <span>{{ 'DOWNLOAD.STORAGE_CACHE' | translate }}</span>
+                    <span class="tooltip-size">{{ formatGo(cacheBytes) }} Go</span>
                 </div>
             </div>
             <div class="segment segment-free" [style.width.%]="animated ? percentFree : 0"
@@ -28,6 +31,7 @@
                 <div class="tooltip" [class.tooltip-visible]="hoveredSegment === 'free'">
                     <span class="dot dot-free"></span>
                     <span>{{ 'DOWNLOAD.STORAGE_AVAILABLE' | translate }}</span>
+                    <span class="tooltip-size">{{ formatGo(freeBytes) }} Go</span>
                 </div>
             </div>
         </div>

@@ -74,7 +74,7 @@ export class StorageRepartitionComponent {
     }
   }
 
-  private formatGo(bytes: number): string {
+  formatGo(bytes: number): string {
     return (bytes / this.GIGABYTE).toFixed(1).replace('.', ',');
   }
 
