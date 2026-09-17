@@ -18,6 +18,7 @@ export class StorageRepartitionComponent {
   private readonly GIGABYTE: number = 1024 ** 3;
 
   loaded: boolean = false;
+  animated: boolean = false;
   hoveredSegment: StorageSegment | null = null;
 
   totalBytes: number = 0;
@@ -66,6 +67,11 @@ export class StorageRepartitionComponent {
     this.totalFormatted = this.formatGo(total);
 
     this.loaded = total > 0;
+
+    if (this.loaded) {
+      // Laisse les segments s'afficher à 0% avant d'appliquer leur largeur pour déclencher la transition
+      setTimeout(() => this.animated = true, 50);
+    }
   }
 
   private formatGo(bytes: number): string {

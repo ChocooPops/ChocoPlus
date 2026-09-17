@@ -1,46 +1,36 @@
-@if(loaded) {
 <div class="storage-repartition">
     <p class="storage-title">{{ 'DOWNLOAD.STORAGE_TITLE' | translate }}</p>
     <div class="storage-bar-row">
         <div class="storage-bar">
-            <div class="segment segment-other" [style.width.%]="percentOther"
+            <div class="segment segment-other" [style.width.%]="animated ? percentOther : 0"
                 (mouseenter)="onSegmentEnter('other')" (mouseleave)="onSegmentLeave()">
-                @if(hoveredSegment === 'other') {
-                <div class="tooltip">
+                <div class="tooltip" [class.tooltip-visible]="hoveredSegment === 'other'">
                     <span class="dot dot-other"></span>
                     <span>{{ 'DOWNLOAD.STORAGE_OTHER' | translate }}</span>
                 </div>
-                }
             </div>
-            <div class="segment segment-downloads" [style.width.%]="percentDownloads"
+            <div class="segment segment-downloads" [style.width.%]="animated ? percentDownloads : 0"
                 (mouseenter)="onSegmentEnter('downloads')" (mouseleave)="onSegmentLeave()">
-                @if(hoveredSegment === 'downloads') {
-                <div class="tooltip">
+                <div class="tooltip" [class.tooltip-visible]="hoveredSegment === 'downloads'">
                     <span class="dot dot-downloads"></span>
                     <span>{{ 'DOWNLOAD.STORAGE_DOWNLOADS' | translate }}</span>
                 </div>
-                }
             </div>
-            <div class="segment segment-cache" [style.width.%]="percentCache"
+            <div class="segment segment-cache" [style.width.%]="animated ? percentCache : 0"
                 (mouseenter)="onSegmentEnter('cache')" (mouseleave)="onSegmentLeave()">
-                @if(hoveredSegment === 'cache') {
-                <div class="tooltip">
+                <div class="tooltip" [class.tooltip-visible]="hoveredSegment === 'cache'">
                     <span class="dot dot-cache"></span>
                     <span>{{ 'DOWNLOAD.STORAGE_CACHE' | translate }}</span>
                 </div>
-                }
             </div>
-            <div class="segment segment-free" [style.width.%]="percentFree"
+            <div class="segment segment-free" [style.width.%]="animated ? percentFree : 0"
                 (mouseenter)="onSegmentEnter('free')" (mouseleave)="onSegmentLeave()">
-                @if(hoveredSegment === 'free') {
-                <div class="tooltip">
+                <div class="tooltip" [class.tooltip-visible]="hoveredSegment === 'free'">
                     <span class="dot dot-free"></span>
                     <span>{{ 'DOWNLOAD.STORAGE_AVAILABLE' | translate }}</span>
                 </div>
-                }
             </div>
         </div>
-        <p class="storage-total">{{ usedFormatted }} Go / {{ totalFormatted }} Go</p>
+        <p class="storage-total" [class.storage-total-visible]="animated">{{ usedFormatted }} Go / {{ totalFormatted }} Go</p>
     </div>
 </div>
-}

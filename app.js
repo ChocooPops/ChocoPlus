@@ -437,7 +437,6 @@ ipcMain.handle('download-media', async (event, data) => {
 ipcMain.handle('list-downloads', () => {
   const entries = fs.readdirSync(downloadsRootPath, { withFileTypes: true });
   const downloads = [];
-
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
     const metadataPath = path.join(downloadsRootPath, entry.name, 'metadata.json');

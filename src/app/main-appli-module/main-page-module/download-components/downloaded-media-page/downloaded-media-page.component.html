@@ -1,9 +1,12 @@
 <div class="container-page">
     <app-menu-tmp></app-menu-tmp>
-    <div class="page-header">
-        <p class="page-title">{{ title | translate }}</p>
-        <app-storage-repartition></app-storage-repartition>
-    </div>
     <div class="space"></div>
-    <app-grid-list [mediaList]="medias" [title]="''" [format]="format"></app-grid-list>
+    <div class="container-list">
+        <div class="page-header" [style.margin-inline.vw]="marginLeft" >
+            <p> {{ title | translate }} </p>
+            <app-storage-repartition></app-storage-repartition>
+        </div>
+        <div style="margin-bottom: -70px;"></div>
+        <app-grid-list [mediaList]="medias" [title]="''" [format]="format"></app-grid-list>
+    </div>
 </div>

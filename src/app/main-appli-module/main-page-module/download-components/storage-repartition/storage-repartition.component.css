@@ -1,18 +1,22 @@
+p {
+    margin: 0;
+}
+
 .storage-repartition {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-width: 260px;
-    max-width: 420px;
+    gap: 4px;
+    min-width: 420px;
+    max-width: 720px;
     width: 100%;
 }
 
 .storage-title {
     margin: 0;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--white-dark, #E6E6E6);
-    text-align: right;
+    text-align: left;
 }
 
 .storage-bar-row {
@@ -25,17 +29,31 @@
     position: relative;
     display: flex;
     flex: 1;
-    height: 8px;
-    border-radius: 999px;
+    height: 6px;
+    border-radius: 5px;
     overflow: visible;
-    background-color: #1a1a1a;
+    background-color: #737373;
 }
 
 .segment {
     position: relative;
     height: 100%;
-    cursor: default;
-    transition: filter 0.2s ease;
+    width: 0;
+    cursor: pointer;
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s ease;
+}
+
+/* Les segments se remplissent l un après l autre */
+.segment-downloads {
+    transition-delay: 0.15s, 0s;
+}
+
+.segment-cache {
+    transition-delay: 0.3s, 0s;
+}
+
+.segment-free {
+    transition-delay: 0.45s, 0s;
 }
 
 .segment:first-child {
@@ -71,22 +89,33 @@
 .storage-total {
     margin: 0;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--white-dark, #E6E6E6);
     white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.5s ease 0.5s, transform 0.5s ease 0.5s;
+}
+
+.storage-total-visible {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .tooltip {
     position: absolute;
-    bottom: calc(100% + 10px);
+    top: calc(100% + 10px);
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(-6px) scale(0.95);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background-color: #1a1a1a;
+    padding: 8px 14px;
+    border-radius: 5px;
+    background-color: rgb(26, 26, 26, 0.8);
     border: 1px solid #333;
     color: var(--white-dark, #E6E6E6);
     font-size: 12px;
@@ -97,14 +126,21 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
+.tooltip-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0) scale(1);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0s;
+}
+
 .tooltip::after {
     content: '';
     position: absolute;
-    top: 100%;
+    bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
-    border-top-color: #1a1a1a;
+    border-bottom-color: #1a1a1a;
 }
 
 .dot {
