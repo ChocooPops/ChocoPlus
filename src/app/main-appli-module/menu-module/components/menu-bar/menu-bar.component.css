@@ -68,6 +68,15 @@
     position: relative;
 }
 
+.container-measure-plus-tab {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    visibility: hidden;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
 .container-tabs-plus {
     position: absolute;
     top: 51px;

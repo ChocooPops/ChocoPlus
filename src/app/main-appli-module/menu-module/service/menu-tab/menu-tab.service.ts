@@ -143,13 +143,13 @@ export class MenuTabService {
     return this.plusTab;
   }
 
-  public getLastElements(count: number): MenuTabModel[] {
+  public getLastElements(count: number, source: MenuTabModel[] = this.menuTabs): MenuTabModel[] {
     if (count <= 0) return [];
-    return this.menuTabs.slice(-count);
+    return source.slice(-count);
   }
 
-  public getTabsNotInPlus(tabs: MenuTabModel[]): MenuTabModel[] {
-    return this.menuTabs.filter(item =>
+  public getTabsNotInPlus(tabs: MenuTabModel[], source: MenuTabModel[] = this.menuTabs): MenuTabModel[] {
+    return source.filter(item =>
       !tabs.some(item2 => item2.id === item.id)
     );
   }

@@ -15,12 +15,13 @@
         <img src="icon/choco.svg">
     </div>
 </div>
-<div class="menu2">
-    <div class="section">
+<div class="menu2" #menuRowRef>
+    <div class="section" #logoRef>
         <img src="icon/choco.svg">
     </div>
+
     @for(menuTab of menuTabs; track menuTab.id) {
-    <app-menu-tab [menuTab]="menuTab"></app-menu-tab>
+    <app-menu-tab #tabRef [menuTab]="menuTab"></app-menu-tab>
     }
 
     @if(menuPlus.length > 0) {
@@ -36,10 +37,14 @@
     </div>
     }
 
-    <div class="container-other-tab">
+    <div class="container-other-tab" #otherTabRef>
         <app-navigation-button></app-navigation-button>
         <app-download-menu-button></app-download-menu-button>
         <app-change-format-poster></app-change-format-poster>
         <app-user-tab></app-user-tab>
+    </div>
+
+    <div class="container-measure-plus-tab" #plusTabMeasureRef>
+        <app-menu-tab [menuTab]="plusTab"></app-menu-tab>
     </div>
 </div>
