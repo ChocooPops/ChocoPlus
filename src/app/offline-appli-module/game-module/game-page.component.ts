@@ -10,21 +10,24 @@ import { PlateformService } from './services/plateform/plateform.service';
 import { GoldService } from './services/gold/gold.service';
 import { CharacterService } from './services/character/character.service';
 import { ScoreComponent } from './components/score/score.component';
-import { MenuBarComponent } from './components/menu/menu-bar/menu-bar.component';
+import { MenuTabService } from '../../main-appli-module/menu-module/service/menu-tab/menu-tab.service';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [StarsComponent, ScoreComponent, TreeComponent, GoldComponent, PlateformComponent, SkyComponent, CloudComponent, CharacterComponent, MenuBarComponent],
+  imports: [StarsComponent, ScoreComponent, TreeComponent, GoldComponent, PlateformComponent, SkyComponent, CloudComponent, CharacterComponent],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.css'
 })
 export class GamePageComponent {
 
-  constructor(private plateformService: PlateformService,
-    private goldService: GoldService,
-    private characterService: CharacterService,
-  ) { }
+  constructor(private readonly plateformService: PlateformService,
+    private readonly goldService: GoldService,
+    private readonly characterService: CharacterService,
+    private readonly menuTabService: MenuTabService
+  ) { 
+    this.menuTabService.setActivateTransition(true);
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: UIEvent): void {

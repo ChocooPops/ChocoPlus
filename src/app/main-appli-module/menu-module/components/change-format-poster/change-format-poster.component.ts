@@ -74,7 +74,7 @@ export class ChangeFormatPosterComponent {
           get: () => this.formatPosterService.fetchFormatPosterCatalog()
         },
         {
-          test: u => u === '/main-app/downloads',
+          test: u => u === '/main-app/downloads' || u === '/offline-app/downloads',
           get: () => this.formatPosterService.fetchFormatPosterDownload()
         }
       ];
@@ -120,7 +120,7 @@ export class ChangeFormatPosterComponent {
         this.formatPosterService.setFormatPosterMyList(this.format);
       } else if (this.currentRoute === '/main-app/catalog') {
         this.formatPosterService.setFormatPosterCatalog(this.format);
-      } else if (this.currentRoute === '/main-app/downloads') {
+      } else if (this.currentRoute === '/main-app/downloads' || this.currentRoute === '/offline-app/downloads') {
         this.formatPosterService.setFormatPosterDownload(this.format);
       }
       this.setClass(this.format);

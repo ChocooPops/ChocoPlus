@@ -45,23 +45,23 @@ export class MenuBarComponent {
       this.scrollEventService.IfTopScrollIsAchievement().subscribe((isTopAchievement: boolean) => {
         this.isScrolled = isTopAchievement;
       })
-    )
+    );
 
     this.subscription.add(
       this.menuTabService.getActivateTransition().subscribe((state: boolean) => {
         this.activateTransition = state;
       })
-    )
+    );
 
     this.subscription.add(
       this.menuTabService.getActivateTransitionFromMediaPage().subscribe((state: boolean) => {
         this.activateTransitionFromMediaPage = state;
       })
-    )
+    );
 
     this.resizeSubscription = fromEvent(window, 'resize').subscribe(() => {
       this.checkWindowSize();
-    })
+    });
   }
 
   ngOnDestroy(): void {

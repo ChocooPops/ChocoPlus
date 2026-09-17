@@ -1,4 +1,4 @@
-<div class="menu">
+<div class="menu" [ngClass]="{'menu-transparent': isTransparent}">
     <div class="section">
         <img src="icon/choco.svg">
     </div>
@@ -7,6 +7,10 @@
     <div class="section">
         <img src="icon/choco.svg">
     </div>
+
+    @for(menuTab of menuTabs; track menuTab.id) {
+    <app-menu-tab [menuTab]="menuTab"></app-menu-tab>
+    }
 
     <div class="container-other-tab">
         <app-navigation-button></app-navigation-button>

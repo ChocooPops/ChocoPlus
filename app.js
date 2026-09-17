@@ -450,6 +450,15 @@ ipcMain.handle('list-downloads', () => {
   return downloads;
 });
 
+ipcMain.handle('download-not-empty', () => {
+  try {
+    const entries = fs.readdirSync(downloadsRootPath, { withFileTypes: true });
+    return entries.length > 0;
+  } catch(error) {
+    return false;
+  }
+});
+
 ipcMain.handle('is-media-downloaded', (event, movieId) => {
   return hasMediaDownloaded(movieId);
 });

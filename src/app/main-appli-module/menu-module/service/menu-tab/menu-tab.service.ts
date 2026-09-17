@@ -69,6 +69,25 @@ export class MenuTabService {
     }
   ];
 
+  private offlineMenuTabs: MenuTabModel[] = [
+    {
+      id: 20,
+      name: "OFFLINE.DOWNLOADS",
+      type: MenuType.DOWNLOAD,
+      route: "downloads",
+      srcImage: `${this.rootImage}/dl.svg`,
+      isClicked: false
+    },
+    {
+      id: 21,
+      name: "OFFLINE.GAME",
+      type: MenuType.GAME,
+      route: "game",
+      srcImage: `${this.rootImage}/game.svg`,
+      isClicked: false
+    }
+  ];
+
   private plusTab: MenuTabModel = {
     id: 10,
     name: "MENU.MAIN.MORE",
@@ -86,6 +105,10 @@ export class MenuTabService {
 
   public getAllMenuTab(): MenuTabModel[] {
     return this.menuTabs;
+  }
+
+  public getAllOfflineMenuTab(): MenuTabModel[] {
+    return this.offlineMenuTabs;
   }
 
   public getMenuTabByType(types: MenuType[]): MenuTabModel[] {

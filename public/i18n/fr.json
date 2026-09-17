@@ -39,7 +39,9 @@
         }
     },
     "OFFLINE": {
-        "LOGIN": "Connexion"
+        "LOGIN": "Connexion",
+        "GAME": "Jeu",
+        "DOWNLOADS": "Téléchargements"
     },
     "MENU": {
         "MAIN": {

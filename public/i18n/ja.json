@@ -39,7 +39,9 @@
         }
     },
     "OFFLINE": {
-        "LOGIN": "ログイン"
+        "LOGIN": "ログイン",
+        "GAME": "ゲーム",
+        "DOWNLOADS": "ダウンロード"
     },
     "MENU": {
         "MAIN": {

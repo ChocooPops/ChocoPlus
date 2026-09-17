@@ -165,6 +165,14 @@ export class DownloadService {
     );
   }
 
+  public mediaDownloadedNotEmpty(): Observable<boolean> {
+    return from(window.electron.mediaDownloadedNotEmpty() as Promise<boolean>).pipe(
+      map((records: boolean) => {
+        return records;
+      })
+    );
+  }
+
   public isMediaDownloaded(movieId: number): Observable<boolean> {
     return from(window.electron.isMediaDownloaded(movieId) as Promise<boolean>).pipe(
       map((records: boolean) => {

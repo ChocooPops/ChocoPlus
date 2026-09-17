@@ -1,6 +1,6 @@
 import { SpriteModel } from "../models/sprite.interface";
 import { BehaviorSubject, Observable } from "rxjs";
-import { DimensionModel } from "../../common-module/models/dimension.interface";
+import { DimensionModel } from "../../../common-module/models/dimension.interface";
 import { ElementRef } from "@angular/core";
 
 export class SpriteObserver {

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
-import { CharacterService } from '../../../game-module/services/character/character.service';
-import { CloudService } from '../../../game-module/services/cloud/cloud.service';
-import { GoldService } from '../../../game-module/services/gold/gold.service';
-import { PlateformService } from '../../../game-module/services/plateform/plateform.service';
-import { SkyService } from '../../../game-module/services/sky/sky.service';
-import { TreeService } from '../../../game-module/services/tree/tree.service';
+import { combineLatest, take } from 'rxjs';
+import { CharacterService } from '../../../offline-appli-module/game-module/services/character/character.service';
+import { CloudService } from '../../../offline-appli-module/game-module/services/cloud/cloud.service';
+import { GoldService } from '../../../offline-appli-module/game-module/services/gold/gold.service';
+import { PlateformService } from '../../../offline-appli-module/game-module/services/plateform/plateform.service';
+import { SkyService } from '../../../offline-appli-module/game-module/services/sky/sky.service';
+import { TreeService } from '../../../offline-appli-module/game-module/services/tree/tree.service';
+import { DownloadService } from '../../../main-appli-module/media-module/services/download/download.service';
 import { ButtonFormComponent } from '../button-form/button-form.component';
 import { TypeButtonModel } from '../../models/type-button.model';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -33,26 +34,33 @@ export class PreloadOfflineAppComponent {
   transitionActivating: boolean = false;
   TypeButton = TypeButtonModel;
 
-  constructor(private router: Router,
-    private characterService: CharacterService,
-    private cloudService: CloudService,
-    private goldService: GoldService,
-    private plateformService: PlateformService,
-    private skyService: SkyService,
-    private treeService: TreeService
+  constructor(private readonly router: Router,
+    private readonly characterService: CharacterService,
+    private readonly cloudService: CloudService,
+    private readonly goldService: GoldService,
+    private readonly plateformService: PlateformService,
+    private readonly skyService: SkyService,
+    private readonly treeService: TreeService,
+    private readonly downloadService: DownloadService
   ) { }
 
   onClick(): void {
     this.transitionLoad = !this.transitionLoad;
     if (!this.transitionActivating) {
+      this.transitionActivating = true;
       this.srcCat = this.srcLoading;
       this.message = this.messageLoading;
-      this.transitionActivating = true;
+      this.downloadService.mediaDownloadedNotEmpty().pipe(take(1)).subscribe((notEmpty: boolean) => {
+        if (notEmpty) {
+          this.loadGame('offline-app/downloads');
+        } else {
+          this.loadGame('offline-app/game');
+        }
+      });
     }
-    this.loadGame();
   }
 
-  loadGame(): void {
+  loadGame(route: string): void {
     combineLatest([
       this.characterService.getCharacter().getSpriteIsLoad(),    // 0
       this.characterService.getRainbow().getSpriteIsLoad(),      // 1
@@ -101,7 +109,7 @@ export class PreloadOfflineAppComponent {
 
       if (allLoaded) {
         setTimeout(() => {
-          this.router.navigateByUrl('offline-app');
+          this.router.navigateByUrl(route);
         }, 1000);
       }
     });

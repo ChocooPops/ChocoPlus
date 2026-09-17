@@ -7,6 +7,8 @@ export enum MenuType {
     MYLIST = "MYLIST",
     EDITION = "EDITION",
     PLUS = "PLUS",
+    DOWNLOAD = "DOWNLOAD",
+    GAME = "GAME",
 
     HISTORIC = "HISTORIC",
     PROFIL = "PROFIL",

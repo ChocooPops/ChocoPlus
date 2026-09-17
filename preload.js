@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('electron', {
 
   downloadMedia: (payload) => ipcRenderer.invoke('download-media', payload),
   listDownloads: () => ipcRenderer.invoke('list-downloads'),
+  mediaDownloadedNotEmpty:() => ipcRenderer.invoke('download-not-empty'),
   isMediaDownloaded: (movieId) => ipcRenderer.invoke('is-media-downloaded', movieId), 
   isEpisodeDownloaded: (data) => ipcRenderer.invoke('is-episode-downloaded', data), 
   deleteDownload: (key) => ipcRenderer.invoke('delete-download', key),
