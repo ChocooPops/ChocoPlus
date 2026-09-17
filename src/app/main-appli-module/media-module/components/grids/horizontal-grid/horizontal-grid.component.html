@@ -7,7 +7,7 @@
         @if(mediaList.length > 0) {
         @for(media of mediaList; track media) {
         @defer (on viewport) {
-        <app-horizontal-poster [media]="media" [typeZoomX]="media.typeZoomX"></app-horizontal-poster>
+        <app-horizontal-poster [media]="media" [typeZoomX]="media.typeZoomX" [isOnLine]="isOnLine"></app-horizontal-poster>
         } @placeholder {
         <div class="poster-placeholder"></div>
         }

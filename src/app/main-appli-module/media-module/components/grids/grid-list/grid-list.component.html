@@ -1,5 +1,5 @@
 @if(format === FormatType.VERTICAL) {
-<app-vertical-grid [mediaList]="mediaList" [title]="title" [isLoadingCatalog]="isLoadingCatalog"></app-vertical-grid>
+<app-vertical-grid [mediaList]="mediaList" [title]="title" [isLoadingCatalog]="isLoadingCatalog" [isOnLine]="isOnLine"></app-vertical-grid>
 }@else if (format === FormatType.HORIZONTAL) {
-<app-horizontal-grid [mediaList]="mediaList" [title]="title" [isLoadingCatalog]="isLoadingCatalog"></app-horizontal-grid>
+<app-horizontal-grid [mediaList]="mediaList" [title]="title" [isLoadingCatalog]="isLoadingCatalog" [isOnLine]="isOnLine"></app-horizontal-grid>
 }

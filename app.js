@@ -7,7 +7,6 @@ const { spawn } = require("child_process");
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
-const { error } = require('console');
 
 const ProcessStatus = Object.freeze({
   LAUNCHING: "LAUNCHING",
@@ -77,7 +76,7 @@ function loadWindowState() {
       return JSON.parse(data);
     }
   } catch (error) {
-    console.error('Erreur lors du chargement de l\'état de la fenêtre:', error);
+    console.error('Error loading the window state:', error);
   }
 
   // Valeurs par défaut
@@ -106,7 +105,7 @@ function saveWindowState() {
 
     fs.writeFileSync(windowStateFile, JSON.stringify(state, null, 2));
   } catch (error) {
-    console.error('Erreur lors de la sauvegarde de l\'état de la fenêtre:', error);
+    console.error('Error saving the window state:', error);
   }
 }
 
@@ -439,10 +438,10 @@ ipcMain.handle('list-downloads', () => {
   const downloads = [];
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
-    const metadataPath = path.join(downloadsRootPath, entry.name, 'metadata.json');
+    const metadataPath = path.join(downloadsRootPath, entry.name, FILE_METADATA);
     if (!fs.existsSync(metadataPath)) continue;
     try {
-    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+      const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
       downloads.push( metadata.media );
     } catch (error) {
       // Corrupt metadata: This entry is ignored
@@ -458,7 +457,42 @@ ipcMain.handle('is-media-downloaded', (event, movieId) => {
 ipcMain.handle('is-episode-downloaded', (event, data) => {
   const { seriesId, seasonId, episodeId } = data;
   return hasEpisodeDownloaded(seriesId, seasonId, episodeId);
-})
+});
+
+ipcMain.handle('get-media-info', (event, mediaId) => {
+  try {
+    const metadataPath = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
+    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+    return metadata.info;
+  } catch(error) {
+    throw error;
+  }
+});
+
+ipcMain.handle('get-all-episodes', (event, data) => {
+  try {
+    const downloads = [];
+    const { seriesId, seasonId } = data;
+    const seasonPath = path.join(downloadsRootPath, String(seriesId), String(seasonId));
+    if (fs.existsSync(seasonPath)) {
+        const entries = fs.readdirSync(seasonPath, { withFileTypes: true });
+        for (const entry of entries) {
+          if (!entry.isDirectory()) continue;
+          const metadataPath = path.join(seasonPath, entry.name, FILE_METADATA);
+          if (!fs.existsSync(metadataPath)) continue;
+          try {
+            const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+            downloads.push( metadata );
+          } catch (error) {
+            // Corrupt metadata: This entry is ignored
+          }
+        }
+    }
+    return downloads.sort((a, b) => a.episodeNumber - b.episodeNumber);
+  } catch(error) {
+    throw error;
+  }
+});
 
 ipcMain.handle('delete-download', async (event, key) => {
 });
@@ -509,7 +543,6 @@ ipcMain.handle('open-vlc-with-video', async (event, videoPath) => {
 
     exec(command, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Erreur : ${error.message}`);
         reject(error.message);
         return;
       }
@@ -540,14 +573,12 @@ ipcMain.handle('delete-cache', async () => {
   const ses = session.defaultSession;
 
   ses.clearCache().then(() => {
-    console.log('Cache cleared');
   });
 
   ses.clearStorageData({
     storages: ['cookies', 'sessionstorage', 'indexdb', 'websql', 'serviceworkers'],
     quotas: ['temporary', 'persistent', 'syncable']
   }).then(() => {
-    console.log('Deleted storage data');
   });
 })
 
@@ -669,7 +700,6 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
         if (message.startsWith(NEW_EPISODE_ID) && mediaLaunched.type === MediaType.SERIES) {
           const id = Number(message.split(' : ')[1].trim());
           mediaLaunched.id = id;
-          //console.log(message + " --> " + id);
           continue;
         }
 
@@ -683,7 +713,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
             continue;
           } else if (message.includes(MediaType.EPISODE)) {
             mainWindow.webContents.send('choco-player-status', { EpisodeId: id });
-            //console.log(message + " --> " + id);
+
             continue;
           }
         }
@@ -691,12 +721,10 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
 
     });
 
-    csharpProcess.stderr.on('data', (data) => {
-      //console.error(`C# stderr: ${data}`);
-    });
+    // csharpProcess.stderr.on('data', (data) => {
+    // });
 
     csharpProcess.on('close', (code) => {
-      //console.log(`C# process exited with code ${code}`);
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
       }
@@ -705,7 +733,6 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     });
 
     csharpProcess.on('error', (err) => {
-      //console.error('Failed to start C# process:', err);
       csharpProcess = null;
     });
 

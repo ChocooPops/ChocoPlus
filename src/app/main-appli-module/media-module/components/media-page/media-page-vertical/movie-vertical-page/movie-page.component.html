@@ -91,27 +91,31 @@
             }
         </div>
 
-        <div class="container-same-title">
-            <p [ngClass]="'color-white-dark'">{{'MEDIA_PAGE.SIMILAR_TITLES' | translate}}</p>
-        </div>
+        @if (isOnLine) {
+            <div class="container-same-title">
+                <p [ngClass]="'color-white-dark'">{{'MEDIA_PAGE.SIMILAR_TITLES' | translate}}</p>
+            </div>
+        }
     </div>
 
-    @if (similarMedias) {
-    <div class="container-similar-movies">
-        @for (media of similarMedias; track media) {
-        @defer(on viewport) {
-        <app-similar-poster-horizontal [media]="media" (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-horizontal>
-        } @placeholder {
-        <app-similar-poster-horizontal-loading></app-similar-poster-horizontal-loading>
+    @if (isOnLine) {
+        @if (similarMedias) {
+        <div class="container-similar-movies">
+            @for (media of similarMedias; track media) {
+            @defer(on viewport) {
+            <app-similar-poster-horizontal [media]="media" (onClicked)="onClickSimilarTitle($event)"></app-similar-poster-horizontal>
+            } @placeholder {
+            <app-similar-poster-horizontal-loading></app-similar-poster-horizontal-loading>
+            }
+            }
+        </div>
+        } @else {
+        <div class="container-similar-movies">
+            @for(media of similarMediasLoading; track media) {
+            <app-similar-poster-horizontal-loading></app-similar-poster-horizontal-loading>
+            }
+        </div>
         }
-        }
-    </div>
-    } @else {
-    <div class="container-similar-movies">
-        @for(media of similarMediasLoading; track media) {
-        <app-similar-poster-horizontal-loading></app-similar-poster-horizontal-loading>
-        }
-    </div>
     }
 
     <div class="margin-bottom"></div>

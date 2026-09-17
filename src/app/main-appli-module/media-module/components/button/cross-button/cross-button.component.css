@@ -2,6 +2,10 @@
   display: none;
 }
 
+.iconWrap {
+  cursor: pointer;
+}
+
 .iconWrap:hover .icon--enter {
   display: block;
 }

@@ -85,14 +85,16 @@
         <div class="container-same-title">
             <p (click)="onClickTypeSeasonsEpisodes()" [ngClass]="{'color-white-dark' : type, 'color-grey-dark' :!type}">
                 {{'MEDIA_PAGE.SEASONS_EPISODES' | translate}}</p>
+            @if (isOnLine) {
             <p (click)="onClickTypeSimilarTitles()" [ngClass]="{'color-white-dark' : !type, 'color-grey-dark' :type}">
                 {{'MEDIA_PAGE.SIMILAR_TITLES' | translate}} </p>
+            }
         </div>
     </div>
 
     @if(type) {
     <div class="container-series">
-        <div class="container-season">
+        <div class="container-season animationPosterAndLicense">
             @if(series.seasons.length > 0) {
             @for(season of series.seasons; track season.id; let idx = $index) {
             <div class="container-poster" (click)="onClickSeason(idx)">
@@ -136,7 +138,7 @@
         <app-episode-poster-vertical-view-loading></app-episode-poster-vertical-view-loading>
         }
     </div>
-    } @else {
+    } @else if (isOnLine) {
     @if(similarMedias) {
     <div class="container-similar-movies">
         @for (media of similarMedias; track media) {

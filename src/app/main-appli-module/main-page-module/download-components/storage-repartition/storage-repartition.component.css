@@ -12,7 +12,7 @@ p {
 
 .storage-title {
     margin: 0;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--white-dark, #E6E6E6);
     text-align: left;
@@ -87,7 +87,7 @@ p {
 
 .storage-total {
     margin: 0;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--white-dark, #E6E6E6);
     white-space: nowrap;

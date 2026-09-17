@@ -20,6 +20,7 @@ export class PosterAbstraction {
     @Input() media !: MediaModel;
     @Input() typeZoomX: boolean | undefined = undefined;
     @Input() typeZoomY: boolean = false;
+    @Input() isOnLine: boolean = true;
     @ViewChild('poster') poster !: ElementRef<HTMLDivElement>;
     @Input() displayOnEditionPage: boolean = false;
 

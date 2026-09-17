@@ -23,8 +23,7 @@ export class SeriesVerticalPageComponent extends SeriesPageAbstraction {
   protected formatMediaPage: FormatMediaPageModel = FormatMediaPageModel.VERTICAL;
   
   date!: Date | null;
-  type: boolean = true;
-
+  
   onClickTypeSeasonsEpisodes(): void {
     this.type = true;
     this.onLoadEpisodeByIdOrIndex();
@@ -32,7 +31,7 @@ export class SeriesVerticalPageComponent extends SeriesPageAbstraction {
 
   onClickTypeSimilarTitles(): void {
     this.type = false;
-    this.fetchSimilarMovie();
+    this.fetchSimilarMedia();
   }
 
   protected resetInfoSpe(): void {

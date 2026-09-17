@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TitleCasePipe } from '@angular/common';
 import { JobPipe } from '../../../../../../common-module/pipe/job.pipe';
+import { DownloadService } from '../../../../services/download/download.service';
 
 @Component({
   selector: 'app-movie-vertical-page',
@@ -48,12 +49,13 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   constructor(imagePreloaderService: ImagePreloaderService,
     similarTitleService: SimilarTitleService,
     mediaSelectedService: MediaSelectedService,
-    FiltersCatalogService: FiltersCatalogService,
+    filtersCatalogService: FiltersCatalogService,
+    downloadService: DownloadService,
     router: Router,
     private readonly verifTimerShowService: VerifTimerShowService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly historicWatchProgressService: HistoricWatchProgressService) { 
-      super(imagePreloaderService, similarTitleService, mediaSelectedService, FiltersCatalogService, router);
+      super(imagePreloaderService, similarTitleService, mediaSelectedService, filtersCatalogService, downloadService, router);
     }
 
   protected resetInfoSpe(): void {

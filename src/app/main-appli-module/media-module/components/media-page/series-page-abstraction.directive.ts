@@ -1,119 +1,95 @@
 import { Directive, Input, SimpleChanges } from '@angular/core';
 import { SeriesModel } from '../../models/series/series.interface';
-import { MediaModel } from '../../models/media.interface';
 import { EpisodeModel } from '../../models/series/episode.interface';
 import { Subscription, take } from 'rxjs';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
-import { MediaInfoModel } from '../../models/media-info.interface';
 import { MediaSelectedService } from '../../services/media-selected/media-selected.service';
 import { SimilarTitleService } from '../../services/similar-title/similar-title.service';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { SeriesService } from '../../services/series/series.service';
 import { SeasonModel } from '../../models/series/season.interface';
-import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
-import { JobModel } from '../../models/job.eum';
 import { FormatMediaPageModel } from '../../models/format-media-page-enum';
-import { CategorySimpleModel } from '../../../edition-module/models/category/categorySimple.model';
-import { FILTERS } from '../../models/catalog/filters.interface';
-import { Operation } from '../../models/catalog/operation.enum';
 import { FiltersCatalogService } from '../../services/filters-catalog/filters-catalog.service';
 import { Router } from '@angular/router';
-import { FilterType } from '../../models/catalog/filter-type.enum';
-import { MediaCreditModel } from '../../models/media-credit.interface';
-import { LogicalOperator } from '../../models/catalog/logical-operator';
+import { MovieSeriesPageAbstraction } from './movie-series-page-abstraction.directive';
+import { DownloadService } from '../../services/download/download.service';
 
 @Directive({})
-export abstract class SeriesPageAbstraction {
+export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
 
   @Input() series!: SeriesModel;
 
-  protected abstract formatMediaPage: FormatMediaPageModel;
-
   protected abortControllerEpisodes = new AbortController();
-  protected abortControllerSimilarMedias = new AbortController();
-  protected abortControllerInfoSerie = new AbortController();
-
   protected subscriptionEpisodes!: Subscription;
-  protected subscriptionSimilarTitles!: Subscription;
-  protected subscriptionSeriesInfo!: Subscription;
 
   srcSucces: string = 'icon/success.svg';
-  genres: CategorySimpleModel[] = [];
-  keyWords: string[] = [];
-  description!: string;
-  mediaInfoLoaded: boolean = false;
-
-  casts: MediaCreditModel[] | undefined = undefined;
-  crews: MediaCreditModel[] | undefined = undefined;
-  similarMedias: MediaModel[] | undefined = undefined;
-  similarMediasLoading: number[] = [];
 
   seasonsLoading: number[] = [];
   seasonsPosterTmp: number[] = [];
   episodes: EpisodeModel[] | undefined = [];
-
-  JobModel = JobModel;
+  type: boolean = true;
 
   constructor(
     protected readonly compressedPosterService: CompressedPosterService,
-    protected readonly mediaSelectedService: MediaSelectedService,
-    protected readonly similarTitleService: SimilarTitleService,
-    protected readonly imagePreloaderService: ImagePreloaderService,
+    mediaSelectedService: MediaSelectedService,
+    similarTitleService: SimilarTitleService,
+    imagePreloaderService: ImagePreloaderService,
     protected readonly seriesService: SeriesService,
-    protected readonly filtersCatalogService: FiltersCatalogService,
-    protected readonly router: Router
-  ) { }
-
-  ngOnInit(): void {
-    this.initComponentLoading();
+    filtersCatalogService: FiltersCatalogService,
+    downloadService: DownloadService,
+    router: Router
+  ) {
+    super(imagePreloaderService, similarTitleService, mediaSelectedService, filtersCatalogService, downloadService, router);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['series']) {
       this.resetInfo();
-      this.initComponentLoading();
+      this.initSimilarLoading();
+      this.initSeasonsLoading();
       this.init();
       this.initSeasons();
-      this.fetchDataSpe();
-      this.fetchMediaInfo();
+      if (this.isOnLine) {
+        this.fetchDataSpe();
+        this.fetchMediaInfo();
+      } else {
+        this.type = true;
+        this.fetchMediaInfoOffLine();
+        this.onLoadEpisodeByIdOrIndex();
+      }
     }
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     this.setUnsubscribeEpisode();
-    this.setUnsubscriptionSimilarTitle();
-    this.setUnsubscriptionSerieInfo();
   }
 
-  private resetInfo(): void {
-    this.resetInfoSpe();
-    this.crews = undefined;
-    this.casts = undefined;
-    this.similarMedias = undefined;
-    this.genres = [];
-    this.keyWords = [];
+  protected getMediaId(): number {
+    return this.series?.id;
+  }
+
+  protected override resetInfoExtra(): void {
     this.episodes = [];
     this.seasonsPosterTmp = [];
-    this.description = '';
   }
 
-  private setUnsubscribeEpisode(): void {
+  protected override beforeFetchSimilarMedia(): void {
+    this.episodes = undefined;
+    if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
+      this.setUnsubscribeEpisode();
+    }
+  }
+
+  protected override transformKeyWord(keyWord: string): string {
+    return this.transform(keyWord);
+  }
+
+  protected setUnsubscribeEpisode(): void {
     if (this.subscriptionEpisodes) {
       this.subscriptionEpisodes.unsubscribe();
     }
     this.abortControllerEpisodes.abort();
-  }
-  private setUnsubscriptionSimilarTitle(): void {
-    if (this.subscriptionSimilarTitles) {
-      this.subscriptionSimilarTitles.unsubscribe();
-    }
-    this.abortControllerSimilarMedias.abort();
-  }
-  private setUnsubscriptionSerieInfo(): void {
-    if (this.subscriptionSeriesInfo) {
-      this.subscriptionSeriesInfo.unsubscribe();
-    }
-    this.abortControllerInfoSerie.abort();
   }
 
   private init(): void {
@@ -130,10 +106,7 @@ export abstract class SeriesPageAbstraction {
     }
   }
 
-  private initComponentLoading(): void {
-    for (let i = 0; i < 9; i++) {
-      this.similarMediasLoading.push(i);
-    }
+  private initSeasonsLoading(): void {
     for (let i = 0; i < 5; i++) {
       this.seasonsLoading.push(i);
     }
@@ -153,189 +126,52 @@ export abstract class SeriesPageAbstraction {
 
   onClickSeason(index: number): void {
     if (index < 0) return;
-    this.resetIsClickedSeason(index);
-    this.seriesService.loadLastSeasonWatchedBySeriesId(this.series.id, this.series.seasons[index].id);
-    this.fetchEpisodeBySeason(this.series.seasons[index].id);
+    this.loadSeasonEpisodes(index);
   }
 
-  protected fetchEpisodeBySeason(idSeason: number): void {
+  private fetchEpisodesBySeason(idSeason: number): void {
     this.episodes = undefined;
     this.setUnsubscribeEpisode();
     if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
-      this.setUnsubscriptionSimilarTitle();
+      this.setUnsubscriptionSimilarTitles();
     }
-    this.subscriptionEpisodes = this.seriesService
-      .fetchEpisodesBySeriesAndSeasonId(this.series.id, idSeason)
+
+    const source$ = this.isOnLine
+      ? this.seriesService.fetchEpisodesBySeriesAndSeasonId(this.series.id, idSeason)
+      : this.downloadService.readAllEpisodesFromSeriesAndSeasonId(this.series.id, idSeason);
+
+    this.subscriptionEpisodes = source$
       .pipe(take(1))
       .subscribe((data: EpisodeModel[]) => {
-        const img: string[] =
-          this.imagePreloaderService.getPosterFromEpisodes(data);
+        const img = this.imagePreloaderService.getPosterFromEpisodes(data);
         this.imagePreloaderService
           .preloadImages(img, this.abortControllerEpisodes.signal)
-          .finally(() => {
-            this.episodes = data;
-          });
+          .finally(() => (this.episodes = data));
       });
-  }
-
-  protected fetchSimilarMovie(): void {
-    this.episodes = undefined;
-    this.setUnsubscriptionSimilarTitle();
-    if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
-      this.setUnsubscribeEpisode();
-    }
-    this.subscriptionSimilarTitles = this.similarTitleService
-      .fetchSimilarTitlesForOneMovieById(this.series.id)
-      .pipe(take(1))
-      .subscribe((data: MediaModel[]) => {
-        let img: string[] = [];
-        if (this.formatMediaPage === FormatMediaPageModel.VERTICAL) {
-          img = this.imagePreloaderService.getPosterFromMediaListToLoad(
-            data,
-            FormatPosterModel.HORIZONTAL,
-          );
-        } else if (this.formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
-          img = this.imagePreloaderService.getPosterFromMediaListToLoad(
-            data,
-            FormatPosterModel.VERTICAL,
-          );
-        }
-        this.imagePreloaderService
-          .preloadImages(img, this.abortControllerSimilarMedias.signal)
-          .finally(() => {
-            this.similarMedias = data;
-          });
-      });
-  }
-
-  protected fetchMediaInfo(): void {
-    if (this.series) {
-      this.setUnsubscriptionSerieInfo();
-      this.subscriptionSeriesInfo = this.mediaSelectedService
-        .fetchGetMediaInfoById(this.series.id)
-        .pipe(take(1))
-        .subscribe((info: MediaInfoModel | null) => {
-          if (info) {
-            this.genres = info.categories;
-            this.keyWords = info.keyWords.map((item) => this.transform(item));
-            
-            if (this.formatMediaPage === FormatMediaPageModel.HORIZONTAL) {
-              const img = this.imagePreloaderService.getPosterFromCredits([...info.casts, ...info.crews]);
-              this.imagePreloaderService
-                .preloadImages(img, this.abortControllerInfoSerie.signal)
-                .finally(() => {
-                  this.casts = info.casts;
-                  this.crews = info.crews;
-              });
-            } else {
-              this.casts = info.casts;
-              this.crews = info.crews;
-            }
-          } else {
-            this.casts = [];
-            this.crews = [];
-          }
-          this.mediaInfoLoaded = true;
-        });
-    }
   }
 
   onErrorPosterSeason(index: number): void {
     this.series.seasons[index].srcPoster = undefined;
   }
 
-  onClickSimilarTitle(media: MediaModel): void {
-    this.mediaSelectedService.selectMedia(media);
-  }
-
   protected onLoadEpisodeByIdOrIndex(): void {
-    if (this.series.seasons.length > 0) {
-      const lastSeasonWatched: number | undefined = this.seriesService.getLastSeasonWatchedBySeriesId(this.series.id);
-      let index: number = -1;
-      if (lastSeasonWatched) {
-        index = this.series.seasons.findIndex((item: SeasonModel) => item.id === lastSeasonWatched);
-      } else {
-        index = this.series.seasons.findIndex(
-          (item: SeasonModel) => item.isClicked === true,
-        );
-      }
+    if (this.series.seasons.length === 0) return;
 
-      if (index >= 0) {
-        this.resetIsClickedSeason(index);
-        this.fetchEpisodeBySeason(this.series.seasons[index].id);
-        this.seriesService.loadLastSeasonWatchedBySeriesId(this.series.id, this.series.seasons[index].id);
-      } else {
-        this.resetIsClickedSeason(0);
-        this.fetchEpisodeBySeason(this.series.seasons[0].id);
-        this.seriesService.loadLastSeasonWatchedBySeriesId(this.series.id, this.series.seasons[0].id);
-      }
-    }
+    const lastSeasonWatched = this.seriesService.getLastSeasonWatchedBySeriesId(this.series.id);
+    const index = lastSeasonWatched
+      ? this.series.seasons.findIndex((s) => s.id === lastSeasonWatched)
+      : this.series.seasons.findIndex((s) => s.isClicked);
+
+    const seasonIndex = index >= 0 ? index : 0;
+    this.loadSeasonEpisodes(seasonIndex);
   }
 
-  protected abstract resetInfoSpe(): void;
-  protected abstract initSpe(): void;
+  private loadSeasonEpisodes(index: number): void {
+    this.resetIsClickedSeason(index);
+    this.fetchEpisodesBySeason(this.series.seasons[index].id);
+    this.seriesService.loadLastSeasonWatchedBySeriesId(this.series.id, this.series.seasons[index].id);
+  }
+
   protected abstract fetchDataSpe(): void;
-  
-  protected setFilterCategory(category: CategorySimpleModel): void {
-    const filters: FILTERS[] = [
-      {
-        id: -2,
-        typeData: FilterType.CATEGORY,
-        operation: Operation.CONTAIN,
-        value: [
-          {
-            name: category.translationKey,
-            value: category.id
-          }
-        ]
-      }
-    ];
-    this.setFilterCatalogAndNavigate(filters);
-  }
-
-  protected setFilterCredit(credit: MediaCreditModel): void {
-    const filters: FILTERS[] = [];
-    let id: number = -2;
-    const jobs: JobModel[] = credit.job.split('\\').map((item) => item.trim()) as any;
-    jobs.forEach((job: JobModel, index: number) => {
-      filters.push({
-          id: id--,
-          typeData: job,
-          operation: Operation.CONTAIN,
-          logic: index === 0 ? LogicalOperator.AND : LogicalOperator.OR,
-          value: [
-            {
-              name: credit.fullName,
-              value: credit.id
-            }
-          ]
-        }
-      )
-    });
-    this.setFilterCatalogAndNavigate(filters);
-  }
-
-  protected setFilterKeyWord(keyword: string): void {
-    const filters: FILTERS[] = [
-      {
-        id: -2,
-        typeData: FilterType.KEY_WORD,
-        operation: Operation.CONTAIN,
-        value: [
-          {
-            name: keyword,
-            value: keyword
-          }
-        ]
-      }
-    ]
-    this.setFilterCatalogAndNavigate(filters);
-  }
-
-  protected setFilterCatalogAndNavigate(filtres: FILTERS[]): void {
-    this.filtersCatalogService.setFilterFromMediaPage(filtres);
-    this.mediaSelectedService.clearSelection();
-    this.router.navigateByUrl('main-app/catalog');
-  }
 
 }

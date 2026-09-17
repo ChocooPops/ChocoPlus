@@ -41,6 +41,7 @@ export class DownloadedMediaPageComponent {
   }
 
   ngOnInit(): void {
+    this.mediaSelectedService.setIsOnLine(false);
     this.loadDownloads();
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterCatalog().subscribe((format: FormatPosterModel) => {
@@ -55,7 +56,6 @@ export class DownloadedMediaPageComponent {
       })
     );
 
-
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterDownload().subscribe((format: FormatPosterModel) => {
         this.format = format;
@@ -67,6 +67,7 @@ export class DownloadedMediaPageComponent {
   }
 
   ngOnDestroy(): void {
+    this.mediaSelectedService.setIsOnLine(true);
     if (this.subscritpionPagination) this.subscritpionPagination.unsubscribe();
     this.subscription.unsubscribe();
     this.mediaSelectedService.clearSelection();

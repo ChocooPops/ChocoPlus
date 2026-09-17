@@ -13,3 +13,9 @@
 .iconWrap:hover .icon--leave {
   display: none;
 }
+
+.is-offline {
+  img {
+    opacity: 0.5;
+  }
+}

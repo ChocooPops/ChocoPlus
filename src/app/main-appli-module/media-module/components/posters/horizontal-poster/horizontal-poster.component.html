@@ -26,8 +26,8 @@
 
             <div class="container-button">
                 <app-start-button [typeButton]="true" [media]="media" [seasons]="seasons" [cursor]="isHover"></app-start-button>
-                <app-mylist-button [typeDisplaying]="true" [media]="media" [cursor]="isHover"></app-mylist-button>
-                <app-modify-button [typeDisplaying]="true" [idMedia]="media.id"
+                <app-mylist-button [typeDisplaying]="true" [media]="media" [cursor]="isHover" [isOnLine]="isOnLine"></app-mylist-button>
+                <app-modify-button [typeDisplaying]="true" [idMedia]="media.id" [isOnLine]="isOnLine"
                     [mediaType]="media.mediaType" [cursor]="isHover"></app-modify-button>
             </div>
 

@@ -12,6 +12,7 @@ import { SeriesModel } from '../../models/series/series.interface';
 @Directive({})
 export abstract class MediaPageAbstraction {
 
+    isOnLine!: boolean;
     clearMediaSelected: boolean = true;
 
     @ViewChild('scrollContainer') scrollContainer!: ElementRef;
@@ -40,7 +41,10 @@ export abstract class MediaPageAbstraction {
     transitionMenuIsActivate: boolean = false;
 
     constructor(private readonly mediaSelectedService: MediaSelectedService,
-        private readonly MenuTabService: MenuTabService) {}
+        private readonly MenuTabService: MenuTabService
+    ) {
+        this.isOnLine = this.mediaSelectedService.getIsOnLine();
+    }
 
     mouseEnter(): void {
         this.isHover = true;

@@ -181,6 +181,22 @@ export class DownloadService {
     );
   }
 
+  public readMediaInfoById(mediaId: number): Observable<MediaInfoModel> {
+    return from(window.electron.getMediaInfo(mediaId) as Promise<MediaInfoModel>).pipe(
+      map((records: MediaInfoModel) => {
+        return records;
+      })
+    );
+  }
+
+  public readAllEpisodesFromSeriesAndSeasonId(seriesId: number, seasonId: number): Observable<EpisodeModel[]> {
+    return from(window.electron.getAllEpisodes({seriesId, seasonId}) as Promise<EpisodeModel[]>).pipe(
+      map((records: EpisodeModel[]) => {
+        return records;
+      })
+    );
+  }
+
   public deleteDownloadsForMedia(media: MediaModel): Observable<void> {
     return of();
   }

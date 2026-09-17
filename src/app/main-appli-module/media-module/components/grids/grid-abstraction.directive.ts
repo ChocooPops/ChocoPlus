@@ -11,7 +11,8 @@ export abstract class GridAbstraction {
     @Input() mediaList: MediaModel[] | undefined = undefined;
     @Input() title: string = '';
     @Input() isLoadingCatalog!: boolean;
-
+    @Input() isOnLine: boolean = true;
+    
     protected subscription: Subscription = new Subscription();
     protected marginLeft !: number;
     protected marginBottom !: number;

@@ -8,8 +8,6 @@ import { MovieModel } from '../../models/movie-model';
 import { SeriesModel } from '../../models/series/series.interface';
 import { SeasonModel } from '../../models/series/season.interface';
 import { ProgressStateMedia } from '../../models/progress-state-media.enum';
-import { environment } from '../../../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
 import { MediaService } from '../media/media.service';
 
 @Injectable({
@@ -19,8 +17,6 @@ export class MediaSelectedService {
 
   private readonly LIMIT_CACHE: number = 15;
   private readonly LIMIT_CACHE_HISTORY: number = 15;
-  private readonly apiUrlMedia: string = `${environment.apiUrlMedia}`;
-  private readonly apiUrlMediaInfo: string = 'media-info';
   private mediaInfoMap: Map<number, MediaInfoModel> = new Map();
 
   private mediaSelectedSubject: BehaviorSubject<MediaModel | undefined> = new BehaviorSubject<MediaModel | undefined>(undefined);
@@ -35,9 +31,9 @@ export class MediaSelectedService {
   private canGoBack$ = this.canGoBackSubject.asObservable();
   private canGoForward$ = this.canGoForwardSubject.asObservable();
 
-  constructor(private readonly http: HttpClient,
-    private readonly mediaService: MediaService
-  ) { }
+  private isOnLine: boolean = true;
+
+  constructor(private readonly mediaService: MediaService) { }
 
   selectMedia(media: MediaModel): void {
     this.history = this.history.slice(0, this.currentIndex + 1);
@@ -197,6 +193,14 @@ export class MediaSelectedService {
     if (firstKey) {
       this.mediaInfoMap.delete(firstKey);
     }
+  }
+
+  public setIsOnLine(bool: boolean): void {
+    this.isOnLine = bool;
+  }
+
+  public getIsOnLine(): boolean {
+    return this.isOnLine;
   }
 
 }

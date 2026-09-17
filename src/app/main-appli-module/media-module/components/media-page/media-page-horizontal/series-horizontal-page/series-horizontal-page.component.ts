@@ -27,7 +27,7 @@ export class SeriesHorizontalPageComponent extends SeriesPageAbstraction {
 
   protected fetchDataSpe(): void { 
     this.onLoadEpisodeByIdOrIndex();
-    this.fetchSimilarMovie();
+    this.fetchSimilarMedia();
   }
 
 }

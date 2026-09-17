@@ -20,6 +20,7 @@ import { MediaProgressingModel } from '../../../../../video-playing-module/model
 import { HistoricWatchProgressService } from '../../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DownloadButtonComponent } from '../../../button/download-button/download-button.component';
+import { MediaSelectedService } from '../../../../services/media-selected/media-selected.service';
 
 @Component({
   selector: 'app-media-horizontal-background',
@@ -54,11 +55,16 @@ export class MediaHorizontalBackgroundComponent {
   ProgressState = ProgressStateMedia;
   historicProgress!: MediaProgressingModel;
 
+  isOnLine!: boolean;
+
   constructor(private readonly compressedPosterService: CompressedPosterService,
     private readonly verifTimerShowService: VerifTimerShowService,
     private readonly historicWatchProgressService: HistoricWatchProgressService,
-    private readonly mediaLogoDisplayService: MediaLogoDisplayService
-  ) {}
+    private readonly mediaLogoDisplayService: MediaLogoDisplayService,
+    private readonly mediaSelectedService: MediaSelectedService
+  ) {
+    this.isOnLine = this.mediaSelectedService.getIsOnLine();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['media']) {

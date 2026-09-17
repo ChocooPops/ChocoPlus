@@ -18,6 +18,7 @@ export class GridListComponent {
   @Input() title: string = '';
   @Input() format: FormatPosterModel = FormatPosterModel.VERTICAL;
   @Input() isLoadingCatalog!: boolean;
+  @Input() isOnLine: boolean = true;
 
   public subscription !: Subscription;
   public FormatType = FormatPosterModel;

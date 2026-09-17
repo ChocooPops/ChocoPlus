@@ -8,7 +8,7 @@
         @for(media of mediaList; track media) {
         @defer (on viewport) {
         <app-vertical-poster [media]="media" [typeZoomX]="media.typeZoomX"
-            [typeZoomY]="media.typeZoomY"></app-vertical-poster>
+            [typeZoomY]="media.typeZoomY" [isOnLine]="isOnLine"></app-vertical-poster>
         } @placeholder {
         <div class="poster-placeholder"></div>
         }

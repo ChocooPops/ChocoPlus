@@ -16,8 +16,8 @@
                     }
                 </div>
                 <div class="container-groupe-button-other">
-                    <app-mylist-button [media]="media"></app-mylist-button>
-                    <app-modify-button [idMedia]="media.id" [mediaType]="media.mediaType"></app-modify-button>
+                    <app-mylist-button [media]="media" [isOnLine]="isOnLine"></app-mylist-button>
+                    <app-modify-button [idMedia]="media.id" [mediaType]="media.mediaType" [isOnLine]="isOnLine"></app-modify-button>
                     <app-format-media-page-button (click)="onClickFormatMediaPage()"></app-format-media-page-button>
                 </div>
             </div>
