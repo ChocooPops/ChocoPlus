@@ -52,6 +52,14 @@ export class CharacterComponent extends AbstractElementComponent {
     this.characterService.startTimer();
   }
 
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.characterService.stopTimer();
+    this.characterService.setKeyLeft(false);
+    this.characterService.setKeyRight(false);
+    this.characterService.setKeySpace(false);
+  }
+
   @HostListener('window:keydown', ['$event'])
   async onKeyDown(event: KeyboardEvent): Promise<void> {
     if (event.key === 'ArrowLeft') {

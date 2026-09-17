@@ -111,6 +111,7 @@ export class CharacterService {
   }
 
   public startTimer(): void {
+    this.stopTimer();
     this.timerDeplacement = setInterval(() => {
       if (this.keyLeftActivate && !this.ifCharacterIsOutsideWindowLeft()) {
         this.moveBack();
