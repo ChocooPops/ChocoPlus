@@ -1,8 +1,8 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, SimpleChanges, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { DownloadService } from '../../../services/download/download.service';
-import { Observable, Subscription, take } from 'rxjs';
+import { Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-download-button',
@@ -11,16 +11,16 @@ import { Observable, Subscription, take } from 'rxjs';
   templateUrl: './download-button.component.html',
   styleUrl: './download-button.component.css'
 })
-export class DownloadButtonComponent implements OnInit, OnDestroy {
+export class DownloadButtonComponent {
 
   @Input() mediaId!: number;
   @Input() seasonId!: number;
   @Input() episodeId!: number;
   @Input() mediaType!: MediaTypeModel;
 
-  heightCircle: number = 40;
-  heightIcon: number = 20;
-  widthBorder: number = 2;
+  heightCircle!: number;
+  heightIcon!: number;
+  widthBorder!: number;
 
   srcDownload: string = 'icon/dl.svg';
 
@@ -29,25 +29,34 @@ export class DownloadButtonComponent implements OnInit, OnDestroy {
   progress: number = 0;
   key: string = '';
 
+  private destroy$ = new Subject<void>();
   private progressSubscription?: Subscription;
 
   constructor(private readonly downloadService: DownloadService) { }
 
-  ngOnInit(): void {
-    if (this.mediaType === MediaTypeModel.EPISODE) {
-      this.heightCircle = 30;
-      this.heightIcon = 14;
-      this.widthBorder = 1.5;
-    }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['mediaId']) {
+      this.cleanup();
 
-    this.key = this.mediaType === MediaTypeModel.EPISODE
-      ? `${MediaTypeModel.EPISODE}-${this.episodeId}`
-      : `${MediaTypeModel.MOVIE}-${this.mediaId}`;
+      if (this.mediaType === MediaTypeModel.EPISODE) {
+        this.heightCircle = 30;
+        this.heightIcon = 14;
+        this.widthBorder = 1.5;
+      } else {
+        this.heightCircle = 40;
+        this.heightIcon = 20;
+        this.widthBorder = 2;
+      }
 
-    if (this.downloadService.isDownloadInProgress(this.key)) {
-      this.resumeProgressTracking();
-    } else {
-      this.checkAlreadyDownloaded();
+      this.key = this.mediaType === MediaTypeModel.EPISODE
+        ? `${MediaTypeModel.EPISODE}-${this.episodeId}`
+        : `${MediaTypeModel.MOVIE}-${this.mediaId}`;
+
+      if (this.downloadService.isDownloadInProgress(this.key)) {
+        this.resumeProgressTracking();
+      } else {
+        this.checkAlreadyDownloaded();
+      }
     }
   }
 
@@ -55,17 +64,16 @@ export class DownloadButtonComponent implements OnInit, OnDestroy {
     this.downloading = true;
 
     this.progressSubscription?.unsubscribe();
-    this.progressSubscription = this.downloadService.getDownloadProgress(this.key).subscribe((percent: number) => {
-      this.progress = percent;
-      if (percent >= 100) {
-        this.downloading = false;
-        this.downloaded = true;
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.progressSubscription?.unsubscribe();
+    this.progressSubscription = this.downloadService
+      .getDownloadProgress(this.key)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((percent: number) => {
+        this.progress = percent;
+        if (percent >= 100) {
+          this.downloading = false;
+          this.downloaded = true;
+        }
+      });
   }
 
   private checkAlreadyDownloaded(): void {
@@ -73,9 +81,11 @@ export class DownloadButtonComponent implements OnInit, OnDestroy {
       ? this.downloadService.isEpisodeDownloaded(this.mediaId, this.seasonId, this.episodeId)
       : this.downloadService.isMediaDownloaded(this.mediaId);
 
-    isDownloaded$.pipe(take(1)).subscribe((downloaded: boolean) => {
-      this.downloaded = downloaded;
-    });
+    isDownloaded$
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((downloaded: boolean) => {
+        this.downloaded = downloaded;
+      });
   }
 
   onClick(): void {
@@ -86,23 +96,41 @@ export class DownloadButtonComponent implements OnInit, OnDestroy {
     
     this.progressSubscription?.unsubscribe();
     
-    this.progressSubscription = this.downloadService.getDownloadProgress(this.key).subscribe((percent: number) => {
-      this.progress = percent;
-    });
+    this.progressSubscription = this.downloadService
+      .getDownloadProgress(this.key)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((percent: number) => {
+        this.progress = percent;
+      });
     
     const download$: Observable<void> = this.mediaType === MediaTypeModel.EPISODE
       ? this.downloadService.downloadEpisode(this.mediaId, this.seasonId, this.episodeId)
       : this.downloadService.downloadMovie(this.mediaId);
 
-    download$.pipe(take(1)).subscribe({
-      next: () => {
-        this.downloading = false;
-        this.downloaded = true;
-      },
-      error: () => {
-        this.downloading = false;
-      }
-    });
+    download$
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.downloading = false;
+          this.downloaded = true;
+        },
+        error: () => {
+          this.downloading = false;
+        }
+      });
+  }
+
+  private cleanup(): void {
+    this.progressSubscription?.unsubscribe();
+    this.downloaded = false;
+    this.downloading = false;
+    this.progress = 0;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.progressSubscription?.unsubscribe();
   }
 
 }

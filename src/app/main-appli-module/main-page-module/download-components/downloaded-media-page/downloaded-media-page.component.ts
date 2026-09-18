@@ -44,7 +44,7 @@ export class DownloadedMediaPageComponent {
     this.mediaSelectedService.setIsOnLine(false);
     this.loadDownloads();
     this.subscription.add(
-      this.formatPosterService.fetchFormatPosterCatalog().subscribe((format: FormatPosterModel) => {
+      this.formatPosterService.fetchFormatPosterDownload().subscribe((format: FormatPosterModel) => {
         this.format = format;
         const obs = this.format === FormatPosterModel.VERTICAL
           ? this.paginationPosterService.getVerticalGeometricDimensionSelection()
