@@ -71,13 +71,13 @@ export class MovieService {
       typeZoomX: undefined,
       typeZoomY: false,
       mediaType: MediaTypeModel.MOVIE,
-      isRecent: movie.isRecent
+      isRecent: movie.isRecent,
+      bytes: movie.bytes ?? null
     }
     if (movie.path) {
       movieTmp.tmdbId = movie.tmdbId;
       movieTmp.path = movie.path;
       movieTmp.frames = movie.frames;
-      movieTmp.bytes = movie.bytes;
       movieTmp.height = movie.height;
       movieTmp.width = movie.width;
     }

@@ -24,6 +24,7 @@ import { DownloadButtonComponent } from '../../button/download-button/download-b
   styleUrls: ['./episode-poster-horizontal-view.component.css', '../../../../common-module/styles/animation.css'],
 })
 export class EpisodePosterHorizontalViewComponent {
+  
   @Input() series!: SeriesModel;
   @Input() episodes!: EpisodeModel[];
   @Input() notRunning: boolean = true;
@@ -83,6 +84,17 @@ export class EpisodePosterHorizontalViewComponent {
 
   getTimerEpisode(timer: number): string {
     return this.verifTimerShowService.getFormatEpisode(timer);
+  }
+
+  getBytesEpisode(bytes: number): string {
+    const MiB = 1024 ** 2;
+    const GiB = 1024 ** 3;
+
+    if (bytes < GiB) {
+      return `${(bytes / MiB).toFixed(1)} Mo`;
+    }
+
+    return `${(bytes / GiB).toFixed(1)} Go`;
   }
 
   onError(idx: number): void {

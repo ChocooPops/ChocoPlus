@@ -51,6 +51,7 @@ export class MediaHorizontalBackgroundComponent {
   duration!: string;
   resolution!: string;
   nbSeasons!: number;
+  bytes: string | null = null;
 
   ProgressState = ProgressStateMedia;
   historicProgress!: MediaProgressingModel;
@@ -86,9 +87,15 @@ export class MediaHorizontalBackgroundComponent {
     if (!this.srcBackground) this.onBackgroundLoad();
 
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
-      this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).duration) || '2015';
-      this.resolution = (this.media as MovieModel)?.resolution || 'any quality';
-      this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, (this.media as MovieModel).watchProgress, (this.media as MovieModel).stateProgress);
+      const movie: MovieModel = this.media as MovieModel;
+      this.duration = this.verifTimerShowService.extractHourAndMinute(movie.duration) || '2015';
+      this.resolution = movie?.resolution || 'any quality';
+      this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, movie.watchProgress, movie.stateProgress);
+      if (movie.bytes && movie.bytes > 0) {
+        this.bytes = this.formatBytes(movie.bytes);
+      } else {
+        this.bytes = null;
+      }
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       this.nbSeasons = (this.media as SeriesModel).seasons.length;
     }
@@ -139,6 +146,17 @@ export class MediaHorizontalBackgroundComponent {
 
   onClickFormatMediaPage(): void {
     this.formatEmit.emit();
+  }
+
+  private formatBytes(bytes: number): string {
+    const MiB = 1024 ** 2;
+    const GiB = 1024 ** 3;
+
+    if (bytes < GiB) {
+      return `${(bytes / MiB).toFixed(1)} Mo`;
+    }
+
+    return `${(bytes / GiB).toFixed(1)} Go`;
   }
 
 }

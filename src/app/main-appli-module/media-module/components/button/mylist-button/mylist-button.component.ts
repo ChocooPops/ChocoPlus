@@ -19,7 +19,7 @@ export class MylistButtonComponent {
   @Input() typeButton: boolean = false;
   @Input() typeDisplaying: boolean = false;
   @Input() media!: MediaModel;
-  @Input() isOnLine: boolean = true;
+  @Input() activated: boolean = true;
 
   isInList: boolean = false;
 
@@ -57,7 +57,7 @@ export class MylistButtonComponent {
   }
 
   onClick(): void {
-    if (!this.isOnLine) return;
+    if (!this.activated) return;
     if (!this.cursor) return;
     if (this.media && this.media.id && this.media.id > 0) {
       this.userService.fetchToggleMediaIntoList(this.media).pipe(take(1)).subscribe((data: MessageReturnedModel) => {

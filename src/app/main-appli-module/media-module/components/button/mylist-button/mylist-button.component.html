@@ -1,4 +1,4 @@
-@if (isOnLine) {
+@if (activated) {
     <div class="container" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}" [title]="(isInList ? 'TUTO.REMOVE_INTO_LIST' : 'TUTO.ADD_INTO_LIST') | translate">
         @if(!typeButton) {
         <div class="iconWrap"

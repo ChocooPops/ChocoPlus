@@ -39,9 +39,10 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
 
   poster: string | undefined = undefined;
 
-  duration !: string;
-  resolution !: string;
-  date !: Date | null;
+  duration!: string;
+  resolution!: string;
+  date!: Date | null;
+  bytes: string | null = null;
 
   ProgressState = ProgressStateMedia;
   historicProgress!: MediaProgressingModel;
@@ -62,6 +63,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
     this.poster = undefined;
     this.duration = '';
     this.date = null;
+    this.bytes = null;
     this.setHistoric.emit(undefined);
   }
 
@@ -76,6 +78,9 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
     if (!this.poster) {
       this.onLoadPoster();
     }
+    if (this.movie.bytes && this.movie.bytes > 0) {
+      this.bytes = this.formatBytes(this.movie.bytes);
+    }
     this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.movie.id, this.movie.watchProgress, this.movie.stateProgress);
     this.setHistoric.emit(this.historicProgress);
   }
@@ -87,6 +92,17 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
 
   onLoadPoster(): void {
     this.posterLoading.emit();
+  }
+
+  private formatBytes(bytes: number): string {
+    const MiB = 1024 ** 2;
+    const GiB = 1024 ** 3;
+
+    if (bytes < GiB) {
+      return `${(bytes / MiB).toFixed(1)} Mo`;
+    }
+
+    return `${(bytes / GiB).toFixed(1)} Go`;
   }
 
 }

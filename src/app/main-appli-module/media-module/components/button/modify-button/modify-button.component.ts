@@ -19,7 +19,7 @@ export class ModifyButtonComponent {
   @Input() typeDisplaying: boolean = false;
   @Input() idMedia !: number;
   @Input() mediaType !: MediaTypeModel;
-  @Input() isOnLine: boolean = true;
+  @Input() activated: boolean = true;
 
   srcImageEnter: String = "icon/modifyEnter.svg";
   srcImageLeave: String = "icon/modifyLeave.svg"
@@ -28,7 +28,7 @@ export class ModifyButtonComponent {
   constructor(private readonly editionParametersService: EditionParametersService) { }
 
   onClick(): void {
-    if (!this.isOnLine) return;
+    if (!this.activated) return;
     if (!this.idMedia || this.idMedia <= 0) return;
     if (!this.cursor) return;
     if (this.idMedia && this.mediaType) {

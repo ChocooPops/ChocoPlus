@@ -5,6 +5,9 @@
             <p>{{ date | date:'yyyy' }}</p>
             }
             <p>{{ duration }}</p>
+            @if (bytes) {
+                <p> {{ bytes }} </p>
+            }
             <div class="container-quality">
                 <p> {{ resolution }} </p>
             </div>

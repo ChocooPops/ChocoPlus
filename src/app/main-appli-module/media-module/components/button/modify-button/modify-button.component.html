@@ -1,4 +1,4 @@
-@if (isOnLine) {
+@if (activated) {
     <div class="container-button" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}" [title]="'TUTO.EDIT_METADATA' | translate">
         @if(!typeButton) {
         <div class="iconWrap"

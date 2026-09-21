@@ -39,19 +39,22 @@
                 <div class="other-info">
                     <p>{{ media.date| date:'yyyy' }}</p>
                     @if (media.mediaType === MediaType.MOVIE) {
-                    <p> {{ duration }} </p>
-                    <div class="container-quality">
-                        <p> {{ resolution }} </p>
-                    </div>
+                        <p> {{ duration }} </p>
+                        @if (bytes) {
+                            <p> {{ bytes }} </p>
+                        }
+                        <div class="container-quality">
+                            <p> {{ resolution }} </p>
+                        </div>
                     } @else if (media.mediaType === MediaType.SERIES) {
-                    @if(nbSeasons > 1) {
-                    <p> {{ nbSeasons }} {{ 'SEASONS' | translate }} </p>
-                    } @else {
-                    <p> {{ nbSeasons }} {{ 'SEASON' | translate }} </p>
-                    }
-                    <div class="container-quality">
-                        <p> {{ 'SERIES' | translate }} </p>
-                    </div>
+                        @if(nbSeasons > 1) {
+                        <p> {{ nbSeasons }} {{ 'SEASONS' | translate }} </p>
+                        } @else {
+                        <p> {{ nbSeasons }} {{ 'SEASON' | translate }} </p>
+                        }
+                        <div class="container-quality">
+                            <p> {{ 'SERIES' | translate }} </p>
+                        </div>
                     }
                 </div>
             </div>
@@ -68,8 +71,8 @@
                     }
                 </div>
                 <div class="container-button">
-                    <app-mylist-button [media]="media" [isOnLine]="isOnLine"></app-mylist-button>
-                    <app-modify-button [idMedia]="media.id" [mediaType]="media.mediaType" [isOnLine]="isOnLine"></app-modify-button>
+                    <app-mylist-button [media]="media" [activated]="isOnLine"></app-mylist-button>
+                    <app-modify-button [idMedia]="media.id" [mediaType]="media.mediaType" [activated]="isOnLine"></app-modify-button>
                     <app-format-media-page-button (click)="onClickFormatMediaPage()"></app-format-media-page-button>
                 </div>
             </div>
