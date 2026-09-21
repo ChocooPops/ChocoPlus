@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { VerifTimerShowService } from '../../../../../common-module/services/verif-timer/verif-timer-show.service';
+import { GlobalFormattingService } from '../../../../../common-module/services/verif-timer/global-formatting.service';
 import { ImagePreloaderService } from '../../../../../../common-module/services/image-preloader/image-preloader.service';
 import { CompressedPosterService } from '../../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { SimilarTitleService } from '../../../../services/similar-title/similar-title.service';
@@ -53,11 +53,11 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
     filtersCatalogService: FiltersCatalogService,
     downloadService: DownloadService,
     router: Router,
-    private readonly verifTimerShowService: VerifTimerShowService,
+    private readonly globalFormattingService: GlobalFormattingService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly historicWatchProgressService: HistoricWatchProgressService) { 
       super(imagePreloaderService, similarTitleService, mediaSelectedService, filtersCatalogService, downloadService, router);
-    }
+  }
 
   protected resetInfoSpe(): void {
     this.poster = undefined;
@@ -68,7 +68,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   }
 
   protected initSpe(): void {
-    this.duration = this.verifTimerShowService.extractHourAndMinute(this.movie?.duration) || '2015';
+    this.duration = this.globalFormattingService.extractHourAndMinute(this.movie?.duration) || '2015';
     this.resolution = this.movie?.resolution || 'any quality';
     this.date = this.movie.date || new Date();
 
@@ -79,7 +79,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
       this.onLoadPoster();
     }
     if (this.movie.bytes && this.movie.bytes > 0) {
-      this.bytes = this.formatBytes(this.movie.bytes);
+      this.bytes = this.globalFormattingService.convertBytesToMegaOrGiga(this.movie.bytes);
     }
     this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.movie.id, this.movie.watchProgress, this.movie.stateProgress);
     this.setHistoric.emit(this.historicProgress);
@@ -92,17 +92,6 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
 
   onLoadPoster(): void {
     this.posterLoading.emit();
-  }
-
-  private formatBytes(bytes: number): string {
-    const MiB = 1024 ** 2;
-    const GiB = 1024 ** 3;
-
-    if (bytes < GiB) {
-      return `${(bytes / MiB).toFixed(1)} Mo`;
-    }
-
-    return `${(bytes / GiB).toFixed(1)} Go`;
   }
 
 }

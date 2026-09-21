@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, of, catchError } from 'rxjs';
-import { VerifTimerShowService } from '../../../common-module/services/verif-timer/verif-timer-show.service';
+import { GlobalFormattingService } from '../../../common-module/services/verif-timer/global-formatting.service';
 import { MovieModel } from '../../models/movie-model';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { ProgressStateMedia } from '../../models/progress-state-media.enum';
@@ -18,7 +18,7 @@ export class MovieService {
   private readonly urlWatchProgress: string = 'watchProgress';
 
   constructor(private http: HttpClient,
-    private verifTimerShowService: VerifTimerShowService) { }
+    private globalFormattingService: GlobalFormattingService) { }
 
   public fetchMovieById(id: number): Observable<MovieModel> {
     return this.http.get<any>(`${this.apiUrlMovie}/${id}`).pipe(
@@ -51,8 +51,8 @@ export class MovieService {
       title: movie.title,
       mediaLibraryId: movie.mediaLibraryId,
       otherTitles: movie.otherTitles || [],
-      startShow: this.verifTimerShowService.getGoodFormat(movie.startShow) || '00:20:00',
-      endShow: this.verifTimerShowService.getGoodFormat(movie.endShow) || '00:21:30',
+      startShow: this.globalFormattingService.getGoodFormat(movie.startShow) || '00:20:00',
+      endShow: this.globalFormattingService.getGoodFormat(movie.endShow) || '00:21:30',
       duration: movie.duration ? parseInt(movie.duration) : 0,
       watchProgress: movie.watchProgress ?? 0,
       stateProgress: movie.stateProgress ?? ProgressStateMedia.NOT_WATCHED,

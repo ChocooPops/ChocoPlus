@@ -7,12 +7,13 @@ import { MediaSelectedService } from '../../services/media-selected/media-select
 import { SimilarTitleService } from '../../services/similar-title/similar-title.service';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { SeriesService } from '../../services/series/series.service';
-import { SeasonModel } from '../../models/series/season.interface';
 import { FormatMediaPageModel } from '../../models/format-media-page-enum';
 import { FiltersCatalogService } from '../../services/filters-catalog/filters-catalog.service';
 import { Router } from '@angular/router';
 import { MovieSeriesPageAbstraction } from './movie-series-page-abstraction.directive';
 import { DownloadService } from '../../services/download/download.service';
+import { UserService } from '../../../user-module/service/user/user.service';
+import { UserModel } from '../../../user-module/dto/user.model';
 
 @Directive({})
 export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
@@ -21,6 +22,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
 
   protected abortControllerEpisodes = new AbortController();
   protected subscriptionEpisodes!: Subscription;
+  protected user!: UserModel | undefined;
 
   srcSucces: string = 'icon/success.svg';
 
@@ -35,11 +37,13 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
     similarTitleService: SimilarTitleService,
     imagePreloaderService: ImagePreloaderService,
     protected readonly seriesService: SeriesService,
+    protected readonly userService: UserService,
     filtersCatalogService: FiltersCatalogService,
     downloadService: DownloadService,
     router: Router
   ) {
     super(imagePreloaderService, similarTitleService, mediaSelectedService, filtersCatalogService, downloadService, router);
+    this.user = this.userService.getCurrentUserValue();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -3,7 +3,7 @@ import { SeriesModel } from '../../../models/series/series.interface';
 import { EpisodeModel } from '../../../models/series/episode.interface';
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
 import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
-import { VerifTimerShowService } from '../../../../common-module/services/verif-timer/verif-timer-show.service';
+import { GlobalFormattingService } from '../../../../common-module/services/verif-timer/global-formatting.service';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { NewsAlertComponent } from '../news-alert/news-alert.component';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { DownloadButtonComponent } from '../../button/download-button/download-button.component';
+import { UserModel } from '../../../../user-module/dto/user.model';
+import { RoleModel } from '../../../../../common-module/models/role.enum';
 
 @Component({
   selector: 'app-episode-poster-horizontal-view',
@@ -28,6 +30,7 @@ export class EpisodePosterHorizontalViewComponent {
   @Input() series!: SeriesModel;
   @Input() episodes!: EpisodeModel[];
   @Input() notRunning: boolean = true;
+  @Input() user!: UserModel | undefined;
 
   episodePoster: (string | undefined)[] = [];
   episodeProgress: MediaProgressingModel[] = [];
@@ -40,11 +43,12 @@ export class EpisodePosterHorizontalViewComponent {
   srcEpisode: string = 'icon/episode.svg';
 
   MediaType = MediaTypeModel;
+  Role = RoleModel;
 
   private subscription!: Subscription;
 
   constructor(
-    private readonly verifTimerShowService: VerifTimerShowService,
+    private readonly globalFormattingService: GlobalFormattingService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly historicWatchProgressService: HistoricWatchProgressService,
     private readonly paginationPosterService: PaginationPosterService,
@@ -83,18 +87,11 @@ export class EpisodePosterHorizontalViewComponent {
   }
 
   getTimerEpisode(timer: number): string {
-    return this.verifTimerShowService.getFormatEpisode(timer);
+    return this.globalFormattingService.getFormatEpisode(timer);
   }
 
   getBytesEpisode(bytes: number): string {
-    const MiB = 1024 ** 2;
-    const GiB = 1024 ** 3;
-
-    if (bytes < GiB) {
-      return `${(bytes / MiB).toFixed(1)} Mo`;
-    }
-
-    return `${(bytes / GiB).toFixed(1)} Go`;
+    return this.globalFormattingService.convertBytesToMegaOrGiga(bytes)
   }
 
   onError(idx: number): void {

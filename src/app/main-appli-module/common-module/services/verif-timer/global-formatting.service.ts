@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class VerifTimerShowService {
+export class GlobalFormattingService {
 
   public convertTimerInSecond(timer: string | undefined): number {
     if (timer) {
@@ -78,6 +78,17 @@ export class VerifTimerShowService {
     const secs = totalSeconds % 60;
     const pad = (num: number) => num.toString().padStart(2, '0');
     return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+  }
+
+  public convertBytesToMegaOrGiga(bytes: number): string {
+    const MiB = 1024 ** 2;
+    const GiB = 1024 ** 3;
+
+    if (bytes < GiB) {
+      return `${(bytes / MiB).toFixed(1)} Mo`;
+    }
+
+    return `${(bytes / GiB).toFixed(1)} Go`;
   }
 
 }

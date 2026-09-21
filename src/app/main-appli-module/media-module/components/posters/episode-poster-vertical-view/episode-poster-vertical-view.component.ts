@@ -1,6 +1,6 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { EpisodeModel } from '../../../models/series/episode.interface';
-import { VerifTimerShowService } from '../../../../common-module/services/verif-timer/verif-timer-show.service';
+import { GlobalFormattingService } from '../../../../common-module/services/verif-timer/global-formatting.service';
 import { DatePipe } from '@angular/common';
 import { StartButtonComponent } from '../../button/start-button/start-button.component';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
@@ -11,6 +11,8 @@ import { MediaProgressingModel } from '../../../../video-playing-module/models/m
 import { NewsAlertComponent } from '../news-alert/news-alert.component';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { DownloadButtonComponent } from '../../button/download-button/download-button.component';
+import { UserModel } from '../../../../user-module/dto/user.model';
+import { RoleModel } from '../../../../../common-module/models/role.enum';
 
 @Component({
   selector: 'app-episode-poster-vertical-view',
@@ -24,6 +26,7 @@ export class EpisodePosterVerticalViewComponent {
   @Input() series!: SeriesModel;
   @Input() episodes!: EpisodeModel[];
   @Input() notRunning: boolean = true;
+  @Input() user!: UserModel | undefined;
 
   episodePoster: any[] = [];
   episodeProgress: MediaProgressingModel[] = [];
@@ -31,8 +34,9 @@ export class EpisodePosterVerticalViewComponent {
   srcEpisode: string = 'icon/episode.svg';
 
   MediaType = MediaTypeModel;
+  Role = RoleModel;
 
-  constructor(private readonly verifTimerShowService: VerifTimerShowService,
+  constructor(private readonly globalFormattingService: GlobalFormattingService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly historicWatchProgressService: HistoricWatchProgressService
   ) { }
@@ -49,18 +53,11 @@ export class EpisodePosterVerticalViewComponent {
   }
 
   getTimerEpisode(timer: number): string {
-    return this.verifTimerShowService.getFormatEpisode(timer)
+    return this.globalFormattingService.getFormatEpisode(timer)
   }
 
   getBytesEpisode(bytes: number): string {
-    const MiB = 1024 ** 2;
-    const GiB = 1024 ** 3;
-
-    if (bytes < GiB) {
-      return `${(bytes / MiB).toFixed(1)} Mo`;
-    }
-
-    return `${(bytes / GiB).toFixed(1)} Go`;
+    return this.globalFormattingService.convertBytesToMegaOrGiga(bytes)
   }
 
   onError(idx: number): void {

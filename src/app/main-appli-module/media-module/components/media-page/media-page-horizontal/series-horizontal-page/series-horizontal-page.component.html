@@ -72,7 +72,7 @@
             }
         </div>
         @if (episodes) {
-        <app-episode-poster-horizontal-view [series]="series" [episodes]="episodes"></app-episode-poster-horizontal-view>
+        <app-episode-poster-horizontal-view [series]="series" [episodes]="episodes" [user]="user"></app-episode-poster-horizontal-view>
         } @else {
         <app-episode-poster-horizontal-view-loading></app-episode-poster-horizontal-view-loading>
         }

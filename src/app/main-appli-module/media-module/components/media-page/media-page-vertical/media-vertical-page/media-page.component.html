@@ -11,7 +11,9 @@
                     @if(media.mediaType === MediaType.MOVIE && historicProgress && historicProgress.stateProgress !== ProgressState.NOT_WATCHED && historicProgress.watchProgress > 0 && historicProgress.watchProgress < 100) {
                         <app-start-button [media]="media" [seasons]="seasons" [launch]="'start'"></app-start-button>
                     }
-                    @if(media.mediaType === MediaType.MOVIE) {
+                    @if (media.mediaType === MediaType.MOVIE && user &&
+                        (user.role === Role.ADMIN || user.role === Role.FAMILY) 
+                    ) {
                         <app-download-button [mediaId]="media.id" [mediaType]="media.mediaType"></app-download-button>
                     }
                 </div>

@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { VerifTimerShowService } from '../../../common-module/services/verif-timer/verif-timer-show.service';
+import { GlobalFormattingService } from '../../../common-module/services/verif-timer/global-formatting.service';
 
 @Component({
   selector: 'app-progress-bar',
@@ -22,15 +22,15 @@ export class ProgressBarComponent {
   currentTimeTravelled !: string;
   totalDurationMovie !: string;
 
-  constructor(private verifTimerShowService: VerifTimerShowService) { }
+  constructor(private globalFormattingService: GlobalFormattingService) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['currentTimeTravelledInSecond']) {
-      this.currentTimeTravelled = this.verifTimerShowService.converSecondInFormatToStream(this.currentTimeTravelledInSecond);
+      this.currentTimeTravelled = this.globalFormattingService.converSecondInFormatToStream(this.currentTimeTravelledInSecond);
       this.progress = this.currentTimeTravelledInSecond / this.totalDurationMovieInSecond * 100;
     }
     if (changes['totalDurationMovieInSecond']) {
-      this.totalDurationMovie = this.verifTimerShowService.converSecondInFormatToStream(this.totalDurationMovieInSecond);
+      this.totalDurationMovie = this.globalFormattingService.converSecondInFormatToStream(this.totalDurationMovieInSecond);
     }
   }
 

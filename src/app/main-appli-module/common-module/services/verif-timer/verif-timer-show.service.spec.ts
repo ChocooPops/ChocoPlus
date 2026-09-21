@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { VerifTimerShowService } from './verif-timer-show.service';
+import { VerifTimerShowService } from './global-formatting.service';
 
 describe('VerifTimerShowService', () => {
   let service: VerifTimerShowService;

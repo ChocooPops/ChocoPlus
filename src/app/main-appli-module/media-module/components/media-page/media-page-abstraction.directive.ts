@@ -8,6 +8,9 @@ import { MediaSelectedService } from '../../services/media-selected/media-select
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { MovieModel } from '../../models/movie-model';
 import { SeriesModel } from '../../models/series/series.interface';
+import { UserModel } from '../../../user-module/dto/user.model';
+import { RoleModel } from '../../../../common-module/models/role.enum';
+import { UserService } from '../../../user-module/service/user/user.service';
 
 @Directive({})
 export abstract class MediaPageAbstraction {
@@ -39,9 +42,13 @@ export abstract class MediaPageAbstraction {
     isHover: boolean = false;
     displaying: boolean = false;
     transitionMenuIsActivate: boolean = false;
+    
+    protected user!: UserModel | undefined;
+    protected Role = RoleModel;
 
     constructor(private readonly mediaSelectedService: MediaSelectedService,
-        private readonly MenuTabService: MenuTabService
+        private readonly MenuTabService: MenuTabService,
+        private readonly userService: UserService
     ) {
         this.isOnLine = this.mediaSelectedService.getIsOnLine();
     }
@@ -54,6 +61,7 @@ export abstract class MediaPageAbstraction {
     }
 
     ngOnInit(): void {
+        this.user = this.userService.getCurrentUserValue();
         this.subscriptionSelectedMedia.add(
         this.mediaSelectedService
             .getMediaSelected()

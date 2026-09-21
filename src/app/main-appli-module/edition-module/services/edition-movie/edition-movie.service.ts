@@ -4,7 +4,6 @@ import { SimpleModel } from '../../../../common-module/models/simple-model';
 import { BehaviorSubject, catchError, Observable, map, throwError, take } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
-import { VerifTimerShowService } from '../../../common-module/services/verif-timer/verif-timer-show.service';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { CategorySimpleModel } from '../../models/category/categorySimple.model';
 import { TranslationTitle } from '../../models/translation-title.interface';
@@ -15,6 +14,7 @@ import { MovieModel } from '../../../media-module/models/movie-model';
 import { EditMovieModel } from '../../models/edit-movie.interface';
 import { EditionMediaService } from '../edition-media/edition-media.service';
 import { MediaCreditModel } from '../../../media-module/models/media-credit.interface';
+//import { GlobalFormattingService } from '../../../common-module/services/verif-timer/global-formatting.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,7 @@ export class EditionMovieService extends EditionMediaService {
   private editMovie$: Observable<EditMovieModel> = this.editMovieSubject.asObservable();
 
   constructor(http: HttpClient,
-    private readonly verifTimerShowService: VerifTimerShowService,
+    //private readonly globalFormattingService: GlobalFormattingService,
     private readonly movieService: MovieService,
   ) {
     super(http);
@@ -290,33 +290,33 @@ export class EditionMovieService extends EditionMediaService {
 
   public modifyStartShow(timerStart: string): void {
     /*
-    const start: number = this.verifTimerShowService.convertTimerInSecond(timerStart);
-    const timer: string = this.verifTimerShowService.convertSecondInGoodFormatTimer(start);
-    let end: number = this.verifTimerShowService.convertTimerInSecond(this.editMovieSubject.value.endShow);
+    const start: number = this.globalFormattingService.convertTimerInSecond(timerStart);
+    const timer: string = this.globalFormattingService.convertSecondInGoodFormatTimer(start);
+    let end: number = this.globalFormattingService.convertTimerInSecond(this.editMovieSubject.value.endShow);
     if (start > end) {
       end = start + 90;
-      const timer: string = this.verifTimerShowService.convertSecondInGoodFormatTimer(end);
+      const timer: string = this.globalFormattingService.convertSecondInGoodFormatTimer(end);
       this.updateMovie({ endShow: timer })
     }
-    const timer: string = this.verifTimerShowService.convertSecondInGoodFormatTimer(start);
+    const timer: string = this.globalFormattingService.convertSecondInGoodFormatTimer(start);
     */
     this.updateMovie({ startShow: timerStart });
   }
 
   public modifyEndShow(timerEnd: string): void {
     /*
-    const end: number = this.verifTimerShowService.convertTimerInSecond(timerEnd);
-    const timer: string = this.verifTimerShowService.convertSecondInGoodFormatTimer(end);
-    let start: number = this.verifTimerShowService.convertTimerInSecond(this.editMovieSubject.value.startShow);
+    const end: number = this.globalFormattingService.convertTimerInSecond(timerEnd);
+    const timer: string = this.globalFormattingService.convertSecondInGoodFormatTimer(end);
+    let start: number = this.globalFormattingService.convertTimerInSecond(this.editMovieSubject.value.startShow);
     if (start > end) {
       start = end - 90;
       if (start < 0) {
         start = 0;
       }
-      const timer: string = this.verifTimerShowService.convertSecondInGoodFormatTimer(start);
+      const timer: string = this.globalFormattingService.convertSecondInGoodFormatTimer(start);
       this.updateMovie({ startShow: timer });
     }
-    const timer: string = this.verifTimerShowService.convertSecondInGoodFormatTimer(end);
+    const timer: string = this.globalFormattingService.convertSecondInGoodFormatTimer(end);
     */
     this.updateMovie({ endShow: timerEnd })
   }

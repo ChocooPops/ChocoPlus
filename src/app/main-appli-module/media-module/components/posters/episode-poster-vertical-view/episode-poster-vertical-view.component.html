@@ -34,7 +34,9 @@
         <div class="container-info">
             <div class="container-title-row">
                 <p class="title"> {{ episode.name }} </p>
-                <app-download-button [mediaId]="episode.seriesId" [mediaType]="MediaType.EPISODE" [seasonId]="episode.seasonId" [episodeId]="episode.id"></app-download-button>
+                @if (user && (user.role === Role.ADMIN || user.role === Role.FAMILY)) {
+                    <app-download-button [mediaId]="episode.seriesId" [mediaType]="MediaType.EPISODE" [seasonId]="episode.seasonId" [episodeId]="episode.id"></app-download-button>
+                }
             </div>
             @if(notRunning) {
             <p class="description"> {{ episode.description }} </p>

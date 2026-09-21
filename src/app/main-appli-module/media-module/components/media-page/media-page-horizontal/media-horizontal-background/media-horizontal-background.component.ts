@@ -10,7 +10,7 @@ import { FormatMediaPageButtonComponent } from '../../../button/format-media-pag
 import { NgClass } from '@angular/common';
 import { ScalePoster } from '../../../../../common-module/models/scale-poster.enum';
 import { MediaTypeModel } from '../../../../models/media-type.enum';
-import { VerifTimerShowService } from '../../../../../common-module/services/verif-timer/verif-timer-show.service';
+import { GlobalFormattingService } from '../../../../../common-module/services/verif-timer/global-formatting.service';
 import { MovieModel } from '../../../../models/movie-model';
 import { DatePipe } from '@angular/common';
 import { SeasonModel } from '../../../../models/series/season.interface';
@@ -21,6 +21,9 @@ import { HistoricWatchProgressService } from '../../../../../video-playing-modul
 import { TranslatePipe } from '@ngx-translate/core';
 import { DownloadButtonComponent } from '../../../button/download-button/download-button.component';
 import { MediaSelectedService } from '../../../../services/media-selected/media-selected.service';
+import { UserService } from '../../../../../user-module/service/user/user.service';
+import { UserModel } from '../../../../../user-module/dto/user.model';
+import { RoleModel } from '../../../../../../common-module/models/role.enum';
 
 @Component({
   selector: 'app-media-horizontal-background',
@@ -57,14 +60,21 @@ export class MediaHorizontalBackgroundComponent {
   historicProgress!: MediaProgressingModel;
 
   isOnLine!: boolean;
+  user!: UserModel | undefined;
+  Role = RoleModel;
 
   constructor(private readonly compressedPosterService: CompressedPosterService,
-    private readonly verifTimerShowService: VerifTimerShowService,
+    private readonly globalFormattingService: GlobalFormattingService,
     private readonly historicWatchProgressService: HistoricWatchProgressService,
     private readonly mediaLogoDisplayService: MediaLogoDisplayService,
-    private readonly mediaSelectedService: MediaSelectedService
+    private readonly mediaSelectedService: MediaSelectedService,
+    private readonly userService: UserService
   ) {
     this.isOnLine = this.mediaSelectedService.getIsOnLine();
+  }
+
+  ngOnInit(): void {
+    this.user = this.userService.getCurrentUserValue();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -88,11 +98,11 @@ export class MediaHorizontalBackgroundComponent {
 
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       const movie: MovieModel = this.media as MovieModel;
-      this.duration = this.verifTimerShowService.extractHourAndMinute(movie.duration) || '2015';
+      this.duration = this.globalFormattingService.extractHourAndMinute(movie.duration) || '2015';
       this.resolution = movie?.resolution || 'any quality';
       this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, movie.watchProgress, movie.stateProgress);
       if (movie.bytes && movie.bytes > 0) {
-        this.bytes = this.formatBytes(movie.bytes);
+        this.bytes = this.globalFormattingService.convertBytesToMegaOrGiga(movie.bytes);
       } else {
         this.bytes = null;
       }
@@ -146,17 +156,6 @@ export class MediaHorizontalBackgroundComponent {
 
   onClickFormatMediaPage(): void {
     this.formatEmit.emit();
-  }
-
-  private formatBytes(bytes: number): string {
-    const MiB = 1024 ** 2;
-    const GiB = 1024 ** 3;
-
-    if (bytes < GiB) {
-      return `${(bytes / MiB).toFixed(1)} Mo`;
-    }
-
-    return `${(bytes / GiB).toFixed(1)} Go`;
   }
 
 }

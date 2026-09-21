@@ -3,7 +3,7 @@ import { DisplayOrderService } from '../../services/display-order/display-order.
 import { Subscription } from 'rxjs';
 import { DimensionModel } from '../../../../common-module/models/dimension.interface';
 import { GeometricDimensionSelectionModel } from '../../models/geometric-dimension-selection.interface';
-import { VerifTimerShowService } from '../../../common-module/services/verif-timer/verif-timer-show.service';
+import { GlobalFormattingService } from '../../../common-module/services/verif-timer/global-formatting.service';
 import { SelectionType } from '../../models/selection-type.enum';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import { PaginationPosterService } from '../../services/pagination-poster/pagination-poster.service';
@@ -47,7 +47,7 @@ export class PosterAbstraction {
     constructor(protected mediaSelectedService: MediaSelectedService,
         protected displayOrderService: DisplayOrderService,
         protected paginationPosterService: PaginationPosterService,
-        protected verifTimerShowService: VerifTimerShowService,
+        protected globalFormattingService: GlobalFormattingService,
         protected compressedPosterService: CompressedPosterService
     ) {
         this.zIndex = this.displayOrderService.getInitOrder();
@@ -59,7 +59,7 @@ export class PosterAbstraction {
 
     ngOnInit() {
         if (this.media.mediaType === MediaTypeModel.MOVIE) {
-            this.duration = this.verifTimerShowService.extractHourAndMinute((this.media as MovieModel).duration);
+            this.duration = this.globalFormattingService.extractHourAndMinute((this.media as MovieModel).duration);
             this.resolution = (this.media as MovieModel).resolution || 'any quality';
         } else if (this.media.mediaType === MediaTypeModel.SERIES) {
             const nb: number = (this.media as SeriesModel).seasons.length;
