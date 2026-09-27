@@ -1,8 +1,10 @@
-import { Component, Input, SimpleChanges, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, SimpleChanges } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { DownloadService } from '../../../services/download/download.service';
 import { Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
+import { DownloadStatus, ProgressDownload } from '../../../models/progress-download.interface';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-download-button',
@@ -13,6 +15,9 @@ import { Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
 })
 export class DownloadButtonComponent {
 
+  private static nextUid: number = 0;
+  readonly uid: number = DownloadButtonComponent.nextUid++;
+
   @Input() mediaId!: number;
   @Input() seasonId!: number;
   @Input() episodeId!: number;
@@ -21,58 +26,73 @@ export class DownloadButtonComponent {
   heightCircle!: number;
   heightIcon!: number;
   widthBorder!: number;
+  iconUnits!: number;
+  iconOffset!: number;
 
   srcDownload: string = 'icon/dl.svg';
+  srcDeleteDl: string = 'icon/delete_dl.svg'
 
-  downloaded: boolean = false;
-  downloading: boolean = false;
-  progress: number = 0;
-  key: string = '';
+  DownloadStatus = DownloadStatus;
+
+  downloadStatus: DownloadStatus = DownloadStatus.NOT_DOWNLOADED;
+  alreadyDownloaded!: boolean;
+  key!: string;
+  progressTranslate!: string;
+  progress!: number;
 
   private destroy$ = new Subject<void>();
   private progressSubscription?: Subscription;
 
-  constructor(private readonly downloadService: DownloadService) { }
+  constructor(private readonly downloadService: DownloadService, 
+    private readonly translateService: TranslateService,
+    private readonly cdr: ChangeDetectorRef) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['mediaId']) {
       this.cleanup();
-
-      if (this.mediaType === MediaTypeModel.EPISODE) {
-        this.heightCircle = 30;
-        this.heightIcon = 14;
-        this.widthBorder = 1.5;
-      } else {
-        this.heightCircle = 40;
-        this.heightIcon = 20;
-        this.widthBorder = 2;
-      }
-
+      this.setDimension();
       this.key = this.mediaType === MediaTypeModel.EPISODE
         ? `${MediaTypeModel.EPISODE}-${this.episodeId}`
         : `${MediaTypeModel.MOVIE}-${this.mediaId}`;
 
-      if (this.downloadService.isDownloadInProgress(this.key)) {
-        this.resumeProgressTracking();
-      } else {
-        this.checkAlreadyDownloaded();
-      }
+      this.observeProgressTracking();
+      this.checkAlreadyDownloaded();
     }
   }
 
-  private resumeProgressTracking(): void {
-    this.downloading = true;
+  private setDimension(): void {
+    if (this.mediaType === MediaTypeModel.EPISODE) {
+        this.heightCircle = 30;
+        this.heightIcon = 14;
+        this.widthBorder = 1.5;
+    } else {
+        this.heightCircle = 40;
+        this.heightIcon = 20;
+        this.widthBorder = 2;
+    }
+    this.iconUnits = (this.heightIcon / (this.heightCircle - 2 * this.widthBorder)) * 100;
+    this.iconOffset = (100 - this.iconUnits) / 2;
+  }
 
+  private observeProgressTracking(): void {
     this.progressSubscription?.unsubscribe();
     this.progressSubscription = this.downloadService
-      .getDownloadProgress(this.key)
+      .getDownloadProgressById(this.key)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((percent: number) => {
-        this.progress = percent;
-        if (percent >= 100) {
-          this.downloading = false;
-          this.downloaded = true;
+      .subscribe((data: ProgressDownload | undefined) => {
+        if (data) {
+          this.setPercentTranslate(data.percent);
+          if (data.percent <= 0) {
+            this.downloadStatus = DownloadStatus.WAITING;
+          } else if (data.percent < 100) {
+            this.downloadStatus = DownloadStatus.IN_PROGRESS;
+          } else {
+            this.downloadStatus = DownloadStatus.FINISHED;
+          }
+        } else {
+          this.downloadStatus = DownloadStatus.NOT_DOWNLOADED;
         }
+        this.cdr.detectChanges();
       });
   }
 
@@ -84,24 +104,14 @@ export class DownloadButtonComponent {
     isDownloaded$
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((downloaded: boolean) => {
-        this.downloaded = downloaded;
+        this.alreadyDownloaded = downloaded;
       });
   }
 
   onClick(): void {
-    if (this.downloaded || this.downloading) return;
+    if (this.alreadyDownloaded || this.downloadStatus !== DownloadStatus.NOT_DOWNLOADED) return;
 
-    this.downloading = true;
-    this.progress = 0;
-    
-    this.progressSubscription?.unsubscribe();
-    
-    this.progressSubscription = this.downloadService
-      .getDownloadProgress(this.key)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((percent: number) => {
-        this.progress = percent;
-      });
+    this.resetPercentTranslate();
     
     const download$: Observable<void> = this.mediaType === MediaTypeModel.EPISODE
       ? this.downloadService.downloadEpisode(this.mediaId, this.seasonId, this.episodeId)
@@ -110,27 +120,50 @@ export class DownloadButtonComponent {
     download$
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe({
-        next: () => {
-          this.downloading = false;
-          this.downloaded = true;
-        },
         error: () => {
-          this.downloading = false;
+          
         }
       });
   }
 
+  setPercentTranslate(percent: number): any {
+    this.progress = percent;
+    percent = Math.min(100, Math.max(0, percent));
+    const offset = 104 - (112 * percent) / 100;
+    this.progressTranslate = `translateY(${offset}px)`;
+  }
+
   private cleanup(): void {
+    this.heightCircle = 0;
+    this.heightIcon = 0;
+    this.widthBorder = 0;
+    this.iconOffset = 0;
+    this.iconUnits = 0;
     this.progressSubscription?.unsubscribe();
-    this.downloaded = false;
-    this.downloading = false;
-    this.progress = 0;
+    this.alreadyDownloaded = false;
+    this.downloadStatus = DownloadStatus.NOT_DOWNLOADED;
+    this.resetPercentTranslate();
+  }
+
+  private resetPercentTranslate(): void {
+    this.setPercentTranslate(0);
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
     this.progressSubscription?.unsubscribe();
+    this.downloadService.deleteUselessSubjectByKey(this.key);
+  }
+
+  public titleKey(): string {
+    if (this.alreadyDownloaded || this.downloadStatus === DownloadStatus.FINISHED) return this.translateService.instant('DOWNLOAD.DELETE_DOWNLOAD');
+    switch (this.downloadStatus) {
+      case DownloadStatus.NOT_DOWNLOADED: return this.translateService.instant('DOWNLOAD.DOWNLOAD');
+      case DownloadStatus.WAITING: return this.translateService.instant('DOWNLOAD.WAITING');
+      case DownloadStatus.IN_PROGRESS: return `${this.translateService.instant('DOWNLOAD.DOWNLOADING')}: ${this.progress}%`;
+      default: return '';
+    }
   }
 
 }

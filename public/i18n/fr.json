@@ -128,8 +128,8 @@
     "DOWNLOAD": {
         "PAGE_TITLE": "Téléchargements",
         "DOWNLOAD": "Télécharger",
+        "WAITING": "En attente des métadonnées",
         "DOWNLOADING": "Téléchargement en cours",
-        "DOWNLOADED": "Téléchargé",
         "DELETE_DOWNLOAD": "Supprimer le téléchargement",
         "STORAGE_TITLE": "Répartition du stockage",
         "STORAGE_OTHER": "Autres applications",

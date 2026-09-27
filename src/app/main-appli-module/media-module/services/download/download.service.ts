@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, from, map, Observable, of, take, BehaviorSubject, switchMap, throwError, catchError } from 'rxjs';
+import { forkJoin, from, map, Observable, of, take, BehaviorSubject, switchMap, throwError, catchError, distinctUntilChanged } from 'rxjs';
 import { MediaService } from '../media/media.service';
 import { MediaModel } from '../../models/media.interface';
 import { MediaInfoModel } from '../../models/media-info.interface';
@@ -11,6 +11,7 @@ import { EpisodeModel } from '../../models/series/episode.interface';
 import { SeriesModel } from '../../models/series/series.interface';
 import { SeasonModel } from '../../models/series/season.interface';
 import { StorageInfoModel } from '../../models/storage-info.interface';
+import { ProgressDownload } from '../../models/progress-download.interface';
 
 declare const window: any;
 
@@ -19,33 +20,63 @@ declare const window: any;
 })
 export class DownloadService {
 
-  private readonly progressSubjects: Map<string, BehaviorSubject<number>> = new Map();
+  private readonly progressSubjects: Map<string, BehaviorSubject<ProgressDownload | undefined>> = new Map();
 
   constructor(private readonly mediaService: MediaService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly seriesService: SeriesService
   ) { 
-    window.electron.onDownloadProgress((data: { key: string, percent: number }) => {
-      this.getOrCreateProgressSubject(data.key).next(data.percent);
+    window.electron.onDownloadProgress((data: ProgressDownload) => {
+      this.setOrCreateProgressDonwload(data);
     });
   }
 
-  private getOrCreateProgressSubject(key: string): BehaviorSubject<number> {
-    let subject: BehaviorSubject<number> | undefined = this.progressSubjects.get(key);
+  private initProgressDownload(key: string): ProgressDownload {
+    return {
+      key: key, 
+      percent: 0,
+      receivedBytes: 0,
+      totalBytes: 0,
+      fileName: ''
+    }
+  }
+
+  private formatKey(id: number, mediaType: MediaTypeModel): string {
+    return `${mediaType}-${id}`;
+  }
+
+  private setOrCreateProgressDonwload(data: ProgressDownload): void {
+    const progress: BehaviorSubject<ProgressDownload | undefined> | undefined = this.progressSubjects.get(data.key);
+    if (progress) {
+      progress.next(data);
+      this.progressSubjects.set(data.key, progress);
+    } else {
+      const newProgress: BehaviorSubject<ProgressDownload | undefined> = new BehaviorSubject<ProgressDownload | undefined>(data);
+      this.progressSubjects.set(data.key, newProgress);
+    }
+  }
+
+  private getOrCreateProgressSubject(key: string): BehaviorSubject<ProgressDownload | undefined> {
+    let subject: BehaviorSubject<ProgressDownload | undefined> | undefined = this.progressSubjects.get(key);
     if (!subject) {
-      subject = new BehaviorSubject<number>(0);
+      subject = new BehaviorSubject<ProgressDownload | undefined>(undefined);
       this.progressSubjects.set(key, subject);
     }
     return subject;
   }
 
-  public getDownloadProgress(key: string): Observable<number> {
-    return this.getOrCreateProgressSubject(key).asObservable();
+  public getDownloadProgressById(key: string): Observable<ProgressDownload | undefined> {
+    return this.getOrCreateProgressSubject(key).asObservable(); 
   }
 
-  public isDownloadInProgress(key: string): boolean {
-    const subject: BehaviorSubject<number> | undefined = this.progressSubjects.get(key);
-    return subject !== undefined && subject.getValue() < 100;
+  public deleteUselessSubjectByKey(key: string): void {
+    const progress = this.progressSubjects.get(key);
+    if (progress) {
+      const value: ProgressDownload | undefined = progress.value;
+      if (!value || value.percent >= 100) {
+        this.progressSubjects.delete(key);
+      }
+    }
   }
 
   private compressedAllPosterFromMedia(media: MediaModel): MediaModel {
@@ -79,7 +110,8 @@ export class DownloadService {
   }
 
   public downloadMovie(movieId: number): Observable<void> {
-    this.getOrCreateProgressSubject(`${MediaTypeModel.MOVIE}-${movieId}`).next(0);
+    const key: string = this.formatKey(movieId, MediaTypeModel.MOVIE);
+    this.getOrCreateProgressSubject(key).next(this.initProgressDownload(key));
     
     return forkJoin({
       media: this.mediaService.fetchMediaById(movieId),
@@ -104,7 +136,8 @@ export class DownloadService {
   }
 
   public downloadEpisode(seriesId: number, seasonId: number, episodeId: number): Observable<void> {
-    this.getOrCreateProgressSubject(`${MediaTypeModel.EPISODE}-${episodeId}`).next(0);
+    const key: string = this.formatKey(seriesId, MediaTypeModel.EPISODE);
+    this.getOrCreateProgressSubject(key).next(this.initProgressDownload(key));
 
     return this.isMediaDownloaded(seriesId).pipe(
       take(1),

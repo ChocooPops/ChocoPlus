@@ -128,8 +128,8 @@
     "DOWNLOAD": {
         "PAGE_TITLE": "Downloads",
         "DOWNLOAD": "Download",
+        "WAITING": "Waiting for metadata",
         "DOWNLOADING": "Downloading",
-        "DOWNLOADED": "Downloaded",
         "DELETE_DOWNLOAD": "Delete download",
         "STORAGE_TITLE": "Storage breakdown",
         "STORAGE_OTHER": "Other apps",

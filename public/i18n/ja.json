@@ -128,8 +128,8 @@
     "DOWNLOAD": {
         "PAGE_TITLE": "ダウンロード",
         "DOWNLOAD": "ダウンロード",
+        "WAITING": "メタデータの取得待ち",
         "DOWNLOADING": "ダウンロード中",
-        "DOWNLOADED": "ダウンロード済み",
         "DELETE_DOWNLOAD": "ダウンロードを削除",
         "STORAGE_TITLE": "ストレージの内訳",
         "STORAGE_OTHER": "他のアプリ",

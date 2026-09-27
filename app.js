@@ -21,6 +21,7 @@ const NEW_EPISODE_ID = "NEW_EPISODE_ID";
 const MediaType = Object.freeze({
   MOVIE: "MOVIE",
   SERIES: "SERIES",
+  SEASON: "SEASON",
   EPISODE: "EPISODE",
   OTHER: "OTHER"
 });
@@ -181,6 +182,24 @@ function createWindow() {
   });
 }
 
+//=========================================================================================//*
+//=========================================================================================//*
+//=================================== MAIN FUNCTION DOWNLOAD ==============================//*
+//=========================================================================================//*
+//=========================================================================================//*
+const activeDownloads = new Set();
+
+function hasActiveDownloads() {
+  return activeDownloads.size > 0;
+}
+
+// Annule tous les téléchargements en cours et attend que leur nettoyage (suppression des fichiers partiels) soit terminé.
+async function abortActiveDownloads() {
+  const entries = [...activeDownloads];
+  entries.forEach((entry) => entry.controller.abort());
+  await Promise.allSettled(entries.map((entry) => entry.promise));
+}
+
 async function downloadImage(imageUrl, targetDir) {
   if (!imageUrl) return null;
   return new Promise((resolve, reject) => {
@@ -221,7 +240,6 @@ async function downloadImage(imageUrl, targetDir) {
     }
   });
 }
-
 async function downloadImageArray(imageUrls, imagesDir) {
   if (!Array.isArray(imageUrls)) return [];
   
@@ -232,99 +250,145 @@ async function downloadImageArray(imageUrls, imagesDir) {
   );
 }
 
-function hasMediaDownloaded(mediaId) {
+const VIDEO_DEFAULT_EXTENSION = '.mkv';
+const VIDEO_CONTENT_TYPE_EXTENSIONS = {
+  'video/x-matroska': '.mkv',
+  'video/mp4': '.mp4',
+  'video/webm': '.webm',
+  'video/x-msvideo': '.avi',
+  'video/quicktime': '.mov'
+};
+
+function getOriginalFileName(headers) {
+  const disposition = headers['content-disposition'] || '';
+  const encoded = /filename\*\s*=\s*(?:[\w-]+)?'[^']*'([^;]+)/i.exec(disposition);
+  const plain = /filename\s*=\s*(?:"([^"]+)"|([^;]+))/i.exec(disposition);
+  let name = null;
   try {
-    const downloadDirMedia = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
-    if (fs.existsSync(downloadDirMedia)) {
-      const fileContent = fs.readFileSync(downloadDirMedia, 'utf-8');
-      if (!fileContent.trim()) {
-        return false;
-      }
-      const metadata = JSON.parse(fileContent);
-      return metadata.media.id;
-    } else {
-      return false;
+    if (encoded) {
+      name = decodeURIComponent(encoded[1].trim());
+    } else if (plain) {
+      name = (plain[1] || plain[2]).trim();
     }
-  } catch(error) {
-    return false;
-  }
-}
-
-function hasEpisodeDownloaded(seriesId, seasonId, episodeId) {
- try {
-    const downloadDirEpisode = path.join(downloadsRootPath, String(seriesId), String(seasonId), String(episodeId), FILE_METADATA);
-    if (fs.existsSync(downloadDirEpisode)) {
-      const fileContent = fs.readFileSync(downloadDirEpisode, 'utf-8');
-      if (!fileContent.trim()) {
-        return false;
-      }
-      const metadata = JSON.parse(fileContent);
-      return metadata.id;
-    } else {
-      return false;
-    }
-  } catch(error) {
-    return false;
-  }
-}
-
-const CACHE_FOLDER_NAMES = ['Cache', 'Code Cache', 'GPUCache', 'DawnGraphiteCache', 'DawnWebGPUCache', 'Shared Dictionary'];
-
-function getDiskUsage(targetPath) {
-  try {
-    const stats = fs.statfsSync(targetPath);
-    return {
-      totalBytes: stats.blocks * stats.bsize,
-      freeBytes: stats.bavail * stats.bsize
-    };
   } catch (error) {
-    return { totalBytes: 0, freeBytes: 0 };
+    name = plain ? (plain[1] || plain[2]).trim() : null;
   }
+  if (!name) return null;
+
+  name = path.basename(name.replace(/\\/g, '/')).replace(/[<>:"/\\|?*\x00-\x1f]/g, '_').trim();
+  return name && name !== '.' && name !== '..' ? name.slice(0, 200) : null;
 }
 
-function getFolderSizeBytes(dirPath) {
-  let total = 0;
-  try {
-    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
-    for (const entry of entries) {
-      const entryPath = path.join(dirPath, entry.name);
-      if (entry.isDirectory()) {
-        total += getFolderSizeBytes(entryPath);
-      } else if (entry.isFile()) {
-        try {
-          total += fs.statSync(entryPath).size;
-        } catch (error) {
-          // Fichier illisible : on l'ignore.
+function getVideoFileName(headers) {
+  const contentType = (headers['content-type'] || '').split(';')[0].trim().toLowerCase();
+  const fallbackExtension = VIDEO_CONTENT_TYPE_EXTENSIONS[contentType] || VIDEO_DEFAULT_EXTENSION;
+  const originalName = getOriginalFileName(headers);
+  if (!originalName) return `video${fallbackExtension}`;
+  return path.extname(originalName) ? originalName : `${originalName}${fallbackExtension}`;
+}
+
+async function downloadVideo(mediaType, id, targetDir, key, signal) {
+  const token = await getToken();
+  return new Promise((resolve, reject) => {
+    let endpoint;
+    if (mediaType === MediaType.MOVIE) {
+      endpoint = `stream/download-movie/${id}`;
+    } else if (mediaType === MediaType.EPISODE) {
+      endpoint = `stream/download-episode/${id}`;
+    } else {
+      return reject(new Error(`Unsupported media type for video download: ${mediaType}`));
+    }
+
+    const apiUrl = (process.env.API_URL || 'http://localhost:3000').replace(/\/+$/, '');
+    const videoUrl = new URL(`${apiUrl}/${endpoint}`);
+    const protocol = videoUrl.protocol === 'https:' ? https : http;
+
+    const headers = { Authorization: `Bearer ${token}` };
+    if (process.env.HEADER_NAME_FIELD_SECRET_API && process.env.HEADER_SECRET_API) {
+      headers[process.env.HEADER_NAME_FIELD_SECRET_API] = process.env.HEADER_SECRET_API;
+    }
+
+    const request = protocol.get(videoUrl, { headers, signal }, (response) => {
+      if (response.statusCode !== 200) {
+        response.resume();
+        return reject(new Error(`Video download failed (${response.statusCode}) for ${endpoint}`));
+      }
+
+      const fileName = getVideoFileName(response.headers);
+      const filePath = path.join(targetDir, fileName);
+      const partialPath = `${filePath}.part`;
+      const totalBytes = parseInt(response.headers['content-length'], 10);
+      let receivedBytes = 0;
+      let lastPercent = -1;
+      let lastSentAt = 0;
+
+      const file = fs.createWriteStream(partialPath);
+
+      const fail = (error) => {
+        response.destroy();
+        file.destroy();
+        fs.unlink(partialPath, () => {});
+        reject(error);
+      };
+
+      response.on('data', (chunk) => {
+        receivedBytes += chunk.length;
+
+        if (!mainWindow || mainWindow.isDestroyed()) return;
+
+        // Au plus une mise à jour toutes les 500 ms (ou à chaque pourcent) : le renderer en déduit la vitesse et le temps restant.
+        const now = Date.now();
+        const percent = totalBytes > 0 ? Math.min(99, Math.floor((receivedBytes / totalBytes) * 100)) : undefined;
+        if (now - lastSentAt >= 500 || (percent !== undefined && percent !== lastPercent)) {
+          lastSentAt = now;
+          if (percent !== undefined) lastPercent = percent;
+          mainWindow.webContents.send('download-progress', {
+            key,
+            ...(percent !== undefined ? { percent } : {}),
+            receivedBytes,
+            totalBytes: totalBytes > 0 ? totalBytes : 0,
+            fileName
+          });
         }
-      }
-    }
-  } catch (error) {
-    // Dossier inexistant ou illisible.
-  }
-  return total;
+      });
+
+      response.on('error', fail);
+      response.on('aborted', () => fail(new Error(`Video download aborted for ${endpoint}`)));
+      file.on('error', fail);
+
+      response.pipe(file);
+
+      file.on('finish', () => {
+        file.close(() => {
+          if (totalBytes > 0 && receivedBytes < totalBytes) {
+            return fail(new Error(`Video download incomplete for ${endpoint}`));
+          }
+          try {
+            fs.renameSync(partialPath, filePath);
+            resolve(filePath);
+          } catch (error) {
+            fail(error);
+          }
+        });
+      });
+    });
+
+    request.on('error', reject);
+  });
 }
 
-ipcMain.handle('get-storage-info', () => {
-  const { totalBytes, freeBytes } = getDiskUsage(userDataPath);
-  const downloadsBytes = getFolderSizeBytes(downloadsRootPath);
-  const cacheBytes = CACHE_FOLDER_NAMES.reduce(
-    (sum, name) => sum + getFolderSizeBytes(path.join(userDataPath, name)),
-    0
-  );
+async function performDownload(data, signal) {
 
-  return { totalBytes, freeBytes, downloadsBytes, cacheBytes };
-});
-
-ipcMain.handle('download-media', async (event, data) => {
-  
   const { media, info, seasonId, episode, mediaType } = data || {};
 
   const mediaIdStr = String(media.id);
   const downloadDirMedia = path.join(downloadsRootPath, mediaIdStr);
+  const seriesAlreadyDownloaded = Boolean(hasMediaDownloaded(media.id));
 
   try {
 
     let key = '';
+    let fileName = null;
     if (mediaType === MediaType.MOVIE) {
       key = `${MediaType.MOVIE}-${media.id}`;
     } else if (mediaType === MediaType.EPISODE) {
@@ -400,12 +464,13 @@ ipcMain.handle('download-media', async (event, data) => {
           delete media.seasons[index].episodes;
         }
       }
-      fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info }, null, 2));
-    
       if (mediaType === MediaType.MOVIE) {
-
+        const videoPath = await downloadVideo(mediaType, media.id, downloadDirMedia, key, signal);
+        fileName = path.basename(videoPath);
+        fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info, videoPath }, null, 2));
+      } else {
+        fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info }, null, 2));
       }
-    
     }
 
     if (mediaType === MediaType.EPISODE && seasonId && episode && !hasEpisodeDownloaded(media.id, seasonId, episode.id)) {
@@ -419,18 +484,120 @@ ipcMain.handle('download-media', async (event, data) => {
       fs.mkdirSync(imagesDirEpisode, { recursive: true });
 
       episode.srcPoster = await downloadImage(episode.srcPoster, imagesDirEpisode)
-      fs.writeFileSync(path.join(downloadDirEpisode, FILE_METADATA), JSON.stringify(episode, null, 2));
+      const videoPath = await downloadVideo(mediaType, episode.id, downloadDirEpisode, key, signal);
+      fileName = path.basename(videoPath);
+      fs.writeFileSync(path.join(downloadDirEpisode, FILE_METADATA), JSON.stringify({episode, videoPath}, null, 2));
     }
 
     if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('download-progress', { key, percent: 100 });
+      mainWindow.webContents.send('download-progress', { key, percent: 100, ...(fileName ? { fileName } : {}) });
     }
 
     return { success: true }
   } catch(error) {
-    fs.rmSync(downloadDirMedia, { recursive: true, force: true });
+    if (mediaType === MediaType.EPISODE && seriesAlreadyDownloaded && seasonId && episode) {
+      fs.rmSync(path.join(downloadDirMedia, String(seasonId), String(episode.id)), { recursive: true, force: true });
+    } else {
+      fs.rmSync(downloadDirMedia, { recursive: true, force: true });
+    }
     throw error;
   }
+}
+
+function hasMediaDownloaded(mediaId) {
+  try {
+    const downloadDirMedia = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
+    if (fs.existsSync(downloadDirMedia)) {
+      const fileContent = fs.readFileSync(downloadDirMedia, 'utf-8');
+      if (!fileContent.trim()) {
+        return false;
+      }
+      const metadata = JSON.parse(fileContent);
+      return metadata.media.id;
+    } else {
+      return false;
+    }
+  } catch(error) {
+    return false;
+  }
+}
+function hasEpisodeDownloaded(seriesId, seasonId, episodeId) {
+ try {
+    const downloadDirEpisode = path.join(downloadsRootPath, String(seriesId), String(seasonId), String(episodeId), FILE_METADATA);
+    if (fs.existsSync(downloadDirEpisode)) {
+      const fileContent = fs.readFileSync(downloadDirEpisode, 'utf-8');
+      if (!fileContent.trim()) {
+        return false;
+      }
+      const metadata = JSON.parse(fileContent);
+      return metadata.id;
+    } else {
+      return false;
+    }
+  } catch(error) {
+    return false;
+  }
+}
+
+const CACHE_FOLDER_NAMES = ['Cache', 'Code Cache', 'GPUCache', 'DawnGraphiteCache', 'DawnWebGPUCache', 'Shared Dictionary'];
+function getDiskUsage(targetPath) {
+  try {
+    const stats = fs.statfsSync(targetPath);
+    return {
+      totalBytes: stats.blocks * stats.bsize,
+      freeBytes: stats.bavail * stats.bsize
+    };
+  } catch (error) {
+    return { totalBytes: 0, freeBytes: 0 };
+  }
+}
+
+function getFolderSizeBytes(dirPath) {
+  let total = 0;
+  try {
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const entryPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        total += getFolderSizeBytes(entryPath);
+      } else if (entry.isFile()) {
+        try {
+          total += fs.statSync(entryPath).size;
+        } catch (error) {
+          // Fichier illisible : on l'ignore.
+        }
+      }
+    }
+  } catch (error) {
+    // Dossier inexistant ou illisible.
+  }
+  return total;
+}
+
+//=========================================================================================//*
+//=========================================================================================//*
+//=================================== MAIN IPC DOWNLOAD ===================================//*
+//=========================================================================================//*
+//=========================================================================================//*
+
+ipcMain.handle('download-media', (event, data) => {
+  const controller = new AbortController();
+  const entry = { controller, promise: null };
+  entry.promise = performDownload(data, controller.signal);
+  activeDownloads.add(entry);
+  entry.promise.finally(() => activeDownloads.delete(entry));
+  return entry.promise;
+});
+
+ipcMain.handle('get-storage-info', () => {
+  const { totalBytes, freeBytes } = getDiskUsage(userDataPath);
+  const downloadsBytes = getFolderSizeBytes(downloadsRootPath);
+  const cacheBytes = CACHE_FOLDER_NAMES.reduce(
+    (sum, name) => sum + getFolderSizeBytes(path.join(userDataPath, name)),
+    0
+  );
+
+  return { totalBytes, freeBytes, downloadsBytes, cacheBytes };
 });
 
 ipcMain.handle('list-downloads', () => {
@@ -506,128 +673,53 @@ ipcMain.handle('get-all-episodes', (event, data) => {
 ipcMain.handle('delete-download', async (event, key) => {
 });
 
-app.on('ready', createWindow);
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
-
-ipcMain.handle('get-version', () => {
-  return app.getVersion()
-});
-
-ipcMain.handle('open-external', async (_event, url) => {
-  if (typeof url !== 'string' || !url.startsWith('http')) {
-    throw new Error('URL invalide');
-  }
-
-  await shell.openExternal(url);
-});
-
-ipcMain.handle('open-file-dialog', async () => {
-  const result = await dialog.showOpenDialog({
-    properties: ['openDirectory'],
-  });
-  return result.filePaths;
-});
-
-
-ipcMain.handle('open-vlc-with-video', async (event, videoPath) => {
-  return new Promise((resolve, reject) => {
-    const vlcPath = `"C:\\Program Files\\VideoLAN\\VLC\\vlc.exe"`;
-    const absolutePath = path.isAbsolute(videoPath)
-      ? videoPath
-      : path.resolve(app.getPath('home'), videoPath);
-
-    const uriPath = encodeURI(`file:///${absolutePath.replace(/\\/g, '/')}`);
-    const command = `${vlcPath} ${uriPath} --fullscreen --no-video-title-show`;
-
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error.message);
-        return;
-      }
-      resolve(`VLC a démarré avec succès.`);
-    });
-  });
-});
-
-ipcMain.handle('is-fullscreen', async () => {
-  const isFullScreen = mainWindow.isFullScreen();
-  return isFullScreen;
-});
-
-ipcMain.handle('toggle-fullscreen', async () => {
-  const isFullScreen = mainWindow.isFullScreen();
-  mainWindow.setFullScreen(!isFullScreen);
-  return !isFullScreen;
-});
-
-ipcMain.handle('disable-fullscreen', async () => {
-  if (mainWindow.isFullScreen) {
-    mainWindow.setFullScreen(false);
-  }
-});
-
-
-ipcMain.handle('delete-cache', async () => {
-  const ses = session.defaultSession;
-
-  ses.clearCache().then(() => {
-  });
-
-  ses.clearStorageData({
-    storages: ['cookies', 'sessionstorage', 'indexdb', 'websql', 'serviceworkers'],
-    quotas: ['temporary', 'persistent', 'syncable']
-  }).then(() => {
-  });
-})
-
-ipcMain.handle('reload-app', async () => {
-  await stopCSharpProcess(true);
-  mainWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, '/dist/choco-plus/browser/index.html'),
-      protocol: 'file:',
-      slashes: true,
-    })
-  );
-});
-
-ipcMain.handle('window-minimize', () => {
-  mainWindow.minimize();
-});
-
-ipcMain.handle('window-maximize', () => {
-  if (mainWindow.isMaximized()) {
-    mainWindow.unmaximize();
-  } else {
-    mainWindow.maximize();
-  }
-  return mainWindow.isMaximized();
-});
-
-ipcMain.handle('window-close', () => {
-  mainWindow.close();
-});
-
+//=========================================================================================//
+//=========================================================================================//
+//===================================== TOKEN STORAGE =====================================//
+//=========================================================================================//
+//=========================================================================================//
+async function getToken() {
+  return keytar.getPassword(SERVICE, ACCOUNT);
+}
 ipcMain.handle('secureStore:setRefreshToken', async (_e, token) => {
   keytar.setPassword(SERVICE, ACCOUNT, token)
 });
 ipcMain.handle('secureStore:getRefreshToken', async () =>
-  keytar.getPassword(SERVICE, ACCOUNT)
+  getToken()
 );
 ipcMain.handle('secureStore:deleteRefreshToken', async () =>
   keytar.deletePassword(SERVICE, ACCOUNT)
 );
+
+//=========================================================================================//
+//=========================================================================================//
+//===================================== CHOCO PLAYER ======================================//
+//=========================================================================================//
+//=========================================================================================//
+function stopCSharpProcess(force = false) {
+  return new Promise((resolve) => {
+    if (!csharpProcess || csharpProcess.killed) {
+      csharpProcess = null;
+      return resolve();
+    }
+
+    csharpProcess.once('close', () => {
+      csharpProcess = null;
+      resolve();
+    });
+
+    try {
+      if (process.platform === 'win32') {
+        exec(`taskkill /pid ${csharpProcess.pid} /T ${force ? '/F' : ''}`);
+      } else {
+        csharpProcess.kill('SIGTERM');
+      }
+    } catch (e) {
+      csharpProcess = null;
+      resolve();
+    }
+  });
+}
 
 ipcMain.handle('launch-choco-player', async (event, dataObject) => {
   try {
@@ -752,35 +844,142 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
   }
 });
 
-app.on('before-quit', async (event) => {
-  if (csharpProcess && !csharpProcess.killed) {
-    event.preventDefault();
-    await stopCSharpProcess(true);
+//=========================================================================================//*
+//=========================================================================================//*
+//=================================== MAIN APPLICATION ===================================//*
+//=========================================================================================//*
+//=========================================================================================//*
+app.on('ready', createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-function stopCSharpProcess(force = false) {
-  return new Promise((resolve) => {
-    if (!csharpProcess || csharpProcess.killed) {
-      csharpProcess = null;
-      return resolve();
-    }
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
 
-    csharpProcess.once('close', () => {
-      csharpProcess = null;
-      resolve();
-    });
+ipcMain.handle('get-version', () => {
+  return app.getVersion()
+});
 
-    try {
-      if (process.platform === 'win32') {
-        exec(`taskkill /pid ${csharpProcess.pid} /T ${force ? '/F' : ''}`);
-      } else {
-        csharpProcess.kill('SIGTERM');
-      }
-    } catch (e) {
-      csharpProcess = null;
-      resolve();
-    }
+ipcMain.handle('open-external', async (_event, url) => {
+  if (typeof url !== 'string' || !url.startsWith('http')) {
+    throw new Error('URL invalide');
+  }
+
+  await shell.openExternal(url);
+});
+
+ipcMain.handle('open-file-dialog', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
   });
-}
+  return result.filePaths;
+});
+
+
+ipcMain.handle('open-vlc-with-video', async (event, videoPath) => {
+  return new Promise((resolve, reject) => {
+    const vlcPath = `"C:\\Program Files\\VideoLAN\\VLC\\vlc.exe"`;
+    const absolutePath = path.isAbsolute(videoPath)
+      ? videoPath
+      : path.resolve(app.getPath('home'), videoPath);
+
+    const uriPath = encodeURI(`file:///${absolutePath.replace(/\\/g, '/')}`);
+    const command = `${vlcPath} ${uriPath} --fullscreen --no-video-title-show`;
+
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(error.message);
+        return;
+      }
+      resolve(`VLC a démarré avec succès.`);
+    });
+  });
+});
+
+ipcMain.handle('is-fullscreen', async () => {
+  const isFullScreen = mainWindow.isFullScreen();
+  return isFullScreen;
+});
+
+ipcMain.handle('toggle-fullscreen', async () => {
+  const isFullScreen = mainWindow.isFullScreen();
+  mainWindow.setFullScreen(!isFullScreen);
+  return !isFullScreen;
+});
+
+ipcMain.handle('disable-fullscreen', async () => {
+  if (mainWindow.isFullScreen) {
+    mainWindow.setFullScreen(false);
+  }
+});
+
+
+ipcMain.handle('delete-cache', async () => {
+  const ses = session.defaultSession;
+
+  ses.clearCache().then(() => {
+  });
+
+  ses.clearStorageData({
+    storages: ['cookies', 'sessionstorage', 'indexdb', 'websql', 'serviceworkers'],
+    quotas: ['temporary', 'persistent', 'syncable']
+  }).then(() => {
+  });
+})
+
+ipcMain.handle('reload-app', async () => {
+  await stopCSharpProcess(true);
+  mainWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, '/dist/choco-plus/browser/index.html'),
+      protocol: 'file:',
+      slashes: true,
+    })
+  );
+});
+
+ipcMain.handle('window-minimize', () => {
+  mainWindow.minimize();
+});
+
+ipcMain.handle('window-maximize', () => {
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow.maximize();
+  }
+  return mainWindow.isMaximized();
+});
+
+ipcMain.handle('window-close', () => {
+  mainWindow.close();
+});
+
+let isQuitting = false;
+app.on('before-quit', async (event) => {
+  if (isQuitting) return;
+  const needsCleanup = (csharpProcess && !csharpProcess.killed) || hasActiveDownloads();
+
+  if (!needsCleanup) return;
+
+  event.preventDefault();
+  isQuitting = true;
+
+  try {
+    if (csharpProcess && !csharpProcess.killed) {
+      await stopCSharpProcess(true);
+    }
+    if (hasActiveDownloads()) {
+      await abortActiveDownloads();
+    }
+  } finally {
+    app.quit();
+  }
+});

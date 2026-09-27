@@ -1,14 +1,50 @@
+:host {
+    position: relative;
+    display: inline-flex;
+}
+
 .btn-ring {
     position: relative;
-    overflow: hidden;
-    border-radius: 100px;
-    background-color: transparent;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
     cursor: pointer;
-    border-style: solid;
+    overflow: hidden;
+    transition: 0.2s border;
+}
+
+.btn-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    width: max-content;
+    max-width: 220px;
+    background-color: rgba(20, 20, 20, 0.95);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 6px 10px;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+
+    p {
+        margin: 0;
+        font-size: 11px;
+        font-weight: normal;
+        color: #ccc;
+        line-height: 1.4;
+        white-space: nowrap;
+    }
+}
+
+:host:hover .btn-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 .btn-download-icon {
@@ -16,41 +52,53 @@
     z-index: 2;
 }
 
-.wave-fill {
+.water-scene {
     position: absolute;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
-    background-color: #FFD301;
-    transition: height 0.3s linear;
-    overflow: visible;
-    z-index: 1;
+    height: 100%;
+    pointer-events: none;
 }
-
-.wave-fill .wave {
-    position: absolute;
-    top: -8px;
-    left: -50%;
-    width: 200%;
-    height: 16px;
-    animation: wave-move 1.8s linear infinite;
+.water-fill {
+    color: #FFD301;
+    --wave-back-fill: #D9B000;
 }
-
-.wave-fill .wave path {
-    fill: #FFD301;
+.wave-back {
+    fill: var(--wave-back-fill, currentColor);
+    animation: wave-backward 2.8s linear infinite;
 }
-
-@keyframes wave-move {
+.wave-front {
+    animation: wave-forward 1.7s linear infinite;
+}
+.water-level {
+    transition: transform 0.9s cubic-bezier(0.25, 0.7, 0.3, 1);
+}
+.water-icon-grey {
+    filter: brightness(0) invert(1);
+}
+.water-icon-black {
+    filter: brightness(0);
+}
+@keyframes wave-forward {
     from {
-        transform: translateX(0);
+        transform: translateX(0px);
     }
     to {
-        transform: translateX(-50%);
+        transform: translateX(-100px);
+    }
+}
+@keyframes wave-backward {
+    from {
+        transform: translateX(-100px);
+    }
+    to {
+        transform: translateX(0px);
     }
 }
 
-.btn-ring-to-download {
+.NOT_DOWNLOADED {
     border-color: #919191;
+    border-style: solid;
     background-color: transparent;
 
     img {
@@ -62,21 +110,42 @@
           brightness(95%)
           contrast(90%);
     }
+    
+    &:hover {
+        border-color: white;
+
+        img {
+            filter: brightness(0) invert(1);
+        }
+    }
 }
 
-.btn-ring-to-download:hover {
-    border-color: white;
+.WAITING {
+    border-color: #FFD301;
+    border-style: dashed;
+    background-color: transparent;
 
     img {
         filter: brightness(0) invert(1);
     }
 }
 
-.btn-ring-to-delete {
+.IN_PROGRESS {
     border-color: #FFD301;
-    background-color: #FFD301;
+    border-style: solid;
+    background-color: transparent;
 
     img {
-        filter: brightness(0);
+        filter: brightness(0) invert(1);
+    }
+}
+
+.FINISHED {
+    border-color: #FFD301;
+    background-color: #FFD301;
+    border-style: solid;
+
+    img {
+        filter: brightness(0)
     }
 }
