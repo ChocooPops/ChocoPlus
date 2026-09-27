@@ -11,7 +11,7 @@ import { EpisodeModel } from '../../models/series/episode.interface';
 import { SeriesModel } from '../../models/series/series.interface';
 import { SeasonModel } from '../../models/series/season.interface';
 import { StorageInfoModel } from '../../models/storage-info.interface';
-import { ProgressDownload } from '../../models/progress-download.interface';
+import { ProgressDownload, ProgressTypeOperation } from '../../models/progress-download.interface';
 
 declare const window: any;
 
@@ -27,17 +27,18 @@ export class DownloadService {
     private readonly seriesService: SeriesService
   ) { 
     window.electron.onDownloadProgress((data: ProgressDownload) => {
-      this.setOrCreateProgressDonwload(data);
+      this.setOrCreateProgressDonwload(data.key, data);
     });
   }
 
-  private initProgressDownload(key: string): ProgressDownload {
+  private initProgressDownload(key: string, type: ProgressTypeOperation): ProgressDownload {
     return {
       key: key, 
       percent: 0,
       receivedBytes: 0,
       totalBytes: 0,
-      fileName: ''
+      fileName: '',
+      type: type
     }
   }
 
@@ -45,14 +46,14 @@ export class DownloadService {
     return `${mediaType}-${id}`;
   }
 
-  private setOrCreateProgressDonwload(data: ProgressDownload): void {
-    const progress: BehaviorSubject<ProgressDownload | undefined> | undefined = this.progressSubjects.get(data.key);
+  private setOrCreateProgressDonwload(key: string, data: ProgressDownload | undefined): void {
+    const progress: BehaviorSubject<ProgressDownload | undefined> | undefined = this.progressSubjects.get(key);
     if (progress) {
       progress.next(data);
-      this.progressSubjects.set(data.key, progress);
+      this.progressSubjects.set(key, progress);
     } else {
       const newProgress: BehaviorSubject<ProgressDownload | undefined> = new BehaviorSubject<ProgressDownload | undefined>(data);
-      this.progressSubjects.set(data.key, newProgress);
+      this.progressSubjects.set(key, newProgress);
     }
   }
 
@@ -111,7 +112,7 @@ export class DownloadService {
 
   public downloadMovie(movieId: number): Observable<void> {
     const key: string = this.formatKey(movieId, MediaTypeModel.MOVIE);
-    this.getOrCreateProgressSubject(key).next(this.initProgressDownload(key));
+    this.getOrCreateProgressSubject(key).next(this.initProgressDownload(key, ProgressTypeOperation.DOWNLOAD));
     
     return forkJoin({
       media: this.mediaService.fetchMediaById(movieId),
@@ -137,7 +138,7 @@ export class DownloadService {
 
   public downloadEpisode(seriesId: number, seasonId: number, episodeId: number): Observable<void> {
     const key: string = this.formatKey(seriesId, MediaTypeModel.EPISODE);
-    this.getOrCreateProgressSubject(key).next(this.initProgressDownload(key));
+    this.getOrCreateProgressSubject(key).next(this.initProgressDownload(key, ProgressTypeOperation.DOWNLOAD));
 
     return this.isMediaDownloaded(seriesId).pipe(
       take(1),
@@ -238,8 +239,40 @@ export class DownloadService {
     );
   }
 
-  public deleteDownloadsForMedia(media: MediaModel): Observable<void> {
-    return of();
+  public deleteDownloadsForMedia(mediaId: number): Observable<void> {
+    const key: string = this.formatKey(mediaId, MediaTypeModel.MOVIE);
+    this.getOrCreateProgressSubject(key).next(this.initProgressDownload(key, ProgressTypeOperation.DELETION));
+    return from(window.electron.deleteDownload(
+        {
+          mediaId, 
+          mediaType: MediaTypeModel.MOVIE
+        }
+      ) as Promise<string[]>).pipe(
+      map((records: string[]) => {
+        records.forEach((key: string) => {
+          this.setOrCreateProgressDonwload(key, undefined);
+        });
+      })
+    );
+  }
+
+  public deleteDownloadsForSeries(mediaId: number, seasonId: number, episodeId: number): Observable<void> {
+    const key: string = this.formatKey(mediaId, MediaTypeModel.EPISODE);
+    this.getOrCreateProgressSubject(key).next(this.initProgressDownload(key, ProgressTypeOperation.DELETION));
+    return from(window.electron.deleteDownload(
+        {
+          mediaId,
+          seasonId,
+          episodeId,
+          mediaType: MediaTypeModel.EPISODE
+        }
+      ) as Promise<string[]>).pipe(
+      map((records: string[]) => {
+        records.forEach((key: string) => {
+          this.setOrCreateProgressDonwload(key, undefined);
+        });
+      })
+    );
   }
 
   public getStorageInfo(): Observable<StorageInfoModel> {

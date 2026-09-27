@@ -131,6 +131,7 @@
         "WAITING": "Waiting for metadata",
         "DOWNLOADING": "Downloading",
         "DELETE_DOWNLOAD": "Delete download",
+        "DELETION": "Deletion in progress",
         "STORAGE_TITLE": "Storage breakdown",
         "STORAGE_OTHER": "Other apps",
         "STORAGE_DOWNLOADS": "ChocoPlus downloads",

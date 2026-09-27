@@ -80,10 +80,4 @@ export class DownloadedMediaPageComponent {
     });
   }
 
-  onDeleteMedia(media: MediaModel): void {
-    this.downloadService.deleteDownloadsForMedia(media).pipe(take(1)).subscribe(() => {
-      this.loadDownloads();
-    });
-  }
-
 }

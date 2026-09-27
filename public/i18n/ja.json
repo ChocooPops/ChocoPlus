@@ -131,6 +131,7 @@
         "WAITING": "メタデータの取得待ち",
         "DOWNLOADING": "ダウンロード中",
         "DELETE_DOWNLOAD": "ダウンロードを削除",
+        "DELETION": "削除中",
         "STORAGE_TITLE": "ストレージの内訳",
         "STORAGE_OTHER": "他のアプリ",
         "STORAGE_DOWNLOADS": "ChocoPlusのダウンロード",

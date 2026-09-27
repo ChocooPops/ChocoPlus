@@ -1,4 +1,4 @@
-<div class="btn-ring" [ngClass]="[alreadyDownloaded ? 'FINISHED' : downloadStatus]"
+<div class="btn-ring" [ngClass]="[alreadyDownloaded ? DownloadStatus.DOWNLOADED : downloadStatus]"
     [style.height.px]="heightCircle" [style.width.px]="heightCircle"
     [style.border-width.px]="widthBorder" (click)="onClick()">
 
@@ -22,9 +22,16 @@
             [attr.x]="iconOffset" [attr.y]="iconOffset" [attr.width]="iconUnits" [attr.height]="iconUnits"></image>
     </svg>
     } @else {
-    <img class="btn-download-icon" [src]="alreadyDownloaded || downloadStatus === DownloadStatus.FINISHED ? srcDeleteDl : srcDownload" [style.height.px]="heightIcon" [style.width.px]="heightIcon">
+    <img class="btn-download-icon" [style.height.px]="heightIcon" [style.width.px]="heightIcon"
+        [src]="alreadyDownloaded || downloadStatus === DownloadStatus.DOWNLOADED || downloadStatus === DownloadStatus.DELETION 
+        ? srcDeleteDl : srcDownload">
     }
 </div>
+
+@if(downloadStatus === DownloadStatus.DELETION) {
+<div class="deletion-spinner" [style.height.px]="heightCircle" [style.width.px]="heightCircle"
+    [style.border-width.px]="widthBorder"></div>
+}
 
 <div class="btn-tooltip">
     <p>{{ titleKey() }}</p>

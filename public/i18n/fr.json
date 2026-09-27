@@ -131,6 +131,7 @@
         "WAITING": "En attente des métadonnées",
         "DOWNLOADING": "Téléchargement en cours",
         "DELETE_DOWNLOAD": "Supprimer le téléchargement",
+        "DELETION": "Suppression en cours",
         "STORAGE_TITLE": "Répartition du stockage",
         "STORAGE_OTHER": "Autres applications",
         "STORAGE_DOWNLOADS": "Téléchargement ChocoPlus",

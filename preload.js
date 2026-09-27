@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld('electron', {
   mediaDownloadedNotEmpty:() => ipcRenderer.invoke('download-not-empty'),
   isMediaDownloaded: (movieId) => ipcRenderer.invoke('is-media-downloaded', movieId), 
   isEpisodeDownloaded: (data) => ipcRenderer.invoke('is-episode-downloaded', data), 
-  deleteDownload: (key) => ipcRenderer.invoke('delete-download', key),
+  deleteDownload: (data) => ipcRenderer.invoke('delete-download', data),
   onDownloadProgress: (callback) => ipcRenderer.on('download-progress', (_event, data) => callback(data)),
   getStorageInfo: () => ipcRenderer.invoke('get-storage-info'),
   getMediaInfo: (mediaId) => ipcRenderer.invoke('get-media-info', mediaId),

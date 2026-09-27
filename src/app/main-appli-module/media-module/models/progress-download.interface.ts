@@ -3,12 +3,19 @@ export interface ProgressDownload {
     percent: number,
     receivedBytes: number,
     totalBytes: number,
-    fileName: string
+    fileName: string,
+    type: ProgressTypeOperation
 }
 
 export enum DownloadStatus {
     NOT_DOWNLOADED = 'NOT_DOWNLOADED',
     WAITING = 'WAITING',
     IN_PROGRESS = 'IN_PROGRESS',
-    FINISHED = 'FINISHED'
+    DOWNLOADED = 'DOWNLOADED',
+    DELETION = 'DELETION'
+}
+
+export enum ProgressTypeOperation {
+    DOWNLOAD = 'DOWNLOAD',
+    DELETION = 'DELETION'
 }

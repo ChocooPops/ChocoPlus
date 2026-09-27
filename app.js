@@ -26,6 +26,11 @@ const MediaType = Object.freeze({
   OTHER: "OTHER"
 });
 
+const ProgressTypeOperation = Object.freeze({
+  DOWNLOAD: "DOWNLOAD",
+  DELETION: "DELETION"
+});
+
 let mediaLaunched = {
   id: 0,
   type: MediaType.OTHER,
@@ -193,7 +198,7 @@ function hasActiveDownloads() {
   return activeDownloads.size > 0;
 }
 
-// Annule tous les téléchargements en cours et attend que leur nettoyage (suppression des fichiers partiels) soit terminé.
+// Cancels all ongoing downloads and waits until they have been cleaned up (partial files have been deleted).
 async function abortActiveDownloads() {
   const entries = [...activeDownloads];
   entries.forEach((entry) => entry.controller.abort());
@@ -336,7 +341,7 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
 
         if (!mainWindow || mainWindow.isDestroyed()) return;
 
-        // Au plus une mise à jour toutes les 500 ms (ou à chaque pourcent) : le renderer en déduit la vitesse et le temps restant.
+        // At most one update every 500 ms (or every percentage point): the renderer calculates the speed and the remaining time based on this.
         const now = Date.now();
         const percent = totalBytes > 0 ? Math.min(99, Math.floor((receivedBytes / totalBytes) * 100)) : undefined;
         if (now - lastSentAt >= 500 || (percent !== undefined && percent !== lastPercent)) {
@@ -347,7 +352,8 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
             ...(percent !== undefined ? { percent } : {}),
             receivedBytes,
             totalBytes: totalBytes > 0 ? totalBytes : 0,
-            fileName
+            fileName,
+            type: ProgressTypeOperation.DOWNLOAD
           });
         }
       });
@@ -490,7 +496,7 @@ async function performDownload(data, signal) {
     }
 
     if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('download-progress', { key, percent: 100, ...(fileName ? { fileName } : {}) });
+      mainWindow.webContents.send('download-progress', { key, type: ProgressTypeOperation.DOWNLOAD, percent: 100, ...(fileName ? { fileName } : {}) });
     }
 
     return { success: true }
@@ -504,6 +510,7 @@ async function performDownload(data, signal) {
   }
 }
 
+// Check if a media file exists
 function hasMediaDownloaded(mediaId) {
   try {
     const downloadDirMedia = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
@@ -513,7 +520,7 @@ function hasMediaDownloaded(mediaId) {
         return false;
       }
       const metadata = JSON.parse(fileContent);
-      return metadata.media.id;
+      return metadata.media.id && metadata.videoPath;
     } else {
       return false;
     }
@@ -521,6 +528,8 @@ function hasMediaDownloaded(mediaId) {
     return false;
   }
 }
+
+// Check if an episode of a series exists
 function hasEpisodeDownloaded(seriesId, seasonId, episodeId) {
  try {
     const downloadDirEpisode = path.join(downloadsRootPath, String(seriesId), String(seasonId), String(episodeId), FILE_METADATA);
@@ -530,7 +539,7 @@ function hasEpisodeDownloaded(seriesId, seasonId, episodeId) {
         return false;
       }
       const metadata = JSON.parse(fileContent);
-      return metadata.id;
+      return metadata.episode.id && metadata.videoPath;
     } else {
       return false;
     }
@@ -564,14 +573,49 @@ function getFolderSizeBytes(dirPath) {
         try {
           total += fs.statSync(entryPath).size;
         } catch (error) {
-          // Fichier illisible : on l'ignore.
+          // Unreadable file: it is ignored.
         }
       }
     }
   } catch (error) {
-    // Dossier inexistant ou illisible.
+    // Folder does not exist or is unreadable.
   }
   return total;
+}
+
+function removeDownloadDir(targetPath) {
+  const root = path.resolve(downloadsRootPath) + path.sep;
+  const resolved = path.resolve(targetPath);
+  if (!resolved.startsWith(root)) {
+    throw new Error('Invalid download path');
+  }
+  fs.rmSync(resolved, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+}
+
+function isDownloadId(value) {
+  return /^\d+$/.test(String(value));
+}
+
+// Names of numeric subfolders (seasons of a series, episodes of a season; “images” is ignored).
+function listNumericDirs(dirPath) {
+  try {
+    return fs.readdirSync(dirPath, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && isDownloadId(entry.name))
+      .map((entry) => entry.name);
+  } catch (error) {
+    return [];
+  }
+}
+
+// Keys (MOVIE-<id>, SEASON-<id>, EPISODE-<id>) for everything in a TV series' folder.
+function collectSeriesKeys(seriesDir, onlySeasonId) {
+  const keys = [];
+  const seasonIds = onlySeasonId ? [String(onlySeasonId)] : listNumericDirs(seriesDir);
+  for (const seasonId of seasonIds) {
+    keys.push(`${MediaType.SEASON}-${seasonId}`);
+    listNumericDirs(path.join(seriesDir, seasonId)).forEach((episodeId) => keys.push(`${MediaType.EPISODE}-${episodeId}`));
+  }
+  return keys;
 }
 
 //=========================================================================================//*
@@ -658,7 +702,7 @@ ipcMain.handle('get-all-episodes', (event, data) => {
           if (!fs.existsSync(metadataPath)) continue;
           try {
             const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-            downloads.push( metadata );
+            downloads.push( metadata.episode );
           } catch (error) {
             // Corrupt metadata: This entry is ignored
           }
@@ -670,7 +714,48 @@ ipcMain.handle('get-all-episodes', (event, data) => {
   }
 });
 
-ipcMain.handle('delete-download', async (event, key) => {
+ipcMain.handle('delete-download', async (event, data) => {
+  const { mediaType, mediaId, seasonId, episodeId } = data || {};
+  const needsSeason = mediaType === MediaType.SEASON || mediaType === MediaType.EPISODE;
+  const needsEpisode = mediaType === MediaType.EPISODE;
+
+  if (!isDownloadId(mediaId) || (needsSeason && !isDownloadId(seasonId)) || (needsEpisode && !isDownloadId(episodeId))) {
+    throw new Error('Invalid download to delete');
+  }
+
+  const mediaDir = path.join(downloadsRootPath, String(mediaId));
+  const deletedKeys = [];
+
+  if (mediaType === MediaType.MOVIE) {
+    removeDownloadDir(mediaDir);
+    deletedKeys.push(`${MediaType.MOVIE}-${mediaId}`);
+  } else if (mediaType === MediaType.SERIES) {
+    deletedKeys.push(...collectSeriesKeys(mediaDir));
+    removeDownloadDir(mediaDir);
+  } else if (needsSeason) {
+    if (mediaType === MediaType.EPISODE) {
+      removeDownloadDir(path.join(mediaDir, String(seasonId), String(episodeId)));
+      deletedKeys.push(`${MediaType.EPISODE}-${episodeId}`);
+    } else {
+      deletedKeys.push(...collectSeriesKeys(mediaDir, seasonId));
+      removeDownloadDir(path.join(mediaDir, String(seasonId)));
+    }
+
+    // A season without episodes no longer has a reason to exist, nor does a series without seasons.
+    for (const season of listNumericDirs(mediaDir)) {
+      if (listNumericDirs(path.join(mediaDir, season)).length === 0) {
+        removeDownloadDir(path.join(mediaDir, season));
+        deletedKeys.push(`${MediaType.SEASON}-${season}`);
+      }
+    }
+    if (listNumericDirs(mediaDir).length === 0) {
+      removeDownloadDir(mediaDir);
+    }
+  } else {
+    throw new Error(`Unsupported media type to delete: ${mediaType}`);
+  }
+
+  return deletedKeys;
 });
 
 //=========================================================================================//
