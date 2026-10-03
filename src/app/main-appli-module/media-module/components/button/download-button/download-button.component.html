@@ -1,4 +1,4 @@
-<div class="btn-ring" [ngClass]="[alreadyDownloaded ? DownloadStatus.DOWNLOADED : downloadStatus]"
+<div class="btn-ring" [ngClass]="[(alreadyDownloaded && downloadStatus !== DownloadStatus.DELETION) ? DownloadStatus.DOWNLOADED : downloadStatus]"
     [style.height.px]="heightCircle" [style.width.px]="heightCircle"
     [style.border-width.px]="widthBorder" (click)="onClick()">
 

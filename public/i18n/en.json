@@ -53,7 +53,7 @@
             "MYLIST": "My list",
             "EDITION": "Edit",
             "MORE": "More",
-            "DOWNLOADS": "Downloads"
+            "DOWNLOADS": "Downloads page"
         },
         "USER": {
             "HISTORIC": "History",
@@ -136,7 +136,13 @@
         "STORAGE_OTHER": "Other apps",
         "STORAGE_DOWNLOADS": "ChocoPlus downloads",
         "STORAGE_CACHE": "ChocoPlus cache",
-        "STORAGE_AVAILABLE": "Available"
+        "STORAGE_AVAILABLE": "Available",
+        "HISTORIC": "History of current downloads",
+        "DOWNLOAD_COMPLETE": "Download complete",
+        "DELETION_COMPLETE": "Deletion complete",
+        "REMAINING": "remaining",
+        "TIME_MINUTE_SHORT": "min",
+        "TIME_HOUR_SHORT": "h"
     },
     "USER": {
         "HISTORIC": {

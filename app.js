@@ -371,7 +371,10 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
           }
           try {
             fs.renameSync(partialPath, filePath);
-            resolve(filePath);
+            resolve({
+              filePath,
+              totalBytes
+            });
           } catch (error) {
             fail(error);
           }
@@ -395,6 +398,7 @@ async function performDownload(data, signal) {
 
     let key = '';
     let fileName = null;
+    let totalBytes = null;
     if (mediaType === MediaType.MOVIE) {
       key = `${MediaType.MOVIE}-${media.id}`;
     } else if (mediaType === MediaType.EPISODE) {
@@ -471,9 +475,10 @@ async function performDownload(data, signal) {
         }
       }
       if (mediaType === MediaType.MOVIE) {
-        const videoPath = await downloadVideo(mediaType, media.id, downloadDirMedia, key, signal);
-        fileName = path.basename(videoPath);
-        fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info, videoPath }, null, 2));
+        const data = await downloadVideo(mediaType, media.id, downloadDirMedia, key, signal);
+        fileName = path.basename(data.filePath);
+        totalBytes = data.totalBytes;
+        fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info, videoPath: data.filePath }, null, 2));
       } else {
         fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info }, null, 2));
       }
@@ -490,13 +495,14 @@ async function performDownload(data, signal) {
       fs.mkdirSync(imagesDirEpisode, { recursive: true });
 
       episode.srcPoster = await downloadImage(episode.srcPoster, imagesDirEpisode)
-      const videoPath = await downloadVideo(mediaType, episode.id, downloadDirEpisode, key, signal);
-      fileName = path.basename(videoPath);
-      fs.writeFileSync(path.join(downloadDirEpisode, FILE_METADATA), JSON.stringify({episode, videoPath}, null, 2));
+      const data = await downloadVideo(mediaType, episode.id, downloadDirEpisode, key, signal);
+      fileName = path.basename(data.filePath);
+      totalBytes = data.totalBytes;
+      fs.writeFileSync(path.join(downloadDirEpisode, FILE_METADATA), JSON.stringify({episode, videoPath: data.filePath}, null, 2));
     }
 
     if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('download-progress', { key, type: ProgressTypeOperation.DOWNLOAD, percent: 100, ...(fileName ? { fileName } : {}) });
+      mainWindow.webContents.send('download-progress', { key, type: ProgressTypeOperation.DOWNLOAD, percent: 100, fileName, totalBytes });
     }
 
     return { success: true }
@@ -596,6 +602,16 @@ function isDownloadId(value) {
   return /^\d+$/.test(String(value));
 }
 
+// File name of the video referenced by a metadata.json (movie or episode), or null if it has none/is unreadable.
+function readVideoFileName(metadataPath) {
+  try {
+    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+    return metadata.videoPath ? path.basename(metadata.videoPath) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 // Names of numeric subfolders (seasons of a series, episodes of a season; “images” is ignored).
 function listNumericDirs(dirPath) {
   try {
@@ -607,15 +623,20 @@ function listNumericDirs(dirPath) {
   }
 }
 
-// Keys (MOVIE-<id>, SEASON-<id>, EPISODE-<id>) for everything in a TV series' folder.
-function collectSeriesKeys(seriesDir, onlySeasonId) {
-  const keys = [];
+// Entries ({ key, fileName }) for everything in a TV series' folder (SEASON-<id>, EPISODE-<id>).
+// A season has no file of its own (fileName null); an episode carries its video's file name.
+function collectSeriesEntries(seriesDir, onlySeasonId) {
+  const entries = [];
   const seasonIds = onlySeasonId ? [String(onlySeasonId)] : listNumericDirs(seriesDir);
   for (const seasonId of seasonIds) {
-    keys.push(`${MediaType.SEASON}-${seasonId}`);
-    listNumericDirs(path.join(seriesDir, seasonId)).forEach((episodeId) => keys.push(`${MediaType.EPISODE}-${episodeId}`));
+    entries.push({ key: `${MediaType.SEASON}-${seasonId}`, fileName: null });
+    const seasonDir = path.join(seriesDir, seasonId);
+    listNumericDirs(seasonDir).forEach((episodeId) => {
+      const fileName = readVideoFileName(path.join(seasonDir, episodeId, FILE_METADATA));
+      entries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName });
+    });
   }
-  return keys;
+  return entries;
 }
 
 //=========================================================================================//*
@@ -724,20 +745,23 @@ ipcMain.handle('delete-download', async (event, data) => {
   }
 
   const mediaDir = path.join(downloadsRootPath, String(mediaId));
-  const deletedKeys = [];
+  const deletedEntries = [];
 
   if (mediaType === MediaType.MOVIE) {
+    const fileName = readVideoFileName(path.join(mediaDir, FILE_METADATA));
     removeDownloadDir(mediaDir);
-    deletedKeys.push(`${MediaType.MOVIE}-${mediaId}`);
+    deletedEntries.push({ key: `${MediaType.MOVIE}-${mediaId}`, fileName });
   } else if (mediaType === MediaType.SERIES) {
-    deletedKeys.push(...collectSeriesKeys(mediaDir));
+    deletedEntries.push(...collectSeriesEntries(mediaDir));
     removeDownloadDir(mediaDir);
   } else if (needsSeason) {
     if (mediaType === MediaType.EPISODE) {
-      removeDownloadDir(path.join(mediaDir, String(seasonId), String(episodeId)));
-      deletedKeys.push(`${MediaType.EPISODE}-${episodeId}`);
+      const episodeDir = path.join(mediaDir, String(seasonId), String(episodeId));
+      const fileName = readVideoFileName(path.join(episodeDir, FILE_METADATA));
+      removeDownloadDir(episodeDir);
+      deletedEntries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName });
     } else {
-      deletedKeys.push(...collectSeriesKeys(mediaDir, seasonId));
+      deletedEntries.push(...collectSeriesEntries(mediaDir, seasonId));
       removeDownloadDir(path.join(mediaDir, String(seasonId)));
     }
 
@@ -745,7 +769,7 @@ ipcMain.handle('delete-download', async (event, data) => {
     for (const season of listNumericDirs(mediaDir)) {
       if (listNumericDirs(path.join(mediaDir, season)).length === 0) {
         removeDownloadDir(path.join(mediaDir, season));
-        deletedKeys.push(`${MediaType.SEASON}-${season}`);
+        deletedEntries.push({ key: `${MediaType.SEASON}-${season}`, fileName: null });
       }
     }
     if (listNumericDirs(mediaDir).length === 0) {
@@ -755,7 +779,7 @@ ipcMain.handle('delete-download', async (event, data) => {
     throw new Error(`Unsupported media type to delete: ${mediaType}`);
   }
 
-  return deletedKeys;
+  return deletedEntries;
 });
 
 //=========================================================================================//

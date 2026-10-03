@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { EditionPageComponent } from './edition-module/edition-page.component';
 import { UserPageComponent } from './user-module/user-page.component';
+import { UnauthorizedPageComponent } from '../common-module/components/unauthorized-page/unauthorized-page.component';
+import { IsAdminOrFamilyGuard } from '../common-module/guards/is-admin-or-family-user.guard';
 
 export const mainAppliRoutes: Routes = [
     {
@@ -29,6 +31,7 @@ export const mainAppliRoutes: Routes = [
     },
     {
         path: 'downloads',
+        canActivate: [IsAdminOrFamilyGuard],
         loadComponent: () => import('./main-page-module/download-components/downloaded-media-page/downloaded-media-page.component').then(m => m.DownloadedMediaPageComponent)
     },
     {
@@ -52,6 +55,10 @@ export const mainAppliRoutes: Routes = [
     {
         path: 'read-video/:mediaType/:idSeries/:idSeason/:idEpisode',
         loadComponent: () => import('./video-playing-module/components/video-playing/video-playing.component').then(m => m.VideoPlayingComponent)
+    },
+    {
+        path: 'unauthorized',
+        component: UnauthorizedPageComponent
     },
     {
         path: '**',

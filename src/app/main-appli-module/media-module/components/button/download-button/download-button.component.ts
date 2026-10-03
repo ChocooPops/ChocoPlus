@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, SimpleChanges } from '@angular/cor
 import { NgClass } from '@angular/common';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { DownloadService } from '../../../services/download/download.service';
-import { Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
+import { finalize, Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
 import { DownloadStatus, ProgressDownload, ProgressTypeOperation } from '../../../models/progress-download.interface';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -49,13 +49,13 @@ export class DownloadButtonComponent {
     private readonly cdr: ChangeDetectorRef) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['mediaId']) {
+    if (changes['mediaId'] || changes['seasonId'] || changes['episodeId'] || changes['mediaType']) {
       this.cleanup();
       this.setDimension();
       this.key = this.mediaType === MediaTypeModel.EPISODE
         ? `${MediaTypeModel.EPISODE}-${this.episodeId}`
         : `${MediaTypeModel.MOVIE}-${this.mediaId}`;
-
+      
       this.observeProgressTracking();
       this.checkAlreadyDownloaded();
     }
@@ -132,17 +132,19 @@ export class DownloadButtonComponent {
 
   private delete(): void {
     const download$ = this.mediaType === MediaTypeModel.EPISODE
-        ? this.downloadService.deleteDownloadsForSeries(this.mediaId, this.seasonId, this.episodeId)
+        ? this.downloadService.deleteDownloadsForEpisode(this.mediaId, this.seasonId, this.episodeId)
         : this.downloadService.deleteDownloadsForMedia(this.mediaId);
     
     download$
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(take(1), finalize(() => this.operationWorking = false), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.alreadyDownloaded = false;
+          this.observeProgressTracking();
         },
-        complete: () => {
-          this.operationWorking = false;
+        error: () => {
+          this.alreadyDownloaded = true;
+          this.downloadStatus = DownloadStatus.DOWNLOADED;
         }
       });
   }
@@ -153,10 +155,14 @@ export class DownloadButtonComponent {
       : this.downloadService.downloadMovie(this.mediaId);
     
     download$
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(take(1), finalize(() => this.operationWorking = false), takeUntil(this.destroy$))
       .subscribe({
-        complete: () => {
-          this.operationWorking = false;
+        next: () => {
+           this.alreadyDownloaded = true
+        },
+        error: () => {
+          this.alreadyDownloaded = false;
+          this.downloadStatus = DownloadStatus.NOT_DOWNLOADED;
         }
       });
   }
@@ -169,6 +175,7 @@ export class DownloadButtonComponent {
   }
 
   private cleanup(): void {
+    if (this.key) this.downloadService.deleteUselessSubjectByKey(this.key);
     this.heightCircle = 0;
     this.heightIcon = 0;
     this.widthBorder = 0;

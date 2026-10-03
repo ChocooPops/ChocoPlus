@@ -110,6 +110,13 @@ export class AuthService {
     return !!(user && currentUser && user.role === RoleModel.ADMIN && currentUser.role === RoleModel.ADMIN);
   }
 
+  /** Family check */
+  isFamily(): boolean {
+    const user = this.decodeToken();
+    const currentUser: UserModel | undefined = this.userService.getCurrentUserValue();
+    return !!(user && currentUser && user.role === RoleModel.FAMILY && currentUser.role === RoleModel.FAMILY);
+  }
+
   /**
    * LOGOUT :
    * - notif au back (optionnel)

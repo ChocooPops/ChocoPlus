@@ -39,7 +39,9 @@
 
     <div class="container-other-tab" #otherTabRef>
         <app-navigation-button></app-navigation-button>
-        <app-download-menu-button></app-download-menu-button>
+        @if (user && (user.role === Role.ADMIN || user.role === Role.FAMILY)) {
+            <app-download-menu-button></app-download-menu-button>
+        }
         <app-change-format-poster></app-change-format-poster>
         <app-user-tab></app-user-tab>
     </div>

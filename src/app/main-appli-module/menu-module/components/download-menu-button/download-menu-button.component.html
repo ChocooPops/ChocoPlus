@@ -1,3 +1,90 @@
-<div class="container-download-menu" (click)="onClick()" [title]="'MENU.MAIN.DOWNLOADS' | translate">
-    <img [src]="srcDownload">
+
+
+
+
+<div class="container-download-menu" (click)="onClick()">
+    
+    <div class="container-icon" [title]="'MENU.MAIN.DOWNLOADS' | translate">
+        <img [src]="srcDownload">
+        @if (displayPulseDot) {
+            <span class="pulse-dot"></span>
+        }
+    </div>
+
+    @if (historicInProgress.length > 0) {
+        <div class="historic-page">
+            <p class="title"> {{ 'DOWNLOAD.HISTORIC' | translate}} </p>
+
+            @for(historic of historicInProgress; track historic.key; let i = $index) {
+                <div class="info-content">
+                    @if (historic.type === ProgressTypeOperation.DOWNLOAD) {
+                        <div class="first-line">
+                            <img [src]="getSrcIcon(historic.key)">
+                            <p> {{ historic.fileName || historic.key }} </p>
+                        </div>
+                        
+                        @if (historic.percent >= 0 && historic.percent < 100) {
+                            @if (historic.receivedBytes >= 0) {
+                                <div class="second-line">
+                                    <p>
+                                        {{ convertReceivedBytes(historic.receivedBytes, historic.totalBytes) }}/{{ convertTotalBytes(historic.totalBytes) }}
+                                            • {{ historic.speedLabel }} 
+                                            • {{ historic.remainingLabel }}
+                                    </p>
+                                </div>
+                                <div class="third-line">
+                                    <div class="progress-download" [style.width.%]="historic.percent"></div>
+                                </div>
+                            }@else {
+                                <div class="second-line">
+                                    <p>
+                                        {{ convertReceivedBytes(0, 0) }}/{{ convertTotalBytes(0) }}
+                                            • {{ 'DOWNLOAD.WAITING' | translate }}
+                                    </p>
+                                </div>
+                                <div class="third-line">
+                                    <div class="progress-loading"></div>
+                                </div>
+                            }
+                        }@else {
+                            <div class="second-line">
+                                <p>
+                                    {{ convertTotalBytes(historic.totalBytes) }} • {{ 'DOWNLOAD.DOWNLOAD_COMPLETE' | translate }} 
+                                </p>
+                            </div>
+                        }
+                    }@else {
+                        <div class="first-line">
+                            <img [src]="srcDlDelete">
+                            <p> {{ historic.fileName || historic.key }} </p>
+                        </div>
+                        @if (historic.percent < 100) {
+                            <div class="second-line">
+                                <p> {{ 'DOWNLOAD.DELETION' | translate }} </p>
+                            </div>
+                            <div class="third-line">
+                                <div class="progress-deletion"></div>
+                            </div>
+                        }@else {
+                            <div class="second-line">
+                                <p> {{ 'DOWNLOAD.DELETION_COMPLETE' | translate }} </p>
+                            </div>
+                        }
+                    }
+
+                </div>
+
+                @if (historicInProgress.length - 1 !== i) {
+                <div class="container-separation">
+                    <div class="separation"></div>
+                </div>
+                }
+            }
+        </div>
+    }
+
 </div>
+
+
+
+

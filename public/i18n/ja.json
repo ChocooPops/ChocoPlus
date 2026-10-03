@@ -53,7 +53,7 @@
             "MYLIST": "マイリスト",
             "EDITION": "編集",
             "MORE": "もっと見る",
-            "DOWNLOADS": "ダウンロード"
+            "DOWNLOADS": "ダウンロードページ"
         },
         "USER": {
             "HISTORIC": "履歴",
@@ -136,7 +136,13 @@
         "STORAGE_OTHER": "他のアプリ",
         "STORAGE_DOWNLOADS": "ChocoPlusのダウンロード",
         "STORAGE_CACHE": "ChocoPlusのキャッシュ",
-        "STORAGE_AVAILABLE": "空き容量"
+        "STORAGE_AVAILABLE": "空き容量",
+        "HISTORIC": "現在進行中のダウンロード履歴",
+        "DOWNLOAD_COMPLETE": "ダウンロード完了",
+        "DELETION_COMPLETE": "削除が完了しました",
+        "REMAINING": "残り",
+        "TIME_MINUTE_SHORT": "分",
+        "TIME_HOUR_SHORT": "時間"
     },
     "USER": {
         "HISTORIC": {

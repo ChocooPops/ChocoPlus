@@ -80,15 +80,33 @@ export class GlobalFormattingService {
     return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
   }
 
+  public isGiga(bytes: number): boolean {
+    return bytes >= 1024 ** 3;
+  }
+
   public convertBytesToMegaOrGiga(bytes: number): string {
-    const MiB = 1024 ** 2;
-    const GiB = 1024 ** 3;
-
-    if (bytes < GiB) {
-      return `${(bytes / MiB).toFixed(1)} Mo`;
+    if (this.isGiga(bytes)) {
+      return `${(bytes / 1024 ** 3).toFixed(1)} Go`;
     }
+    return `${(bytes / 1024 ** 2).toFixed(1)} Mo`;
+  }
 
-    return `${(bytes / GiB).toFixed(1)} Go`;
+  public convertBytesToMega(bytes: number): string {
+    return (bytes / 1024 ** 2).toFixed(1);
+  }
+
+  public convertBytesToGiga(bytes: number): string {
+    return (bytes / 1024 ** 3).toFixed(1);
+  }
+
+  public convertBytesToKiloMegaOrGiga(bytes: number): string {
+    if (bytes >= 1024 ** 3) {
+      return `${(bytes / 1024 ** 3).toFixed(1)} Go`;
+    }
+    if (bytes >= 1024 ** 2) {
+      return `${(bytes / 1024 ** 2).toFixed(1)} Mo`;
+    }
+    return `${(bytes / 1024).toFixed(0)} Ko`;
   }
 
 }

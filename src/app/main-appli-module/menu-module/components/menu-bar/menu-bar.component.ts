@@ -9,6 +9,9 @@ import { ChangeFormatPosterComponent } from '../change-format-poster/change-form
 import { MenuTabService } from '../../service/menu-tab/menu-tab.service';
 import { NavigationButtonComponent } from '../navigation-button/navigation-button.component';
 import { DownloadMenuButtonComponent } from '../download-menu-button/download-menu-button.component';
+import { UserService } from '../../../user-module/service/user/user.service';
+import { UserModel } from '../../../user-module/dto/user.model';
+import { RoleModel } from '../../../../common-module/models/role.enum';
 
 @Component({
   selector: 'app-menu-bar',
@@ -44,15 +47,20 @@ export class MenuBarComponent implements AfterViewInit {
   private readonly safetyMargin: number = 70;
   private widthsMeasured: boolean = false;
 
+  user!: UserModel | undefined;
+  Role = RoleModel;
+
   constructor(
     private readonly menuTabService: MenuTabService,
     private readonly scrollEventService: ScrollEventService,
+    private readonly userService: UserService,
     private readonly cd: ChangeDetectorRef) {
     this.menuTabs = this.menuTabService.getAllMenuTab();
     this.plusTab = this.menuTabService.getMenuTab();
   }
 
   ngOnInit(): void {
+    this.user = this.userService.getCurrentUserValue();
     this.subscription.add(
       this.scrollEventService.IfTopScrollIsAchievement().subscribe((isTopAchievement: boolean) => {
         this.isScrolled = isTopAchievement;

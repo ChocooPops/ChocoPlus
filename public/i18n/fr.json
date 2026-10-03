@@ -53,7 +53,7 @@
             "MYLIST": "Ma liste",
             "EDITION": "Editer",
             "MORE": "Plus",
-            "DOWNLOADS": "Téléchargements"
+            "DOWNLOADS": "Page des téléchargements"
         },
         "USER": {
             "HISTORIC": "Historique",
@@ -136,7 +136,13 @@
         "STORAGE_OTHER": "Autres applications",
         "STORAGE_DOWNLOADS": "Téléchargement ChocoPlus",
         "STORAGE_CACHE": "Cache ChocoPlus",
-        "STORAGE_AVAILABLE": "Disponible"
+        "STORAGE_AVAILABLE": "Disponible",
+        "HISTORIC": "Historique des téléchargements en cours",
+        "DOWNLOAD_COMPLETE": "Téléchargement terminé",
+        "DELETION_COMPLETE": "Suppression terminée",
+        "REMAINING": "restante(s)",
+        "TIME_MINUTE_SHORT": "min",
+        "TIME_HOUR_SHORT": "h"
     },
     "USER": {
         "HISTORIC": {

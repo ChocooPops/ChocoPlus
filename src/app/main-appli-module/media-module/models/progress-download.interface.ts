@@ -7,6 +7,11 @@ export interface ProgressDownload {
     type: ProgressTypeOperation
 }
 
+export interface HistoricProgressView extends ProgressDownload {
+  speedLabel: string;
+  remainingLabel: string;
+}
+
 export enum DownloadStatus {
     NOT_DOWNLOADED = 'NOT_DOWNLOADED',
     WAITING = 'WAITING',
