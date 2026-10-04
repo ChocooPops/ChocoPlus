@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { TokenModel } from '../../models/token.model';
 import { LoginModel } from '../../models/login.model';
-import { catchError, map, mergeMap, Observable, of } from 'rxjs';
+import { catchError, from, map, mergeMap, Observable, of, switchMap, tap } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 import { UserService } from '../../../main-appli-module/user-module/service/user/user.service';
@@ -24,6 +24,11 @@ declare global {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
+  private readonly urlRegister: string = 'register';
+  private readonly urlSendVerificationCode: string = 'send-verification-code';
+  private readonly urlReSendVerificationCode: string = 'resend-verification-code';
+  private readonly urlSynchTokenRole: string = 'synch-role-token';
 
   private apiUrlAuth = environment.apiUrlAuth;
 
@@ -130,10 +135,6 @@ export class AuthService {
     this.router.navigateByUrl('login');
   }
 
-  private readonly urlRegister: string = 'register';
-  private readonly urlSendVerificationCode: string = 'send-verification-code';
-  private readonly urlReSendVerificationCode: string = 'resend-verification-code';
-
   public fetchSendVerificationCode(user: RegisterModel): Observable<MessageReturnedModel> {
     return this.http.post<any>(`${this.apiUrlAuth}/${this.urlSendVerificationCode}`, user).pipe(
       map((data: MessageReturnedModel) => {
@@ -157,4 +158,21 @@ export class AuthService {
       })
     )
   }
+
+  public fetchSynchTokenWithRoleByUser(): Observable<void> {
+    return this.http.get<TokenModel>(`${this.apiUrlAuth}/${this.urlSynchTokenRole}`).pipe(
+      switchMap((data: TokenModel) => {
+        if (!data?.access_token) return of(undefined);
+
+        return from(window.electron!.setRefreshToken(data.access_token) as Promise<void>).pipe(
+          tap(() => {
+            this.setAccessToken(data.access_token);
+          })
+        );
+      }),
+      map(() => undefined),
+      catchError(() => of(undefined))
+    );
+  }
+
 }

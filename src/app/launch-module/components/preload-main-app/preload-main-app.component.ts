@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../main-appli-module/user-module/service/user/user.service';
-import { catchError, defaultIfEmpty, EMPTY, map, Observable, of, Subscription, switchMap, take } from 'rxjs';
+import { catchError, defaultIfEmpty, EMPTY, forkJoin, map, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { UserModel } from '../../../main-appli-module/user-module/dto/user.model';
 import { ButtonFormComponent } from '../button-form/button-form.component';
 import { TypeButtonModel } from '../../models/type-button.model';
@@ -11,7 +11,6 @@ import { PageModel } from '../../models/page.enum';
 import { TitleCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MediaModel } from '../../../main-appli-module/media-module/models/media.interface';
 
 @Component({
   selector: 'app-preload-main-appli',
@@ -44,9 +43,15 @@ export class PreloadMainAppComponent {
 
   ngOnInit(): void {
     this.subscription.add(
-      this.userService.getCurrentUser().pipe(
-        take(1),
-        switchMap((user: UserModel | undefined) => {
+      forkJoin({
+        user: this.userService.getCurrentUser().pipe(take(1)),
+        synch: this.authService.fetchSynchTokenWithRoleByUser().pipe(
+          take(1),
+          defaultIfEmpty(undefined),
+          catchError(() => of(undefined))
+        )
+      }).pipe(
+        switchMap(({ user }: { user: UserModel | undefined }) => {
           if (!user) {
             this.router.navigate(['login'], { relativeTo: this.route });
             return EMPTY;
