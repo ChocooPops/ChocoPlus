@@ -1,7 +1,6 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { Subject, take, takeUntil, filter } from 'rxjs';
-import { MessageReturnedModel } from '../../../../../common-module/models/message-returned.interface';
+import { Subject, take, takeUntil, filter, finalize } from 'rxjs';
 import { UserService } from '../../../../user-module/service/user/user.service';
 import { MediaModel } from '../../../models/media.interface';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -22,13 +21,14 @@ export class MylistButtonComponent {
   @Input() activated: boolean = true;
 
   isInList: boolean = false;
+  isToggling: boolean = false;
 
-  srcNotListEnter: string = 'icon/notInMyListEnter.svg';
-  srcNotListLeave: string = 'icon/notInMyListLeave.svg';
-  srcInListEnter: string = 'icon/inMyListEnter.svg';
-  srcInListLeave: string = 'icon/inMyListLeave.svg';
-  favoris: string = "icon/favoris.svg";
-  notFavoris: string = 'icon/not-favoris.svg';
+  public readonly srcNotListEnter: string = 'icon/notInMyListEnter.svg';
+  public readonly srcNotListLeave: string = 'icon/notInMyListLeave.svg';
+  public readonly srcInListEnter: string = 'icon/inMyListEnter.svg';
+  public readonly srcInListLeave: string = 'icon/inMyListLeave.svg';
+  public readonly favoris: string = "icon/favoris.svg";
+  public readonly notFavoris: string = 'icon/not-favoris.svg';
 
   private destroy$ = new Subject<void>();
 
@@ -57,11 +57,14 @@ export class MylistButtonComponent {
   }
 
   onClick(): void {
-    if (!this.activated) return;
-    if (!this.cursor) return;
-    if (this.media && this.media.id && this.media.id > 0) {
-      this.userService.fetchToggleMediaIntoList(this.media).pipe(take(1)).subscribe((data: MessageReturnedModel) => {
-      });
-    }
+    if (!this.activated || !this.cursor || this.isToggling) return;
+    if (!this.media || this.media.id <= 0) return;
+
+    this.isToggling = true;
+    this.userService.fetchToggleMediaIntoList(this.media).pipe(
+      take(1),
+      finalize(() => this.isToggling = false)
+    ).subscribe();
   }
+
 }
