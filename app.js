@@ -48,17 +48,17 @@ let mainWindow;
 let csharpProcess = null;
 let currentChocoPlayer = null;
 
-// Vérifier qu'une seule instance de l'application est ouverte
+// Check that only one instance of the application is open
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
-  // Une instance existe déjà, quitter cette instance
+  // An instance already exists; exit this instance
   app.quit();
 } else {
-  // C'est la première instance, écouter les tentatives de lancement
+  // This is the first instance; listen for launch attempts
   app.on('second-instance', (event, commandLine, workingDirectory) => {
-    // Quelqu'un a essayé de lancer une deuxième instance
-    // Focuser sur la fenêtre existante
+    // Someone has tried to launch a second instance
+    // Focus on the existing window
     if (mainWindow) {
       if (mainWindow.isMinimized()) {
         mainWindow.restore();
@@ -68,13 +68,13 @@ if (!gotTheLock) {
   });
 }
 
-// Chemin du fichier de configuration
+// Path to the configuration file
 const userDataPath = app.getPath('userData');
 const windowStateFile = path.join(userDataPath, 'window-state.json');
 const downloadsRootPath = path.join(userDataPath, 'downloads');
 const FILE_METADATA = 'metadata.json'
 
-// Fonction pour charger l'état de la fenêtre
+// Function to load the window state
 function loadWindowState() {
   try {
     if (fs.existsSync(windowStateFile)) {
@@ -85,7 +85,7 @@ function loadWindowState() {
     console.error('Error loading the window state:', error);
   }
 
-  // Valeurs par défaut
+  // Default values
   return {
     width: 1920,
     height: 1080,
@@ -95,7 +95,7 @@ function loadWindowState() {
   };
 }
 
-// Fonction pour sauvegarder l'état de la fenêtre
+// Function to save the window’s state
 function saveWindowState() {
   try {
     if (!mainWindow) return;
@@ -116,10 +116,10 @@ function saveWindowState() {
 }
 
 function createWindow() {
-  // Charger l'état précédent de la fenêtre
+   // Load the previous state of the window
   const windowState = loadWindowState();
 
-  // Création de la fenêtre principale avec les dimensions sauvegardées
+  // Creating the main window using the saved dimensions
   mainWindow = new BrowserWindow({
     width: windowState.width,
     height: windowState.height,
@@ -145,12 +145,12 @@ function createWindow() {
     icon: path.join(__dirname, 'dist/choco-plus/browser/icon.ico'),
   });
 
-  // Restaurer l'état maximisé si nécessaire
+  // Restore the maximised state if necessary
   if (windowState.isMaximized) {
     mainWindow.maximize();
   }
 
-  // Charger l'application Angular
+  // Load the Angular application
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, '/dist/choco-plus/browser/index.html'),
@@ -159,13 +159,13 @@ function createWindow() {
     })
   );
 
-  // Ouvrir les outils de développement si nécessaire
+  // Open the developer tools if necessary
   mainWindow.webContents.openDevTools();
 
-  // Suppression de la barre de menu
+  // Removing the menu bar
   mainWindow.setMenu(null);
 
-  // Sauvegarder l'état lors des changements
+  // Save the state when changes are made
   mainWindow.on('resize', saveWindowState);
   mainWindow.on('move', saveWindowState);
   mainWindow.on('maximize', () => {
@@ -177,7 +177,7 @@ function createWindow() {
     mainWindow.webContents.send('window-unmaximized');
   });
 
-  // Gestion de la fermeture de la fenêtre
+  // Handling window closure
   mainWindow.on('close', () => {
     saveWindowState();
   });
@@ -216,7 +216,7 @@ async function downloadImage(imageUrl, targetDir) {
       const file = fs.createWriteStream(filePath);
 
       protocol.get(imageUrl, (response) => {
-        // Vérifier le code de statut
+        // Check the status code
         if (response.statusCode !== 200) {
           file.destroy();
           fs.unlink(filePath, () => {});
@@ -227,7 +227,7 @@ async function downloadImage(imageUrl, targetDir) {
 
         file.on('finish', () => {
           file.close();
-          // Retourner le chemin en format file://
+          // Return the path in file:// format
           const fileUrl = `file:///${filePath.replace(/\\/g, '/')}`;
           resolve(fileUrl);
         });

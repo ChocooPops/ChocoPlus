@@ -5,6 +5,8 @@ import { DownloadService } from '../../../services/download/download.service';
 import { finalize, Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
 import { DownloadStatus, ProgressDownload, ProgressTypeOperation } from '../../../models/progress-download.interface';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '../../../../user-module/service/user/user.service';
+import { UserModel } from '../../../../user-module/dto/user.model';
 
 @Component({
   selector: 'app-download-button',
@@ -23,14 +25,17 @@ export class DownloadButtonComponent {
   @Input() episodeId!: number;
   @Input() mediaType!: MediaTypeModel;
 
+  user: UserModel | undefined = undefined;
+
   heightCircle!: number;
   heightIcon!: number;
   widthBorder!: number;
   iconUnits!: number;
   iconOffset!: number;
 
-  srcDownload: string = 'icon/dl.svg';
-  srcDeleteDl: string = 'icon/delete_dl.svg'
+  public readonly srcDownload: string = 'icon/dl.svg';
+  public readonly srcDeleteDl: string = 'icon/delete_dl.svg';
+  public readonly srcUnavailable: string = 'icon/unavailable.svg';
 
   DownloadStatus = DownloadStatus;
 
@@ -40,14 +45,21 @@ export class DownloadButtonComponent {
   progressTranslate!: string;
   progress!: number;
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
+  private checkSubscription?: Subscription;
+
   private progressSubscription?: Subscription;
   private operationSubscription?: Subscription;
   private operationWorking: boolean = false;
 
   constructor(private readonly downloadService: DownloadService, 
     private readonly translateService: TranslateService,
+    private readonly userService: UserService,
     private readonly cdr: ChangeDetectorRef) { }
+
+  ngOnInit(): void {
+    this.user = this.userService.getCurrentUserValue();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['mediaId'] || changes['seasonId'] || changes['episodeId'] || changes['mediaType']) {
@@ -107,7 +119,8 @@ export class DownloadButtonComponent {
       ? this.downloadService.isEpisodeDownloaded(this.mediaId, this.seasonId, this.episodeId)
       : this.downloadService.isMediaDownloaded(this.mediaId);
 
-    isDownloaded$
+    this.checkSubscription?.unsubscribe();
+    this.checkSubscription = isDownloaded$
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((downloaded: boolean) => {
         this.alreadyDownloaded = downloaded;
@@ -120,6 +133,9 @@ export class DownloadButtonComponent {
       || this.downloadStatus === DownloadStatus.IN_PROGRESS 
       || this.downloadStatus === DownloadStatus.DELETION
     ) return;
+
+    const shouldDelete: boolean = this.alreadyDownloaded || this.downloadStatus !== DownloadStatus.NOT_DOWNLOADED;
+    if (!shouldDelete && !this.user) return;
 
     this.operationWorking = true;
     this.resetPercentTranslate();
@@ -161,7 +177,8 @@ export class DownloadButtonComponent {
       .pipe(take(1), finalize(() => this.operationWorking = false), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-           this.alreadyDownloaded = true
+           this.alreadyDownloaded = true;
+           this.observeProgressTracking();
         },
         error: () => {
           this.alreadyDownloaded = false;
@@ -186,6 +203,7 @@ export class DownloadButtonComponent {
     this.iconUnits = 0;
     this.progressSubscription?.unsubscribe();
     this.operationSubscription?.unsubscribe();
+    this.checkSubscription?.unsubscribe();
     this.alreadyDownloaded = false;
     this.operationWorking = false;
     this.downloadStatus = DownloadStatus.NOT_DOWNLOADED;
@@ -201,18 +219,27 @@ export class DownloadButtonComponent {
     this.destroy$.complete();
     this.operationSubscription?.unsubscribe();
     this.progressSubscription?.unsubscribe();
-    this.downloadService.deleteUselessSubjectByKey(this.key);
+    this.checkSubscription?.unsubscribe();
+    if (this.key) this.downloadService.deleteUselessSubjectByKey(this.key);
   }
 
   public titleKey(): string {
-    if (this.alreadyDownloaded || this.downloadStatus === DownloadStatus.DOWNLOADED) return this.translateService.instant('DOWNLOAD.DELETE_DOWNLOAD');
     switch (this.downloadStatus) {
-      case DownloadStatus.NOT_DOWNLOADED: return this.translateService.instant('DOWNLOAD.DOWNLOAD');
-      case DownloadStatus.WAITING: return this.translateService.instant('DOWNLOAD.WAITING');
-      case DownloadStatus.DELETION: return this.translateService.instant('DOWNLOAD.DELETION');
-      case DownloadStatus.IN_PROGRESS: return `${this.translateService.instant('DOWNLOAD.DOWNLOADING')}: ${this.progress}%`;
-      default: return '';
+      case DownloadStatus.WAITING:
+        return this.translateService.instant('DOWNLOAD.WAITING');
+      case DownloadStatus.DELETION:
+        return this.translateService.instant('DOWNLOAD.DELETION');
+      case DownloadStatus.IN_PROGRESS:
+        return `${this.translateService.instant('DOWNLOAD.DOWNLOADING')}: ${this.progress}%`;
     }
+
+    if (this.alreadyDownloaded || this.downloadStatus === DownloadStatus.DOWNLOADED) {
+      return this.translateService.instant('DOWNLOAD.DELETE_DOWNLOAD');
+    }
+
+    return this.user
+      ? this.translateService.instant('DOWNLOAD.DOWNLOAD')
+      : this.translateService.instant('DOWNLOAD.UNAVAILABLE');
   }
 
 }

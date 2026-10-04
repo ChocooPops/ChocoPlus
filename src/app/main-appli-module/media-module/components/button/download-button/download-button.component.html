@@ -21,6 +21,8 @@
         <image class="water-icon-black" [attr.href]="srcDownload" [attr.mask]="'url(#water-mask-' + uid + ')'"
             [attr.x]="iconOffset" [attr.y]="iconOffset" [attr.width]="iconUnits" [attr.height]="iconUnits"></image>
     </svg>
+    } @else if (!user && !alreadyDownloaded) {
+        <img [src]="srcUnavailable" class="unavailable" [style.height.px]="heightIcon" [style.width.px]="heightIcon">
     } @else {
     <img class="btn-download-icon" [style.height.px]="heightIcon" [style.width.px]="heightIcon"
         [src]="alreadyDownloaded || downloadStatus === DownloadStatus.DOWNLOADED || downloadStatus === DownloadStatus.DELETION 

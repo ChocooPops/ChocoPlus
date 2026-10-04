@@ -132,6 +132,7 @@
         "DOWNLOADING": "Downloading",
         "DELETE_DOWNLOAD": "Delete download",
         "DELETION": "Deletion in progress",
+        "UNAVAILABLE": "Not available in offline mode",
         "STORAGE_TITLE": "Storage breakdown",
         "STORAGE_OTHER": "Other apps",
         "STORAGE_DOWNLOADS": "ChocoPlus downloads",

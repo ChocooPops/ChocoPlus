@@ -66,9 +66,7 @@
                     }@else {
                         <app-start-button [media]="media" [seasons]="seasons"></app-start-button>
                     }
-                    @if (media.mediaType === MediaType.MOVIE && user && 
-                        (user.role === Role.ADMIN || user.role === Role.FAMILY) 
-                    ) {
+                    @if (media.mediaType === MediaType.MOVIE && (!user || user.role === Role.ADMIN || user.role === Role.FAMILY)) {
                         <app-download-button [mediaId]="media.id" [mediaType]="media.mediaType"></app-download-button>
                     }
                 </div>

@@ -252,7 +252,7 @@ export class DownloadService {
         );
       }),
       catchError((error) => {
-       this.setOrCreateProgressDonwload(key, undefined);
+        this.setOrCreateProgressDonwload(key, undefined);
         return throwError(() => error);
       }),
       shareReplay({ bufferSize: 1, refCount: false })

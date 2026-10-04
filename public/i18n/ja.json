@@ -132,6 +132,7 @@
         "DOWNLOADING": "ダウンロード中",
         "DELETE_DOWNLOAD": "ダウンロードを削除",
         "DELETION": "削除中",
+        "UNAVAILABLE": "オフラインモードでは利用できません",
         "STORAGE_TITLE": "ストレージの内訳",
         "STORAGE_OTHER": "他のアプリ",
         "STORAGE_DOWNLOADS": "ChocoPlusのダウンロード",
