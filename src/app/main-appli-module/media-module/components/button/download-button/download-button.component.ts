@@ -42,6 +42,7 @@ export class DownloadButtonComponent {
 
   private destroy$ = new Subject<void>();
   private progressSubscription?: Subscription;
+  private operationSubscription?: Subscription;
   private operationWorking: boolean = false;
 
   constructor(private readonly downloadService: DownloadService, 
@@ -135,7 +136,8 @@ export class DownloadButtonComponent {
         ? this.downloadService.deleteDownloadsForEpisode(this.mediaId, this.seasonId, this.episodeId)
         : this.downloadService.deleteDownloadsForMedia(this.mediaId);
     
-    download$
+    this.operationSubscription?.unsubscribe();
+    this.operationSubscription = download$
       .pipe(take(1), finalize(() => this.operationWorking = false), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
@@ -154,7 +156,8 @@ export class DownloadButtonComponent {
       ? this.downloadService.downloadEpisode(this.mediaId, this.seasonId, this.episodeId)
       : this.downloadService.downloadMovie(this.mediaId);
     
-    download$
+    this.operationSubscription?.unsubscribe();
+    this.operationSubscription = download$
       .pipe(take(1), finalize(() => this.operationWorking = false), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
@@ -182,6 +185,7 @@ export class DownloadButtonComponent {
     this.iconOffset = 0;
     this.iconUnits = 0;
     this.progressSubscription?.unsubscribe();
+    this.operationSubscription?.unsubscribe();
     this.alreadyDownloaded = false;
     this.operationWorking = false;
     this.downloadStatus = DownloadStatus.NOT_DOWNLOADED;
@@ -195,6 +199,7 @@ export class DownloadButtonComponent {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.operationSubscription?.unsubscribe();
     this.progressSubscription?.unsubscribe();
     this.downloadService.deleteUselessSubjectByKey(this.key);
   }

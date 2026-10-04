@@ -396,6 +396,7 @@ async function performDownload(data, signal) {
 
   try {
 
+    let results = null;
     let key = '';
     let fileName = null;
     let totalBytes = null;
@@ -478,10 +479,12 @@ async function performDownload(data, signal) {
         const data = await downloadVideo(mediaType, media.id, downloadDirMedia, key, signal);
         fileName = path.basename(data.filePath);
         totalBytes = data.totalBytes;
+        results = media;
         fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info, videoPath: data.filePath }, null, 2));
       } else {
         fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info }, null, 2));
       }
+      results = { media };
     }
 
     if (mediaType === MediaType.EPISODE && seasonId && episode && !hasEpisodeDownloaded(media.id, seasonId, episode.id)) {
@@ -498,14 +501,22 @@ async function performDownload(data, signal) {
       const data = await downloadVideo(mediaType, episode.id, downloadDirEpisode, key, signal);
       fileName = path.basename(data.filePath);
       totalBytes = data.totalBytes;
+    
       fs.writeFileSync(path.join(downloadDirEpisode, FILE_METADATA), JSON.stringify({episode, videoPath: data.filePath}, null, 2));
+      
+      if (results && results.media) {
+        const mediaTmp = results.media;
+        results = { media: mediaTmp, episode }
+      } else {
+        results = { episode }
+      }
     }
 
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send('download-progress', { key, type: ProgressTypeOperation.DOWNLOAD, percent: 100, fileName, totalBytes });
     }
 
-    return { success: true }
+    return results
   } catch(error) {
     if (mediaType === MediaType.EPISODE && seriesAlreadyDownloaded && seasonId && episode) {
       fs.rmSync(path.join(downloadDirMedia, String(seasonId), String(episode.id)), { recursive: true, force: true });
@@ -602,11 +613,10 @@ function isDownloadId(value) {
   return /^\d+$/.test(String(value));
 }
 
-// File name of the video referenced by a metadata.json (movie or episode), or null if it has none/is unreadable.
-function readVideoFileName(metadataPath) {
+// Parsed metadata.json (movie, series or episode), or null if missing/unreadable.
+function readMetadataFile(metadataPath) {
   try {
-    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-    return metadata.videoPath ? path.basename(metadata.videoPath) : null;
+    return JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
   } catch (error) {
     return null;
   }
@@ -623,17 +633,20 @@ function listNumericDirs(dirPath) {
   }
 }
 
-// Entries ({ key, fileName }) for everything in a TV series' folder (SEASON-<id>, EPISODE-<id>).
-// A season has no file of its own (fileName null); an episode carries its video's file name.
+// Entries ({ key, fileName, episode }) for everything in a TV series' folder (SEASON-<id>, EPISODE-<id>).
+// A season has no file/metadata of its own (fileName and episode null); an episode carries its video's
+// file name and its full metadata.
 function collectSeriesEntries(seriesDir, onlySeasonId) {
   const entries = [];
   const seasonIds = onlySeasonId ? [String(onlySeasonId)] : listNumericDirs(seriesDir);
   for (const seasonId of seasonIds) {
-    entries.push({ key: `${MediaType.SEASON}-${seasonId}`, fileName: null });
+    entries.push({ key: `${MediaType.SEASON}-${seasonId}`, fileName: null, episode: null });
     const seasonDir = path.join(seriesDir, seasonId);
     listNumericDirs(seasonDir).forEach((episodeId) => {
-      const fileName = readVideoFileName(path.join(seasonDir, episodeId, FILE_METADATA));
-      entries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName });
+      const metadata = readMetadataFile(path.join(seasonDir, episodeId, FILE_METADATA));
+      const fileName = metadata && metadata.videoPath ? path.basename(metadata.videoPath) : null;
+      const episode = metadata ? metadata.episode ?? null : null;
+      entries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName, episode });
     });
   }
   return entries;
@@ -667,14 +680,27 @@ ipcMain.handle('get-storage-info', () => {
 
 ipcMain.handle('list-downloads', () => {
   const entries = fs.readdirSync(downloadsRootPath, { withFileTypes: true });
+
+  const sortedDirs = entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      const dirPath = path.join(downloadsRootPath, entry.name);
+      const metadataPath = path.join(dirPath, FILE_METADATA);
+      if (!fs.existsSync(metadataPath)) return null;
+      const stats = fs.statSync(dirPath);
+      return {
+        metadataPath,
+        time: stats.birthtimeMs || stats.mtimeMs // creation, else modification
+      };
+    })
+    .filter((dir) => dir !== null)
+    .sort((a, b) => a.time - b.time); // oldest first
+
   const downloads = [];
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    const metadataPath = path.join(downloadsRootPath, entry.name, FILE_METADATA);
-    if (!fs.existsSync(metadataPath)) continue;
+  for (const { metadataPath } of sortedDirs) {
     try {
       const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-      downloads.push( metadata.media );
+      downloads.push(metadata.media);
     } catch (error) {
       // Corrupt metadata: This entry is ignored
     }
@@ -746,20 +772,27 @@ ipcMain.handle('delete-download', async (event, data) => {
 
   const mediaDir = path.join(downloadsRootPath, String(mediaId));
   const deletedEntries = [];
+  let media = null;
 
   if (mediaType === MediaType.MOVIE) {
-    const fileName = readVideoFileName(path.join(mediaDir, FILE_METADATA));
+    const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
+    const fileName = metadata && metadata.videoPath ? path.basename(metadata.videoPath) : null;
+    media = metadata ? metadata.media ?? null : null;
     removeDownloadDir(mediaDir);
     deletedEntries.push({ key: `${MediaType.MOVIE}-${mediaId}`, fileName });
   } else if (mediaType === MediaType.SERIES) {
+    const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
+    media = metadata ? metadata.media ?? null : null;
     deletedEntries.push(...collectSeriesEntries(mediaDir));
     removeDownloadDir(mediaDir);
   } else if (needsSeason) {
     if (mediaType === MediaType.EPISODE) {
       const episodeDir = path.join(mediaDir, String(seasonId), String(episodeId));
-      const fileName = readVideoFileName(path.join(episodeDir, FILE_METADATA));
+      const metadata = readMetadataFile(path.join(episodeDir, FILE_METADATA));
+      const fileName = metadata && metadata.videoPath ? path.basename(metadata.videoPath) : null;
+      const episode = metadata ? metadata.episode ?? null : null;
       removeDownloadDir(episodeDir);
-      deletedEntries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName });
+      deletedEntries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName, episode });
     } else {
       deletedEntries.push(...collectSeriesEntries(mediaDir, seasonId));
       removeDownloadDir(path.join(mediaDir, String(seasonId)));
@@ -769,17 +802,19 @@ ipcMain.handle('delete-download', async (event, data) => {
     for (const season of listNumericDirs(mediaDir)) {
       if (listNumericDirs(path.join(mediaDir, season)).length === 0) {
         removeDownloadDir(path.join(mediaDir, season));
-        deletedEntries.push({ key: `${MediaType.SEASON}-${season}`, fileName: null });
+        deletedEntries.push({ key: `${MediaType.SEASON}-${season}`, fileName: null, episode: null });
       }
     }
     if (listNumericDirs(mediaDir).length === 0) {
+      const seriesMetadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
+      media = seriesMetadata ? seriesMetadata.media ?? null : null;
       removeDownloadDir(mediaDir);
     }
   } else {
     throw new Error(`Unsupported media type to delete: ${mediaType}`);
   }
 
-  return deletedEntries;
+  return { entries: deletedEntries, media };
 });
 
 //=========================================================================================//

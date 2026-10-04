@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, from, map, Observable, take, BehaviorSubject, switchMap, throwError, catchError, Subject } from 'rxjs';
+import { forkJoin, from, map, Observable, take, BehaviorSubject, switchMap, throwError, catchError, Subject, of, shareReplay } from 'rxjs';
 import { MediaService } from '../media/media.service';
 import { MediaModel } from '../../models/media.interface';
 import { MediaInfoModel } from '../../models/media-info.interface';
@@ -12,6 +12,8 @@ import { SeriesModel } from '../../models/series/series.interface';
 import { SeasonModel } from '../../models/series/season.interface';
 import { StorageInfoModel } from '../../models/storage-info.interface';
 import { ProgressDownload, ProgressTypeOperation } from '../../models/progress-download.interface';
+import { SeriesPageAbstraction } from '../../components/media-page/series-page-abstraction.directive';
+import { MovieModel } from '../../models/movie-model';
 
 declare const window: any;
 
@@ -20,19 +22,33 @@ declare const window: any;
 })
 export class DownloadService {
 
-  private readonly progressSubjects: Map<string, BehaviorSubject<ProgressDownload | undefined>> = new Map();
+  private progressSubjects: Map<string, BehaviorSubject<ProgressDownload | undefined>> = new Map();
 
-  private readonly progressChangedSubject: Subject<void> = new Subject<void>();
-  private readonly progressChanged$: Observable<void> = this.progressChangedSubject.asObservable();
+  private progressChangedSubject: Subject<void> = new Subject<void>();
+  private progressChanged$: Observable<void> = this.progressChangedSubject.asObservable();
+
+  private mediaDownloadedSubject: BehaviorSubject<MediaModel[] | undefined> = new BehaviorSubject<MediaModel[] | undefined>(undefined);
+  private mediaDownloaded$: Observable<MediaModel[] | undefined> = this.mediaDownloadedSubject.asObservable();
+
+  private storageInfoSubject: BehaviorSubject<StorageInfoModel | undefined> = new BehaviorSubject<StorageInfoModel | undefined>(undefined);
+  private storageInfo$: Observable<StorageInfoModel | undefined> = this.storageInfoSubject.asObservable();
+
+  private seriesPage: SeriesPageAbstraction | undefined = undefined;
+
+  public setSeriesPage(page: SeriesPageAbstraction | undefined) {
+    this.seriesPage = page;
+  }
 
   constructor(private readonly mediaService: MediaService,
     private readonly compressedPosterService: CompressedPosterService,
     private readonly seriesService: SeriesService
   ) { 
-    window.electron.onDownloadProgress((data: ProgressDownload) => {
-      this.setOrCreateProgressDonwload(data.key, data);
-      if (data.percent >= 100) {
-        this.replaceProgressKey(data.key);
+    this.setStorageInfo().pipe(take(1)).subscribe(() => {});
+    
+    window.electron.onDownloadProgress((progress: ProgressDownload) => {
+      this.setOrCreateProgressDonwload(progress.key, progress);
+      if (progress.percent >= 100) {
+        this.replaceProgressKey(progress.key);
       }
     });
   }
@@ -75,6 +91,48 @@ export class DownloadService {
 
   public getProgressChanged(): Observable<void> {
     return this.progressChanged$;
+  }
+
+  public getMediaList(): Observable<MediaModel[] | undefined> {
+    return this.mediaDownloaded$;
+  }
+
+  public getStorageInfo(): Observable<StorageInfoModel | undefined> {
+    return this.storageInfo$;
+  }
+
+  private updateDonwloadBytesStorage(bytes: number): void {
+    const storage: StorageInfoModel | undefined = this.storageInfoSubject.value;
+    if (storage) {
+      if (this.mediaDownloadedSubject.value?.length === 0) {
+        storage.downloadsBytes = 0;
+        this.storageInfoSubject.next(storage);
+      } else {
+        storage.downloadsBytes = storage.downloadsBytes + bytes;
+        this.storageInfoSubject.next(storage);
+      }
+    }
+  }
+
+  private addMediaIntoList(media: MediaModel): void {
+    const medias: MediaModel[] | undefined = this.mediaDownloadedSubject.value;
+    if (medias) {
+      const index: number = medias.findIndex((item) => item.id === media.id);
+      if (index >= 0) {
+        medias[index] = { ...media, ...medias[index] };
+        this.mediaDownloadedSubject.next(medias);
+      } else {
+        medias.push(media);
+        this.mediaDownloadedSubject.next(medias);
+      }
+    }
+  }
+  private deleteMediaIntoList(id: number): void {
+    let medias: MediaModel[] | undefined = this.mediaDownloadedSubject.value;
+    if (medias) {
+      medias = medias.filter((media) => media.id !== id);
+      this.mediaDownloadedSubject.next(medias);
+    }
   }
 
   public getDownloadsHistory(): ProgressDownload[] {
@@ -181,12 +239,20 @@ export class DownloadService {
           media: this.compressedAllPosterFromMedia(data.media),
           info: data.info,
           mediaType: MediaTypeModel.MOVIE
-        }) as Promise<void>);
+        }) as Promise<void>).pipe(
+          map((data: any) => {
+            if (data.media) {
+              this.addMediaIntoList(data.media);
+              this.updateDonwloadBytesStorage(data.media.bytes ?? 0);
+            }
+          })
+        );
       }),
       catchError((error) => {
        this.setOrCreateProgressDonwload(key, undefined);
         return throwError(() => error);
-      })
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
     );
   }
 
@@ -210,7 +276,16 @@ export class DownloadService {
                 seasonId: seasonId,
                 episode: this.compressedAllPosterFromEpisode(episode),
                 mediaType: MediaTypeModel.EPISODE
-              }) as Promise<void>);
+              }) as Promise<void>).pipe(
+                map((data: any) => {
+                  if (data.episode) {
+                    if (this.seriesPage) {
+                      this.seriesPage.addEpisodeBySeasonId(seasonId, data.episode);
+                    }
+                    this.updateDonwloadBytesStorage(data.episode.bytes ?? 0);
+                  }
+                })
+              );
             })
           );
         }
@@ -235,23 +310,39 @@ export class DownloadService {
               seasonId: seasonId,
               episode: this.compressedAllPosterFromEpisode(data.episode),
               mediaType: MediaTypeModel.EPISODE
-            }) as Promise<void>);
+            }) as Promise<void>).pipe(
+              map((data: any) => {
+                if (data.media) {
+                  this.addMediaIntoList(data.media);
+                  if (data.episode) {
+                    if (this.seriesPage) {
+                      this.seriesPage.addEpisodeBySeasonId(seasonId, data.episode);
+                    }
+                    this.updateDonwloadBytesStorage(data.episode.bytes ?? 0);
+                  }
+                }
+              })
+            );
           })
         );
       }),
       catchError((error) => {
         this.setOrCreateProgressDonwload(key, undefined);
         return throwError(() => error);
-      })
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
     );
   }
 
-  public listDownloads(): Observable<MediaModel[]> {
-    return from(window.electron.listDownloads() as Promise<any[]>).pipe(
-      map((records: any[]) => {
-        return records;
-      })
-    );
+  public listDownloads(): Observable<void> {
+    if (!this.mediaDownloadedSubject.value) {
+      return from(window.electron.listDownloads() as Promise<any[]>).pipe(
+        map((records: any[]) => {
+          this.mediaDownloadedSubject.next(records);
+        })
+      ); 
+    }
+    return of();
   }
 
   public mediaDownloadedNotEmpty(): Observable<boolean> {
@@ -299,19 +390,24 @@ export class DownloadService {
     this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.DELETION))
     return from(window.electron.deleteDownload(
         {
-          mediaId, 
+          mediaId,
           mediaType: MediaTypeModel.MOVIE
         }
-      ) as Promise<{ key: string, fileName: string | null }[]>).pipe(
-      map((records: { key: string, fileName: string | null }[]) => {
-        records.forEach(({ key, fileName }) => {
+      ) as Promise<{ entries: { key: string, fileName: string | null, episode: EpisodeModel | null }[], media: MovieModel | null }>).pipe(
+      map((result) => {
+        result.entries.forEach(({ key, fileName }) => {
           this.replaceProgressKey(key, { fileName: fileName ?? '', percent: 100 });
         });
+        if (result.media) {
+          this.deleteMediaIntoList(result.media.id);
+          this.updateDonwloadBytesStorage(-(result.media.bytes ?? 0));
+        }
       }),
       catchError((error) => {
         this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.DOWNLOAD, 100));
         return throwError(() => error)
-      })
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
     );
   }
 
@@ -325,21 +421,38 @@ export class DownloadService {
           episodeId,
           mediaType: MediaTypeModel.EPISODE
         }
-      ) as Promise<{ key: string, fileName: string }[]>).pipe(
-      map((records: { key: string, fileName: string }[]) => {
-        records.forEach(({ key, fileName }) => {
-          this.replaceProgressKey(key, { fileName: fileName, percent: 100 });
+      ) as Promise<{ entries: { key: string, fileName: string | null, episode: EpisodeModel | null }[], media: MediaModel | null }>).pipe(
+      map((result) => {
+        result.entries.forEach(({ key, fileName, episode }) => {
+          this.replaceProgressKey(key, { fileName: fileName ?? '', percent: 100 });
+          if (episode && this.seriesPage) {
+            if (this.seriesPage) {
+              this.seriesPage.deleteEpisodeBySeasonId(episode.seasonId, episode.id);              
+            }
+            this.updateDonwloadBytesStorage(-(episode.bytes ?? 0));
+          }
         });
+        if (result.media) {
+          this.deleteMediaIntoList(result.media.id);
+        }
       }),
       catchError((error) => {
         this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.DOWNLOAD, 100));
         return throwError(() => error)
-      })
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
     );
   }
 
-  public getStorageInfo(): Observable<StorageInfoModel> {
-    return from(window.electron.getStorageInfo() as Promise<StorageInfoModel>);
+  public setStorageInfo(): Observable<void> {
+    if (!this.storageInfoSubject.value) {
+      return from(window.electron.getStorageInfo() as Promise<StorageInfoModel>).pipe(
+        map((data: StorageInfoModel) => {
+          this.storageInfoSubject.next(data);
+        })
+      );
+    }
+    return of()
   }
 
 }

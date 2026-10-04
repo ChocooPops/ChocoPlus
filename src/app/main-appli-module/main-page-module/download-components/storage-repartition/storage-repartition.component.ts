@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DownloadService } from '../../../media-module/services/download/download.service';
 import { StorageInfoModel } from '../../../media-module/models/storage-info.interface';
 
@@ -16,6 +16,7 @@ type StorageSegment = 'other' | 'downloads' | 'cache' | 'free';
 export class StorageRepartitionComponent {
 
   private readonly GIGABYTE: number = 1024 ** 3;
+  private subscription!: Subscription;
 
   loaded: boolean = false;
   animated: boolean = false;
@@ -38,9 +39,22 @@ export class StorageRepartitionComponent {
   constructor(private readonly downloadService: DownloadService) { }
 
   ngOnInit(): void {
-    this.downloadService.getStorageInfo().pipe(take(1)).subscribe((info: StorageInfoModel) => {
-      this.applyStorageInfo(info);
-    });
+    this.subscription = this.downloadService.getStorageInfo().subscribe((data: StorageInfoModel | undefined) => {
+      if (data) {
+        this.applyStorageInfo(data);
+      } else {
+        this.applyStorageInfo({
+          totalBytes: 0,
+          freeBytes: 0,
+          downloadsBytes: 0,
+          cacheBytes: 0
+        });
+      }
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
   private applyStorageInfo(info: StorageInfoModel): void {
@@ -69,7 +83,6 @@ export class StorageRepartitionComponent {
     this.loaded = total > 0;
 
     if (this.loaded) {
-      // Laisse les segments s'afficher à 0% avant d'appliquer leur largeur pour déclencher la transition
       setTimeout(() => this.animated = true, 50);
     }
   }

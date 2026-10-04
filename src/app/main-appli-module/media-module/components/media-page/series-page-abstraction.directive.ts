@@ -14,6 +14,7 @@ import { MovieSeriesPageAbstraction } from './movie-series-page-abstraction.dire
 import { DownloadService } from '../../services/download/download.service';
 import { UserService } from '../../../user-module/service/user/user.service';
 import { UserModel } from '../../../user-module/dto/user.model';
+import { SeasonModel } from '../../models/series/season.interface';
 
 @Directive({})
 export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
@@ -44,6 +45,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
   ) {
     super(imagePreloaderService, similarTitleService, mediaSelectedService, filtersCatalogService, downloadService, router);
     this.user = this.userService.getCurrentUserValue();
+    this.downloadService.setSeriesPage(this);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -67,6 +69,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.setUnsubscribeEpisode();
+    this.downloadService.setSeriesPage(undefined);
   }
 
   protected getMediaId(): number {
@@ -152,6 +155,29 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
           .preloadImages(img, this.abortControllerEpisodes.signal)
           .finally(() => (this.episodes = data));
       });
+  }
+
+  private isGoodSeason(seasonId: number): boolean {
+    const seasonIdTmp: SeasonModel | undefined = this.series.seasons.find((item: SeasonModel) => item.isClicked);
+    if (seasonIdTmp) {
+      return seasonIdTmp.id === seasonId;
+    } else {
+      return this.series.seasons[0].id === seasonId;
+    }
+  }
+
+  public addEpisodeBySeasonId(seasonId: number, episode: EpisodeModel) {
+    if (this.isGoodSeason(seasonId)) {
+      const updatedEpisodes: EpisodeModel[] = this.episodes ? [...this.episodes, episode] : [episode];
+      this.episodes = updatedEpisodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
+    }
+  }
+
+  public deleteEpisodeBySeasonId(seasonId: number, episodeId: number) {
+    if (this.isGoodSeason(seasonId)) {
+      const updatedEpisodes: EpisodeModel[] = this.episodes ? [...this.episodes.filter((item) => item.id !== episodeId)] : [];
+      this.episodes = updatedEpisodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
+    }
   }
 
   onErrorPosterSeason(index: number): void {

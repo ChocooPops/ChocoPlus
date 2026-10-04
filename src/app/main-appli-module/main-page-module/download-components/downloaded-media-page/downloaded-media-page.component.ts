@@ -38,6 +38,7 @@ export class DownloadedMediaPageComponent {
     private readonly paginationPosterService: PaginationPosterService
   ) {
     this.menuTabService.setActivateTransition(false);
+    this.loadDownloads();
   }
 
   ngOnInit(): void {
@@ -64,6 +65,12 @@ export class DownloadedMediaPageComponent {
         }
       })
     );
+
+    this.subscription.add(
+      this.downloadService.getMediaList().subscribe((data: MediaModel[] | undefined) => {
+        this.medias = data ? [...data] : undefined;
+      })
+    )
   }
 
   ngOnDestroy(): void {
@@ -74,10 +81,7 @@ export class DownloadedMediaPageComponent {
   }
 
   private loadDownloads(): void {
-    this.downloadService.listDownloads().pipe(take(1)).subscribe((medias: MediaModel[]) => {
-      this.medias = medias;
-      this.loadNewFormat = true;
-    });
+    this.downloadService.listDownloads().pipe(take(1)).subscribe(() => {});
   }
 
 }
