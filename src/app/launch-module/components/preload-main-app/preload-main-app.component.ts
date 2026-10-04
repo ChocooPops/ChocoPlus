@@ -55,10 +55,10 @@ export class PreloadMainAppComponent {
             take(1),
             defaultIfEmpty(null),
             catchError(() => of(null)),
-            map((medias: MediaModel[] | null) => ({ user, medias }))
+            map(() => ({ user }))
           );
         })
-      ).subscribe(({ user, medias }) => {
+      ).subscribe(({ user }) => {
         this.srcPP = user.profilPhoto;
         this.pseudo = user.pseudo;
       })

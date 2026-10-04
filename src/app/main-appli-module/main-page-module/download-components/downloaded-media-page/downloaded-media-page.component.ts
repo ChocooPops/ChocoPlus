@@ -57,7 +57,7 @@ export class DownloadedMediaPageComponent {
 
     this.subscription.add(
       this.downloadService.getMediaList().subscribe((data: MediaModel[] | undefined) => {
-        this.medias = data ? [...data] : undefined;
+        this.medias = data
       })
     )
   }

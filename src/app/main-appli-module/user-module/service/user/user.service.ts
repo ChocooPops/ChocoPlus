@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
-import { BehaviorSubject, catchError, map, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, Subject, tap } from 'rxjs';
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { MessageReturnedModel } from '../../../../common-module/models/message-returned.interface';
 import { UserModel } from '../../dto/user.model';
@@ -23,22 +23,26 @@ export class UserService {
   private readonly urlUpdateProfilPicture: string = 'profil-picture';
   private readonly urlUpdateUserByUser: string = 'update-user-by-user';
 
-  private myListMedia: Map<number, MediaModel> = new Map();
+  private readonly myListMediaSubject = new BehaviorSubject<Map<number, MediaModel>>(new Map());
+  private readonly myListMedia$: Observable<MediaModel[]> = this.myListMediaSubject.pipe(
+    map((medias: Map<number, MediaModel>) => Array.from(medias.values()))
+  );
+
   private myListChangedSubject = new Subject<number>();
   private myListChanged$ = this.myListChangedSubject.asObservable();
 
   public currentUserSubject: BehaviorSubject<UserModel | undefined> = new BehaviorSubject<UserModel | undefined>(undefined);
   public currentUser$: Observable<UserModel | undefined> = this.currentUserSubject.asObservable();
 
+  private isChangeProfilPictureActivate: boolean = true;
+
   constructor(
-    private http: HttpClient,
-    private movieService: MovieService,
-    private seriesService: SeriesService
+    private readonly http: HttpClient,
+    private readonly movieService: MovieService,
+    private readonly seriesService: SeriesService
   ) { }
 
-  public getMyListChanged(): Observable<number> {
-    return this.myListChanged$;
-  }
+  // ==================== Utilisateur courant ====================
 
   public getCurrentUserValue(): UserModel | undefined {
     return this.currentUserSubject.value;
@@ -50,6 +54,7 @@ export class UserService {
 
   public resetCurrentUser(): void {
     this.currentUserSubject.next(undefined);
+    this.resetMyList();
   }
 
   public fetchCurrentUser(): Observable<UserModel> {
@@ -63,50 +68,6 @@ export class UserService {
       })
     );
   }
-
-  public fetchMyMediaListByUserId(): Observable<MediaModel[]> {
-    if (this.myListMedia.size > 0) {
-      return of(Array.from(this.myListMedia.values()));
-    } else {
-      return this.http.get<any>(`${this.apiUrlUser}/${this.urlGetMyList}`).pipe(
-        map((data: any) => {
-          this.myListMedia.clear();
-          data.forEach((media: MediaModel) => {
-            if (media.mediaType === MediaTypeModel.MOVIE) {
-              const movie = this.movieService.createNewMovie(media);
-              this.myListMedia.set(movie.id, movie);
-            } else if (media.mediaType === MediaTypeModel.SERIES) {
-              const series = this.seriesService.createNewSeries(media);
-              this.myListMedia.set(series.id, series);
-            }
-          });
-          return Array.from(this.myListMedia.values());
-        })
-      );
-    }
-  }
-
-  public fetchToggleMediaIntoList(media: MediaModel): Observable<MessageReturnedModel> {
-    return this.http.put<any>(`${this.apiUrlUser}/${this.urlToggleIntoMyList}/${media.id}`, null).pipe(
-      map((data: MessageReturnedModel) => {
-        if (data && data.id >= 0) {
-          if (data.state) {
-            this.myListMedia.set(media.id, media);
-          } else {
-            this.myListMedia.delete(media.id);
-          }
-          this.myListChangedSubject.next(media.id);
-        }
-        return data;
-      })
-    );
-  }
-
-  public mediaIsIntoList(mediaId: number): boolean {
-    return this.myListMedia.has(mediaId);
-  }
-
-  private isChangeProfilPictureActivate: boolean = true;
 
   public fetchChangeProfilPicture(idProfilPicture: number): Observable<ProfilPictureModel | null> {
     if (this.isChangeProfilPictureActivate) {
@@ -147,6 +108,81 @@ export class UserService {
       map((data: MessageReturnedModel) => data),
       catchError(() => of({ id: -1, state: false, message: 'Erreur avec le serveur' }))
     );
+  }
+
+  // ==================== Ma liste ====================
+
+  public getMyListChanged(): Observable<number> {
+    return this.myListChanged$;
+  }
+
+  public getMyList(): Observable<MediaModel[]> {
+    return this.myListMedia$;
+  }
+
+  public mediaIsIntoList(mediaId: number): boolean {
+    return this.myListMediaSubject.value.has(mediaId);
+  }
+
+  public fetchMyMediaListByUserId(): Observable<void> {
+    if (this.myListMediaSubject.value.size > 0) return of();
+
+    return this.http.get<MediaModel[]>(`${this.apiUrlUser}/${this.urlGetMyList}`).pipe(
+      map((data: MediaModel[]) => data
+        .map((media: MediaModel) => this.createMedia(media))
+        .filter((media): media is MediaModel => media !== null)
+      ),
+      tap((medias: MediaModel[]) => {
+        this.myListMediaSubject.next(new Map(medias.map((media: MediaModel) => [media.id, media])));
+      }),
+      map(() => undefined),
+      catchError(() => {
+        this.myListMediaSubject.next(new Map());
+        return of();
+      })
+    );
+  }
+
+  public fetchToggleMediaIntoList(media: MediaModel): Observable<MessageReturnedModel> {
+    return this.http.put<MessageReturnedModel>(`${this.apiUrlUser}/${this.urlToggleIntoMyList}/${media.id}`, null).pipe(
+      tap((data: MessageReturnedModel) => {
+        if (!data || data.id < 0) return;
+        if (data.state) {
+          this.addMediaIntoList(media);
+        } else {
+          this.deleteMediaIntoList(media.id);
+        }
+        this.myListChangedSubject.next(media.id);
+      })
+    );
+  }
+
+  public addMediaIntoList(media: MediaModel): void {
+    const current: Map<number, MediaModel> = this.myListMediaSubject.value;
+    if (current.has(media.id)) return;
+    const updated = new Map(current);
+    updated.set(media.id, media);
+    this.myListMediaSubject.next(updated);
+  }
+
+  public deleteMediaIntoList(mediaId: number): void {
+    const current: Map<number, MediaModel> = this.myListMediaSubject.value;
+    if (!current.has(mediaId)) return;
+    const updated = new Map(current);
+    updated.delete(mediaId);
+    this.myListMediaSubject.next(updated);
+  }
+
+  private createMedia(media: MediaModel): MediaModel | null {
+    switch (media.mediaType) {
+      case MediaTypeModel.MOVIE:  return this.movieService.createNewMovie(media);
+      case MediaTypeModel.SERIES: return this.seriesService.createNewSeries(media);
+      default:                    return null;
+    }
+  }
+
+  private resetMyList(): void {
+    this.myListMediaSubject.next(new Map());
   }
   
 }

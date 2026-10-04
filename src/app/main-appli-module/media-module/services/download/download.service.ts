@@ -27,9 +27,10 @@ export class DownloadService {
   private progressChangedSubject: Subject<void> = new Subject<void>();
   private progressChanged$: Observable<void> = this.progressChangedSubject.asObservable();
 
-  private mediaDownloadedSubject: BehaviorSubject<MediaModel[] | undefined> = new BehaviorSubject<MediaModel[] | undefined>(undefined);
-  private mediaDownloaded$: Observable<MediaModel[] | undefined> = this.mediaDownloadedSubject.asObservable();
-
+  private readonly mediaDownloadedSubject = new BehaviorSubject<Map<number, MediaModel> | undefined>(undefined);
+  private readonly mediaDownloaded$: Observable<MediaModel[] | undefined> = this.mediaDownloadedSubject.pipe(
+    map((medias: Map<number, MediaModel> | undefined) => medias ? Array.from(medias.values()) : undefined)
+  );
   private storageInfoSubject: BehaviorSubject<StorageInfoModel | undefined> = new BehaviorSubject<StorageInfoModel | undefined>(undefined);
   private storageInfo$: Observable<StorageInfoModel | undefined> = this.storageInfoSubject.asObservable();
 
@@ -104,7 +105,7 @@ export class DownloadService {
   private updateDonwloadBytesStorage(bytes: number): void {
     const storage: StorageInfoModel | undefined = this.storageInfoSubject.value;
     if (storage) {
-      if (this.mediaDownloadedSubject.value?.length === 0) {
+      if (this.mediaDownloadedSubject.value?.size === 0) {
         storage.downloadsBytes = 0;
         this.storageInfoSubject.next(storage);
       } else {
@@ -115,24 +116,26 @@ export class DownloadService {
   }
 
   private addMediaIntoList(media: MediaModel): void {
-    const medias: MediaModel[] | undefined = this.mediaDownloadedSubject.value;
-    if (medias) {
-      const index: number = medias.findIndex((item) => item.id === media.id);
-      if (index >= 0) {
-        medias[index] = { ...media, ...medias[index] };
-        this.mediaDownloadedSubject.next(medias);
-      } else {
-        medias.push(media);
-        this.mediaDownloadedSubject.next(medias);
-      }
+    const current: Map<number, MediaModel> | undefined = this.mediaDownloadedSubject.value;
+    if (!current) return;
+
+    const existing: MediaModel | undefined = current.get(media.id);
+    if (existing) {
+      const updated = new Map(current);
+      updated.set(media.id, { ...media, ...existing });
+      this.mediaDownloadedSubject.next(updated);
+    } else {
+      this.mediaDownloadedSubject.next(new Map([[media.id, media], ...current]));
     }
   }
+  
   private deleteMediaIntoList(id: number): void {
-    let medias: MediaModel[] | undefined = this.mediaDownloadedSubject.value;
-    if (medias) {
-      medias = medias.filter((media) => media.id !== id);
-      this.mediaDownloadedSubject.next(medias);
-    }
+    const current: Map<number, MediaModel> | undefined = this.mediaDownloadedSubject.value;
+    if (!current?.has(id)) return;
+
+    const updated = new Map(current);
+    updated.delete(id);
+    this.mediaDownloadedSubject.next(updated);
   }
 
   public getDownloadsHistory(): ProgressDownload[] {
@@ -336,15 +339,15 @@ export class DownloadService {
 
   public listDownloads(): Observable<void> {
     if (!this.mediaDownloadedSubject.value) {
-      return from(window.electron.listDownloads() as Promise<any[]>).pipe(
-        map((records: any[]) => {
-          this.mediaDownloadedSubject.next(records);
+      return from(window.electron.listDownloads() as Promise<MediaModel[]>).pipe(
+        map((records: MediaModel[]) => {
+          this.mediaDownloadedSubject.next(new Map(records.map((media: MediaModel) => [media.id, media])));
         })
-      ); 
+      );
     }
     return of();
   }
-
+  
   public mediaDownloadedIsEmpty(): Observable<boolean> {
     return from(window.electron.mediaDownloadedIsEmpty() as Promise<boolean>).pipe(
       map((isEmpty: boolean) => {
