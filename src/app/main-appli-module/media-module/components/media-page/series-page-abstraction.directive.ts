@@ -45,7 +45,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
   ) {
     super(imagePreloaderService, similarTitleService, mediaSelectedService, filtersCatalogService, downloadService, router);
     this.user = this.userService.getCurrentUserValue();
-    this.downloadService.setSeriesPage(this);
+    this.setSeriesPageIntoDownloadService();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -74,6 +74,14 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
 
   protected getMediaId(): number {
     return this.series?.id;
+  }
+
+  private setSeriesPageIntoDownloadService(): void {
+    if (!this.isOnLine) {
+      this.downloadService.setSeriesPage(this);
+    } else {
+      this.downloadService.setSeriesPage(undefined);
+    }
   }
 
   protected override resetInfoExtra(): void {
@@ -168,6 +176,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
 
   public addEpisodeBySeasonId(seasonId: number, episode: EpisodeModel) {
     if (this.isGoodSeason(seasonId)) {
+      if (this.episodes?.find((item) => item.id === episode.id)) return;
       const updatedEpisodes: EpisodeModel[] = this.episodes ? [...this.episodes, episode] : [episode];
       this.episodes = updatedEpisodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
     }

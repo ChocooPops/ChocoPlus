@@ -24,6 +24,8 @@ export class DownloadService {
 
   private progressSubjects: Map<string, BehaviorSubject<ProgressDownload | undefined>> = new Map();
 
+  private readonly seriesMetadataRefreshedThisSession: Set<number> = new Set<number>();
+
   private progressChangedSubject: Subject<void> = new Subject<void>();
   private progressChanged$: Observable<void> = this.progressChangedSubject.asObservable();
 
@@ -265,8 +267,9 @@ export class DownloadService {
 
     return this.isMediaDownloaded(seriesId).pipe(
       take(1),
-      switchMap((seriesAlreadyDownloaded: boolean) => {
-        if (seriesAlreadyDownloaded) {
+      switchMap((seriesMetadataOnDisk: boolean) => {
+        const canSkipMetadataFetch: boolean = seriesMetadataOnDisk && this.seriesMetadataRefreshedThisSession.has(seriesId);
+        if (canSkipMetadataFetch) {
           return this.seriesService.fetchEpisodeById(episodeId).pipe(
             take(1),
             switchMap((episode: EpisodeModel | null) => {
@@ -307,6 +310,7 @@ export class DownloadService {
             if (!data.media || !data.info || !data.episode) {
               return throwError(() => new Error('Hollow data'));
             }
+            this.seriesMetadataRefreshedThisSession.add(seriesId);
             return from(window.electron.downloadMedia({
               media: this.compressedAllPosterFromMedia(data.media),
               info: data.info,

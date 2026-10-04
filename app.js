@@ -406,7 +406,7 @@ async function performDownload(data, signal) {
       key = `${MediaType.EPISODE}-${episode.id}`;
     }
 
-    if (!hasMediaDownloaded(media.id)) {
+    if (media.title) {
       const mediaIdStr = String(media.id);
       const downloadDirMedia = path.join(downloadsRootPath, mediaIdStr);
       const imagesDirMedia = path.join(downloadDirMedia, 'images');
@@ -439,6 +439,7 @@ async function performDownload(data, signal) {
       }
 
       fs.mkdirSync(downloadDirMedia, { recursive: true });
+      fs.rmSync(imagesDirMedia, { recursive: true, force: true });
       fs.mkdirSync(imagesDirMedia, { recursive: true });
 
       const imageSources = {
@@ -479,7 +480,6 @@ async function performDownload(data, signal) {
         const data = await downloadVideo(mediaType, media.id, downloadDirMedia, key, signal);
         fileName = path.basename(data.filePath);
         totalBytes = data.totalBytes;
-        results = media;
         fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info, videoPath: data.filePath }, null, 2));
       } else {
         fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info }, null, 2));
@@ -495,6 +495,7 @@ async function performDownload(data, signal) {
       const imagesDirEpisode = path.join(downloadDirEpisode, 'images');
 
       fs.mkdirSync(downloadDirEpisode, { recursive: true });
+      fs.rmSync(imagesDirEpisode, { recursive: true, force: true });
       fs.mkdirSync(imagesDirEpisode, { recursive: true });
 
       episode.srcPoster = await downloadImage(episode.srcPoster, imagesDirEpisode)
@@ -527,7 +528,8 @@ async function performDownload(data, signal) {
   }
 }
 
-// Check if a media file exists
+// Check if a media's own metadata exists (its video too, for a movie — the two are written together;
+// a series never has its own videoPath, only its episodes do, so it isn't required here).
 function hasMediaDownloaded(mediaId) {
   try {
     const downloadDirMedia = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
@@ -537,7 +539,7 @@ function hasMediaDownloaded(mediaId) {
         return false;
       }
       const metadata = JSON.parse(fileContent);
-      return metadata.media.id && metadata.videoPath;
+      return Boolean(metadata.media && metadata.media.id);
     } else {
       return false;
     }
