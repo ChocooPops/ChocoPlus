@@ -1,8 +1,8 @@
-import { Component, Renderer2, ElementRef, ViewChild } from '@angular/core';
-import { LicenseModel } from '../../../license-module/model/license.interface';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription, switchMap, take } from 'rxjs';
+import { catchError, map, of, Subscription, switchMap, take, tap } from 'rxjs';
 import { NgClass } from '@angular/common';
+import { LicenseModel } from '../../../license-module/model/license.interface';
 import { LicensePagesLoadingComponent } from '../license-page-loading/license-page-loading.component';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { SelectionsListComponent } from '../../../media-module/components/selections/selections-list/selections-list.component';
@@ -14,7 +14,6 @@ import { LicenseService } from '../../../license-module/service/license/licence.
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
-
 @Component({
   selector: 'app-license-page',
   standalone: true,
@@ -24,24 +23,19 @@ import { PageModel } from '../../../../launch-module/models/page.enum';
 })
 
 export class LicensePageComponent {
-
-  @ViewChild('containerLicense') containerLisence !: ElementRef<HTMLDivElement>;
   
   private abortController = new AbortController();
+  private subscription: Subscription = new Subscription();
 
   license: LicenseModel | undefined = undefined;
+  format !: FormatPosterModel;
   srcLogo !: string | undefined;
   srcBackground !: string | undefined;
-  format !: FormatPosterModel;
-  private idLicense !: number;
-  private subscription: Subscription = new Subscription();
-  private changeNewPoster: boolean = false;
+  backgroundImage: string | null = null;
 
   constructor(private readonly route: ActivatedRoute,
     private readonly mediaSelectedService: MediaSelectedService,
     private readonly licenseService: LicenseService,
-    private readonly renderer: Renderer2,
-    private readonly el: ElementRef,
     private readonly imagePreloaderService: ImagePreloaderService,
     private readonly formatPosterService: FormatPosterService,
     private readonly compressedPosterService: CompressedPosterService,
@@ -55,75 +49,48 @@ export class LicensePageComponent {
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterLicense().subscribe((format: FormatPosterModel) => {
         this.format = format;
-        if (this.changeNewPoster && this.license) {
-          //this.license.movieSelectionList = undefined;
-          this.reloadWhenFormatPosterChange();
-        }
       })
     )
 
-    this.route.paramMap.pipe(
-      switchMap((params: ParamMap) => {
-        const id = Number(params.get('id'));
-        this.idLicense = id;
-        return this.licenseService.fetchLicenseById(id);
+    this.subscription.add(
+      this.route.paramMap.pipe(
+        map((params: ParamMap) => Number(params.get('id'))),
+        switchMap((id: number) => this.licenseService.fetchLicenseById(id).pipe(
+          take(1),
+          map((data: LicenseModel) => ({ id, data })),
+          catchError(() => of({ id, data: undefined }))
+        ))
+      ).subscribe(({ id, data }) => {
+        if (data) {
+          this.onLicenseLoaded(id, data);
+        }
       })
-    ).pipe(take(1)).subscribe((data: LicenseModel) => {
-      this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_LICENSE);
-      this.loadOpeningPageService.setLastLicenseIdVisited(this.idLicense);
-      const img: string[] = [];
-      const srcLogoTmp: string | undefined = this.compressedPosterService.getLogoForLicense(data);
-      const srcBackground: string | undefined = this.compressedPosterService.getBackgroundForLicense(data);
-      if (srcLogoTmp) img.push(srcLogoTmp);
-      if (srcBackground) img.push(srcBackground);
-      this.abortController.abort();
-
-      // const format: FormatPosterModel = this.formatPosterService.getFormatPosterLicenseValue();
-      this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        this.license = data;
-        this.srcLogo = this.compressedPosterService.getLogoForLicense(data);
-        this.srcBackground = this.compressedPosterService.getBackgroundForLicense(data);
-        this.setBackgroundImage();
-        this.changeNewPoster = true;
-      })
-    });
+    );
   }
 
-  private reloadWhenFormatPosterChange(): void {
-    //this.abortController.abort();
-    this.licenseService.fetchLicenseById(this.idLicense).pipe(take(1)).subscribe((license: LicenseModel) => {
-      if (license && license.selectionList) {
-        if (this.license) {
-          this.license.selectionList = license.selectionList;
-        }
-        // const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(license.selectionList, this.format);
-        // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        //   if (this.license) {
-        //     this.license.selectionList = license.selectionList;
-        //   }
-        // })
-      }
-    })
+  private onLicenseLoaded(id: number, data: LicenseModel): void {
+    this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_LICENSE);
+    this.loadOpeningPageService.setLastLicenseIdVisited(id);
+
+    const img: string[] = []
+    const srcLogo: string | undefined = this.compressedPosterService.getLogoForLicense(data);
+    const srcBackground: string | undefined = this.compressedPosterService.getBackgroundForLicense(data);
+    if (srcLogo) img.push(srcLogo);
+    if (srcBackground) img.push(srcBackground);
+
+    this.imagePreloaderService.preloadImages(img, this.abortController.signal)
+      .finally(() => {
+        if (this.abortController.signal.aborted) return;
+        this.license = data;
+        this.srcLogo = srcLogo;
+        this.backgroundImage = srcBackground ? `url("${srcBackground}")` : null;
+      });
   }
 
   ngOnDestroy(): void {
     this.mediaSelectedService.clearSelection();
     this.subscription.unsubscribe();
-    //this.abortController.abort();
-  }
-
-  setBackgroundImage(): void {
-    if (this.license && this.srcBackground) {
-      const container = this.el.nativeElement.querySelector('.container-license');
-      if (container) {
-        let path = `${this.srcBackground}`
-        this.renderer.setStyle(
-          container,
-          'background-image',
-          `url("${path}")`
-        );
-      }
-    }
+    this.abortController.abort();
   }
 
   onErrorLogo(): void {

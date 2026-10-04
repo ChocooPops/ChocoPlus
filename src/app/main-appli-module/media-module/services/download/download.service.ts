@@ -43,7 +43,7 @@ export class DownloadService {
     private readonly compressedPosterService: CompressedPosterService,
     private readonly seriesService: SeriesService
   ) { 
-    this.setStorageInfo().pipe(take(1)).subscribe(() => {});
+    this.setStorageInfo().pipe(take(1)).subscribe();
     
     window.electron.onDownloadProgress((progress: ProgressDownload) => {
       this.setOrCreateProgressDonwload(progress.key, progress);
@@ -345,10 +345,10 @@ export class DownloadService {
     return of();
   }
 
-  public mediaDownloadedNotEmpty(): Observable<boolean> {
-    return from(window.electron.mediaDownloadedNotEmpty() as Promise<boolean>).pipe(
-      map((records: boolean) => {
-        return records;
+  public mediaDownloadedIsEmpty(): Observable<boolean> {
+    return from(window.electron.mediaDownloadedIsEmpty() as Promise<boolean>).pipe(
+      map((isEmpty: boolean) => {
+        return isEmpty
       })
     );
   }

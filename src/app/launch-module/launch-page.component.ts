@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, Router, ActivatedRoute } from '@angular/router';
-import { forkJoin, Subscription, take } from 'rxjs';
+import { catchError, forkJoin, of, Subscription, take } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '../main-appli-module/user-module/service/user/user.service';
 import { ImagePreloaderService } from '../common-module/services/image-preloader/image-preloader.service';
@@ -25,9 +25,10 @@ export class LaunchPageComponent {
   isLoading: boolean = true;
   isGoodVersion: boolean = false;
   lastVersion!: VersionModel;
-
-  private subscription!: Subscription;
   userAlreadyConnected!: boolean;
+
+  private readonly subscription: Subscription = new Subscription();
+  private readonly abortController: AbortController = new AbortController();
 
   constructor(private readonly router: Router,
     private readonly route: ActivatedRoute,
@@ -39,56 +40,76 @@ export class LaunchPageComponent {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.subscription = this.verifUserAlreadyConnectedService.getIfUserIsAlreadyConnected().subscribe((data: boolean) => {
+    this.subscription.add(
+      this.verifUserAlreadyConnectedService.getIfUserIsAlreadyConnected().subscribe((data: boolean) => {
       this.userAlreadyConnected = data;
-    });
+      })
+    )
 
-    await this.authService.initFromSecureStore();
-    const currentVersion: string = await this.versionService.getCurrentVersion();
+    let currentVersion!: string;
+    try {
+      await this.authService.initFromSecureStore();
+      currentVersion = await this.versionService.getCurrentVersion();
+    } catch {
+      if (this.abortController.signal.aborted) return;
+      this.goTo('preload-offline-app');
+      this.isGoodVersion = true;
+      this.isLoading = false;
+      return;
+    }
 
-    forkJoin({
-      user: this.userService.fetchCurrentUser(),
-      version: this.versionService.fetchLastVersion()
-    })
-    .pipe(take(1))
-    .subscribe({
-      next: ((result: {
-          user: UserModel,
-          version: VersionModel | null
-        }) => {
+    if (this.abortController.signal.aborted) return;
+
+    this.subscription.add(
+      forkJoin({
+        user: this.userService.fetchCurrentUser().pipe(take(1)),
+        version: this.versionService.fetchLastVersion().pipe(
+          take(1),
+          catchError(() => of(null))
+        )
+      }).subscribe({
+        next: (result: { user: UserModel, version: VersionModel | null }) => {
           if (result.version) {
             this.lastVersion = result.version;
-            this.isGoodVersion = this.versionService.isVersionGreater(currentVersion, this.lastVersion.num);
+            this.isGoodVersion = this.versionService.isVersionGreater(currentVersion, result.version.num);
           } else {
             this.isGoodVersion = true;
           }
-          this.imagePreloaderService.preloadImages([result.user.profilPhoto]).finally(() => {
-            if (this.isGoodVersion) {
-              this.router.navigateByUrl('preload-stream-app');
-            }
-            this.isLoading = false;
-          });
-        }),
-      error: (error: HttpErrorResponse) => {
-        this.isGoodVersion = true;
-        if (error.status === 401) {
-          this.router.navigate(['login'], { relativeTo: this.route });
-        } else {
-          this.router.navigate(['preload-offline-app'], { relativeTo: this.route });
+
+          const img: string[] = [result.user.profilPhoto].filter((src): src is string => !!src);
+
+          this.imagePreloaderService.preloadImages(img, this.abortController.signal)
+            .finally(() => {
+              if (this.abortController.signal.aborted) return;
+              if (this.isGoodVersion) {
+                this.router.navigateByUrl('preload-stream-app');
+              }
+              this.isLoading = false;
+            });
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isGoodVersion = true;
+          if (error.status === 401) {
+            this.router.navigate(['login'], { relativeTo: this.route });
+          } else {
+            this.router.navigate(['preload-offline-app'], { relativeTo: this.route });
+          }
+          this.isLoading = false;
         }
-        this.isLoading = false;
-      }
-    })
+      })
+    );
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscription.unsubscribe();
   }
 
   setGoodVersion(): void {
     this.isGoodVersion = true;
+  }
+
+  private goTo(path: string): void {
+    this.router.navigate([path], { relativeTo: this.route });
   }
 
 }

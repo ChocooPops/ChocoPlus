@@ -708,12 +708,15 @@ ipcMain.handle('list-downloads', () => {
   return downloads;
 });
 
-ipcMain.handle('download-not-empty', () => {
+ipcMain.handle('download-is-empty', () => {
   try {
     const entries = fs.readdirSync(downloadsRootPath, { withFileTypes: true });
-    return entries.length > 0;
-  } catch(error) {
-    return false;
+    const hasMedia = entries.some((entry) =>
+      entry.isDirectory() && fs.existsSync(path.join(downloadsRootPath, entry.name, FILE_METADATA))
+    );
+    return !hasMedia;
+  } catch (error) {
+    return true;
   }
 });
 

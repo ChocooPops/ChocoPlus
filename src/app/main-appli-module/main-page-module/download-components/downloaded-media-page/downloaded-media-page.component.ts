@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MediaModel } from '../../../media-module/models/media.interface';
-import { Subscription, take } from 'rxjs';
+import { Subscription, switchMap, take } from 'rxjs';
 import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-tmp.component';
 import { GridListComponent } from '../../../media-module/components/grids/grid-list/grid-list.component';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
@@ -27,9 +27,7 @@ export class DownloadedMediaPageComponent {
 
   medias: MediaModel[] | undefined = undefined;
   format !: FormatPosterModel;
-  subscritpionPagination!: Subscription;
   subscription: Subscription = new Subscription();
-  loadNewFormat: boolean = false;
 
   constructor(private readonly downloadService: DownloadService,
     private readonly formatPosterService: FormatPosterService,
@@ -43,26 +41,17 @@ export class DownloadedMediaPageComponent {
 
   ngOnInit(): void {
     this.mediaSelectedService.setIsOnLine(false);
-    this.loadDownloads();
-    this.subscription.add(
-      this.formatPosterService.fetchFormatPosterDownload().subscribe((format: FormatPosterModel) => {
-        this.format = format;
-        const obs = this.format === FormatPosterModel.VERTICAL
-          ? this.paginationPosterService.getVerticalGeometricDimensionSelection()
-          : this.paginationPosterService.getHorizontalGeometricDimensionSelection();
-
-        this.subscritpionPagination = obs.subscribe((dimension: GeometricDimensionSelectionModel) => {
-          this.marginLeft = dimension.marginLeft;
-        });
-      })
-    );
 
     this.subscription.add(
-      this.formatPosterService.fetchFormatPosterDownload().subscribe((format: FormatPosterModel) => {
-        this.format = format;
-        if (this.loadNewFormat) {
-          this.loadDownloads();
-        }
+      this.formatPosterService.fetchFormatPosterDownload().pipe(
+        switchMap((format: FormatPosterModel) => {
+          this.format = format;
+          return format === FormatPosterModel.VERTICAL
+            ? this.paginationPosterService.getVerticalGeometricDimensionSelection()
+            : this.paginationPosterService.getHorizontalGeometricDimensionSelection();
+        })
+      ).subscribe((dimension: GeometricDimensionSelectionModel) => {
+        this.marginLeft = dimension.marginLeft;
       })
     );
 
@@ -75,13 +64,14 @@ export class DownloadedMediaPageComponent {
 
   ngOnDestroy(): void {
     this.mediaSelectedService.setIsOnLine(true);
-    if (this.subscritpionPagination) this.subscritpionPagination.unsubscribe();
     this.subscription.unsubscribe();
     this.mediaSelectedService.clearSelection();
   }
 
   private loadDownloads(): void {
-    this.downloadService.listDownloads().pipe(take(1)).subscribe(() => {});
+    this.subscription.add(
+      this.downloadService.listDownloads().pipe(take(1)).subscribe()
+    )
   }
 
 }

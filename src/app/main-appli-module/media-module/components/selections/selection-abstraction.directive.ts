@@ -5,7 +5,6 @@ import { PaginationModel } from "../../models/pagination.interface";
 import { Subscription } from "rxjs";
 import { MediaModel } from "../../models/media.interface";
 import { GeometricDimensionSelectionModel } from "../../models/geometric-dimension-selection.interface";
-import { FormatPosterModel } from "../../../common-module/models/format-poster.enum";
 import { PaginationPosterService } from "../../services/pagination-poster/pagination-poster.service";
 import { MediaTypeModel } from "../../models/media-type.enum";
 
@@ -14,7 +13,6 @@ export abstract class SelectionAbstraction {
 
     @Input() selection !: SelectionModel;
     protected selectionShowed !: SelectionModel;
-    protected formatType = FormatPosterModel;
 
     protected SelectionType = SelectionType;
     protected pagination !: PaginationModel[];

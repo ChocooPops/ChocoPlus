@@ -1,20 +1,18 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { catchError, debounceTime, distinctUntilChanged, map, of, Subscription, switchMap } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-tmp.component';
 import { MediaModel } from '../../../media-module/models/media.interface';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { distinctUntilChanged, Subscription, map, of } from 'rxjs';
-//import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { GridListComponent } from '../../../media-module/components/grids/grid-list/grid-list.component';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
 import { FormatPosterService } from '../../../common-module/services/format-poster/format-poster.service';
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { SearchLicenseListComponent } from '../../../license-module/components/search-license-list/search-license-list.component';
 import { MediaService } from '../../../media-module/services/media/media.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { debounceTime, switchMap } from 'rxjs/operators';
 import { LoadOpeningPageService } from '../../../../launch-module/services/load-opening-page/load-opening-page.service';
 import { PageModel } from '../../../../launch-module/models/page.enum';
-import { TranslatePipe } from '@ngx-translate/core';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 
 @Component({
@@ -27,26 +25,26 @@ import { MediaSelectedService } from '../../../media-module/services/media-selec
 export class SearchPageComponent {
 
   @ViewChild('inputSearch') inputSearch!: ElementRef<HTMLInputElement>;
+  private readonly subscription: Subscription = new Subscription();
+  private readonly refresh: number = 300;
 
-  placeHolder = 'SEARCH_PAGE.PLACEHOLDER_RESEARCH_MOVIE_SERIES';
-  title = 'SEARCH_PAGE.RESULT';
+  public readonly placeHolder = 'SEARCH_PAGE.PLACEHOLDER_RESEARCH_MOVIE_SERIES';
+  public readonly title = 'SEARCH_PAGE.RESULT';
 
-  //private abortController = new AbortController();
+  public readonly formGroup = new FormGroup({
+    inputValue: new FormControl<string>('')
+  });
+
   format!: FormatPosterModel;
   srcImageResearch: string = 'icon/research.svg';
   mediaWanted: MediaModel[] | undefined = undefined;
-  mediaWantedTmp: MediaModel[] = [];
-  displayMediaWanted!: boolean;
-  timerResearch: any | null;
-  refresh: number = 300;
+  displayMediaWanted: boolean = false;
 
-  formGroup!: FormGroup;
-  private loadNewFormat: boolean = false;
-  private subscription: Subscription = new Subscription();
+  private get inputControl(): FormControl<string | null> {
+    return this.formGroup.controls.inputValue;
+  }
 
-  constructor(private readonly fb: FormBuilder,
-    private readonly mediaService: MediaService,
-    //private readonly imagePreloaderService: ImagePreloaderService,
+  constructor(private readonly mediaService: MediaService,
     private readonly formatPosterService: FormatPosterService,
     private readonly menuTabService: MenuTabService,
     private readonly route: ActivatedRoute,
@@ -58,105 +56,68 @@ export class SearchPageComponent {
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_RESEARCH);
   }
 
-  private addActionParam(keyword: string) {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { keyword },
-      queryParamsHandling: 'merge'
-    });
-  }
-
-  private stopTimerResearch(): void {
-    if (this.timerResearch) {
-      clearInterval(this.timerResearch)
-    }
-  }
-
-  private setPageAccordingToKeyword(): void {
-    const keyword = this.route.snapshot.queryParamMap.get('keyword') ?? '';
-    if (keyword.trim() !== '') {
-      this.displayMediaWanted = true;
-      this.formGroup.get('inputValue')?.setValue(keyword);
-    } else {
-      this.displayMediaWanted = false;
-    }
-  }
-
-  private loadForm(): void {
-    this.formGroup = this.fb.group({
-      inputValue: ['']
-    });
-    this.formGroup.get('inputValue')?.valueChanges.subscribe(value => {
-      this.stopTimerResearch();
-      this.mediaWanted = undefined;
-      this.mediaWantedTmp = [];
-      if (value.trim() === "") {
-        this.displayMediaWanted = false;
-      }
-      this.addActionParam(value)
-    });
-  }
-
   ngOnInit(): void {
-    this.loadForm();
-    this.setPageAccordingToKeyword();
+    const initialKeyword: string = this.route.snapshot.queryParamMap.get('keyword') ?? '';
+    this.inputControl.setValue(initialKeyword, { emitEvent: false });
+
+    this.subscription.add(
+      this.inputControl.valueChanges.pipe(
+        map((value: string | null) => (value ?? '').trim()),
+        debounceTime(this.refresh),
+        distinctUntilChanged()
+      ).subscribe((keyword: string) => this.addActionParam(keyword))
+    );
 
     this.subscription.add(
       this.route.queryParamMap.pipe(
-        map(params => params.get('keyword') ?? ''),
-        debounceTime(this.refresh),
+        map(params => (params.get('keyword') ?? '').trim()),
         distinctUntilChanged(),
-        switchMap(keyword => {
-          if (keyword.trim() !== "") {
-            this.displayMediaWanted = true;
-            this.mediaWanted = undefined;
-            this.mediaWantedTmp = [];
-            return this.mediaService.fetchResearchMediaByKeyword(keyword);
-          }
-          return of(null);
+        switchMap((keyword: string) => {
+          this.syncInput(keyword);
+          this.displayMediaWanted = keyword !== '';
+          this.mediaWanted = undefined;
+
+          if (!keyword) return of(null);
+          return this.mediaService.fetchResearchMediaByKeyword(keyword).pipe(
+            catchError(() => of([] as MediaModel[]))
+          );
         })
-      ).subscribe(data => {
+      ).subscribe((data: MediaModel[] | null) => {
         if (data) {
           this.mediaWanted = data;
-          this.mediaWantedTmp = data;
-          this.loadNewFormat = true;
-          // const format = this.formatPosterService.getFormatPosterResearchValue();
-          // const img = this.imagePreloaderService.getPosterFromMediaListToLoad(data, format);
-          // this.imagePreloaderService.preloadImages(img, this.abortController.signal)
-          //   .finally(() => {
-          //     this.mediaWanted = data;
-          //     this.mediaWantedTmp = data;
-          //     this.loadNewFormat = true;
-          //   });
         }
       })
     );
+
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterResearch().subscribe((format: FormatPosterModel) => {
         this.format = format;
-        if (!this.loadNewFormat) {
-          //this.movieWanted = undefined
-          this.preloadNewFormat();
-        }
       })
-    )
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-    //this.abortController.abort();
-    this.mediaSelectedService.clearSelection();
+    );
   }
 
   ngAfterViewInit(): void {
     this.inputSearch.nativeElement.focus();
   }
 
-  private preloadNewFormat(): void {
-    // const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(this.mediaWantedTmp, this.format);
-    // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-    //   //this.movieWanted = this.movieWantedTmp;
-    // })
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.mediaSelectedService.clearSelection();
+  }
+
+  private addActionParam(keyword: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { keyword: keyword || null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
+
+  private syncInput(keyword: string): void {
+    if ((this.inputControl.value ?? '').trim() !== keyword) {
+      this.inputControl.setValue(keyword, { emitEvent: false });
+    }
   }
 
 }

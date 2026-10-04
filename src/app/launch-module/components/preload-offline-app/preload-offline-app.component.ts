@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { combineLatest, take } from 'rxjs';
+import { catchError, combineLatest, delay, filter, map, Observable, of, Subscription, switchMap, take, timeout } from 'rxjs';
 import { CharacterService } from '../../../offline-appli-module/game-module/services/character/character.service';
 import { CloudService } from '../../../offline-appli-module/game-module/services/cloud/cloud.service';
 import { GoldService } from '../../../offline-appli-module/game-module/services/gold/gold.service';
@@ -21,18 +21,21 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class PreloadOfflineAppComponent {
 
-  nameButtonLogin = "LAUNCH.LOGIN";
-  nameButtonRegister = "LAUNCH.CREATE_ACCOUNT";
-  messageOffline = 'LAUNCH.OFFLINE_MODE';
-  messageLoading = 'LAUNCH.MESSAGE.LOADING_SPRITES';
+  readonly nameButtonLogin = 'LAUNCH.LOGIN';
+  readonly nameButtonRegister = 'LAUNCH.CREATE_ACCOUNT';
+  readonly TypeButton = TypeButtonModel;
+  private readonly messageOffline = 'LAUNCH.OFFLINE_MODE';
+  private readonly messageLoading = 'LAUNCH.MESSAGE.LOADING_SPRITES';
+  private readonly srcLoading: string = 'game/cat_loading.gif';
+  private readonly srcFix: string = 'game/cat_fix.png';
+  private readonly spritesTimeoutMs: number = 15000;
 
   message: string = this.messageOffline;
-  srcLoading: string = 'game/cat_loading.gif';
-  srcFix: string = 'game/cat_fix.png';
   srcCat: string = this.srcFix;
   transitionLoad: boolean = false;
   transitionActivating: boolean = false;
-  TypeButton = TypeButtonModel;
+
+  private readonly subscription: Subscription = new Subscription();
 
   constructor(private readonly router: Router,
     private readonly characterService: CharacterService,
@@ -44,75 +47,26 @@ export class PreloadOfflineAppComponent {
     private readonly downloadService: DownloadService
   ) { }
 
-  onClick(): void {
-    this.transitionLoad = !this.transitionLoad;
-    if (!this.transitionActivating) {
-      this.transitionActivating = true;
-      this.srcCat = this.srcLoading;
-      this.message = this.messageLoading;
-      this.downloadService.mediaDownloadedNotEmpty().pipe(take(1)).subscribe((notEmpty: boolean) => {
-        if (notEmpty) {
-          this.loadGame('offline-app/downloads');
-        } else {
-          this.loadGame('offline-app/game');
-        }
-      });
-    }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
-  loadGame(route: string): void {
-    combineLatest([
-      this.characterService.getCharacter().getSpriteIsLoad(),    // 0
-      this.characterService.getRainbow().getSpriteIsLoad(),      // 1
-      this.characterService.getSparks().getSpriteIsLoad(),       // 2
-      this.cloudService.getCloudByIndice(0).getSpriteIsLoad(),   // 3
-      this.cloudService.getCloudByIndice(1).getSpriteIsLoad(),   // 4
-      this.cloudService.getCloudByIndice(2).getSpriteIsLoad(),   // 5
-      this.cloudService.getCloudByIndice(3).getSpriteIsLoad(),   // 6
-      this.cloudService.getCloudByIndice(4).getSpriteIsLoad(),   // 7
-      this.goldService.getGold().getSpriteIsLoad(),              // 8
-      this.plateformService.getPlateform().getSpriteIsLoad(),    // 9
-      this.skyService.getSky().getSpriteIsLoad(),                // 10
-      this.treeService.getYellowTreeSprite().getSpriteIsLoad(),  // 11
-      this.treeService.getBlueTreeSprite().getSpriteIsLoad()     // 12
-    ]).subscribe((
-      [
-        isCharacterLoaded,
-        isRainbowLoaded,
-        isSparksLoaded,
-        isCloud0Loaded,
-        isCloud1Loaded,
-        isCloud2Loaded,
-        isCloud3Loaded,
-        isCloud4Loaded,
-        isGoldLoaded,
-        isPlatformLoaded,
-        isSkyLoaded,
-        isYellowTreeLoaded,
-        isBlueTreeLoaded
-      ]
-    ) => {
-      const allLoaded =
-        isCharacterLoaded &&
-        isRainbowLoaded &&
-        isSparksLoaded &&
-        isCloud0Loaded &&
-        isCloud1Loaded &&
-        isCloud2Loaded &&
-        isCloud3Loaded &&
-        isCloud4Loaded &&
-        isGoldLoaded &&
-        isPlatformLoaded &&
-        isSkyLoaded &&
-        isYellowTreeLoaded &&
-        isBlueTreeLoaded;
+  onClick(): void {
+    this.transitionLoad = !this.transitionLoad;
+    if (this.transitionActivating) return;
+    this.transitionActivating = true;
+    this.srcCat = this.srcLoading;
+    this.message = this.messageLoading;
 
-      if (allLoaded) {
-        setTimeout(() => {
-          this.router.navigateByUrl(route);
-        }, 1000);
-      }
-    });
+    this.subscription.add(
+      this.downloadService.mediaDownloadedIsEmpty().pipe(
+        take(1),
+        catchError(() => of(true)),
+        map((isEmpty: boolean) => isEmpty ? 'offline-app/game' : 'offline-app/downloads'),
+        switchMap((route: string) => this.waitForAllSprites().pipe(map(() => route))),
+        delay(1000)
+      ).subscribe((route: string) => this.router.navigateByUrl(route))
+    );
   }
 
   onNavigateToLoginPage(): void {
@@ -125,6 +79,30 @@ export class PreloadOfflineAppComponent {
     if (!this.transitionActivating) {
       this.router.navigateByUrl('register');
     }
+  }
+
+  private waitForAllSprites(): Observable<void> {
+    return combineLatest([
+      this.characterService.getCharacter().getSpriteIsLoad(),
+      this.characterService.getRainbow().getSpriteIsLoad(),
+      this.characterService.getSparks().getSpriteIsLoad(),
+      this.cloudService.getCloudByIndice(0).getSpriteIsLoad(),
+      this.cloudService.getCloudByIndice(1).getSpriteIsLoad(),
+      this.cloudService.getCloudByIndice(2).getSpriteIsLoad(),
+      this.cloudService.getCloudByIndice(3).getSpriteIsLoad(),
+      this.cloudService.getCloudByIndice(4).getSpriteIsLoad(),
+      this.goldService.getGold().getSpriteIsLoad(),
+      this.plateformService.getPlateform().getSpriteIsLoad(),
+      this.skyService.getSky().getSpriteIsLoad(),
+      this.treeService.getYellowTreeSprite().getSpriteIsLoad(),
+      this.treeService.getBlueTreeSprite().getSpriteIsLoad()
+    ]).pipe(
+      filter((states: boolean[]) => states.every(Boolean)),
+      take(1),
+      timeout(this.spritesTimeoutMs),
+      catchError(() => of(null)),
+      map(() => undefined)
+    );
   }
 
 }

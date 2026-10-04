@@ -26,11 +26,11 @@ import { ScrollEventService } from '../../../common-module/services/scroll-event
 export class MoviePageComponent {
 
   private abortController = new AbortController();
+  private subscription: Subscription = new Subscription();
+
   movieShowHome !: NewsVideoRunningModel | undefined;
   movieSelections: SelectionModel[] | undefined = undefined;
   format !: FormatPosterModel;
-  private loadNewFormat: boolean = false;
-  private subscription: Subscription = new Subscription();
 
   constructor(private readonly selectionService: SelectionService,
     private readonly mediaSelectedService: MediaSelectedService,
@@ -50,42 +50,33 @@ export class MoviePageComponent {
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterMovie().subscribe((format: FormatPosterModel) => {
         this.format = format;
-        if (this.loadNewFormat) {
-          //this.movieSelections = undefined;
-          this.reloadWhenFormatPosterChange();
-        }
       })
     )
     this.setPage();
   }
 
   private setPage(): void {
-    forkJoin({
-      selections: this.selectionService.fetchRandomSelectionOnMoviePage(),
-      movieShow: this.newsVideoRunningService.fetchRandomNewsMovieRunning(),
-    }).pipe(take(1)).subscribe((result: { selections: SelectionModel[], movieShow: NewsVideoRunningModel }) => {
-      const img: string[] = [];
-      // const format: FormatPosterModel = this.formatPosterService.getFormatPosterMovieValue();
-      img.push(...this.imagePreloaderService.getImageFormNewsVideoRunning(result.movieShow));
-      // img.push(...this.imagePreloaderService.getPosterFromSelectionToLoad(result.selections, format));
+    this.subscription.add(
+      forkJoin({
+        selections: this.selectionService.fetchRandomSelectionOnMoviePage().pipe(take(1)),
+        movieShow: this.newsVideoRunningService.fetchRandomNewsMovieRunning().pipe(take(1)),
+      }).subscribe({
+        next: (result: { selections: SelectionModel[], movieShow: NewsVideoRunningModel }) => {
+          const img: string[] = this.imagePreloaderService.getImageFormNewsVideoRunning(result.movieShow);
 
-      this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        this.movieShowHome = result.movieShow;
-        this.movieSelections = result.selections;
-        this.loadNewFormat = true;
-      });
-    })
-  }
-
-  private reloadWhenFormatPosterChange(): void {
-    //this.abortController.abort();
-    this.selectionService.fetchRandomSelectionOnMoviePage().pipe(take(1)).subscribe((selections: SelectionModel[]) => {
-      this.movieSelections = selections;
-      // const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(selections, this.format);
-      // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-      //   this.movieSelections = selections;
-      // })
-    })
+          this.imagePreloaderService.preloadImages(img, this.abortController.signal)
+            .finally(() => {
+              if (this.abortController.signal.aborted) return;
+              this.movieShowHome = result.movieShow;
+              this.movieSelections = result.selections;
+            });
+        },
+        error: () => {
+          this.movieShowHome = undefined;
+          this.movieSelections = [];
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,6 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, NgZone, Renderer2 } from '@angular/core';
 import { MediaModel } from '../../../media-module/models/media.interface';
-import { Subscription, take } from 'rxjs';
+import { combineLatest, Subscription, switchMap, take } from 'rxjs';
 import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-tmp.component';
 import { GridListComponent } from '../../../media-module/components/grids/grid-list/grid-list.component';
 import { FormatPosterModel } from '../../../common-module/models/format-poster.enum';
@@ -17,7 +17,6 @@ import { MediaService } from '../../../media-module/services/media/media.service
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { SortCatalog } from '../../../media-module/models/catalog/sort-catalog.enum';
 import { ScrollEventService } from '../../../common-module/services/scroll-event/scroll-event.service';
-//import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 import { FiltersCatalogService } from '../../../media-module/services/filters-catalog/filters-catalog.service';
 import { FiltersChoicesModel } from '../../../media-module/models/catalog/filters-choices.interface';
 import { FilterChoiceModel } from '../../../media-module/models/catalog/filter-choice.interface';
@@ -26,9 +25,8 @@ import { OtherFiltersComponent } from '../other-filters/other-filters.component'
 import { FilterType } from '../../../media-module/models/catalog/filter-type.enum';
 import { TranslatePipe } from '@ngx-translate/core';
 import { OperatorPipe } from '../../../../common-module/pipe/operator.pipe';
-import { UpperCasePipe } from '@angular/common';
+import { UpperCasePipe, LowerCasePipe } from '@angular/common';
 import { ResultCatalog } from '../../../media-module/models/catalog/result-catalog.interface';
-import { LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-catalog-page',
@@ -42,11 +40,12 @@ export class CatalogPageComponent {
   medias: MediaModel[] | undefined = undefined;
   total: number | undefined = undefined;
 
-  subscription: Subscription = new Subscription();
-  subscritpionPagination!: Subscription;
-  subscriptionCatalog!: Subscription;
-  private scrollUnlisten!: () => void;
-  //private abortController = new AbortController();
+  private subscription: Subscription = new Subscription();
+  private catalogSubscription?: Subscription;
+  private scrollUnlisten?: () => void;
+  private scrollTimeoutId?: ReturnType<typeof setTimeout>;
+  private errorTimeoutId?: ReturnType<typeof setTimeout>;
+  private fillScreenTimeoutId?: ReturnType<typeof setTimeout>;
 
   title: string = '';
   format: FormatPosterModel = FormatPosterModel.VERTICAL;
@@ -60,7 +59,7 @@ export class CatalogPageComponent {
   sortFilter!: FilterChoiceModel[];
   TypeData = FilterType;
 
-  declareSelected!: number;
+  decadeSelected!: number;
   categorySelected!: number;
   mediaTypeSelected!: MediaTypeModel;
   sortSelected!: SortCatalog;
@@ -70,8 +69,8 @@ export class CatalogPageComponent {
   srcYellowCross: string = 'icon/yellow-cross.svg'
   orderDirection!: boolean;
 
+  private readonly  PAGE_SIZE!: number;
   private currentOffset: number = 0;
-  private PAGE_SIZE!: number;
   public isLoading: boolean = false;
   private hasMore: boolean = true;
 
@@ -81,6 +80,7 @@ export class CatalogPageComponent {
 
   constructor(
     private readonly renderer: Renderer2,
+    private readonly ngZone: NgZone,
     private readonly mediaSelectedService: MediaSelectedService,
     private readonly formatPosterService: FormatPosterService,
     private readonly menuTabService: MenuTabService,
@@ -89,7 +89,6 @@ export class CatalogPageComponent {
     private readonly filtersCatalogService: FiltersCatalogService,
     private readonly mediaService: MediaService,
     private readonly scrollEventService: ScrollEventService,
-    //private readonly imagePreloaderService: ImagePreloaderService
   ) {
     this.menuTabService.setActivateTransition(false);
     this.loadOpeningPageService.setLastPageVisited(PageModel.PAGE_CATALOG);
@@ -100,7 +99,7 @@ export class CatalogPageComponent {
     this.mediaTypeFilter = this.filtersCatalogService.getMediaTypeFilter();
     this.sortFilter = this.filtersCatalogService.getSortFilter();
 
-    this.declareSelected = this.decadeFilter.filters.find((item) => item.isSelected)?.value;
+    this.decadeSelected = this.decadeFilter.filters.find((item) => item.isSelected)?.value;
     this.categorySelected = this.categoryFilter.filters.find((item) => item.isSelected)?.value;
     this.mediaTypeSelected = this.mediaTypeFilter.filters.find((item) => item.isSelected)?.value;
     this.sortSelected = this.sortFilter.find((item) => item.isSelected)?.value;
@@ -108,55 +107,54 @@ export class CatalogPageComponent {
 
   ngOnInit(): void {
     this.subscription.add(
-      this.formatPosterService.fetchFormatPosterCatalog().subscribe((format: FormatPosterModel) => {
-        this.format = format;
-        const obs = this.format === FormatPosterModel.VERTICAL
-          ? this.paginationPosterService.getVerticalGeometricDimensionSelection()
-          : this.paginationPosterService.getHorizontalGeometricDimensionSelection();
+      this.formatPosterService.fetchFormatPosterCatalog().pipe(
+        switchMap((format: FormatPosterModel) => {
+          this.format = format;
+          return format === FormatPosterModel.VERTICAL
+            ? this.paginationPosterService.getVerticalGeometricDimensionSelection()
+            : this.paginationPosterService.getHorizontalGeometricDimensionSelection();
+        })
+      ).subscribe((dimension: GeometricDimensionSelectionModel) => {
+        const marginBottom: number = this.format === FormatPosterModel.VERTICAL
+          ? this.paginationPosterService.getMarginBottomForVerticalPoster()
+          : this.paginationPosterService.getMarginBottomForHorizontalPoster();
 
-        this.subscritpionPagination = obs.subscribe((dimension: GeometricDimensionSelectionModel) => {
-          const marginBottom: number = this.format === FormatPosterModel.VERTICAL
-            ? this.paginationPosterService.getMarginBottomForVerticalPoster()
-            : this.paginationPosterService.getMarginBottomForHorizontalPoster()
-
-          this.marginLeft = dimension.marginLeft;
-          this.width = `calc(100% - ${this.marginLeft}vw - ${this.marginLeft}vw)`;
-          this.heightScrolling = dimension.heightPoster * 1.1 + marginBottom;
-        });
+        this.marginLeft = dimension.marginLeft;
+        this.width = `calc(100% - ${this.marginLeft}vw - ${this.marginLeft}vw)`;
+        this.heightScrolling = dimension.heightPoster * 1.1 + marginBottom;
       })
     );
 
     this.subscription.add(
-      this.filtersCatalogService.getOrderDirectionSort().subscribe((data: boolean) => {
-        this.orderDirection = data;
-        this.startNewCatalog();
-      })
-    );
-
-    this.subscription.add(
-      this.filtersCatalogService.getFILTERS().subscribe((data: FILTERS[]) => {
-        this.FILTERS = data;
+      combineLatest([
+        this.filtersCatalogService.getOrderDirectionSort(),
+        this.filtersCatalogService.getFILTERS()
+      ]).subscribe(([orderDirection, filters]: [boolean, FILTERS[]]) => {
+        this.orderDirection = orderDirection;
+        this.FILTERS = filters;
         this.startNewCatalog();
       })
     );
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.scrollTimeoutId = setTimeout(() => {
       const container = this.scrollEventService.getContainerElement();
-      if (container) {
+      if (!container) return;
+      this.ngZone.runOutsideAngular(() => {
         this.scrollUnlisten = this.renderer.listen(container, 'scroll', () => this.onScroll());
-      }
+      });
     }, 100);
   }
 
   ngOnDestroy(): void {
+    clearTimeout(this.scrollTimeoutId);
+    clearTimeout(this.errorTimeoutId);
+    clearTimeout(this.fillScreenTimeoutId);
+    if (this.scrollUnlisten) this.scrollUnlisten();
+    this.catalogSubscription?.unsubscribe();
     this.subscription.unsubscribe();
     this.mediaSelectedService.clearSelection();
-    if (this.scrollUnlisten) this.scrollUnlisten();
-    if (this.subscritpionPagination) this.subscritpionPagination.unsubscribe();
-    if (this.subscriptionCatalog) this.subscriptionCatalog.unsubscribe();
-    //this.abortController.abort();
   }
 
   public onSelectedDecadeFilter(filtre: FILTERS): void {
@@ -195,23 +193,23 @@ export class CatalogPageComponent {
     const container = this.scrollEventService.getContainerElement();
     if (!container) return;
 
-    const scrollTop = container.scrollTop;
-    const clientHeight = container.clientHeight;
-    const scrollHeight = container.scrollHeight;
-
-    if (scrollTop + clientHeight >= scrollHeight - this.vwToPx(this.heightScrolling) - 220) {
-      this.loadNextPage();
+    const threshold: number = this.vwToPx(this.heightScrolling) + 220;
+    if (container.scrollTop + container.clientHeight >= container.scrollHeight - threshold) {
+      this.ngZone.run(() => this.loadNextPage());
     }
+  }
+
+  private checkFillScreen(): void {
+    clearTimeout(this.fillScreenTimeoutId);
+    this.fillScreenTimeoutId = setTimeout(() => this.onScroll());
   }
 
   private loadNextPage(): void {
     if (this.isLoading || !this.hasMore) return;
     this.isLoading = true;
-    this.currentOffset += this.PAGE_SIZE;
 
-    if (this.subscriptionCatalog) this.subscriptionCatalog.unsubscribe();
-
-    this.subscriptionCatalog = this.mediaService
+    this.catalogSubscription?.unsubscribe();
+    this.catalogSubscription = this.mediaService
       .fetchMediaByCatalogFilters(
         this.FILTERS,
         this.sortSelected,
@@ -220,53 +218,52 @@ export class CatalogPageComponent {
         this.currentOffset
       )
       .pipe(take(1))
-      .subscribe((result: ResultCatalog) => {
-        if (result.medias.length < this.PAGE_SIZE) this.hasMore = false;
-        if (this.medias) this.medias.push(...result.medias);
-        this.isLoading = false;
-        //this.abortController.abort();
-        // const format: FormatPosterModel = this.formatPosterService.getFormatPosterCatalogValue();
-        // const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(media, format);
-        // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        //   if (media.length < this.PAGE_SIZE) this.hasMore = false;
-        //   if (this.medias) this.medias.push(...media);
-        //   this.isLoading = false;
-        // });
-      });
+      .subscribe({
+        next: (result: ResultCatalog) => {
+          this.currentOffset = this.currentOffset + result.medias.length;
+          this.hasMore = result.medias.length >= this.PAGE_SIZE;
+          if (this.medias) {
+            this.medias.push(...result.medias);
+          } else {
+            this.medias = result.medias
+          }
+          this.isLoading = false;
+          this.checkFillScreen();
+        },
+        error: () => {
+          this.errorTimeoutId = setTimeout(() => this.isLoading = false, 2000);
+        }
+      })
   }
-
+  
   public startNewCatalog(): void {
+    clearTimeout(this.errorTimeoutId);
     this.currentOffset = 0;
     this.hasMore = true;
-    this.isLoading = false;
+    this.isLoading = true;
     this.medias = undefined;
     this.total = undefined;
 
-    if (this.subscriptionCatalog) this.subscriptionCatalog.unsubscribe();
-
-    this.subscriptionCatalog = this.mediaService
-      .fetchMediaByCatalogFilters(
-        this.FILTERS,
-        this.sortSelected,
-        this.orderDirection,
-        this.PAGE_SIZE,
-        0
-      )
+    this.catalogSubscription?.unsubscribe();
+    this.catalogSubscription = this.mediaService
+      .fetchMediaByCatalogFilters(this.FILTERS, this.sortSelected, this.orderDirection, this.PAGE_SIZE, 0)
       .pipe(take(1))
-      .subscribe((result: ResultCatalog) => {
-        if (result.medias.length < this.PAGE_SIZE) this.hasMore = false;
-        this.medias = result.medias;
-        this.total = result.total ?? 0;
-        this.isLoading = false;
-        // this.abortController.abort();
-        // const format: FormatPosterModel = this.formatPosterService.getFormatPosterCatalogValue();
-        // const img: string[] = this.imagePreloaderService.getPosterFromMediaListToLoad(media, format);
-        // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        //   if (media.length < this.PAGE_SIZE) this.hasMore = false;
-        //   this.medias = media;
-        //   this.isLoading = false;
-        // });
-      });
+      .subscribe({
+        next: (result: ResultCatalog) => {
+          this.currentOffset = result.medias.length;
+          this.hasMore = result.medias.length >= this.PAGE_SIZE;
+          this.medias = result.medias;
+          this.total = result.total ?? 0;
+          this.isLoading = false;
+          this.checkFillScreen();
+        },
+        error: () => {
+          this.hasMore = false;
+          this.medias = [];
+          this.total = 0;
+          this.isLoading = false;
+        }
+    });
   }
 
   private vwToPx(vw: number): number {

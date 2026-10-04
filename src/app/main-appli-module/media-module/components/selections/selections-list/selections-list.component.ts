@@ -24,38 +24,42 @@ export class SelectionsListComponent {
   @Input() selections: SelectionModel[] | undefined = undefined;
   @Input() format: FormatPosterModel = FormatPosterModel.VERTICAL;
   @Input() licenseLoading: boolean = false;
-  SelectionType = SelectionType;
-  FormatPoster = FormatPosterModel;
-  selectionsLoading!: SimpleModel[];
-  subsrciption !: Subscription;
-  marginBottom !: number;
 
-  constructor(private selectionLoadingService: SelectionLoadingService,
-    private paginationPosterService: PaginationPosterService
+  private subsrciption!: Subscription;
+  public readonly SelectionType = SelectionType;
+  public readonly FormatPoster = FormatPosterModel;
+  selectionsLoading!: SimpleModel[];
+  marginBottom!: number;
+
+  constructor(private readonly selectionLoadingService: SelectionLoadingService,
+    private readonly paginationPosterService: PaginationPosterService
   ) {
     this.selectionsLoading = this.selectionLoadingService.getSelectionLoading();
   }
 
-  ngOnDestroy(): void {
-    if (this.subsrciption) {
-      this.subsrciption.unsubscribe();
-    }
+  ngOnInit(): void {
+    this.subsrciption = this.paginationPosterService.getVerticalGeometricDimensionSelection().subscribe(() => {
+      this.updateMarginBottom();
+    })
   }
 
-  private subscribePagination(): void {
-    if (this.subsrciption) this.subsrciption.unsubscribe();
-    this.subsrciption = this.paginationPosterService.getVerticalGeometricDimensionSelection().subscribe(() => {
-      if (this.format === this.FormatPoster.VERTICAL) {
-        this.marginBottom = this.paginationPosterService.getMarginBottomPageToVerticalFormat();
-      } else if (this.format === this.FormatPoster.HORIZONTAL) {
-        this.marginBottom = this.paginationPosterService.getMarginBottomPageToHorizontalFormat();
-      }
-    })
+  ngOnDestroy(): void {
+    this.subsrciption?.unsubscribe();
+  }
+
+  private updateMarginBottom(): void {
+    if (this.format === this.FormatPoster.VERTICAL) {
+      this.marginBottom = this.paginationPosterService.getMarginBottomPageToVerticalFormat();
+    } else if (this.format === this.FormatPoster.HORIZONTAL) {
+      this.marginBottom = this.paginationPosterService.getMarginBottomPageToHorizontalFormat();
+    } else {
+      this.marginBottom = 0;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['format']) {
-      this.subscribePagination();
+      this.updateMarginBottom();
     }
   }
 

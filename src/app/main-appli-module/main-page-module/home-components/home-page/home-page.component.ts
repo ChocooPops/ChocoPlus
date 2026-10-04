@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SelectionService } from '../../../media-module/services/selection/selection.service';
-import { forkJoin, Subscription, take } from 'rxjs';
+import { forkJoin, Subject, Subscription, take, takeUntil } from 'rxjs';
 import { SelectionsListComponent } from '../../../media-module/components/selections/selections-list/selections-list.component';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { SelectionModel } from '../../../media-module/models/selection.interface';
@@ -26,11 +26,11 @@ import { PageModel } from '../../../../launch-module/models/page.enum';
 export class HomePageComponent {
 
   private abortController = new AbortController();
+  private subscription: Subscription = new Subscription();
+
+  news: NewsModel[] | undefined = undefined;
   selections: SelectionModel[] | undefined = undefined;
   format !: FormatPosterModel;
-  news: NewsModel[] | undefined = undefined;
-  private loadNewFormat: boolean = false;
-  private subscription: Subscription = new Subscription();
 
   constructor(private selectionService: SelectionService,
     private newsService: NewsService,
@@ -48,53 +48,33 @@ export class HomePageComponent {
     this.subscription.add(
       this.formatPosterService.fetchFormatPosterHome().subscribe((format: FormatPosterModel) => {
         this.format = format;
-        if (this.loadNewFormat) {
-          //this.selections = undefined;
-          this.reloadWhenFormatPosterChange();
-        }
       })
     )
     this.setPage();
   }
 
   private setPage(): void {
-    forkJoin({
-      selections: this.selectionService.fetchSelectionOnHomePage(),
-      news: this.newsService.fetchGetAllNews()
-    }).pipe(take(1)).subscribe((result: { selections: SelectionModel[], news: NewsModel[] }) => {
-      // const img: string[] = [];
-      // const format: FormatPosterModel = this.formatPosterService.getFormatPosterHomeValue();
-      // img.push(...this.imagePreloaderService.getPosterFromSelectionToLoad(result.selections, format));
-      // img.push(...this.imagePreloaderService.getImageFromNewsList(result.news));
-      const newsTmp: NewsModel[] = [];
-      if (result.news.length > 0) {
-        newsTmp.push(result.news[0]);
-        // if (result.news.length > 1) {
-        //   newsTmp.push(result.news[1]);
-        //   if (result.news.length > 2) {
-        //     newsTmp.push(result.news[result.news.length - 1]);
-        //   }
-        // }
-      }
-      const img: string[] = this.imagePreloaderService.getImageFromNewsList(newsTmp);
+    this.subscription.add(
+      forkJoin({
+        selections: this.selectionService.fetchSelectionOnHomePage().pipe(take(1)),
+        news: this.newsService.fetchGetAllNews().pipe(take(1))
+      }).subscribe({
+        next: (result: { selections: SelectionModel[], news: NewsModel[] }) => {
+          const img: string[] = this.imagePreloaderService.getImageFromNewsList(result.news.slice(0, 1));
 
-      this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-        this.news = result.news;
-        this.selections = result.selections;
-        this.loadNewFormat = true;
-      });
-    })
-  }
-
-  private reloadWhenFormatPosterChange(): void {
-    //this.abortController.abort();
-    this.selectionService.fetchSelectionOnHomePage().pipe(take(1)).subscribe((selections: SelectionModel[]) => {
-      this.selections = selections;
-      // const img: string[] = this.imagePreloaderService.getPosterFromSelectionToLoad(selections, this.format);
-      // this.imagePreloaderService.preloadImages(img, this.abortController.signal).finally(() => {
-      //   this.selections = selections;
-      // })
-    })
+          this.imagePreloaderService.preloadImages(img, this.abortController.signal)
+            .finally(() => {
+              if (this.abortController.signal.aborted) return;
+              this.news = result.news;
+              this.selections = result.selections;
+            });
+        },
+        error: () => {
+          this.news = [];
+          this.selections = [];
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {
