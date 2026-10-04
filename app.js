@@ -297,9 +297,9 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
   return new Promise((resolve, reject) => {
     let endpoint;
     if (mediaType === MediaType.MOVIE) {
-      endpoint = `stream/download-movie/${id}`;
+      endpoint = `download/download-movie/${id}`;
     } else if (mediaType === MediaType.EPISODE) {
-      endpoint = `stream/download-episode/${id}`;
+      endpoint = `download/download-episode/${id}`;
     } else {
       return reject(new Error(`Unsupported media type for video download: ${mediaType}`));
     }
