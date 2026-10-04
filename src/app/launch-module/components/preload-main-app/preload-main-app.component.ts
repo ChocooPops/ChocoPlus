@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../main-appli-module/user-module/service/user/user.service';
-import { catchError, defaultIfEmpty, EMPTY, forkJoin, map, Observable, of, Subscription, switchMap, take } from 'rxjs';
+import { catchError, defaultIfEmpty, forkJoin, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { UserModel } from '../../../main-appli-module/user-module/dto/user.model';
 import { ButtonFormComponent } from '../button-form/button-form.component';
 import { TypeButtonModel } from '../../models/type-button.model';
@@ -10,7 +10,7 @@ import { LoadOpeningPageService } from '../../services/load-opening-page/load-op
 import { PageModel } from '../../models/page.enum';
 import { TitleCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { CategoryService } from '../../../main-appli-module/edition-module/services/category/category.service';
 
 @Component({
   selector: 'app-preload-main-appli',
@@ -37,37 +37,18 @@ export class PreloadMainAppComponent {
     private readonly authService: AuthService,
     private readonly electronService: ElectronService,
     private readonly loadOpeningPageService: LoadOpeningPageService,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
+    private readonly categoryService: CategoryService
   ) { }
 
   ngOnInit(): void {
     this.subscription.add(
-      forkJoin({
-        user: this.userService.getCurrentUser().pipe(take(1)),
-        synch: this.authService.fetchSynchTokenWithRoleByUser().pipe(
-          take(1),
-          defaultIfEmpty(undefined),
-          catchError(() => of(undefined))
-        )
-      }).pipe(
-        switchMap(({ user }: { user: UserModel | undefined }) => {
-          if (!user) {
-            this.router.navigate(['login'], { relativeTo: this.route });
-            return EMPTY;
-          }
-          return this.userService.fetchMyMediaListByUserId().pipe(
-            take(1),
-            defaultIfEmpty(null),
-            catchError(() => of(null)),
-            map(() => ({ user }))
-          );
-        })
-      ).subscribe(({ user }) => {
-        this.srcPP = user.profilPhoto;
-        this.pseudo = user.pseudo;
+      this.userService.getCurrentUser().subscribe((user: UserModel | undefined) => {
+        if (user) {
+          this.srcPP = user.profilPhoto;
+          this.pseudo = user.pseudo;
+        }
       })
-    );
+    )
   }
 
   ngOnDestroy(): void {
@@ -80,9 +61,23 @@ export class PreloadMainAppComponent {
     this.activateLoader = true;
     const page: PageModel = this.loadOpeningPageService.getOpeningPage();
     const pageSelected: PageModel = page === PageModel.DEFAULT_PAGE ? this.loadOpeningPageService.getLastPageVisited() : page;
+    
     this.subscription.add(
-        this.loadPage(pageSelected).subscribe()
-    )
+      forkJoin({
+        myList: this.userService.fetchMyMediaListByUserId().pipe(
+          take(1),
+          defaultIfEmpty(undefined),
+          catchError(() => of(undefined))
+        ),
+        categories: this.categoryService.fetchAllCategories().pipe(
+          take(1),
+          defaultIfEmpty([]),
+          catchError(() => of([]))
+        )
+      }).pipe(
+        switchMap(() => this.loadPage(pageSelected))
+      ).subscribe()
+    );
   }
 
   private loadPage(page: PageModel): Observable<void> {
@@ -98,7 +93,7 @@ export class PreloadMainAppComponent {
       case PageModel.PAGE_LICENSE:  return this.loadOpeningPageService.loadLicensePageDataAndNavigate();
       default:                      return this.loadOpeningPageService.loadHomePageDataAndNavigate();
     }
-}
+  }
 
   async onLogout(): Promise<void> {
     if (this.isLoggingOut) return;

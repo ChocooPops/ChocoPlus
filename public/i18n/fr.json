@@ -142,6 +142,7 @@
         "DOWNLOAD_COMPLETE": "Téléchargement terminé",
         "DELETION_COMPLETE": "Suppression terminée",
         "REMAINING": "restante(s)",
+        "TIME_SECOND_SHORT": "sec",
         "TIME_MINUTE_SHORT": "min",
         "TIME_HOUR_SHORT": "h"
     },

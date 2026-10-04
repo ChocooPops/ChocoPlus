@@ -28,9 +28,7 @@ export class CategoryService {
     private readonly translateService: TranslateService,
     private readonly movieService: MovieService,
     private readonly seriesService: SeriesService
-  ) {
-    this.fetchAllCategories().pipe(take(1)).subscribe(() => { });
-  }
+  ) { }
 
   private getInitialEditCategory(): CategoryEntirelyModel {
     return {

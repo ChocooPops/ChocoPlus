@@ -168,11 +168,17 @@ export class DownloadMenuButtonComponent {
     if (!isFinite(seconds) || seconds <= 0) return '';
 
     const remainingLabel: string = this.translateService.instant('DOWNLOAD.REMAINING');
+
+    if (seconds < 60) {
+      const secondUnit: string = this.translateService.instant('DOWNLOAD.TIME_SECOND_SHORT');
+      return `${Math.max(1, Math.ceil(seconds))} ${secondUnit} ${remainingLabel}`;
+    }
+
     const minuteUnit: string = this.translateService.instant('DOWNLOAD.TIME_MINUTE_SHORT');
     const totalMinutes: number = Math.ceil(seconds / 60);
 
     if (totalMinutes < 60) {
-      return `${Math.max(1, totalMinutes)} ${minuteUnit} ${remainingLabel}`;
+      return `${totalMinutes} ${minuteUnit} ${remainingLabel}`;
     }
 
     const hourUnit: string = this.translateService.instant('DOWNLOAD.TIME_HOUR_SHORT');

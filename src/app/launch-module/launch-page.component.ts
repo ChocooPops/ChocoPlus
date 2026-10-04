@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, Router, ActivatedRoute } from '@angular/router';
-import { catchError, forkJoin, of, Subscription, take } from 'rxjs';
+import { catchError, defaultIfEmpty, forkJoin, map, of, Subscription, switchMap, take, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '../main-appli-module/user-module/service/user/user.service';
 import { ImagePreloaderService } from '../common-module/services/image-preloader/image-preloader.service';
@@ -42,7 +42,7 @@ export class LaunchPageComponent {
   async ngOnInit(): Promise<void> {
     this.subscription.add(
       this.verifUserAlreadyConnectedService.getIfUserIsAlreadyConnected().subscribe((data: boolean) => {
-      this.userAlreadyConnected = data;
+        this.userAlreadyConnected = data;
       })
     )
 
@@ -61,13 +61,27 @@ export class LaunchPageComponent {
     if (this.abortController.signal.aborted) return;
 
     this.subscription.add(
-      forkJoin({
-        user: this.userService.fetchCurrentUser().pipe(take(1)),
-        version: this.versionService.fetchLastVersion().pipe(
-          take(1),
-          catchError(() => of(null))
-        )
-      }).subscribe({
+      this.userService.fetchCurrentUser().pipe(
+        take(1),
+        switchMap((user: UserModel | null | undefined) => {
+          if (!user) {
+            return throwError(() => new HttpErrorResponse({ status: 401 }));
+          }
+          return forkJoin({
+            version: this.versionService.fetchLastVersion().pipe(
+              take(1),
+              catchError(() => of(null))
+            ),
+            synch: this.authService.fetchSynchTokenWithRoleByUser().pipe(
+              take(1),
+              defaultIfEmpty(undefined),
+              catchError(() => of(undefined))
+            )
+          }).pipe(
+            map(({ version }) => ({ user, version }))
+          );
+        })
+      ).subscribe({
         next: (result: { user: UserModel, version: VersionModel | null }) => {
           if (result.version) {
             this.lastVersion = result.version;
@@ -79,6 +93,7 @@ export class LaunchPageComponent {
           const img: string[] = [result.user.profilPhoto].filter((src): src is string => !!src);
 
           this.imagePreloaderService.preloadImages(img, this.abortController.signal)
+            .catch(() => { /* Photo not preloaded: continuing */ })
             .finally(() => {
               if (this.abortController.signal.aborted) return;
               if (this.isGoodVersion) {

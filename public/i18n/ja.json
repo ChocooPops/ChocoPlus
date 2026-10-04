@@ -142,6 +142,7 @@
         "DOWNLOAD_COMPLETE": "ダウンロード完了",
         "DELETION_COMPLETE": "削除が完了しました",
         "REMAINING": "残り",
+        "TIME_SECOND_SHORT": "秒",
         "TIME_MINUTE_SHORT": "分",
         "TIME_HOUR_SHORT": "時間"
     },
