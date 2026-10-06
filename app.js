@@ -205,6 +205,18 @@ async function abortActiveDownloads() {
   await Promise.allSettled(entries.map((entry) => entry.promise));
 }
 
+// Deletions are never aborted (we don't want to leave a download folder half-deleted) : we just track
+// them so before-quit/reload-app can wait for whatever is already running to actually finish first.
+const activeDeletions = new Set();
+
+function hasActiveDeletions() {
+  return activeDeletions.size > 0;
+}
+
+async function waitForActiveDeletions() {
+  await Promise.allSettled([...activeDeletions]);
+}
+
 async function downloadImage(imageUrl, targetDir) {
   if (!imageUrl) return null;
   return new Promise((resolve, reject) => {
@@ -766,7 +778,14 @@ ipcMain.handle('get-all-episodes', (event, data) => {
   }
 });
 
-ipcMain.handle('delete-download', async (event, data) => {
+ipcMain.handle('delete-download', (event, data) => {
+  const promise = performDeleteDownload(data);
+  activeDeletions.add(promise);
+  promise.finally(() => activeDeletions.delete(promise));
+  return promise;
+});
+
+async function performDeleteDownload(data) {
   const { mediaType, mediaId, seasonId, episodeId } = data || {};
   const needsSeason = mediaType === MediaType.SEASON || mediaType === MediaType.EPISODE;
   const needsEpisode = mediaType === MediaType.EPISODE;
@@ -822,7 +841,7 @@ ipcMain.handle('delete-download', async (event, data) => {
   }
 
   return { entries: deletedEntries, media };
-});
+}
 
 //=========================================================================================//
 //=========================================================================================//
@@ -1087,6 +1106,12 @@ ipcMain.handle('delete-cache', async () => {
 
 ipcMain.handle('reload-app', async () => {
   await stopCSharpProcess(true);
+  if (hasActiveDownloads()) {
+    await abortActiveDownloads();
+  }
+  if (hasActiveDeletions()) {
+    await waitForActiveDeletions();
+  }
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, '/dist/choco-plus/browser/index.html'),
@@ -1116,7 +1141,7 @@ ipcMain.handle('window-close', () => {
 let isQuitting = false;
 app.on('before-quit', async (event) => {
   if (isQuitting) return;
-  const needsCleanup = (csharpProcess && !csharpProcess.killed) || hasActiveDownloads();
+  const needsCleanup = (csharpProcess && !csharpProcess.killed) || hasActiveDownloads() || hasActiveDeletions();
 
   if (!needsCleanup) return;
 
@@ -1129,6 +1154,9 @@ app.on('before-quit', async (event) => {
     }
     if (hasActiveDownloads()) {
       await abortActiveDownloads();
+    }
+    if (hasActiveDeletions()) {
+      await waitForActiveDeletions();
     }
   } finally {
     app.quit();
