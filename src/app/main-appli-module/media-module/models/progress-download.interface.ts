@@ -17,7 +17,8 @@ export enum DownloadStatus {
     WAITING = 'WAITING',
     IN_PROGRESS = 'IN_PROGRESS',
     DOWNLOADED = 'DOWNLOADED',
-    DELETION = 'DELETION'
+    DELETION = 'DELETION',
+    UNAVAILABLE = 'UNAVAILABLE'
 }
 
 export enum ProgressTypeOperation {

@@ -9,11 +9,12 @@ import { TitleCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NewsAlertComponent } from '../news-alert/news-alert.component';
 import { MediaLogoDisplayService } from '../../../../common-module/services/media-logo-display/media-logo-display.service';
+import { DeleteDownloadButtonComponent } from '../../button/delete-download-button/delete-download-button.component';
 
 @Component({
   selector: 'app-horizontal-poster',
   standalone: true,
-  imports: [NgClass, NewsAlertComponent, TranslatePipe, StartButtonComponent, ModifyButtonComponent, MylistButtonComponent, TitleCasePipe],
+  imports: [NgClass, DeleteDownloadButtonComponent, NewsAlertComponent, TranslatePipe, StartButtonComponent, ModifyButtonComponent, MylistButtonComponent, TitleCasePipe],
   templateUrl: './horizontal-poster.component.html',
   styleUrls: ['./horizontal-poster.component.css', '../../../../common-module/styles/animation.css', '../../../../common-module/styles/movie-button.css']
 })

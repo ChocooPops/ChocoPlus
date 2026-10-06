@@ -165,6 +165,10 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
       });
   }
 
+  private isGoodSeries(series: number): boolean {
+    return this.series.id === series;
+  }
+
   private isGoodSeason(seasonId: number): boolean {
     const seasonIdTmp: SeasonModel | undefined = this.series.seasons.find((item: SeasonModel) => item.isClicked);
     if (seasonIdTmp) {
@@ -174,18 +178,24 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
     }
   }
 
-  public addEpisodeBySeasonId(seasonId: number, episode: EpisodeModel) {
-    if (this.isGoodSeason(seasonId)) {
+  public addEpisodeBySeasonId(seriesId: number, seasonId: number, episode: EpisodeModel): void {
+    if (this.isGoodSeries(seriesId) && this.isGoodSeason(seasonId)) {
       if (this.episodes?.find((item) => item.id === episode.id)) return;
       const updatedEpisodes: EpisodeModel[] = this.episodes ? [...this.episodes, episode] : [episode];
       this.episodes = updatedEpisodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
     }
   }
 
-  public deleteEpisodeBySeasonId(seasonId: number, episodeId: number) {
-    if (this.isGoodSeason(seasonId)) {
+  public deleteEpisodeBySeasonId(seriesId: number, seasonId: number, episodeId: number): void {
+    if (this.isGoodSeries(seriesId) && this.isGoodSeason(seasonId)) {
       const updatedEpisodes: EpisodeModel[] = this.episodes ? [...this.episodes.filter((item) => item.id !== episodeId)] : [];
       this.episodes = updatedEpisodes.sort((a, b) => a.episodeNumber - b.episodeNumber);
+    }
+  }
+
+  public setEpisodeBySeriesId(seriesId: number, episodes: EpisodeModel[]): void {
+    if (this.isGoodSeries(seriesId)) {
+      this.episodes = episodes;
     }
   }
 

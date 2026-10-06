@@ -17,11 +17,12 @@ import { SeasonModel } from '../../models/series/season.interface';
 @Directive()
 export class PosterAbstraction {
 
+    @ViewChild('poster') poster !: ElementRef<HTMLDivElement>;
+
     @Input() media !: MediaModel;
     @Input() typeZoomX: boolean | undefined = undefined;
     @Input() typeZoomY: boolean = false;
     @Input() isOnLine: boolean = true;
-    @ViewChild('poster') poster !: ElementRef<HTMLDivElement>;
     @Input() displayOnEditionPage: boolean = false;
 
     protected MediaType = MediaTypeModel;

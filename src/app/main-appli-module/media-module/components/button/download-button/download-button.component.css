@@ -1,7 +1,6 @@
 :host {
     position: relative;
     display: inline-flex;
-    cursor: pointer;
 }
 
 .btn-ring {
@@ -100,6 +99,7 @@
     border-color: #919191;
     border-style: solid;
     background-color: transparent;
+    cursor: pointer;
 
     img {
         filter: brightness(0) saturate(100%)
@@ -124,6 +124,7 @@
     border-color: #FFD301;
     border-style: dashed;
     background-color: transparent;
+    cursor: default;
 
     img {
         filter: brightness(0) invert(1);
@@ -134,6 +135,7 @@
     border-color: #FFD301;
     border-style: solid;
     background-color: transparent;
+    cursor: default;
 
     img {
         filter: brightness(0) invert(1);
@@ -144,6 +146,7 @@
     border-color: #FFD301;
     background-color: #FFD301;
     border-style: solid;
+    cursor: pointer;
 
     img {
         filter: brightness(0)
@@ -154,6 +157,24 @@
     border-color: #919191;
     border-style: solid;
     background-color: transparent;
+    cursor: pointer;
+
+    img {
+        filter: brightness(0) saturate(100%)
+          invert(60%)
+          sepia(0%)
+          saturate(0%)
+          hue-rotate(0deg)
+          brightness(95%)
+          contrast(90%);
+    }
+}
+
+.UNAVAILABLE {
+    border-color: #919191;
+    border-style: solid;
+    background-color: transparent;
+    cursor: not-allowed;
 
     img {
         filter: brightness(0) saturate(100%)

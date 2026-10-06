@@ -1,0 +1,17 @@
+<div class="icon-stack">
+    <button class="container-button-delete" [ngClass]="episodeInProgress ? 'UNAVAILABLE' : state" (click)="onClick()">
+        @if (episodeInProgress) {
+            <img [src]="srcUnavailable">
+        }@else {
+            <img [src]="srcDeletion">
+        }
+    </button>
+
+    @if (state === 'DELETION') {
+    <div class="deletion-spinner"></div>
+    }
+</div>
+
+<div class="btn-tooltip">
+    <p>{{ titleKey() }}</p>
+</div>

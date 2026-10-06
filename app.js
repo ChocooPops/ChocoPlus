@@ -789,6 +789,7 @@ ipcMain.handle('delete-download', async (event, data) => {
     const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
     media = metadata ? metadata.media ?? null : null;
     deletedEntries.push(...collectSeriesEntries(mediaDir));
+    deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media.title, episode: null });
     removeDownloadDir(mediaDir);
   } else if (needsSeason) {
     if (mediaType === MediaType.EPISODE) {
@@ -813,6 +814,7 @@ ipcMain.handle('delete-download', async (event, data) => {
     if (listNumericDirs(mediaDir).length === 0) {
       const seriesMetadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
       media = seriesMetadata ? seriesMetadata.media ?? null : null;
+      deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media.title, episode: null });
       removeDownloadDir(mediaDir);
     }
   } else {

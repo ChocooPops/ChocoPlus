@@ -1,0 +1,127 @@
+:host {
+    position: absolute;
+    top: clamp(6px, calc(var(--poster-width, 10vw) * 0.06), 14px);
+    right: clamp(6px, calc(var(--poster-width, 10vw) * 0.06), 14px);
+    z-index: 30;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+:host.poster-zoomed {
+    opacity: 0;
+    pointer-events: none;
+}
+
+:host:hover .btn-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.icon-stack {
+    position: relative;
+    height: clamp(28px, calc(var(--poster-width, 10vw) * 0.22), 46px);
+    width: clamp(28px, calc(var(--poster-width, 10vw) * 0.22), 46px);
+}
+
+.btn-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: max-content;
+    max-width: 200px;
+    background-color: rgba(20, 20, 20, 0.95);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 6px 10px;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+
+    p {
+        margin: 0;
+        font-size: 11px;
+        font-weight: normal;
+        color: #ccc;
+        line-height: 1.4;
+        white-space: nowrap;
+    }
+}
+
+.container-button-delete {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-style: solid;
+    border-width: clamp(1.5px, calc(var(--poster-width, 10vw) * 0.012), 2.5px);
+    padding: 0;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7);
+    transition: 0.2s border-color, 0.2s background-color, 0.2s transform, 0.2s box-shadow;
+    
+    img {
+        height: 55%;
+        width: 55%;
+        transition: filter 0.2s;
+    }
+}
+
+.NOT_DELETED {
+    background-color: #FFD301;
+    border-color: #FFD301;
+    cursor: pointer;
+
+    img {
+        filter: brightness(0);
+    }
+}
+
+.NOT_DELETED:hover {
+    transform: scale(1.1);
+    box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.75);
+}
+
+.DELETION {
+    background-color: rgba(20, 20, 20, 0.7);
+    border-color: #919191;
+    cursor: default;
+
+    img {
+        filter: brightness(0) saturate(100%)
+          invert(60%)
+          sepia(0%)
+          saturate(0%)
+          hue-rotate(0deg)
+          brightness(95%)
+          contrast(90%);
+    }
+}
+
+.UNAVAILABLE {
+    background-color: rgba(20, 20, 20, 0.7);
+    border-color: #919191;
+    cursor: not-allowed;
+}
+
+.deletion-spinner {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: clamp(1.5px, calc(var(--poster-width, 10vw) * 0.012), 2.5px);
+    border-color: transparent;
+    border-top-color: #FFD301;
+    animation: deletion-spin 1s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes deletion-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
