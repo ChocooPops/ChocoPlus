@@ -132,6 +132,8 @@
         "DOWNLOADING": "ダウンロード中",
         "DELETE_DOWNLOAD": "ダウンロードを削除",
         "DELETION": "削除中",
+        "CANCELED": "ダウンロードを中止しました",
+        "CANCELED_IN_PROGRESS": "進行中のダウンロードの中止",
         "UNAVAILABLE_OFFLINE": "オフラインモードでは利用できません",
         "UNAVAILABLE_IN_PROGRESS": "現在、作戦が進行中です",
         "STORAGE_TITLE": "ストレージの内訳",

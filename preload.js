@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld('electron', {
   onChocoPlayerStatus: (callback) => ipcRenderer.on('choco-player-status', (_event, data) => callback(data)),
 
   downloadMedia: (payload) => ipcRenderer.invoke('download-media', payload),
+  cancelDownload: (data) => ipcRenderer.invoke('cancel-download', data),
   listDownloads: () => ipcRenderer.invoke('list-downloads'),
   mediaDownloadedIsEmpty: () => ipcRenderer.invoke('download-is-empty'),
   isMediaDownloaded: (movieId) => ipcRenderer.invoke('is-media-downloaded', movieId), 

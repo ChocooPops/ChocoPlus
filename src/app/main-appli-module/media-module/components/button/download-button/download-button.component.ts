@@ -35,6 +35,7 @@ export class DownloadButtonComponent {
 
   public readonly srcDownload: string = 'icon/dl.svg';
   public readonly srcDeleteDl: string = 'icon/delete_dl.svg';
+  public readonly srcCancelDl: string = 'icon/cancel.svg';
   public readonly srcUnavailable: string = 'icon/unavailable.svg';
 
   DownloadStatus = DownloadStatus;
@@ -119,6 +120,8 @@ export class DownloadButtonComponent {
               } else {
                 this.downloadStatus = DownloadStatus.DOWNLOADED;
               }
+            } else if (data.type === ProgressTypeOperation.CANCELED) {
+              this.downloadStatus = DownloadStatus.CANCELED;
             } else {
               this.downloadStatus = DownloadStatus.DELETION;
             }
@@ -162,16 +165,17 @@ export class DownloadButtonComponent {
   }
 
   onClick(): void {
-    
+
     if (this.operationInProgress) {
       return;
     }
 
-    if (this.operationWorking
-      || this.downloadStatus === DownloadStatus.WAITING
-      || this.downloadStatus === DownloadStatus.IN_PROGRESS 
-      || this.downloadStatus === DownloadStatus.DELETION
-    ) return;
+    if (this.downloadStatus === DownloadStatus.WAITING || this.downloadStatus === DownloadStatus.IN_PROGRESS) {
+      this.cancelDownload();
+      return;
+    }
+
+    if (this.operationWorking || this.downloadStatus === DownloadStatus.DELETION) return;
 
     const shouldDelete: boolean = this.alreadyDownloaded || this.downloadStatus !== DownloadStatus.NOT_DOWNLOADED;
     if (!shouldDelete && !this.user) return;
@@ -184,6 +188,20 @@ export class DownloadButtonComponent {
     } else {
       this.download();
     }
+  }
+
+  private cancelDownload(): void {
+    this.operationWorking = true;
+    this.operationSubscription?.unsubscribe();
+    this.operationSubscription = 
+      this.downloadService.cancelDownload(this.key)
+        .pipe(take(1), finalize(() => this.operationWorking = false), takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.alreadyDownloaded = false;
+            this.observeProgressTracking();
+          }
+        });
   }
 
   private delete(): void {
@@ -275,6 +293,8 @@ export class DownloadButtonComponent {
         return this.translateService.instant('DOWNLOAD.WAITING');
       case DownloadStatus.DELETION:
         return this.translateService.instant('DOWNLOAD.DELETION');
+      case DownloadStatus.CANCELED:
+        return this.translateService.instant('DOWNLOAD.CANCELED_IN_PROGRESS');
       case DownloadStatus.IN_PROGRESS:
         return `${this.translateService.instant('DOWNLOAD.DOWNLOADING')}: ${this.progress}%`;
     }

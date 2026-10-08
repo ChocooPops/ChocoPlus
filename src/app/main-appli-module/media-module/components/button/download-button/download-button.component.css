@@ -157,7 +157,7 @@
     border-color: #919191;
     border-style: solid;
     background-color: transparent;
-    cursor: pointer;
+    cursor: default;
 
     img {
         filter: brightness(0) saturate(100%)
@@ -175,6 +175,23 @@
     border-style: solid;
     background-color: transparent;
     cursor: not-allowed;
+
+    img {
+        filter: brightness(0) saturate(100%)
+          invert(60%)
+          sepia(0%)
+          saturate(0%)
+          hue-rotate(0deg)
+          brightness(95%)
+          contrast(90%);
+    }
+}
+
+.CANCELED {
+    border-color: #919191;
+    border-style: solid;
+    background-color: transparent;
+    cursor: default;
 
     img {
         filter: brightness(0) saturate(100%)

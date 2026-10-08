@@ -53,6 +53,23 @@
                                 </p>
                             </div>
                         }
+                    }@else if (historic.type === ProgressTypeOperation.CANCELED) {
+                        <div class="first-line">
+                            <img [src]="srcDlCancel">
+                            <p> {{ historic.fileName || historic.key }} </p>
+                        </div>
+                        @if (historic.percent < 100) {
+                            <div class="second-line">
+                                <p> {{ 'DOWNLOAD.CANCELED_IN_PROGRESS' | translate }} </p>
+                            </div>
+                             <div class="third-line">
+                                <div class="progress-cancel"></div>
+                            </div>
+                        }@else {
+                            <div class="second-line">
+                                <p> {{ 'DOWNLOAD.CANCELED' | translate }} </p>
+                            </div>
+                        }
                     }@else {
                         <div class="first-line">
                             <img [src]="srcDlDelete">

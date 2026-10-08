@@ -132,6 +132,8 @@
         "DOWNLOADING": "Téléchargement en cours",
         "DELETE_DOWNLOAD": "Supprimer le téléchargement",
         "DELETION": "Suppression en cours",
+        "CANCELED": "Téléchargement annulé",
+        "CANCELED_IN_PROGRESS": "Annulation du téléchargement en cours",
         "UNAVAILABLE_OFFLINE": "Indisponible en mode hors ligne",
         "UNAVAILABLE_IN_PROGRESS": "Une opération est en cours",
         "STORAGE_TITLE": "Répartition du stockage",

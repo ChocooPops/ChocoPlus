@@ -27,12 +27,13 @@
     </svg>
     } @else {
     <img class="btn-download-icon" [style.height.px]="heightIcon" [style.width.px]="heightIcon"
-        [src]="alreadyDownloaded || downloadStatus === DownloadStatus.DOWNLOADED || downloadStatus === DownloadStatus.DELETION 
+        [src]="downloadStatus === DownloadStatus.CANCELED ? srcCancelDl : 
+        alreadyDownloaded || downloadStatus === DownloadStatus.DOWNLOADED || downloadStatus === DownloadStatus.DELETION
         ? srcDeleteDl : srcDownload">
     }
 </div>
 
-@if(downloadStatus === DownloadStatus.DELETION) {
+@if(downloadStatus === DownloadStatus.DELETION || downloadStatus === DownloadStatus.CANCELED) {
 <div class="deletion-spinner" [style.height.px]="heightCircle" [style.width.px]="heightCircle"
     [style.border-width.px]="widthBorder"></div>
 }

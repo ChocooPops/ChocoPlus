@@ -18,10 +18,12 @@ export enum DownloadStatus {
     IN_PROGRESS = 'IN_PROGRESS',
     DOWNLOADED = 'DOWNLOADED',
     DELETION = 'DELETION',
+    CANCELED = 'CANCELED',
     UNAVAILABLE = 'UNAVAILABLE'
 }
 
 export enum ProgressTypeOperation {
     DOWNLOAD = 'DOWNLOAD',
-    DELETION = 'DELETION'
+    DELETION = 'DELETION',
+    CANCELED = 'CANCELED'
 }

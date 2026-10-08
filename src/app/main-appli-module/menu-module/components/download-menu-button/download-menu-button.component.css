@@ -194,6 +194,15 @@ p {
     animation: slide-deletion 1.2s ease-in-out infinite;
 }
 
+.progress-cancel {
+    background-color: #FF8000;
+    position: absolute;
+    height: 100%;
+    width: 20%;
+    animation: slide-deletion 1.2s ease-in-out infinite;
+}
+
+
 @keyframes slide-deletion {
     from { transform: translateX(-100%); }
     to   { transform: translateX(500%); }

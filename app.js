@@ -2,8 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog, session, shell } = require('electro
 const path = require('path');
 const url = require('url');
 const keytar = require('keytar');
-const { exec } = require('child_process');
-const { spawn } = require("child_process");
+const { exec, spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -27,8 +26,7 @@ const MediaType = Object.freeze({
 });
 
 const ProgressTypeOperation = Object.freeze({
-  DOWNLOAD: "DOWNLOAD",
-  DELETION: "DELETION"
+  DOWNLOAD: "DOWNLOAD"
 });
 
 let mediaLaunched = {
@@ -135,7 +133,6 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true, // Isolation du contexte pour la sécurité
-      enableRemoteModule: false,
       additionalArguments: [
         `--api-url=${process.env.API_URL || 'http://localhost:3000'}`,
         `--header-secret=${process.env.HEADER_SECRET_API}`,
@@ -205,6 +202,51 @@ async function abortActiveDownloads() {
   await Promise.allSettled(entries.map((entry) => entry.promise));
 }
 
+// True if a download other than exceptKey is in progress for this media (another episode of the same series).
+function isMediaDownloading(mediaId, exceptKey) {
+  return [...activeDownloads].some((entry) => entry.key !== exceptKey && String(entry.data?.media?.id) === String(mediaId));
+}
+
+// Media title (movie) or episode name, taken from the metadata sent by the renderer with download-media.
+function getMediaName(data) {
+  const { media, episode, mediaType } = data || {};
+  if (mediaType === MediaType.EPISODE) return episode?.name || null;
+  return media?.title || null;
+}
+
+// Cancellations received before the matching download-media (the renderer was still fetching the metadata) :
+// key -> resolve of the pending cancel-download. download-media resolves it with the name from its metadata
+// and doesn't start the download. The timeout covers a download-media that never comes (metadata fetch failed).
+const pendingCancels = new Map();
+const PENDING_CANCEL_TIMEOUT_MS = 30000;
+
+function waitForPendingCancel(key) {
+  return new Promise((resolve) => {
+    const timeout = setTimeout(() => {
+      pendingCancels.delete(key);
+      resolve({ key, fileName: null });
+    }, PENDING_CANCEL_TIMEOUT_MS);
+    pendingCancels.set(key, (fileName) => {
+      clearTimeout(timeout);
+      pendingCancels.delete(key);
+      resolve({ key, fileName });
+    });
+  });
+}
+
+// Cancels the one download tracked under this key and waits for performDownload's own catch block to finish
+// cleaning up (removing the partial file / the folder it just created). Resolves with the key and the file
+// name : the real video file name if it was known, otherwise the media title / episode name.
+async function cancelDownloadByKey(key) {
+  const entry = [...activeDownloads].find((candidate) => candidate.key === key);
+  if (!entry) {
+    return waitForPendingCancel(key);
+  }
+  entry.controller.abort();
+  await entry.promise.catch(() => {});
+  return { key, fileName: entry.fileName || getMediaName(entry.data) };
+}
+
 // Deletions are never aborted (we don't want to leave a download folder half-deleted) : we just track
 // them so before-quit/reload-app can wait for whatever is already running to actually finish first.
 const activeDeletions = new Set();
@@ -259,9 +301,9 @@ async function downloadImage(imageUrl, targetDir) {
 }
 async function downloadImageArray(imageUrls, imagesDir) {
   if (!Array.isArray(imageUrls)) return [];
-  
+
   return Promise.all(
-    imageUrls.map(url => 
+    imageUrls.map(url =>
       downloadImage(url, imagesDir).catch(() => '')
     )
   );
@@ -306,6 +348,8 @@ function getVideoFileName(headers) {
 
 async function downloadVideo(mediaType, id, targetDir, key, signal) {
   const token = await getToken();
+  // The cancellation may have happened while waiting for the token.
+  signal.throwIfAborted();
   return new Promise((resolve, reject) => {
     let endpoint;
     if (mediaType === MediaType.MOVIE) {
@@ -325,6 +369,7 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
       headers[process.env.HEADER_NAME_FIELD_SECRET_API] = process.env.HEADER_SECRET_API;
     }
 
+    let failResponse = null;
     const request = protocol.get(videoUrl, { headers, signal }, (response) => {
       if (response.statusCode !== 200) {
         response.resume();
@@ -332,6 +377,9 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
       }
 
       const fileName = getVideoFileName(response.headers);
+      // Remembered on the entry so that cancel-download can return the real file name.
+      const entry = [...activeDownloads].find((candidate) => candidate.key === key);
+      if (entry) entry.fileName = fileName;
       const filePath = path.join(targetDir, fileName);
       const partialPath = `${filePath}.part`;
       const totalBytes = parseInt(response.headers['content-length'], 10);
@@ -341,12 +389,22 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
 
       const file = fs.createWriteStream(partialPath);
 
+      // Only rejects once the .part file is closed and deleted : on Windows, an open file blocks the
+      // removal of its folder, so performDownload's cleanup would fail if we rejected any earlier.
+      let failed = false;
       const fail = (error) => {
+        if (failed) return;
+        failed = true;
         response.destroy();
-        file.destroy();
-        fs.unlink(partialPath, () => {});
-        reject(error);
+        const removePartial = () => fs.unlink(partialPath, () => reject(error));
+        if (file.closed) {
+          removePartial();
+        } else {
+          file.once('close', removePartial);
+          file.destroy();
+        }
       };
+      failResponse = fail;
 
       response.on('data', (chunk) => {
         receivedBytes += chunk.length;
@@ -394,37 +452,26 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
       });
     });
 
-    request.on('error', reject);
+    // Once the response has started (file open), the abort must go through fail() to close the file first.
+    request.on('error', (error) => (failResponse ? failResponse(error) : reject(error)));
   });
 }
 
-async function performDownload(data, signal) {
-
+async function performDownload(data, key, signal) {
   const { media, info, seasonId, episode, mediaType } = data || {};
 
-  const mediaIdStr = String(media.id);
-  const downloadDirMedia = path.join(downloadsRootPath, mediaIdStr);
+  const downloadDirMedia = path.join(downloadsRootPath, String(media.id));
   const seriesAlreadyDownloaded = Boolean(hasMediaDownloaded(media.id));
+  let fileName = null;
 
   try {
-
     let results = null;
-    let key = '';
-    let fileName = null;
     let totalBytes = null;
-    if (mediaType === MediaType.MOVIE) {
-      key = `${MediaType.MOVIE}-${media.id}`;
-    } else if (mediaType === MediaType.EPISODE) {
-      key = `${MediaType.EPISODE}-${episode.id}`;
-    }
 
     if (media.title) {
-      const mediaIdStr = String(media.id);
-      const downloadDirMedia = path.join(downloadsRootPath, mediaIdStr);
       const imagesDirMedia = path.join(downloadDirMedia, 'images');
 
       delete media.typeZoomX;
-      delete media.typeZoomY;
       delete media.typeZoomY;
       delete media.categories;
       delete media.credits;
@@ -435,12 +482,12 @@ async function performDownload(data, signal) {
 
       if (info.casts && Array.isArray(info.casts)) {
         info.casts.forEach((cast) => {
-          cast.srcPoster = null;    
+          cast.srcPoster = null;
         });
       }
       if (info.crews && Array.isArray(info.crews)) {
         info.crews.forEach((crew) => {
-          crew.srcPoster = null;    
+          crew.srcPoster = null;
         });
       }
       if (media.seasons && Array.isArray(media.seasons)) {
@@ -461,16 +508,8 @@ async function performDownload(data, signal) {
 
       for (const field of imageSources.arrays) {
         if (media[field]) {
-          try {
-            media[field] = await downloadImageArray(media[field], imagesDirMedia);
-          } catch(error) {
-            media[field] = null;
-          }
-        }
-      }
-      for (const field of imageSources.arrays) {
-        if (media[field]) {
-          media[field] = media[field].filter(result => result);
+          media[field] = (await downloadImageArray(media[field], imagesDirMedia)).filter(result => result);
+          signal.throwIfAborted();
         }
       }
       for (const field of imageSources.singles) {
@@ -480,12 +519,14 @@ async function performDownload(data, signal) {
           } catch(error) {
             media[field] = null;
           }
+          signal.throwIfAborted();
         }
       }
       if (media.seasons && Array.isArray(media.seasons)) {
         for (const [index, season] of media.seasons.entries()) {
           media.seasons[index].srcPoster = await downloadImage(season.srcPoster, imagesDirMedia);
           delete media.seasons[index].episodes;
+          signal.throwIfAborted();
         }
       }
       if (mediaType === MediaType.MOVIE) {
@@ -500,10 +541,7 @@ async function performDownload(data, signal) {
     }
 
     if (mediaType === MediaType.EPISODE && seasonId && episode && !hasEpisodeDownloaded(media.id, seasonId, episode.id)) {
-      const seriesIdStr = String(seasonId);
-      const episodeIdStr = String(episode.id);
-
-      const downloadDirEpisode = path.join(downloadDirMedia, seriesIdStr, episodeIdStr);
+      const downloadDirEpisode = path.join(downloadDirMedia, String(seasonId), String(episode.id));
       const imagesDirEpisode = path.join(downloadDirEpisode, 'images');
 
       fs.mkdirSync(downloadDirEpisode, { recursive: true });
@@ -511,18 +549,14 @@ async function performDownload(data, signal) {
       fs.mkdirSync(imagesDirEpisode, { recursive: true });
 
       episode.srcPoster = await downloadImage(episode.srcPoster, imagesDirEpisode)
+      signal.throwIfAborted();
       const data = await downloadVideo(mediaType, episode.id, downloadDirEpisode, key, signal);
       fileName = path.basename(data.filePath);
       totalBytes = data.totalBytes;
-    
+
       fs.writeFileSync(path.join(downloadDirEpisode, FILE_METADATA), JSON.stringify({episode, videoPath: data.filePath}, null, 2));
-      
-      if (results && results.media) {
-        const mediaTmp = results.media;
-        results = { media: mediaTmp, episode }
-      } else {
-        results = { episode }
-      }
+
+      results = { ...results, episode };
     }
 
     if (mainWindow && !mainWindow.isDestroyed()) {
@@ -531,11 +565,30 @@ async function performDownload(data, signal) {
 
     return results
   } catch(error) {
-    if (mediaType === MediaType.EPISODE && seriesAlreadyDownloaded && seasonId && episode) {
-      fs.rmSync(path.join(downloadDirMedia, String(seasonId), String(episode.id)), { recursive: true, force: true });
-    } else {
-      fs.rmSync(downloadDirMedia, { recursive: true, force: true });
+    // A cleanup failure must not hide the original error.
+    try {
+      const rmOptions = { recursive: true, force: true, maxRetries: 5, retryDelay: 100 };
+      if (mediaType === MediaType.EPISODE && seasonId && episode) {
+        // Only this episode's folder : another episode of the same series may be downloading next to it.
+        const seasonDir = path.join(downloadDirMedia, String(seasonId));
+        fs.rmSync(path.join(seasonDir, String(episode.id)), rmOptions);
+
+        // The season / series folders go only once empty, and if no other download of this series still needs them.
+        if (!isMediaDownloading(media.id, key)) {
+          if (listNumericDirs(seasonDir).length === 0) {
+            fs.rmSync(seasonDir, rmOptions);
+          }
+          if (!seriesAlreadyDownloaded && listNumericDirs(downloadDirMedia).length === 0) {
+            fs.rmSync(downloadDirMedia, rmOptions);
+          }
+        }
+      } else {
+        fs.rmSync(downloadDirMedia, rmOptions);
+      }
+    } catch(cleanupError) {
+      console.error('Failed to clean up canceled/failed download :', cleanupError);
     }
+
     throw error;
   }
 }
@@ -674,11 +727,39 @@ function collectSeriesEntries(seriesDir, onlySeasonId) {
 
 ipcMain.handle('download-media', (event, data) => {
   const controller = new AbortController();
-  const entry = { controller, promise: null };
-  entry.promise = performDownload(data, controller.signal);
+  const key = data?.mediaType === MediaType.MOVIE
+    ? `${MediaType.MOVIE}-${data.media.id}`
+    : data?.mediaType === MediaType.EPISODE
+      ? `${MediaType.EPISODE}-${data.episode.id}`
+      : null;
+  // Canceled while the renderer was still preparing it : nothing to download, just hand the name back.
+  const resolvePendingCancel = pendingCancels.get(key);
+  if (resolvePendingCancel) {
+    resolvePendingCancel(getMediaName(data));
+    return { canceled: true };
+  }
+  const entry = { key, controller, promise: null, data, fileName: null };
+  entry.promise = performDownload(data, key, controller.signal);
   activeDownloads.add(entry);
-  entry.promise.finally(() => activeDownloads.delete(entry));
-  return entry.promise;
+  // .finally() returns a new promise that rejects too : without a catch it becomes an unhandled rejection.
+  entry.promise.finally(() => activeDownloads.delete(entry)).catch(() => {});
+  // A cancellation is not an error : the renderer gets its result through the cancel-download handler,
+  // so we resolve instead of rejecting (otherwise Electron logs "Error occurred in handler").
+  return entry.promise.catch((error) => {
+    if (controller.signal.aborted) {
+      return { canceled: true };
+    }
+    throw error;
+  });
+});
+
+// Cancels, by key, the one download the user clicked while it was WAITING/IN_PROGRESS. performDownload's
+// own catch block (same one used for the app-quit/reload abort path) takes care of removing whatever was
+// already written to disk, so there's nothing extra to clean up here.
+ipcMain.handle('cancel-download', async (event, data) => {
+  const { key } = data || {};
+  if (!key) return { key: null, fileName: null };
+  return cancelDownloadByKey(key);
 });
 
 ipcMain.handle('get-storage-info', () => {
@@ -744,38 +825,30 @@ ipcMain.handle('is-episode-downloaded', (event, data) => {
 });
 
 ipcMain.handle('get-media-info', (event, mediaId) => {
-  try {
-    const metadataPath = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
-    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-    return metadata.info;
-  } catch(error) {
-    throw error;
-  }
+  const metadataPath = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
+  const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+  return metadata.info;
 });
 
 ipcMain.handle('get-all-episodes', (event, data) => {
-  try {
-    const downloads = [];
-    const { seriesId, seasonId } = data;
-    const seasonPath = path.join(downloadsRootPath, String(seriesId), String(seasonId));
-    if (fs.existsSync(seasonPath)) {
-        const entries = fs.readdirSync(seasonPath, { withFileTypes: true });
-        for (const entry of entries) {
-          if (!entry.isDirectory()) continue;
-          const metadataPath = path.join(seasonPath, entry.name, FILE_METADATA);
-          if (!fs.existsSync(metadataPath)) continue;
-          try {
-            const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-            downloads.push( metadata.episode );
-          } catch (error) {
-            // Corrupt metadata: This entry is ignored
-          }
-        }
+  const downloads = [];
+  const { seriesId, seasonId } = data;
+  const seasonPath = path.join(downloadsRootPath, String(seriesId), String(seasonId));
+  if (fs.existsSync(seasonPath)) {
+    const entries = fs.readdirSync(seasonPath, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const metadataPath = path.join(seasonPath, entry.name, FILE_METADATA);
+      if (!fs.existsSync(metadataPath)) continue;
+      try {
+        const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+        downloads.push(metadata.episode);
+      } catch (error) {
+        // Corrupt metadata: This entry is ignored
+      }
     }
-    return downloads.sort((a, b) => a.episodeNumber - b.episodeNumber);
-  } catch(error) {
-    throw error;
   }
+  return downloads.sort((a, b) => a.episodeNumber - b.episodeNumber);
 });
 
 ipcMain.handle('delete-download', (event, data) => {
@@ -808,7 +881,7 @@ async function performDeleteDownload(data) {
     const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
     media = metadata ? metadata.media ?? null : null;
     deletedEntries.push(...collectSeriesEntries(mediaDir));
-    deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media.title, episode: null });
+    deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media?.title ?? null, episode: null });
     removeDownloadDir(mediaDir);
   } else if (needsSeason) {
     if (mediaType === MediaType.EPISODE) {
@@ -833,7 +906,7 @@ async function performDeleteDownload(data) {
     if (listNumericDirs(mediaDir).length === 0) {
       const seriesMetadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
       media = seriesMetadata ? seriesMetadata.media ?? null : null;
-      deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media.title, episode: null });
+      deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media?.title ?? null, episode: null });
       removeDownloadDir(mediaDir);
     }
   } else {
@@ -893,7 +966,7 @@ function stopCSharpProcess(force = false) {
 
 ipcMain.handle('launch-choco-player', async (event, dataObject) => {
   try {
-        
+
     mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.LAUNCHING });
 
     if (currentChocoPlayer?.MediaId === dataObject.MediaId && currentChocoPlayer?.EpisodeId === dataObject.EpisodeId) {
@@ -927,7 +1000,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     dataObject.PositionY = bounds.y;
     dataObject.IsMaximized = mainWindow.isMaximized();
     dataObject.IsFullScreen = mainWindow.isFullScreen();
-    dataObject.Token = await keytar.getPassword(SERVICE, ACCOUNT);
+    dataObject.Token = await getToken();
     dataObject.HEADER_NAME = process.env.HEADER_NAME_FIELD_SECRET_API;
     dataObject.HEADER_SECRET = process.env.HEADER_SECRET_API;
     dataObject.WatchProgress = dataObject.WatchProgress ?? 0;
@@ -953,12 +1026,6 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
       }
     );
 
-    // csharpProcess.on('spawn', () => {
-    //   if (mainWindow && !mainWindow.isDestroyed()) {
-    //     mainWindow.webContents.send('choco-player-status', { ...dataObject, status: ProcessStatus.LAUNCHING });
-    //   }
-    // });
-  
     csharpProcess.stdout.on('data', async (data) => {
       const stdoutBuffer = data.toString();
 
@@ -984,16 +1051,12 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
             continue;
           } else if (message.includes(MediaType.EPISODE)) {
             mainWindow.webContents.send('choco-player-status', { EpisodeId: id });
-
             continue;
           }
         }
       }
 
     });
-
-    // csharpProcess.stderr.on('data', (data) => {
-    // });
 
     csharpProcess.on('close', (code) => {
       if (mainWindow && !mainWindow.isDestroyed()) {
@@ -1052,7 +1115,6 @@ ipcMain.handle('open-file-dialog', async () => {
   return result.filePaths;
 });
 
-
 ipcMain.handle('open-vlc-with-video', async (event, videoPath) => {
   return new Promise((resolve, reject) => {
     const vlcPath = `"C:\\Program Files\\VideoLAN\\VLC\\vlc.exe"`;
@@ -1085,24 +1147,22 @@ ipcMain.handle('toggle-fullscreen', async () => {
 });
 
 ipcMain.handle('disable-fullscreen', async () => {
-  if (mainWindow.isFullScreen) {
+  if (mainWindow.isFullScreen()) {
     mainWindow.setFullScreen(false);
   }
 });
 
-
 ipcMain.handle('delete-cache', async () => {
   const ses = session.defaultSession;
 
-  ses.clearCache().then(() => {
-  });
-
-  ses.clearStorageData({
-    storages: ['cookies', 'sessionstorage', 'indexdb', 'websql', 'serviceworkers'],
-    quotas: ['temporary', 'persistent', 'syncable']
-  }).then(() => {
-  });
-})
+  await Promise.all([
+    ses.clearCache(),
+    ses.clearStorageData({
+      storages: ['cookies', 'sessionstorage', 'indexdb', 'websql', 'serviceworkers'],
+      quotas: ['temporary', 'persistent', 'syncable']
+    })
+  ]);
+});
 
 ipcMain.handle('reload-app', async () => {
   await stopCSharpProcess(true);

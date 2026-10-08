@@ -305,6 +305,8 @@ export class DownloadService {
     this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.DOWNLOAD));
     this.addProgressEpisode(seriesId, episodeId);
 
+    let justRefreshedSeriesMetadata: boolean = false;
+
     return this.isMediaDownloaded(seriesId).pipe(
       take(1),
       switchMap((seriesMetadataOnDisk: boolean) => {
@@ -350,6 +352,7 @@ export class DownloadService {
             if (!data.media || !data.info || !data.episode) {
               return throwError(() => new Error('Hollow data'));
             }
+            justRefreshedSeriesMetadata = true;
             this.seriesMetadataRefreshedThisSession.add(seriesId);
             return from(window.electron.downloadMedia({
               media: this.compressedAllPosterFromMedia(data.media),
@@ -375,10 +378,23 @@ export class DownloadService {
       }),
       catchError((error) => {
         this.setOrCreateProgressDonwload(key, undefined);
+        if (justRefreshedSeriesMetadata) {
+          this.seriesMetadataRefreshedThisSession.delete(seriesId);
+        }
         return throwError(() => error);
       }),
       finalize(() => {
         this.removeProgressEpisode(seriesId, episodeId);
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
+  }
+
+  public cancelDownload(key: string): Observable<void> {
+    this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.CANCELED));
+    return from(window.electron.cancelDownload({ key }) as Promise<{ key: string, fileName: string | null }>).pipe(
+      map((data: { key: string, fileName: string | null }) => {
+        this.replaceProgressKey(key, { fileName: data.fileName ?? '', percent: 100 });
       }),
       shareReplay({ bufferSize: 1, refCount: false })
     );

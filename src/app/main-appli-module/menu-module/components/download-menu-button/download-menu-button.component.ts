@@ -31,6 +31,7 @@ export class DownloadMenuButtonComponent {
   public srcDlMovie: string = 'icon/dl_movie.svg';
   public srcDlSeries: string = 'icon/dl_series.svg';
   public srcDlDelete: string = 'icon/dl_delete.svg';
+  public srcDlCancel: string = 'icon/dl_cancel.svg';
 
   public historicInProgress: HistoricProgressView[] = [];
 
