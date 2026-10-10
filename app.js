@@ -14,6 +14,13 @@ const ProcessStatus = Object.freeze({
   CLOSED: "CLOSED"
 });
 
+const ProgressStreamMedia = Object.freeze({
+  NOT_WATCHED: "NOT_WATCHED",
+  IN_PROGRESS: "IN_PROGRESS",
+  FINISHED: "FINISHED"
+});
+const MINIMUM_RATE = 93;
+
 const UPDATE_PROGRESS = "UPDATE_PROGRESS";
 const NEW_EPISODE_ID = "NEW_EPISODE_ID";
 
@@ -44,7 +51,6 @@ const ACCOUNT = 'refresh-token';
 
 let mainWindow;
 let csharpProcess = null;
-let currentChocoPlayer = null;
 
 // Check that only one instance of the application is open
 const gotTheLock = app.requestSingleInstanceLock();
@@ -534,6 +540,8 @@ async function performDownload(data, key, signal) {
         totalBytes = data.totalBytes;
         fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info, videoPath: data.filePath }, null, 2));
       } else {
+        delete media.createdAt;
+        delete media.updatedAt;
         fs.writeFileSync(path.join(downloadDirMedia, FILE_METADATA), JSON.stringify({ media, info }, null, 2));
       }
       results = { media };
@@ -592,6 +600,68 @@ async function performDownload(data, key, signal) {
 
     throw error;
   }
+}
+
+async function performDeleteDownload(data) {
+  const { mediaType, mediaId, seasonId, episodeId } = data || {};
+  const needsSeason = mediaType === MediaType.SEASON || mediaType === MediaType.EPISODE;
+  const needsEpisode = mediaType === MediaType.EPISODE;
+
+  if (!isDownloadId(mediaId) || (needsSeason && !isDownloadId(seasonId)) || (needsEpisode && !isDownloadId(episodeId))) {
+    throw new Error('Invalid download to delete');
+  }
+
+  const mediaDir = path.join(downloadsRootPath, String(mediaId));
+  const deletedEntries = [];
+  let media = null;
+  // Only for an episode deletion : true if its season has no episode left (null otherwise).
+  let hasNoEpisode = null;
+
+  if (mediaType === MediaType.MOVIE) {
+    const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
+    const fileName = metadata && metadata.videoPath ? path.basename(metadata.videoPath) : null;
+    media = metadata ? metadata.media ?? null : null;
+    removeDownloadDir(mediaDir);
+    deletedEntries.push({ key: `${MediaType.MOVIE}-${mediaId}`, fileName });
+  } else if (mediaType === MediaType.SERIES) {
+    const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
+    media = metadata ? metadata.media ?? null : null;
+    deletedEntries.push(...collectSeriesEntries(mediaDir));
+    deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media?.title ?? null, episode: null });
+    removeDownloadDir(mediaDir);
+  } else if (needsSeason) {
+    if (mediaType === MediaType.EPISODE) {
+      const episodeDir = path.join(mediaDir, String(seasonId), String(episodeId));
+      const metadata = readMetadataFile(path.join(episodeDir, FILE_METADATA));
+      const fileName = metadata && metadata.videoPath ? path.basename(metadata.videoPath) : null;
+      const episode = metadata ? metadata.episode ?? null : null;
+      removeDownloadDir(episodeDir);
+      deletedEntries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName, episode });
+      // Checked before the empty-season cleanup below removes the season folder.
+      hasNoEpisode = listNumericDirs(path.join(mediaDir, String(seasonId))).length === 0;
+    } else {
+      deletedEntries.push(...collectSeriesEntries(mediaDir, seasonId));
+      removeDownloadDir(path.join(mediaDir, String(seasonId)));
+    }
+
+    // A season without episodes no longer has a reason to exist, nor does a series without seasons.
+    for (const season of listNumericDirs(mediaDir)) {
+      if (listNumericDirs(path.join(mediaDir, season)).length === 0) {
+        removeDownloadDir(path.join(mediaDir, season));
+        deletedEntries.push({ key: `${MediaType.SEASON}-${season}`, fileName: null, episode: null });
+      }
+    }
+    if (listNumericDirs(mediaDir).length === 0) {
+      const seriesMetadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
+      media = seriesMetadata ? seriesMetadata.media ?? null : null;
+      deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media?.title ?? null, episode: null });
+      removeDownloadDir(mediaDir);
+    }
+  } else {
+    throw new Error(`Unsupported media type to delete: ${mediaType}`);
+  }
+
+  return { entries: deletedEntries, media, hasNoEpisode };
 }
 
 // Check if a media's own metadata exists (its video too, for a movie — the two are written together;
@@ -839,6 +909,46 @@ function getAllEpisodeBySeasonId(seriesId, seasonId) {
   }
 }
 
+function getStatProgressType(watchProgress) {
+  if (watchProgress === 0) {
+    return ProgressStreamMedia.NOT_WATCHED;
+  } else if (watchProgress < MINIMUM_RATE) {
+    return ProgressStreamMedia.IN_PROGRESS;
+  } else {
+    return ProgressStreamMedia.FINISHED;
+  }
+}
+
+function updateProgressMovieById(movieId, progress) {
+  try {
+    const movie = getMetadataByMediaId(movieId);
+    if (!movie) return;
+    movie.media.watchProgress = progress;
+    movie.media.stateProgress = getStatProgressType(progress);
+    movie.media.updatedAt = new Date();
+
+    const moviePath = path.join(downloadsRootPath, String(movieId), FILE_METADATA);
+    fs.writeFileSync(moviePath, JSON.stringify(movie, null, 2));
+  } catch(error) {
+    return;
+  }
+}
+
+function updateProgressEpisodeById(seriesId, seasonId, episodeId, progress) {
+  try {
+    const episode = getMetadataByEpisodeId(seriesId, seasonId, episodeId);
+    if (!episode) return;
+    episode.episode.watchProgress = progress;
+    episode.episode.stateProgress = getStatProgressType(progress);
+    episode.episode.updatedAt = new Date();
+
+    const episodePath = path.join(downloadsRootPath, String(seriesId), String(seasonId), String(episodeId), FILE_METADATA);
+    fs.writeFileSync(episodePath, JSON.stringify(episode, null, 2));
+  } catch(error) {
+    return;
+  }
+}
+
 //=========================================================================================//*
 //=========================================================================================//*
 //=================================== MAIN IPC DOWNLOAD ===================================//*
@@ -964,74 +1074,30 @@ ipcMain.handle('get-all-episodes', (event, data) => {
   return downloads.sort((a, b) => a.episodeNumber - b.episodeNumber);
 });
 
+ipcMain.handle('get-last-watched-episode', (event, seriesId) => {
+  const episodes = getAllEpisodesBySeriesId(seriesId);
+  if (!episodes || episodes.length === 0) return null;
+
+  const getEntryTime = (entry) => {
+    const { createdAt, updatedAt } = entry.episode;
+    const created = createdAt ? new Date(createdAt).getTime() : -Infinity;
+    const updated = updatedAt ? new Date(updatedAt).getTime() : -Infinity;
+    return Math.max(created, updated);
+  };
+
+  const latest = episodes.reduce((best, entry) =>
+    getEntryTime(entry) > getEntryTime(best) ? entry : best
+  );
+
+  return latest.episode;
+});
+
 ipcMain.handle('delete-download', (event, data) => {
   const promise = performDeleteDownload(data);
   activeDeletions.add(promise);
   promise.finally(() => activeDeletions.delete(promise));
   return promise;
 });
-
-async function performDeleteDownload(data) {
-  const { mediaType, mediaId, seasonId, episodeId } = data || {};
-  const needsSeason = mediaType === MediaType.SEASON || mediaType === MediaType.EPISODE;
-  const needsEpisode = mediaType === MediaType.EPISODE;
-
-  if (!isDownloadId(mediaId) || (needsSeason && !isDownloadId(seasonId)) || (needsEpisode && !isDownloadId(episodeId))) {
-    throw new Error('Invalid download to delete');
-  }
-
-  const mediaDir = path.join(downloadsRootPath, String(mediaId));
-  const deletedEntries = [];
-  let media = null;
-  // Only for an episode deletion : true if its season has no episode left (null otherwise).
-  let hasNoEpisode = null;
-
-  if (mediaType === MediaType.MOVIE) {
-    const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
-    const fileName = metadata && metadata.videoPath ? path.basename(metadata.videoPath) : null;
-    media = metadata ? metadata.media ?? null : null;
-    removeDownloadDir(mediaDir);
-    deletedEntries.push({ key: `${MediaType.MOVIE}-${mediaId}`, fileName });
-  } else if (mediaType === MediaType.SERIES) {
-    const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
-    media = metadata ? metadata.media ?? null : null;
-    deletedEntries.push(...collectSeriesEntries(mediaDir));
-    deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media?.title ?? null, episode: null });
-    removeDownloadDir(mediaDir);
-  } else if (needsSeason) {
-    if (mediaType === MediaType.EPISODE) {
-      const episodeDir = path.join(mediaDir, String(seasonId), String(episodeId));
-      const metadata = readMetadataFile(path.join(episodeDir, FILE_METADATA));
-      const fileName = metadata && metadata.videoPath ? path.basename(metadata.videoPath) : null;
-      const episode = metadata ? metadata.episode ?? null : null;
-      removeDownloadDir(episodeDir);
-      deletedEntries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName, episode });
-      // Checked before the empty-season cleanup below removes the season folder.
-      hasNoEpisode = listNumericDirs(path.join(mediaDir, String(seasonId))).length === 0;
-    } else {
-      deletedEntries.push(...collectSeriesEntries(mediaDir, seasonId));
-      removeDownloadDir(path.join(mediaDir, String(seasonId)));
-    }
-
-    // A season without episodes no longer has a reason to exist, nor does a series without seasons.
-    for (const season of listNumericDirs(mediaDir)) {
-      if (listNumericDirs(path.join(mediaDir, season)).length === 0) {
-        removeDownloadDir(path.join(mediaDir, season));
-        deletedEntries.push({ key: `${MediaType.SEASON}-${season}`, fileName: null, episode: null });
-      }
-    }
-    if (listNumericDirs(mediaDir).length === 0) {
-      const seriesMetadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
-      media = seriesMetadata ? seriesMetadata.media ?? null : null;
-      deletedEntries.push({ key: `${MediaType.SERIES}-${mediaId}`, fileName: media?.title ?? null, episode: null });
-      removeDownloadDir(mediaDir);
-    }
-  } else {
-    throw new Error(`Unsupported media type to delete: ${mediaType}`);
-  }
-
-  return { entries: deletedEntries, media, hasNoEpisode };
-}
 
 //=========================================================================================//
 //=========================================================================================//
@@ -1057,6 +1123,9 @@ ipcMain.handle('secureStore:deleteRefreshToken', async () =>
 //=========================================================================================//
 //=========================================================================================//
 function stopCSharpProcess(force = false) {
+  mediaLaunched.id = 0;
+  mediaLaunched.type = MediaType.OTHER;
+
   return new Promise((resolve) => {
     if (!csharpProcess || csharpProcess.killed) {
       csharpProcess = null;
@@ -1083,11 +1152,15 @@ function stopCSharpProcess(force = false) {
 
 ipcMain.handle('launch-choco-player', async (event, dataObject) => {
   try {
-
+    
     mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.LAUNCHING });
 
-    if (currentChocoPlayer?.MediaId === dataObject.MediaId && currentChocoPlayer?.EpisodeId === dataObject.EpisodeId) {
-      return null;
+    if (  
+      (mediaLaunched.type === MediaType.MOVIE && mediaLaunched.id === dataObject.MediaId) 
+      || 
+      (mediaLaunched.type === MediaType.SERIES && mediaLaunched.id === dataObject.EpisodeId)
+    ) {
+      return;
     }
 
     // Check if a process is already running
@@ -1121,9 +1194,10 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
 
       const episodes = getAllEpisodesBySeriesId(dataObject.MediaId);
       dataObject.EpisodesStorage = episodes;
+    } else {
+      return;
     }
 
-    currentChocoPlayer = dataObject;
     const bounds = mainWindow.getBounds();
     dataObject.BaseUrl = process.env.API_URL;
     dataObject.PositionX = bounds.x;
@@ -1175,12 +1249,18 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
           mainWindow.webContents.send('choco-player-status', { status: message });
           continue;
         } else if (message.startsWith(UPDATE_PROGRESS)) {
-          const id = Number(message.split(' : ')[2].trim());
+          const mediaId = Number(message.split(' : ')[2].trim());
           if (message.includes(MediaType.MOVIE)) {
-            mainWindow.webContents.send('choco-player-status', { MediaId: id });
+            const progress = Number(message.split(' : ')[3].trim());
+            updateProgressMovieById(mediaId, progress)
+            mainWindow.webContents.send('choco-player-status', { MediaId: mediaId, WatchProgress: progress, StateProgress: getStatProgressType(progress) });
             continue;
           } else if (message.includes(MediaType.EPISODE)) {
-            mainWindow.webContents.send('choco-player-status', { EpisodeId: id });
+            const seasonId = Number(message.split(' : ')[3].trim());
+            const episodeId = Number(message.split(' : ')[4].trim());
+            const progress = Number(message.split(' : ')[5].trim());
+            updateProgressEpisodeById(mediaId, seasonId, episodeId, progress);
+            mainWindow.webContents.send('choco-player-status', { EpisodeId: episodeId, WatchProgress: progress, StateProgress: getStatProgressType(progress) });
             continue;
           }
         }
@@ -1192,7 +1272,8 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
       }
-      currentChocoPlayer = null;
+      mediaLaunched.id = 0;
+      mediaLaunched.type = MediaType.OTHER;
       csharpProcess = null;
     });
 
@@ -1203,6 +1284,7 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     return 'C# Player launched';
   } catch (err) {
     mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
+    await stopCSharpProcess(true);
     throw new Error(err.message);
   }
 });

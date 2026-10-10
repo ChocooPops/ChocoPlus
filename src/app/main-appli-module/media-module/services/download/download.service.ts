@@ -470,6 +470,14 @@ export class DownloadService {
     );
   }
 
+  public readLastWatchedEpisode(seriesId: number): Observable<EpisodeModel> {
+    return from(window.electron.getLastWatchedEpisode(seriesId) as Promise<EpisodeModel>).pipe(
+      map((records: EpisodeModel) => {
+        return records;
+      })
+    );
+  }
+
   public deleteDownloadsForMedia(mediaId: number, mediaType: MediaTypeModel): Observable<void> {
     const key: string = this.formatKey(mediaId, mediaType);
     this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.DELETION))

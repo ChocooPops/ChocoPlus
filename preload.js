@@ -30,7 +30,7 @@ contextBridge.exposeInMainWorld('electron', {
   getStorageInfo: () => ipcRenderer.invoke('get-storage-info'),
   getMediaInfo: (mediaId) => ipcRenderer.invoke('get-media-info', mediaId),
   getAllEpisodes: (data) => ipcRenderer.invoke('get-all-episodes', data),
-
+  getLastWatchedEpisode: (seriesId) => ipcRenderer.invoke('get-last-watched-episode', seriesId),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
 
   apiUrl: apiUrl,

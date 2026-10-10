@@ -72,7 +72,9 @@ export class MovieService {
       typeZoomY: false,
       mediaType: MediaTypeModel.MOVIE,
       isRecent: movie.isRecent,
-      bytes: movie.bytes ?? null
+      bytes: movie.bytes ?? null,
+      createdAt: movie.createdAt,
+      updatedAt: movie.updatedAt
     }
     if (movie.path) {
       movieTmp.tmdbId = movie.tmdbId;

@@ -50,6 +50,8 @@ export class SeriesService {
       typeZoomY: false,
       mediaType: MediaTypeModel.SERIES,
       isRecent: series.isRecent ?? false,
+      createdAt: series.createdAt,
+      updatedAt: series.updatedAt,
       seasons: series.seasons && series.seasons.length > 0 ? this.createNewSeasons(series.seasons, series.lastSeasonWatched ?? 0) : []
     }
 

@@ -48,6 +48,7 @@ static class Program
             videoInfo?.IsMaximized ?? false,
             videoInfo?.IsFullScreen ?? false,
             videoInfo?.EpisodeId ?? -1,
+            videoInfo?.SeasonId ?? -1,
             videoInfo?.SeasonIndex ?? -1,
             videoInfo?.SeasonMenu ?? [],
             videoInfo?.WatchProgress ?? 0,

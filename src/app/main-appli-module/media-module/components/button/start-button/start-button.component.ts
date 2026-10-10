@@ -14,6 +14,7 @@ import { MediaProgressingModel } from '../../../../video-playing-module/models/m
 import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { VerifUserAlreadyConnectedService } from '../../../../../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
+import { DownloadService } from '../../../services/download/download.service';
 
 @Component({
   selector: 'app-start-button',
@@ -31,12 +32,14 @@ export class StartButtonComponent {
   @Input() episode !: EpisodeModel;
   @Input() seasons !: SeasonModel[] | undefined;
   @Input() launch: 'play' | 'start' = 'play';
+  @Input() isOnline: boolean = true;
 
   constructor(//private router: Router,
     private readonly streamService: StreamService,
     private readonly seriesService: SeriesService,
     private readonly historicWatchProgressService: HistoricWatchProgressService,
-    private readonly verifUserConnected: VerifUserAlreadyConnectedService
+    private readonly verifUserConnected: VerifUserAlreadyConnectedService,
+    private readonly downloadService: DownloadService
   ) { }
 
   srcPlayButton: string = "icon/play.svg";
@@ -74,9 +77,16 @@ export class StartButtonComponent {
       if (this.episode && this.episode.id > 0) {
         chocoPlayer = this.setChocoPlayerForSeries(this.episode, chocoPlayer);
       } else {
-        const episode: EpisodeModel = await firstValueFrom(
-          this.seriesService.fetchLastWatchedEpisode(this.media.id).pipe(take(1))
-        );
+        let episode!: EpisodeModel;
+        if (this.isOnline) {
+          episode = await firstValueFrom(
+            this.seriesService.fetchLastWatchedEpisode(this.media.id).pipe(take(1))
+          );
+        } else {
+          episode = await firstValueFrom(
+            this.downloadService.readLastWatchedEpisode(this.media.id).pipe(take(1))
+          );
+        }
         chocoPlayer = this.setChocoPlayerForSeries(episode, chocoPlayer);
       }
     }

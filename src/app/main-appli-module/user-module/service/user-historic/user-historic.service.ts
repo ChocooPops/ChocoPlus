@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, catchError, map } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { WatchTimeStats } from '../../dto/user-historic/watch-time-stats.interface';
 import { UserCategoryPreferences } from '../../dto/user-historic/user-category-preferences.interface';
@@ -11,14 +11,40 @@ import { ContentType } from '../../dto/user-historic/content.type';
 import { WatchingStatsResponse } from '../../dto/user-historic/watching-stats-response.interface';
 import { TopMediaResponse } from '../../dto/user-historic/top-media-response.interface';
 import { MediaTypeFilter } from '../../dto/user-historic/media-type-filter.type';
+import { MediaProgressingModel } from '../../../video-playing-module/models/media-progressing.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserHistoricService {
-  private readonly apiUrlStatUser: string = `${environment.apiUrlStatUser}`;
 
-  constructor(private http: HttpClient) {}
+  private readonly apiUrlStatUser: string = `${environment.apiUrlStatUser}`;
+  private readonly apiUrlSaveStatMovie: string = 'save-watching-progress-movie';
+  private readonly apiUrlSaveStatEpisode: string = 'save-watching-progress-episode';
+
+  constructor(private readonly http: HttpClient) {}
+
+  public saveWathcingProgressUserForMovie(movieId: number, watchProgress: number): Observable<MediaProgressingModel | null> {
+    return this.http.post<any>(`${this.apiUrlStatUser}/${this.apiUrlSaveStatMovie}/${movieId}`, { watchProgress }).pipe(
+      map((data: MediaProgressingModel) => {
+        return data;
+      }),
+      catchError((error: any) => {
+        return of(null);
+      })
+    )
+  }
+
+  public saveWathcingProgressUserForEpisode(episodeId: number, watchProgress: number): Observable<MediaProgressingModel | null> {
+    return this.http.post<any>(`${this.apiUrlStatUser}/${this.apiUrlSaveStatEpisode}/${episodeId}`, { watchProgress }).pipe(
+      map((data: MediaProgressingModel) => {
+        return data;
+      }),
+      catchError((error: any) => {
+        return of(null);
+      })
+    )
+  }
 
   private getPreferredCategories(
     userId: number,

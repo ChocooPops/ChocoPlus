@@ -39,6 +39,8 @@ namespace ChocoPlayer
         // ── State ──────────────────────────────────────────────────────────────
         private int _mediaId;
         private int _currentEpisodeId = 0;
+        private int _currentSeasonId = -1;
+        private List<Season> _seasons = new();
         private bool _isFullscreen = false;
         private bool _hasSeasons = false;
         private string _episodeFormat = "300w";
@@ -114,6 +116,7 @@ namespace ChocoPlayer
             bool isMaximized,
             bool isFullScreen,
             int episodeId,
+            int seasonId,
             int seasonIndex,
             List<Season>? seasons,
             float watchProgress,
@@ -121,6 +124,7 @@ namespace ChocoPlayer
         )
         {
             _mediaId       = mediaId;
+            _currentSeasonId = seasonId;
             _watchProgress = watchProgress;
 
             if (isConnected)
@@ -332,7 +336,8 @@ namespace ChocoPlayer
             }
 
             // Seasons menu
-            _hasSeasons = seasons != null && seasons.Count > 0;
+            _seasons    = seasons ?? new();
+            _hasSeasons = _seasons.Count > 0;
             if (_hasSeasons)
             {
                 _seasonsMenu = new SeasonsMenu();
@@ -421,13 +426,13 @@ namespace ChocoPlayer
         private void ApplyWatchProgress()
         {
             if (_mediaPlayer == null || _watchProgress <= 0 || _watchProgress >= 100) return;
-
+            
             long totalTime = _mediaPlayer.Length;
             if (totalTime > 0)
             {
                 long targetTime   = (long)((_watchProgress / 100f) * totalTime);
-                long adjustedTime = Math.Max(targetTime - 60_000, 0);
-                _mediaPlayer.Time = adjustedTime;
+                //long adjustedTime = Math.Max(targetTime - 60_000, 0);
+                _mediaPlayer.Time = targetTime;
             }
         }
 
@@ -1264,6 +1269,8 @@ namespace ChocoPlayer
             _volumeDebounceTimer?.Dispose();
             _playerControls?.StopTimer();
 
+            string progress = GetProgressPercent();
+
             try
             {
                 _mediaPlayer?.Stop();
@@ -1280,9 +1287,18 @@ namespace ChocoPlayer
             _seasonsMenu?.ClearEpisodes();
 
             if (_hasSeasons)
-                Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + _currentEpisodeId);
+                Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + _mediaId + " : " + _currentSeasonId + " : " + _currentEpisodeId + " : " + progress);
             else
-                Console.WriteLine("UPDATE_PROGRESS : MOVIE : " + _mediaId);
+                Console.WriteLine("UPDATE_PROGRESS : MOVIE : " + _mediaId + " : " + progress);
+        }
+
+        // Watch progress in percent (time / length * 100), formatted with a dot as decimal separator
+        private string GetProgressPercent()
+        {
+            long time   = _mediaPlayer?.Time ?? 0;
+            long length = _mediaPlayer?.Length ?? 0;
+            double percent = length > 0 && time > 0 ? Math.Clamp(time * 100.0 / length, 0, 100) : 0;
+            return percent.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -1403,6 +1419,7 @@ namespace ChocoPlayer
 
                 try
                 {
+                    string progress = _p.GetProgressPercent();
                     _p._watchProgressApplied = false;
 
                     var oldMedia = _p._mediaPlayer?.Media;
@@ -1410,7 +1427,7 @@ namespace ChocoPlayer
                     oldMedia?.Dispose();
 
                     Console.WriteLine("NEW_EPISODE_ID : " + episodeId);
-                    Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + _p._currentEpisodeId);
+                    Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + + _p._mediaId+ " : " + _p._currentSeasonId + " : " + _p._currentEpisodeId + " : " + progress);
 
                     var newMedia = CreateMedia(_p._libVLC, episodePath);
 
@@ -1428,6 +1445,8 @@ namespace ChocoPlayer
                     _p._playerControls?.SetPlaying(true);
                     _p.SetTitlePart(2, episodeName);
                     _p._currentEpisodeId = episodeId;
+                    if (seasonIndex >= 0 && seasonIndex < _p._seasons.Count)
+                        _p._currentSeasonId = _p._seasons[seasonIndex].Id;
                     _p._seasonsMenu?.SetCurrentPlayingEpisode(episodeId);
                     _p._seasonsMenu?.Hide();
                 }

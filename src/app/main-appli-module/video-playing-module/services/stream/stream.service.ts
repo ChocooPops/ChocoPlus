@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { AuthService } from '../../../../launch-module/services/auth/auth.service';
 import { ChocoPlayerModel } from '../../models/choco-player.interface';
-import { MovieService } from '../../../media-module/services/movie/movie.service';
-import { SeriesService } from '../../../media-module/services/series/series.service';
+//import { MovieService } from '../../../media-module/services/movie/movie.service';
+//import { SeriesService } from '../../../media-module/services/series/series.service';
 import { BehaviorSubject, Observable, take } from 'rxjs';
 import { HistoricWatchProgressService } from '../historic-watch-progress/historic-watch-progress.service';
 import { ProcessStatus } from '../../models/process-status.enum';
 import { TranslationLanguageService } from '../../../../common-module/services/translation-language/translation-language.service';
 import { VerifUserAlreadyConnectedService } from '../../../../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
+import { UserHistoricService } from '../../../user-module/service/user-historic/user-historic.service';
+import { MediaProgressingModel } from '../../models/media-progressing.interface';
 
 declare const window: any;
 
@@ -27,18 +29,21 @@ export class StreamService {
   private csharpProcessStatus$: Observable<ProcessStatus> = this.csharpProcessStatusSubject.asObservable();
 
   constructor(private readonly authService: AuthService,
-    private readonly movieService: MovieService,
-    private readonly seriesService: SeriesService,
+    //private readonly movieService: MovieService,
+    //private readonly seriesService: SeriesService,
     private readonly historicWatchProgressService: HistoricWatchProgressService,
     private readonly translationLanguageService: TranslationLanguageService,
-    private readonly verifConnection: VerifUserAlreadyConnectedService
+    private readonly verifConnection: VerifUserAlreadyConnectedService,
+    private readonly userHistoricService: UserHistoricService
   ) {
     window.electron.onChocoPlayerStatus((data: ChocoPlayerModel) => {
       if (data.status && Object.values(ProcessStatus).includes(data.status)) {
         this.csharpProcessStatusSubject.next(data.status);
       }
-      if (this.verifConnection.IsConnectedValue() && (data.MediaId || data.EpisodeId)) {
-        this.setWatchProgressByMedia(data);
+      if (this.verifConnection.IsConnectedValue()) {
+        this.setWatchProgressByMediaOnline(data);
+      } else {
+        this.setWatchProgressByMediaOffLine(data);
       }
     });
   }
@@ -71,15 +76,39 @@ export class StreamService {
     await window.electron.invoke('launch-choco-player', chocoPlayer);
   }
 
-  private setWatchProgressByMedia(chocoPlayer: ChocoPlayerModel): void {
+  private setWatchProgressByMediaOnline(chocoPlayer: ChocoPlayerModel): void {
     if (chocoPlayer.EpisodeId && chocoPlayer.EpisodeId > 0) {
-      this.seriesService.fetchGetWatchProgressForEpisode(chocoPlayer.EpisodeId).pipe(take(1)).subscribe((data) => {
-        this.historicWatchProgressService.updateHistoricEpisodeById(chocoPlayer.EpisodeId, data.watchProgress, data.state);
+      // this.seriesService.fetchGetWatchProgressForEpisode(chocoPlayer.EpisodeId).pipe(take(1)).subscribe((data) => {
+      //   this.historicWatchProgressService.updateHistoricEpisodeById(chocoPlayer.EpisodeId, data.watchProgress, data.state);
+      // });
+      this.userHistoricService.saveWathcingProgressUserForEpisode(chocoPlayer.EpisodeId, chocoPlayer.WatchProgress)
+        .pipe(take(1))
+        .subscribe((data: MediaProgressingModel | null) => {
+          if (data) {
+            this.historicWatchProgressService.updateHistoricEpisodeById(data.mediaId, data.watchProgress, data.stateProgress);
+          }
       });
     } else if (chocoPlayer.MediaId && chocoPlayer.MediaId > 0) {
-      this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((data) => {
-        this.historicWatchProgressService.updateHistoricMovieById(chocoPlayer.MediaId, data.watchProgress, data.state);
+      // this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((data) => {
+      //   this.historicWatchProgressService.updateHistoricMovieById(chocoPlayer.MediaId, data.watchProgress, data.state);
+      // });
+      this.userHistoricService.saveWathcingProgressUserForMovie(chocoPlayer.MediaId, chocoPlayer.WatchProgress)
+        .pipe(take(1))
+        .subscribe((data: MediaProgressingModel | null) => {
+          if (data) {
+            this.historicWatchProgressService.updateHistoricMovieById(data.mediaId, data.watchProgress, data.stateProgress);
+          }
       });
+    }
+  }
+
+  private setWatchProgressByMediaOffLine(chocoPlayer: ChocoPlayerModel): void {
+    if (!chocoPlayer.StateProgress) return;
+    
+    if (chocoPlayer.EpisodeId && chocoPlayer.EpisodeId > 0) {
+      this.historicWatchProgressService.updateHistoricEpisodeById(chocoPlayer.EpisodeId, chocoPlayer.WatchProgress, chocoPlayer.StateProgress);
+    } else if (chocoPlayer.MediaId && chocoPlayer.MediaId > 0) {
+      this.historicWatchProgressService.updateHistoricMovieById(chocoPlayer.MediaId, chocoPlayer.WatchProgress, chocoPlayer.StateProgress);
     }
   }
 

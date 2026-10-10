@@ -1,5 +1,6 @@
 import { SupportedLang } from "../../../common-module/models/supported-lang.enum";
 import { MediaTypeModel } from "../../media-module/models/media-type.enum";
+import { ProgressStateMedia } from "../../media-module/models/progress-state-media.enum";
 import { ProcessStatus } from "./process-status.enum";
 
 export interface ChocoPlayerModel {
@@ -17,4 +18,5 @@ export interface ChocoPlayerModel {
     IsConnected: boolean,
     Language?: SupportedLang | 'none',
     status?: ProcessStatus,
+    StateProgress?: ProgressStateMedia
 }
