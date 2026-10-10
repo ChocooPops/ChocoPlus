@@ -35,7 +35,7 @@
 }
 
 .errorVisible {
-    animation: grow-up 0.3s ease-in;
+    animation: grow-up 0.3s ease-out;
 }
 
 .errorHidden {

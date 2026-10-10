@@ -164,7 +164,7 @@ p {
   pointer-events: none;
   opacity: 0;
   transform: translateY(-4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
 
   p {
     margin: 0;

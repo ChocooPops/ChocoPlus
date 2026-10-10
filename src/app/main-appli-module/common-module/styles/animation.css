@@ -11,7 +11,7 @@
 }
 
 .animationPosterAndLicense {
-    animation: 0.3s enterPoster ease-in;
+    animation: 0.3s enterPoster ease-out;
 }
 
 /*
@@ -21,7 +21,7 @@
 */
 
 .animationWhenAppears {
-    animation: 0.5s enterMoviePage ease-in;
+    animation: 0.5s enterMoviePage ease-out;
 }
 
 .animationWhenDisappears {
@@ -68,7 +68,7 @@
             rgba(255, 255, 255, 0) 100%);
     background-size: 200% 100%;
     pointer-events: none;
-    animation: change-opacity 3s infinite ease-in;
+    animation: change-opacity 3s infinite ease-out;
 }
 
 .container-animation-gradient-normal {
@@ -80,7 +80,7 @@
             rgba(255, 255, 255, 0) 100%);
     background-size: 200% 100%;
     pointer-events: none;
-    animation: change-opacity 3s infinite ease-in;
+    animation: change-opacity 3s infinite ease-out;
 }
 
 .container-animation-gradient-little {
@@ -90,7 +90,7 @@
             rgba(255, 255, 255, 0) 100%);
     background-size: 200% 100%;
     pointer-events: none;
-    animation: change-opacity 3s infinite ease-in;
+    animation: change-opacity 3s infinite ease-out;
 }
 
 .container-animation-gradient-poster {
@@ -102,7 +102,7 @@
             rgba(255, 255, 255, 0) 100%);
     background-size: 200% 100%;
     pointer-events: none;
-    animation: change-opacity 3s infinite ease-in;
+    animation: change-opacity 3s infinite ease-out;
 }
 
 @keyframes change-opacity {

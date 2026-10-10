@@ -79,7 +79,7 @@ input {
     border-top: none;
     overflow-y: scroll;
     overflow-x: hidden;
-    animation: ddEnter 0.15s ease;
+    animation: ddEnter 0.15s ease-out;
     background: var(--edit-background);
 }
 

@@ -6,7 +6,7 @@
 
     img {
         height: 100%;
-        animation: appears 0.5s ease-in;
+        animation: appears 0.5s ease-out;
     }
 }
 

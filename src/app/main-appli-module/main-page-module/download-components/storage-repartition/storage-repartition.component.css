@@ -39,7 +39,7 @@ p {
     height: 100%;
     width: 0;
     cursor: pointer;
-    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s ease;
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s ease-out;
 }
 
 /* Les segments se remplissent l un après l autre */
@@ -93,7 +93,7 @@ p {
     white-space: nowrap;
     opacity: 0;
     transform: translateX(-6px);
-    transition: opacity 0.5s ease 0.5s, transform 0.5s ease 0.5s;
+    transition: opacity 0.5s ease-out 0.5s, transform 0.5s ease-out 0.5s;
 }
 
 .storage-total-visible {
@@ -108,7 +108,7 @@ p {
     transform: translateX(-50%) translateY(-6px) scale(0.95);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s linear 0.18s;
+    transition: opacity 0.18s ease-out, transform 0.18s ease-out, visibility 0s linear 0.18s;
     display: flex;
     align-items: center;
     gap: 8px;

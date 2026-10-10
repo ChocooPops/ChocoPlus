@@ -4,6 +4,7 @@
   overflow-x: auto;
   padding-bottom: 25px;
   box-sizing: border-box;
+  position: relative;
 }
 
 .container-episodes::-webkit-scrollbar {
@@ -17,6 +18,10 @@
   flex-direction: column;
   gap: 15px;
   position: relative;
+}
+
+.not-visible {
+  visibility: hidden;
 }
 
 .container-progress {
@@ -140,7 +145,7 @@ p {
   pointer-events: none;
   opacity: 0;
   transform: translateY(-4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
 
   p {
     margin: 0;
@@ -156,4 +161,24 @@ p {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+.no-content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 30% !important;
+  animation: no-content 0.3s ease-out;
+}
+
+@keyframes no-content {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -30%);
+  } 
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }

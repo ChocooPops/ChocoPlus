@@ -205,7 +205,7 @@
   overflow: hidden;
   left: 50%;
   transform: translate(-50%, 0);
-  animation: enterdd 0.2s ease;
+  animation: enterdd 0.2s ease-out;
 
   p {
     background-color: transparent;
@@ -426,7 +426,7 @@ td {
 .ct-action-btn--log-error   .ct-action-btn-icon  { color: #e57373; }
 
 .ct-action-btn--log {
-  animation: ct-log-appear 0.18s ease;
+  animation: ct-log-appear 0.18s ease-out;
 }
 
 @keyframes ct-log-appear {

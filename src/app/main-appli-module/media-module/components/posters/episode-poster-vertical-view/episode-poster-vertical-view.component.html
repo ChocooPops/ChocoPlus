@@ -1,67 +1,89 @@
 <div class="container-list-episode">
-    @for(episode of episodes; track episode.id; let idx = $index) {
-    @defer(on viewport) {
-    <div class="container-episode animationPosterAndLicense">
+    
+    @if (episodes.length > 0) {
+        @for(episode of episodes; track episode.id; let idx = $index) {
+        @defer(on viewport) {
+        <div class="container-episode animationPosterAndLicense">
 
-        <div class="container-index-episode">
-            <div class="container-index">
-                <p class="index">{{ episode.episodeNumber}}</p>
-            </div>
-            <div class="container-poster" (click)="start.onClick()">
+            <div class="container-index-episode">
+                <div class="container-index">
+                    <p class="index">{{ episode.episodeNumber}}</p>
+                </div>
+                <div class="container-poster" (click)="start.onClick()">
 
-                <app-news-alert [visibility]="true" [isRecent]="episode.isRecent"
-                    [mediaType]="MediaType.EPISODE"></app-news-alert>
+                    <app-news-alert [visibility]="true" [isRecent]="episode.isRecent"
+                        [mediaType]="MediaType.EPISODE"></app-news-alert>
 
-                <div class="container-tmp-poster">
-                    <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
-                        [episode]="episode" [seasons]="series.seasons"></app-start-button>
-                    @if (episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
-                    <app-start-button (click)="$event.stopPropagation()" [typeButton]="true" [typeDisplaying]="true" [media]="series"
-                        [episode]="episode" [seasons]="series.seasons" [launch]="'start'"></app-start-button>
+                    <div class="container-tmp-poster">
+                        <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                            [episode]="episode" [seasons]="series.seasons"></app-start-button>
+                        @if (episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
+                        <app-start-button (click)="$event.stopPropagation()" [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                            [episode]="episode" [seasons]="series.seasons" [launch]="'start'"></app-start-button>
+                        }
+                    </div>
+                    @if (episodePoster[idx]) {
+                    <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
+                    }
+                    @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED && episodeProgress[idx].watchProgress > 0 && episodeProgress[idx].watchProgress < 100) {
+                    <div class="container-progress">
+                        <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>
+                    </div>
                     }
                 </div>
-                @if (episodePoster[idx]) {
-                <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
+            </div>
+
+            <div class="container-info">
+                <div class="container-title-row">
+                    <p class="title"> {{ episode.name }} </p>
+                    @if (!user || user.role === Role.ADMIN || user.role === Role.FAMILY) {
+                        <app-download-button [mediaId]="episode.seriesId" [mediaType]="MediaType.EPISODE" [seasonId]="episode.seasonId" [episodeId]="episode.id"></app-download-button>
+                    }
+                </div>
+                @if(notRunning) {
+                <p class="description"> {{ episode.description }} </p>
+                <div class="container-other-info">
+                    @if (episode.bytes && episode.bytes > 0) {
+                        <p class="other-info"> {{episode.resolution}}, {{getBytesEpisode(episode.bytes)}} </p>
+                    } @else {
+                        <p class="other-info"> {{ episode.resolution }} </p>
+                    }
+                    <p class="other-info"> {{ getTimerEpisode(episode.duration) }} </p>
+                    <p class="other-info"> {{ episode.date | date:'d MMMM, y'}} </p>
+                </div>
                 }
-                @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED && episodeProgress[idx].watchProgress > 0 && episodeProgress[idx].watchProgress < 100) {
-                <div class="container-progress">
-                    <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>
+            </div>
+
+        </div>
+        <div class="container-barre-separation">
+            <div class="barre-separation"></div>
+        </div>
+        } @placeholder {
+        <div class="container-episode">
+            <div></div>
+            <div class="container-poster container-animation-gradient-normal"></div>
+            <div></div>
+        </div>
+        }
+        }
+    }@else {
+        <img class="no-content" [src]="srcNoContent">
+        <div class="container-episode not-visible">
+            <div class="container-index-episode">
+            </div>
+            <div class="container-info">
+                <div class="container-title-row">
+                    <p class="title"> test </p>
+                </div>
+                @if(notRunning) {
+                <p class="description"> test </p>
+                <div class="container-other-info">
+                    <p class="other-info"> test </p>
+                    <p class="other-info"> test </p>
+                    <p class="other-info"> test </p>
                 </div>
                 }
             </div>
         </div>
-
-        <div class="container-info">
-            <div class="container-title-row">
-                <p class="title"> {{ episode.name }} </p>
-                @if (user && (user.role === Role.ADMIN || user.role === Role.FAMILY)) {
-                    <app-download-button [mediaId]="episode.seriesId" [mediaType]="MediaType.EPISODE" [seasonId]="episode.seasonId" [episodeId]="episode.id"></app-download-button>
-                }
-            </div>
-            @if(notRunning) {
-            <p class="description"> {{ episode.description }} </p>
-            <div class="container-other-info">
-                @if (episode.bytes && episode.bytes > 0) {
-                    <p class="other-info"> {{episode.resolution}}, {{getBytesEpisode(episode.bytes)}} </p>
-                } @else {
-                    <p class="other-info"> {{ episode.resolution }} </p>
-                }
-                <p class="other-info"> {{ getTimerEpisode(episode.duration) }} </p>
-                <p class="other-info"> {{ episode.date | date:'d MMMM, y'}} </p>
-            </div>
-            }
-        </div>
-
-    </div>
-    <div class="container-barre-separation">
-        <div class="barre-separation"></div>
-    </div>
-    } @placeholder {
-    <div class="container-episode">
-        <div></div>
-        <div class="container-poster container-animation-gradient-normal"></div>
-        <div></div>
-    </div>
-    }
     }
 </div>

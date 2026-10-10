@@ -15,12 +15,12 @@
     color: var(--grey-dark);
     cursor: pointer;
     width: fit-content;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease-out;
 }
 
 .see-all .arrow {
     display: inline-block;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease-out;
 }
 
 .see-all:hover,

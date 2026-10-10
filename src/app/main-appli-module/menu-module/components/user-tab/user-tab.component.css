@@ -175,9 +175,9 @@
   animation: pulse 1.5s ease-out infinite;
 
   transition:
-    background-color 0.4s ease,
-    opacity 0.3s ease,
-    transform 0.3s ease;
+    background-color 0.4s ease-out,
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
 }
 
 .pulse-dot.is-launching {

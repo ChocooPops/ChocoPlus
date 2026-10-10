@@ -58,7 +58,7 @@
     background-color: #353535;
     border-radius: 0px 0px 5px 5px;
     top: 45px;
-    animation: ddEnter 0.15s ease;
+    animation: ddEnter 0.15s ease-out;
 }
 
 .container-categories-searched::-webkit-scrollbar {

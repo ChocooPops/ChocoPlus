@@ -22,7 +22,7 @@
   background: #1a1a1a;
   border: 1.5px solid #2a2a2a;
   border-radius: 6px;
-  animation: lf-enter 0.35s ease;
+  animation: lf-enter 0.35s ease-out;
 }
 
 @keyframes lf-enter {
@@ -252,7 +252,7 @@
   z-index: 99;
   max-height: calc(36px * 5.5);
   overflow-y: auto;
-  animation: lf-dd 0.15s ease;
+  animation: lf-dd 0.15s ease-out;
 }
 
 .lf-dropdown::-webkit-scrollbar {

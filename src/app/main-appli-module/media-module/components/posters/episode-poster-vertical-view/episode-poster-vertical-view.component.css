@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
+    position: relative;
 }
 
 .container-episode {
@@ -166,4 +167,28 @@ p {
 .progress {
     height: 100%;
     background-color: #FFD301;
+}
+
+.no-content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 60%;
+  animation: no-content 0.3s ease-out;
+}
+
+@keyframes no-content {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -30%);
+  } 
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.not-visible {
+  visibility: hidden;
 }

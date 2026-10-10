@@ -41,6 +41,7 @@ export class EpisodePosterHorizontalViewComponent {
   gap!: number;
   srcIconInfo: string = 'icon/info.svg';
   srcEpisode: string = 'icon/episode.svg';
+  srcNoContent: string = 'icon/no-content.svg';
 
   MediaType = MediaTypeModel;
   Role = RoleModel;

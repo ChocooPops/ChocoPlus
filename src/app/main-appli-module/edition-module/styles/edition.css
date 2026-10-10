@@ -20,7 +20,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    animation: 0.3s enterEditPage ease-in;
+    animation: 0.3s enterEditPage ease-out;
 
     p {
         margin: 0;
@@ -65,7 +65,7 @@ span {
 }
 
 .animationEditField {
-    animation: 0.3s enterEditField ease-in;
+    animation: 0.3s enterEditField ease-out;
 }
 
 @keyframes enterEditField {

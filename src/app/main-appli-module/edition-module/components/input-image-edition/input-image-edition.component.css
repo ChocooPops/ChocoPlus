@@ -24,7 +24,7 @@
 
   p {
     margin: 0;
-    animation: drop 0.3s ease-in;
+    animation: drop 0.3s ease-out;
     transition: transform 0.2s, opacity 0.2s;
   }
 }
@@ -50,7 +50,7 @@
   border: 2.5px dashed #3a3a3a;
   padding: 8px;
   border-radius: 8px;
-  animation: drop 0.3s ease-in;
+  animation: drop 0.3s ease-out;
   transition: transform 0.2s, border-color 0.2s;
   opacity: 0.5;
 }
@@ -61,7 +61,7 @@
   object-fit: cover;
   border-radius: 6px;
   box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.6);
-  animation: drop 0.3s ease-in;
+  animation: drop 0.3s ease-out;
 }
 
 .inputLogo {
@@ -111,7 +111,7 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  animation: enter 0.2s ease-in;
+  animation: enter 0.2s ease-out;
   transition: background 0.2s, transform 0.2s;
 
   img {

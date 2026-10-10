@@ -32,6 +32,7 @@ export class EpisodePosterVerticalViewComponent {
   episodeProgress: MediaProgressingModel[] = [];
   ProgressState = ProgressStateMedia;
   srcEpisode: string = 'icon/episode.svg';
+  srcNoContent: string = 'icon/no-content.svg';
 
   MediaType = MediaTypeModel;
   Role = RoleModel;
