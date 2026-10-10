@@ -105,3 +105,14 @@ p {
     right: -6px;
     opacity: 0.9;
 }
+
+.hollow-season-alert {
+    height: 15px;
+    width: 15px;
+    background-color: rgb(220, 38, 38);
+    border-radius: 50px;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    opacity: 0.9;
+}

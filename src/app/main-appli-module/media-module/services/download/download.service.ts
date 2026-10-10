@@ -179,6 +179,24 @@ export class DownloadService {
     this.mediaDownloadedSubject.next(updated);
   }
 
+  private updateSeasonBySeriesId(seriesId: number, seasonId: number, hasNoEpisode: boolean): void {
+    const current: Map<number, MediaModel> | undefined = this.mediaDownloadedSubject.value;
+    if (!current) return;
+
+    const existing: MediaModel | undefined = current.get(seriesId);
+    if (!existing || existing.mediaType !== MediaTypeModel.SERIES) return;
+
+    const series: SeriesModel = existing as SeriesModel;
+    const season: SeasonModel | undefined = series.seasons.find((s: SeasonModel) => s.id === seasonId);
+    if (!season || season?.hasNoEpisodes === hasNoEpisode) return;
+
+    season.hasNoEpisodes = hasNoEpisode;
+
+    const updated = new Map(current);
+    updated.set(seriesId, series);
+    this.mediaDownloadedSubject.next(updated);
+  }
+
   public getDownloadsHistory(): ProgressDownload[] {
     return Array.from(this.progressSubjects.values())
       .map((subject: BehaviorSubject<ProgressDownload | undefined>) => subject.value)
@@ -324,8 +342,8 @@ export class DownloadService {
                 seasonId: seasonId,
                 episode: this.compressedAllPosterFromEpisode(episode),
                 mediaType: MediaTypeModel.EPISODE
-              }) as Promise<void>).pipe(
-                map((data: any) => {
+              }) as Promise<{ media : SeriesModel, episode: EpisodeModel }>).pipe(
+                map((data) => {
                   if (data.episode) {
                     if (this.seriesPage) {
                       this.seriesPage.addEpisodeBySeasonId(seriesId, seasonId, data.episode);
@@ -360,8 +378,8 @@ export class DownloadService {
               seasonId: seasonId,
               episode: this.compressedAllPosterFromEpisode(data.episode),
               mediaType: MediaTypeModel.EPISODE
-            }) as Promise<void>).pipe(
-              map((data: any) => {
+            }) as Promise<{ media : SeriesModel, episode: EpisodeModel }>).pipe(
+              map((data) => {
                 if (data.media) {
                   this.addMediaIntoList(data.media);
                   if (data.episode) {
@@ -385,6 +403,7 @@ export class DownloadService {
       }),
       finalize(() => {
         this.removeProgressEpisode(seriesId, episodeId);
+        this.updateSeasonBySeriesId(seriesId, seasonId, false);
       }),
       shareReplay({ bufferSize: 1, refCount: false })
     );
@@ -494,7 +513,7 @@ export class DownloadService {
           episodeId,
           mediaType: MediaTypeModel.EPISODE
         }
-      ) as Promise<{ entries: { key: string, fileName: string | null, episode: EpisodeModel | null }[], media: MediaModel | null }>).pipe(
+      ) as Promise<{ entries: { key: string, fileName: string | null, episode: EpisodeModel | null }[], media: MediaModel | null, hasNoEpisode: boolean }>).pipe(
       map((result) => {
         result.entries.forEach(({ key, fileName, episode }) => {
           this.replaceProgressKey(key, { fileName: fileName ?? '', percent: 100 });
@@ -505,6 +524,9 @@ export class DownloadService {
             this.updateDonwloadBytesStorage(-(episode.bytes ?? 0));
           }
         });
+        if (result.hasNoEpisode) {
+          this.updateSeasonBySeriesId(mediaId, seasonId, true);
+        }
         if (result.media) {
           this.deleteMediaIntoList(result.media.id);
         }

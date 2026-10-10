@@ -68,6 +68,9 @@
                 @if (season.isRecent) {
                     <div class="news-alert-season"></div>
                 }
+                @if (season.hasNoEpisodes) {
+                    <div class="hollow-season-alert"></div>
+                }
             </div>
             }
         </div>

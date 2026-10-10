@@ -28,8 +28,8 @@
                                 <div class="second-line">
                                     <p>
                                         {{ convertReceivedBytes(historic.receivedBytes, historic.totalBytes) }}/{{ convertTotalBytes(historic.totalBytes) }}
-                                            • {{ historic.speedLabel }} 
-                                            • {{ historic.remainingLabel }}
+                                            • {{ historic.speedLabel.trim() != '' ? historic.speedLabel : '0 Mo/s'}} 
+                                            • {{ historic.remainingLabel.trim() != '' ? historic.remainingLabel : '...' }}
                                     </p>
                                 </div>
                                 <div class="third-line">

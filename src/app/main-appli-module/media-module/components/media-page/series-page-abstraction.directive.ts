@@ -207,9 +207,22 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
     if (this.series.seasons.length === 0) return;
 
     const lastSeasonWatched = this.seriesService.getLastSeasonWatchedBySeriesId(this.series.id);
-    const index = lastSeasonWatched
-      ? this.series.seasons.findIndex((s) => s.id === lastSeasonWatched)
-      : this.series.seasons.findIndex((s) => s.isClicked);
+    
+    let index!: number;
+
+    if (this.isOnLine) {
+      index = lastSeasonWatched
+        ? this.series.seasons.findIndex((s) => s.id === lastSeasonWatched)
+        : this.series.seasons.findIndex((s) => s.isClicked);
+    } else {
+      index = lastSeasonWatched
+        ? this.series.seasons.findIndex((s) => s.id === lastSeasonWatched && s.hasNoEpisodes === false)
+        : this.series.seasons.findIndex((s) => s.isClicked && s.hasNoEpisodes === false);
+
+      if (index < 0) {
+        index = this.series.seasons.findIndex((s) => s.hasNoEpisodes === false);
+      }
+    }
 
     const seasonIndex = index >= 0 ? index : 0;
     this.loadSeasonEpisodes(seasonIndex);

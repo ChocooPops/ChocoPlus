@@ -11,5 +11,6 @@ export interface SeasonModel {
     episodes: EpisodeModel[],
     isRecent: boolean,
 
+    hasNoEpisodes?: boolean,
     path?: string
 }

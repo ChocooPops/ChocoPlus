@@ -477,8 +477,7 @@ async function performDownload(data, key, signal) {
       delete media.credits;
       delete media.isRecent;
       delete media.otherTitles;
-      delete media.watchProgress;
-      delete media.stateProgress;
+      delete media.lastSeasonWatched;
 
       if (info.casts && Array.isArray(info.casts)) {
         info.casts.forEach((cast) => {
@@ -547,6 +546,8 @@ async function performDownload(data, key, signal) {
       fs.mkdirSync(downloadDirEpisode, { recursive: true });
       fs.rmSync(imagesDirEpisode, { recursive: true, force: true });
       fs.mkdirSync(imagesDirEpisode, { recursive: true });
+
+      delete episode.isRecent;
 
       episode.srcPoster = await downloadImage(episode.srcPoster, imagesDirEpisode)
       signal.throwIfAborted();
@@ -779,6 +780,65 @@ function getMetadataByEpisodeId(seriesId, seasonId, episodeId) {
   }
 }
 
+// For a series : flags the seasons with no downloaded episode (hasNoEpisodes) and selects (isClicked) the season
+// of the most recently created/updated episode, otherwise the first season that has episodes. Other media unchanged.
+function formatSeriesSeasons(media) {
+  if (!media || media.mediaType !== MediaType.SERIES || !Array.isArray(media.seasons)) {
+    return media;
+  }
+  let lastSeasonWatched = null;
+  let maxDate = null;
+  media.seasons.forEach((season) => {
+    const episodes = getAllEpisodeBySeasonId(media.id, season.id);
+    if (episodes.length > 0) {
+      season.hasNoEpisodes = false;
+      if (lastSeasonWatched === null) {
+        lastSeasonWatched = season.id;
+      }
+      episodes.forEach((episode) => {
+        const { createdAt, updatedAt } = episode;
+        if (!createdAt && !updatedAt) return;
+        const created = createdAt ? new Date(createdAt).getTime() : -Infinity;
+        const updated = updatedAt ? new Date(updatedAt).getTime() : -Infinity;
+        const episodeDate = Math.max(created, updated);
+        if (maxDate === null || episodeDate > maxDate) {
+          maxDate = episodeDate;
+          lastSeasonWatched = season.id;
+        }
+      });
+    } else {
+      season.hasNoEpisodes = true;
+    }
+  });
+  media.seasons.forEach((season) => {
+    season.isClicked = season.id === lastSeasonWatched;
+  });
+  return media;
+}
+
+function getAllEpisodeBySeasonId(seriesId, seasonId) {
+  const downloads = [];
+  try {
+    const seasonPath = path.join(downloadsRootPath, String(seriesId), String(seasonId));
+    if (fs.existsSync(seasonPath)) {
+      const entries = fs.readdirSync(seasonPath, { withFileTypes: true });
+      for (const entry of entries) {
+        if (!entry.isDirectory()) continue;
+        const metadataPath = path.join(seasonPath, entry.name, FILE_METADATA);
+        if (!fs.existsSync(metadataPath)) continue;
+        try {
+          const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+          downloads.push(metadata.episode);
+        } catch (error) {
+          // Corrupt metadata: This entry is ignored
+        }
+      }
+    }
+  } finally {
+    return downloads;
+  }
+}
+
 //=========================================================================================//*
 //=========================================================================================//*
 //=================================== MAIN IPC DOWNLOAD ===================================//*
@@ -805,12 +865,20 @@ ipcMain.handle('download-media', (event, data) => {
   entry.promise.finally(() => activeDownloads.delete(entry)).catch(() => {});
   // A cancellation is not an error : the renderer gets its result through the cancel-download handler,
   // so we resolve instead of rejecting (otherwise Electron logs "Error occurred in handler").
-  return entry.promise.catch((error) => {
-    if (controller.signal.aborted) {
-      return { canceled: true };
-    }
-    throw error;
-  });
+  return entry.promise
+    .then((results) => {
+      // Same season formatting as list-downloads (done here, once the episode is on disk).
+      if (results && results.media) {
+        formatSeriesSeasons(results.media);
+      }
+      return results;
+    })
+    .catch((error) => {
+      if (controller.signal.aborted) {
+        return { canceled: true };
+      }
+      throw error;
+    });
 });
 
 // Cancels, by key, the one download the user clicked while it was WAITING/IN_PROGRESS. performDownload's
@@ -855,7 +923,7 @@ ipcMain.handle('list-downloads', () => {
   for (const { metadataPath } of sortedDirs) {
     try {
       const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-      downloads.push(metadata.media);
+      downloads.push(formatSeriesSeasons(metadata.media));
     } catch (error) {
       // Corrupt metadata: This entry is ignored
     }
@@ -891,23 +959,8 @@ ipcMain.handle('get-media-info', (event, mediaId) => {
 });
 
 ipcMain.handle('get-all-episodes', (event, data) => {
-  const downloads = [];
   const { seriesId, seasonId } = data;
-  const seasonPath = path.join(downloadsRootPath, String(seriesId), String(seasonId));
-  if (fs.existsSync(seasonPath)) {
-    const entries = fs.readdirSync(seasonPath, { withFileTypes: true });
-    for (const entry of entries) {
-      if (!entry.isDirectory()) continue;
-      const metadataPath = path.join(seasonPath, entry.name, FILE_METADATA);
-      if (!fs.existsSync(metadataPath)) continue;
-      try {
-        const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-        downloads.push(metadata.episode);
-      } catch (error) {
-        // Corrupt metadata: This entry is ignored
-      }
-    }
-  }
+  const downloads = getAllEpisodeBySeasonId(seriesId, seasonId);
   return downloads.sort((a, b) => a.episodeNumber - b.episodeNumber);
 });
 
@@ -930,6 +983,8 @@ async function performDeleteDownload(data) {
   const mediaDir = path.join(downloadsRootPath, String(mediaId));
   const deletedEntries = [];
   let media = null;
+  // Only for an episode deletion : true if its season has no episode left (null otherwise).
+  let hasNoEpisode = null;
 
   if (mediaType === MediaType.MOVIE) {
     const metadata = readMetadataFile(path.join(mediaDir, FILE_METADATA));
@@ -951,6 +1006,8 @@ async function performDeleteDownload(data) {
       const episode = metadata ? metadata.episode ?? null : null;
       removeDownloadDir(episodeDir);
       deletedEntries.push({ key: `${MediaType.EPISODE}-${episodeId}`, fileName, episode });
+      // Checked before the empty-season cleanup below removes the season folder.
+      hasNoEpisode = listNumericDirs(path.join(mediaDir, String(seasonId))).length === 0;
     } else {
       deletedEntries.push(...collectSeriesEntries(mediaDir, seasonId));
       removeDownloadDir(path.join(mediaDir, String(seasonId)));
@@ -973,7 +1030,7 @@ async function performDeleteDownload(data) {
     throw new Error(`Unsupported media type to delete: ${mediaType}`);
   }
 
-  return { entries: deletedEntries, media };
+  return { entries: deletedEntries, media, hasNoEpisode };
 }
 
 //=========================================================================================//
