@@ -7,6 +7,10 @@
         <div class="arrow-down" [ngClass]="classArrow"></div>
     </div>
     <div class="container-under-menu" [ngClass]="class" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+        <div class="container-option" (click)="onClickReset()">
+            <img [src]="srcReset">
+            <p>{{ 'MENU.OTHER.RESET' | translate }}</p>
+        </div>
         <div class="container-option" (click)="onClickConnection()">
             <img [src]="srcConnection">
             <p> {{ 'OFFLINE.LOGIN' | translate }} </p>

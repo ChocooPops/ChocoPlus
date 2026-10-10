@@ -30,9 +30,7 @@ import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 })
 export class UserTabComponent {
 
-  subscription: Subscription = new Subscription();
-  srcReset: string = 'icon/modify.svg';
-  srcRandom: string = 'icon/random.svg';
+  private subscription: Subscription = new Subscription();
 
   user!: UserModel;
   Role = RoleModel;
@@ -44,8 +42,11 @@ export class UserTabComponent {
 
   isShowingKeys: boolean = false;
 
-  srcTraductionFill: string = 'icon/traduction-fill.svg';
-  srcTraductionNotFill: string = 'icon/traduction-not-fill.svg';
+  public readonly srcTraductionFill: string = 'icon/traduction-fill.svg';
+  public readonly srcTraductionNotFill: string = 'icon/traduction-not-fill.svg';
+  public readonly srcDefaultPp: string = 'pp/pp.jpg';
+  public readonly srcReset: string = 'icon/modify.svg';
+  public readonly srcRandom: string = 'icon/random.svg';
 
   csharpProcessStatus!: ProcessStatus;
   ProcessStatus = ProcessStatus;
@@ -112,7 +113,9 @@ export class UserTabComponent {
       Url: this.streamService.getUrlStreamMovie(movie.id),
       Height: window.innerHeight,
       Width: window.innerWidth,
+      IsConnected: true,
       EpisodeId: -1,
+      SeasonId: -1,
       SeasonIndex: -1,
       WatchProgress: 0,
       MediaType: MediaTypeModel.MOVIE,
@@ -140,7 +143,9 @@ export class UserTabComponent {
       Url: this.streamService.getUrlStreamEpisode(series.id, episode.id),
       Height: window.innerHeight,
       Width: window.innerWidth,
+      IsConnected: true,
       EpisodeId: episode.id,
+      SeasonId: episode.seasonId,
       SeasonIndex: 0,
       WatchProgress: 0,
       MediaType: MediaTypeModel.SERIES,
@@ -177,7 +182,6 @@ export class UserTabComponent {
     this.userParametersService.navigateByUserTabId(id);
   }
 
-  srcDefaultPp: string = 'pp/pp.jpg';
   errorPpUser(): void {
     this.user.profilPhoto = this.srcDefaultPp;
   }

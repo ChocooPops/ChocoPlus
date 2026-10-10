@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class VerifUserAlreadyConnectedService {
 
-  private isConnectedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  private isConnectedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isConnected$: Observable<boolean> = this.isConnectedSubject.asObservable();
 
   constructor() { }
@@ -17,6 +17,10 @@ export class VerifUserAlreadyConnectedService {
 
   public setUserConnected(bool: boolean): void {
     this.isConnectedSubject.next(bool);
+  }
+
+  public IsConnectedValue(): boolean {
+    return this.isConnectedSubject.value;
   }
 
 }

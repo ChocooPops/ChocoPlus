@@ -698,7 +698,9 @@ namespace ChocoPlayer
             {
                 try
                 {
-                    byte[] imageBytes = await _httpClient.GetByteArrayAsync(imageUrl);
+                    byte[] imageBytes = Uri.TryCreate(imageUrl, UriKind.Absolute, out var uri) && uri.IsFile
+                        ? await File.ReadAllBytesAsync(uri.LocalPath)
+                        : await _httpClient.GetByteArrayAsync(imageUrl);
                     using (var skBitmap = SKBitmap.Decode(imageBytes))
                     {
                         if (skBitmap == null) return;

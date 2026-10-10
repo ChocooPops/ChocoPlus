@@ -719,6 +719,66 @@ function collectSeriesEntries(seriesDir, onlySeasonId) {
   return entries;
 }
 
+function getAllEpisodesBySeriesId(seriesId) {
+  if (!seriesId) return episodes;
+  const episodes = [];
+  try {
+    if (!seriesId) return episodes;
+    const seriesPath = path.join(downloadsRootPath, String(seriesId));
+    if (fs.existsSync(seriesPath)) {
+      const seasonsFolders = fs.readdirSync(seriesPath, { withFileTypes: true });
+      for (const seasonFolder of seasonsFolders) {
+        if (seasonFolder.isDirectory()) {
+          const seasonPath = path.join(seriesPath, seasonFolder.name);
+          const episodeFolders = fs.readdirSync(seasonPath, { withFileTypes: true });
+          for (const episodeFolder of episodeFolders) {
+            if (episodeFolder.isDirectory()) {
+              const episodePath = path.join(seasonPath, episodeFolder.name, FILE_METADATA);
+              try {
+                const metadata = JSON.parse(fs.readFileSync(episodePath, 'utf-8'));
+                if (metadata) {
+                  episodes.push(metadata);
+                }
+              } catch(error) {
+
+              }
+            }
+          }
+        }
+      }
+    }
+    return episodes.sort((a, b) => a.episode.episodeNumber - b.episode.episodeNumber);
+  } catch(error) {
+    return episodes
+  }
+}
+
+function getMetadataByMediaId(mediaId) {
+  try {
+    const mediaPath = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
+    if (!fs.existsSync(mediaPath)) {
+      return null
+    }
+    const metadata = JSON.parse(fs.readFileSync(mediaPath, 'utf-8'));
+    return metadata;
+  } catch(error) {
+    return null;
+  }
+}
+
+function getMetadataByEpisodeId(seriesId, seasonId, episodeId) {
+  try {
+    const mediaPath = path.join(downloadsRootPath, String(seriesId), String(seasonId), String(episodeId), FILE_METADATA);
+    if (!fs.existsSync(mediaPath)) {
+      return null;
+    }
+    const metadata = JSON.parse(fs.readFileSync(mediaPath, 'utf-8'));
+    return metadata;
+  } catch(error) {
+    return null;
+  }
+}
+
 //=========================================================================================//*
 //=========================================================================================//*
 //=================================== MAIN IPC DOWNLOAD ===================================//*
@@ -972,7 +1032,8 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     if (currentChocoPlayer?.MediaId === dataObject.MediaId && currentChocoPlayer?.EpisodeId === dataObject.EpisodeId) {
       return null;
     }
-    // Vérifier si un processus est déjà en cours d'exécution
+
+    // Check if a process is already running
     if (csharpProcess && !csharpProcess.killed) {
       await stopCSharpProcess(true);
       if (mediaLaunched.type === MediaType.MOVIE) {
@@ -988,9 +1049,21 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     if (dataObject.MediaType === MediaType.MOVIE) {
       mediaLaunched.id = dataObject.MediaId;
       mediaLaunched.type = dataObject.MediaType;
+      const metadata = getMetadataByMediaId(dataObject.MediaId);
+      if (metadata && metadata.videoPath) {
+        dataObject.Url = metadata.videoPath;
+      }
     } else if (dataObject.MediaType === MediaType.SERIES) {
       mediaLaunched.id = dataObject.EpisodeId;
       mediaLaunched.type = dataObject.MediaType;
+
+      const metadata = getMetadataByEpisodeId(dataObject.MediaId, dataObject.SeasonId, dataObject.EpisodeId);
+      if (metadata && metadata.videoPath) {
+        dataObject.Url = metadata.videoPath;
+      }
+
+      const episodes = getAllEpisodesBySeriesId(dataObject.MediaId);
+      dataObject.EpisodesStorage = episodes;
     }
 
     currentChocoPlayer = dataObject;

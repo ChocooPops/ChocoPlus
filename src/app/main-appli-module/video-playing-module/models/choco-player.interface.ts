@@ -11,8 +11,10 @@ export interface ChocoPlayerModel {
     WatchProgress: number,
     EpisodeId: number;
     SeasonIndex: number;
+    SeasonId: number;
     SeasonMenu: any[],
     MediaType: MediaTypeModel,
+    IsConnected: boolean,
     Language?: SupportedLang | 'none',
     status?: ProcessStatus,
 }

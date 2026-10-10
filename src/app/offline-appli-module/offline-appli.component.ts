@@ -5,6 +5,7 @@ import { MediaSelectedService } from '../main-appli-module/media-module/services
 import { Subscription } from 'rxjs';
 import { MediaModel } from '../main-appli-module/media-module/models/media.interface';
 import { MediaPageComponent } from '../main-appli-module/media-module/components/media-page/media-page/media-page.component';
+import { VerifUserAlreadyConnectedService } from '../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
 
 @Component({
   selector: 'app-offline-appli',
@@ -18,7 +19,11 @@ export class OfflineAppliComponent {
   mediaSelected: MediaModel | undefined = undefined;
   private subscription: Subscription = new Subscription();
   
-  constructor(private readonly mediaSelectedService: MediaSelectedService) { }
+  constructor(private readonly mediaSelectedService: MediaSelectedService,
+    private readonly verifUserAlreadyConnectedService: VerifUserAlreadyConnectedService
+  ) {
+    this.verifUserAlreadyConnectedService.setUserConnected(false);  
+  }
 
   ngOnInit(): void {
     this.subscription.add(

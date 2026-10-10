@@ -31,6 +31,7 @@ static class Program
         }
 
         Locale.SetLanguage(videoInfo?.Language ?? "en");
+        EpisodesStorage.Load(videoInfo?.EpisodesStorage);
 
         Application.Run(new ChocoPlayer(
             videoInfo?.MediaId ?? 0,
@@ -49,7 +50,8 @@ static class Program
             videoInfo?.EpisodeId ?? -1,
             videoInfo?.SeasonIndex ?? -1,
             videoInfo?.SeasonMenu ?? [],
-            videoInfo?.WatchProgress ?? 0
+            videoInfo?.WatchProgress ?? 0,
+            videoInfo?.IsConnected ?? false
         ));
     }
 }

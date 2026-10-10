@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable, take } from 'rxjs';
 import { HistoricWatchProgressService } from '../historic-watch-progress/historic-watch-progress.service';
 import { ProcessStatus } from '../../models/process-status.enum';
 import { TranslationLanguageService } from '../../../../common-module/services/translation-language/translation-language.service';
+import { VerifUserAlreadyConnectedService } from '../../../../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
 
 declare const window: any;
 
@@ -29,13 +30,14 @@ export class StreamService {
     private readonly movieService: MovieService,
     private readonly seriesService: SeriesService,
     private readonly historicWatchProgressService: HistoricWatchProgressService,
-    private readonly translationLanguageService: TranslationLanguageService
+    private readonly translationLanguageService: TranslationLanguageService,
+    private readonly verifConnection: VerifUserAlreadyConnectedService
   ) {
     window.electron.onChocoPlayerStatus((data: ChocoPlayerModel) => {
       if (data.status && Object.values(ProcessStatus).includes(data.status)) {
         this.csharpProcessStatusSubject.next(data.status);
       }
-      if (data.MediaId || data.EpisodeId) {
+      if (this.verifConnection.IsConnectedValue() && (data.MediaId || data.EpisodeId)) {
         this.setWatchProgressByMedia(data);
       }
     });

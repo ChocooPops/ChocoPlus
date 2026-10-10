@@ -116,15 +116,19 @@ namespace ChocoPlayer
             int episodeId,
             int seasonIndex,
             List<Season>? seasons,
-            float watchProgress
+            float watchProgress,
+            bool isConnected
         )
         {
             _mediaId       = mediaId;
             _watchProgress = watchProgress;
 
-            _apiService              = new ApiService(baseUrl, HEADER_NAME, HEADER_SECRET, token);
-            _audioLanguageSelected   = Properties.Settings.Default.PreferredAudioLanguage;
-            _subtitleLanguageSelected = Properties.Settings.Default.PreferredSubtitleLanguage;
+            if (isConnected)
+            {
+                _apiService             = new ApiService(baseUrl, HEADER_NAME, HEADER_SECRET, token);                
+            }
+            _audioLanguageSelected      = Properties.Settings.Default.PreferredAudioLanguage;
+            _subtitleLanguageSelected   = Properties.Settings.Default.PreferredSubtitleLanguage;
 
             InitializeVLC();
             SetupUI(title, width, height, positionX, positionY, isMaximized, isFullScreen, episodeId, seasonIndex, seasons);
@@ -352,6 +356,22 @@ namespace ChocoPlayer
         // ══════════════════════════════════════════════════════════════════════
         // Open / Play media
         // ══════════════════════════════════════════════════════════════════════
+        // Local files must be opened with FromPath: FromLocation expects a URL (http://, file:///...)
+        private static Media CreateMedia(LibVLC libVLC, string path)
+        {
+            if (path.StartsWith("http://") || path.StartsWith("https://"))
+            {
+                var media = new Media(libVLC, path, FromType.FromLocation);
+                media.AddOption(":http-reconnect");
+                return media;
+            }
+
+            if (Uri.TryCreate(path, UriKind.Absolute, out var uri) && uri.IsFile)
+                return new Media(libVLC, uri.LocalPath, FromType.FromPath);
+
+            return new Media(libVLC, path, FromType.FromLocation);
+        }
+
         private void OpenFile(string path)
         {
             if (_libVLC == null || _mediaPlayer == null) return;
@@ -364,9 +384,7 @@ namespace ChocoPlayer
                 _mediaPlayer.Stop();
                 oldMedia?.Dispose();
 
-                var media = new Media(_libVLC, path, FromType.FromLocation);
-                if (path.StartsWith("http://") || path.StartsWith("https://"))
-                    media.AddOption(":http-reconnect");
+                var media = CreateMedia(_libVLC, path);
 
                 _mediaPlayer.Media = media;
 
@@ -975,8 +993,6 @@ namespace ChocoPlayer
         // ══════════════════════════════════════════════════════════════════════
         private async void LoadEpisodesForSeason(int seasonId)
         {
-            if (_apiService == null) return;
-
             if (_mediaId == 0)
             {
                 MessageBox.Show("Unable to load episodes: Series ID not defined.",
@@ -986,26 +1002,45 @@ namespace ChocoPlayer
 
             if (_episodesCache.TryGetValue(seasonId, out var cached))
             {
-                _seasonsMenu?.SetEpisodes(cached);
-                _seasonsMenu?.SetCurrentPlayingEpisode(_currentEpisodeId);
+                ShowEpisodes(cached);
+                return;
+            }
+
+            // Stored (downloaded) episodes matching the series and the selected season
+            var storedItems = EpisodesStorage.GetBySeason(seasonId)
+                .Where(s => s.Episode.SeriesId == _mediaId)
+                .GroupBy(s => s.Episode.Id)
+                .ToDictionary(g => g.Key, g => ToEpisodeItem(g.First()));
+
+            if (_apiService == null)
+            {
+                if (storedItems.Count > 0) ShowEpisodes(SortEpisodes(storedItems.Values));
+                else _seasonsMenu?.ClearEpisodes();
                 return;
             }
 
             try
             {
                 var episodes = await _apiService.GetEpisodesBySeasonAsync(_mediaId, seasonId);
-                if (episodes != null && episodes.Count > 0)
-                {
-                    var items = episodes.Select(e => new SeasonsMenu.EpisodeItem(
-                        e.Id, e.EpisodeNumber, e.Name, e.Description,
-                        FormatDuration(e.Duration),
-                        _apiService.GetStreamUrl(seasonId, e.Id),
-                        InsertIntoUrlBeforeFilename(e.SrcPoster, _episodeFormat)
-                    )).ToList();
+                var items = (episodes ?? [])
+                    .Select(e => storedItems.TryGetValue(e.Id, out var stored)
+                        ? stored
+                        : new SeasonsMenu.EpisodeItem(
+                            e.Id, e.EpisodeNumber, e.Name, e.Description,
+                            FormatDuration(e.Duration),
+                            _apiService.GetStreamUrl(seasonId, e.Id),
+                            InsertIntoUrlBeforeFilename(e.SrcPoster, _episodeFormat)))
+                    .ToList();
 
+                // Stored episodes the API did not return
+                var apiIds = items.Select(i => i.Id).ToHashSet();
+                items.AddRange(storedItems.Values.Where(s => !apiIds.Contains(s.Id)));
+
+                if (items.Count > 0)
+                {
+                    items = SortEpisodes(items);
                     _episodesCache[seasonId] = items;
-                    _seasonsMenu?.SetEpisodes(items);
-                    _seasonsMenu?.SetCurrentPlayingEpisode(_currentEpisodeId);
+                    ShowEpisodes(items);
                 }
                 else
                 {
@@ -1014,11 +1049,34 @@ namespace ChocoPlayer
             }
             catch (Exception ex)
             {
+                if (storedItems.Count > 0)
+                {
+                    Console.WriteLine($"[API] ✗ Falling back to stored episodes : {ex.Message}");
+                    ShowEpisodes(SortEpisodes(storedItems.Values));
+                    return;
+                }
+
                 MessageBox.Show($"Unable to load the episodes :\n{ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _seasonsMenu?.ClearEpisodes();
             }
         }
+
+        private void ShowEpisodes(List<SeasonsMenu.EpisodeItem> items)
+        {
+            _seasonsMenu?.SetEpisodes(items);
+            _seasonsMenu?.SetCurrentPlayingEpisode(_currentEpisodeId);
+        }
+
+        private static List<SeasonsMenu.EpisodeItem> SortEpisodes(IEnumerable<SeasonsMenu.EpisodeItem> items)
+            => items.OrderBy(i => i.EpisodeNumber).ToList();
+
+        private SeasonsMenu.EpisodeItem ToEpisodeItem(EpisodeStorageItem stored)
+            => new SeasonsMenu.EpisodeItem(
+                stored.Episode.Id, stored.Episode.EpisodeNumber, stored.Episode.Name, stored.Episode.Description,
+                FormatDuration(stored.Episode.Duration),
+                stored.VideoPath,
+                stored.Episode.SrcPoster);
 
         public string InsertIntoUrlBeforeFilename(string url, string insert)
         {
@@ -1354,9 +1412,7 @@ namespace ChocoPlayer
                     Console.WriteLine("NEW_EPISODE_ID : " + episodeId);
                     Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + _p._currentEpisodeId);
 
-                    var newMedia = new Media(_p._libVLC, episodePath, FromType.FromLocation);
-                    if (episodePath.StartsWith("http://") || episodePath.StartsWith("https://"))
-                        newMedia.AddOption(":http-reconnect");
+                    var newMedia = CreateMedia(_p._libVLC, episodePath);
 
                     _p._mediaPlayer!.Media = newMedia;
 

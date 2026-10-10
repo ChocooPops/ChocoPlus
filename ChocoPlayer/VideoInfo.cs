@@ -20,5 +20,7 @@ namespace ChocoPlayer
         public int SeasonIndex { get; set; }
         public List<Season>? SeasonMenu { get; set; }
         public string? Language { get; set; }
+        public List<EpisodeStorageItem>? EpisodesStorage { get; set; }
+        public bool IsConnected { get; set; }
     }
 }

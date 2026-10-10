@@ -13,6 +13,7 @@ import { firstValueFrom, take } from 'rxjs';
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
 import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { VerifUserAlreadyConnectedService } from '../../../../../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
 
 @Component({
   selector: 'app-start-button',
@@ -34,7 +35,8 @@ export class StartButtonComponent {
   constructor(//private router: Router,
     private readonly streamService: StreamService,
     private readonly seriesService: SeriesService,
-    private readonly historicWatchProgressService: HistoricWatchProgressService
+    private readonly historicWatchProgressService: HistoricWatchProgressService,
+    private readonly verifUserConnected: VerifUserAlreadyConnectedService
   ) { }
 
   srcPlayButton: string = "icon/play.svg";
@@ -57,7 +59,9 @@ export class StartButtonComponent {
       MediaType: this.media.mediaType,
       EpisodeId: -1,
       SeasonIndex: -1,
-      SeasonMenu: []
+      SeasonId: -1,
+      SeasonMenu: [],
+      IsConnected: this.verifUserConnected.IsConnectedValue()
     }
     if (this.media.mediaType === MediaTypeModel.MOVIE) {
       if (this.launch === 'play') {
@@ -92,6 +96,7 @@ export class StartButtonComponent {
 
   private setChocoPlayerForSeries(episode: EpisodeModel, chocoPlayer: ChocoPlayerModel): ChocoPlayerModel {
     chocoPlayer.EpisodeId = episode.id;
+    chocoPlayer.SeasonId = episode.seasonId;
     chocoPlayer.Title = `${chocoPlayer.Title} - ${episode.name}`;
     if (this.seasons) chocoPlayer.SeasonIndex = this.getSeasonIndexFromEpisodeId(this.seasons, episode.seasonId);
       if (this.launch === 'play') {

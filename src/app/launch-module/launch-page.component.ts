@@ -10,7 +10,6 @@ import { VersionService } from '../common-module/services/version/version.servic
 import { VersionModel } from './models/version.interface';
 import { BadVersionComponent } from './components/bad-version/bad-version.component';
 import { NavigationButtonComponent } from '../main-appli-module/menu-module/components/navigation-button/navigation-button.component';
-import { VerifUserAlreadyConnectedService } from './services/verif-user-already-connected/verif-user-already-connected.service';
 
 @Component({
   selector: 'app-launch-page',
@@ -25,7 +24,6 @@ export class LaunchPageComponent {
   isLoading: boolean = true;
   isGoodVersion: boolean = false;
   lastVersion!: VersionModel;
-  userAlreadyConnected!: boolean;
 
   private readonly subscription: Subscription = new Subscription();
   private readonly abortController: AbortController = new AbortController();
@@ -35,16 +33,10 @@ export class LaunchPageComponent {
     private readonly userService: UserService,
     private readonly imagePreloaderService: ImagePreloaderService,
     private readonly authService: AuthService,
-    private readonly versionService: VersionService,
-    private readonly verifUserAlreadyConnectedService: VerifUserAlreadyConnectedService
+    private readonly versionService: VersionService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.subscription.add(
-      this.verifUserAlreadyConnectedService.getIfUserIsAlreadyConnected().subscribe((data: boolean) => {
-        this.userAlreadyConnected = data;
-      })
-    )
 
     let currentVersion!: string;
     try {
@@ -52,7 +44,7 @@ export class LaunchPageComponent {
       currentVersion = await this.versionService.getCurrentVersion();
     } catch {
       if (this.abortController.signal.aborted) return;
-      this.goTo('preload-offline-app');
+      this.goToPreloadOfflineApp();
       this.isGoodVersion = true;
       this.isLoading = false;
       return;
@@ -97,7 +89,7 @@ export class LaunchPageComponent {
             .finally(() => {
               if (this.abortController.signal.aborted) return;
               if (this.isGoodVersion) {
-                this.router.navigateByUrl('preload-stream-app');
+                this.goTo('preload-stream-app');
               }
               this.isLoading = false;
             });
@@ -105,9 +97,9 @@ export class LaunchPageComponent {
         error: (error: HttpErrorResponse) => {
           this.isGoodVersion = true;
           if (error.status === 401) {
-            this.router.navigate(['login'], { relativeTo: this.route });
+            this.goTo('login');
           } else {
-            this.router.navigate(['preload-offline-app'], { relativeTo: this.route });
+            this.goToPreloadOfflineApp();
           }
           this.isLoading = false;
         }
@@ -121,6 +113,10 @@ export class LaunchPageComponent {
 
   setGoodVersion(): void {
     this.isGoodVersion = true;
+  }
+
+  private goToPreloadOfflineApp(): void {
+    this.goTo('preload-offline-app');
   }
 
   private goTo(path: string): void {

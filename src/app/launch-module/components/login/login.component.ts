@@ -3,7 +3,7 @@ import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormPageDirectiveAbstract } from '../form-page.directive';
 import { ButtonFormComponent } from '../button-form/button-form.component';
 import { LoginModel } from '../../models/login.model';
-import { catchError, forkJoin, switchMap, throwError, take } from 'rxjs';
+import { catchError, forkJoin, switchMap, throwError, take, Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserModel } from '../../../main-appli-module/user-module/dto/user.model';
 import { VersionModel } from '../../models/version.interface';
@@ -36,9 +36,12 @@ export class LoginComponent extends FormPageDirectiveAbstract {
   lastVersion!: VersionModel;
   display: boolean = false;
 
+  private subscription!: Subscription;
+
   override ngOnInit(): void {
     const user: UserModel | undefined = this.userService.getCurrentUserValue();
     if(user && user?.id > 0) {
+      this.verifUserAlreadyConnectedService.setUserConnected(true);
       this.navigateToStreamApp();
     } else {
       this.verifUserAlreadyConnectedService.setUserConnected(false);
@@ -48,7 +51,7 @@ export class LoginComponent extends FormPageDirectiveAbstract {
   }
 
   ngOnDestroy(): void {
-    this.verifUserAlreadyConnectedService.setUserConnected(true);
+    this.subscription?.unsubscribe();
   }
 
   private initForm(): void {
@@ -79,17 +82,16 @@ export class LoginComponent extends FormPageDirectiveAbstract {
   }
 
   private verifUserAlreadyConnected(): void {
-    this.userService.fetchCurrentUser().pipe(take(1)).subscribe({
+    this.subscription = this.userService.fetchCurrentUser().pipe(take(1)).subscribe({
       next: (user: UserModel) => {
         if (user && user?.id > 0) {
           this.navigateToStreamApp();
-        } else {
           this.verifUserAlreadyConnectedService.setUserConnected(true);
+        } else {
           this.display = true;
         }
       },
       error: (error: any) => {
-        this.verifUserAlreadyConnectedService.setUserConnected(true);
         this.display = true;
       },
     })
