@@ -42,9 +42,8 @@ export class StreamService {
       }
       if (this.verifConnection.IsConnectedValue()) {
         this.setWatchProgressByMediaOnline(data);
-      } else {
-        this.setWatchProgressByMediaOffLine(data);
       }
+      this.setWatchProgressByMediaOffLine(data);
     });
   }
 
@@ -83,22 +82,14 @@ export class StreamService {
       // });
       this.userHistoricService.saveWathcingProgressUserForEpisode(chocoPlayer.EpisodeId, chocoPlayer.WatchProgress)
         .pipe(take(1))
-        .subscribe((data: MediaProgressingModel | null) => {
-          if (data) {
-            this.historicWatchProgressService.updateHistoricEpisodeById(data.mediaId, data.watchProgress, data.stateProgress);
-          }
-      });
+        .subscribe();
     } else if (chocoPlayer.MediaId && chocoPlayer.MediaId > 0) {
       // this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((data) => {
       //   this.historicWatchProgressService.updateHistoricMovieById(chocoPlayer.MediaId, data.watchProgress, data.state);
       // });
       this.userHistoricService.saveWathcingProgressUserForMovie(chocoPlayer.MediaId, chocoPlayer.WatchProgress)
         .pipe(take(1))
-        .subscribe((data: MediaProgressingModel | null) => {
-          if (data) {
-            this.historicWatchProgressService.updateHistoricMovieById(data.mediaId, data.watchProgress, data.stateProgress);
-          }
-      });
+        .subscribe()
     }
   }
 
