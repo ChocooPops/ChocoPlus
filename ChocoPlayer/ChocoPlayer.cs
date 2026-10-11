@@ -58,7 +58,10 @@ namespace ChocoPlayer
         // ── Constants ──────────────────────────────────────────────────────────
         private const int FULLSCREEN_CONTROLS_WIDTH = 800;
         private const int HIDE_CONTROLS_DELAY = 2000;
-        private const int NETWORK_CACHE_MS = 1500;
+        // Read-ahead buffer per source (ms). Only latency changes: the stream itself is never altered.
+        private const int LOCAL_CACHE_MS = 300;   // disk: fast reads, quick start and seeks
+        private const int HTTP_CACHE_MS  = 1000;  // plain http: usually LAN / self-hosted server
+        private const int HTTPS_CACHE_MS = 2500;  // https: internet + TLS, absorbs latency spikes and costly range requests on seek
 
         // ── Local volume tracking (prevents outdated reads on high-speed presses) ──
         private int _localVolume = 50;
@@ -164,27 +167,24 @@ namespace ChocoPlayer
                 "--no-osd",
                 "--no-video-deco",
 
-                // Cache
-                "--file-caching=1000",
-                $"--network-caching={NETWORK_CACHE_MS}",
-                "--live-caching=500",
-                "--sout-mux-caching=1000",
+                // Cache defaults (overridden per media in CreateMedia)
+                $"--file-caching={LOCAL_CACHE_MS}",
+                $"--network-caching={HTTPS_CACHE_MS}",
 
                 // Hardware & threads
-                "--avcodec-hw=any",
+                "--avcodec-hw=any",             // GPU decoding (same output as software decoding)
                 "--avcodec-threads=0",          // 0 = auto (let libvlc choose)
+
+                // Full quality decoding: never skip deblocking / IDCT, no non-compliant "fast" decoding
+                "--avcodec-skiploopfilter=0",
+                "--avcodec-skip-idct=0",
 
                 // Misc optimisations
                 "--no-plugins-cache",
                 "--no-stats",
                 "--no-sub-autodetect-file",
-                "--drop-late-frames",
+                "--drop-late-frames",           // only when the machine can't keep up: keeps A/V in sync
                 "--skip-frames",
-                "--avcodec-skiploopfilter=2",
-                "--avcodec-skip-idct=4",     // Skip IDCT on non-reference frames (H.265 CPU gain)
-                "--avcodec-fast",             // Enables ffmpeg's fast decoding mode
-                "--clock-jitter=0",
-                "--audio-resampler=soxr",
                 "--quiet",
             };
 
@@ -363,20 +363,28 @@ namespace ChocoPlayer
         // ══════════════════════════════════════════════════════════════════════
         // Open / Play media
         // ══════════════════════════════════════════════════════════════════════
+        // Creates the media with options tuned for its source (local file, http or https).
+        // Only buffering / connection behaviour changes: the audio and video streams are played as is.
         // Local files must be opened with FromPath: FromLocation expects a URL (http://, file:///...)
         private static Media CreateMedia(LibVLC libVLC, string path)
         {
-            if (path.StartsWith("http://") || path.StartsWith("https://"))
+            bool isHttps = path.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+            bool isHttp  = path.StartsWith("http://", StringComparison.OrdinalIgnoreCase);
+
+            if (isHttp || isHttps)
             {
                 var media = new Media(libVLC, path, FromType.FromLocation);
-                media.AddOption(":http-reconnect");
+                media.AddOption($":network-caching={(isHttps ? HTTPS_CACHE_MS : HTTP_CACHE_MS)}");
+                media.AddOption(":http-reconnect");   // resume the download after a network drop
                 return media;
             }
 
-            if (Uri.TryCreate(path, UriKind.Absolute, out var uri) && uri.IsFile)
-                return new Media(libVLC, uri.LocalPath, FromType.FromPath);
+            Media local = Uri.TryCreate(path, UriKind.Absolute, out var uri) && uri.IsFile
+                ? new Media(libVLC, uri.LocalPath, FromType.FromPath)
+                : new Media(libVLC, path, FromType.FromLocation);
 
-            return new Media(libVLC, path, FromType.FromLocation);
+            local.AddOption($":file-caching={LOCAL_CACHE_MS}");
+            return local;
         }
 
         private void OpenFile(string path)
