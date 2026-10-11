@@ -542,7 +542,8 @@
         "RELOAD_METADATA": "メタデータを再読み込み",
         "RELOAD_FILES": "ファイルを再読み込み",
         "RELOAD_FILE": "ファイルを再読み込み",
-        "VIEW_LOGS": "ログを表示"
+        "VIEW_LOGS": "ログを表示",
+        "RELOAD_APP": "アプリを再読み込みする"
     },
     "FOOTER": {
         "VERSION": "バージョン",

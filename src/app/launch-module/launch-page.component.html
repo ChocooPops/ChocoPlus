@@ -1,6 +1,9 @@
 <div class="container">
     <div class="container-other-tab">
         <app-navigation-button></app-navigation-button>
+        <div class="container-reload" (click)="onReload()" [title]="'BUTTON.RELOAD_APP' | translate">
+            <img [src]="srcReload">
+        </div>
     </div>
 
     <div class="container-launch-page-wrapper">

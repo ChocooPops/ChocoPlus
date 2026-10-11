@@ -10,11 +10,13 @@ import { VersionService } from '../common-module/services/version/version.servic
 import { VersionModel } from './models/version.interface';
 import { BadVersionComponent } from './components/bad-version/bad-version.component';
 import { NavigationButtonComponent } from '../main-appli-module/menu-module/components/navigation-button/navigation-button.component';
+import { ElectronService } from '../common-module/services/electron/electron.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-launch-page',
   standalone: true,
-  imports: [RouterOutlet, BadVersionComponent, NavigationButtonComponent],
+  imports: [TranslatePipe, RouterOutlet, BadVersionComponent, NavigationButtonComponent],
   templateUrl: './launch-page.component.html',
   styleUrls: ['./launch-page.component.css', '../../app/common-module/styles/loader.css']
 })
@@ -28,12 +30,15 @@ export class LaunchPageComponent {
   private readonly subscription: Subscription = new Subscription();
   private readonly abortController: AbortController = new AbortController();
 
+  public readonly srcReload = 'icon/restream.svg';
+
   constructor(private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly userService: UserService,
     private readonly imagePreloaderService: ImagePreloaderService,
     private readonly authService: AuthService,
-    private readonly versionService: VersionService
+    private readonly versionService: VersionService,
+    private readonly electronService: ElectronService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -121,6 +126,10 @@ export class LaunchPageComponent {
 
   private goTo(path: string): void {
     this.router.navigate([path], { relativeTo: this.route });
+  }
+
+  async onReload(): Promise<void> {
+    await this.electronService.reloadWindow();
   }
 
 }

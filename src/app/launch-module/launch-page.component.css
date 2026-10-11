@@ -67,8 +67,29 @@
     height: 60px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     position: absolute;
     top: 0;
     right: 160px;
+}
+
+.container-reload {
+    height: 35px;
+    width: 35px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    margin-top: 5px;
+
+    img {
+        height: 20px;
+        width: 20px;
+    }
+
+    &:hover {
+        background-color: #232323;
+    }
 }

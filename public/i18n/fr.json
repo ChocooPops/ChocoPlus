@@ -542,7 +542,8 @@
         "RELOAD_METADATA": "Recharger les métadonnées",
         "RELOAD_FILES": "Recharger le fichier",
         "RELOAD_FILE": "Recharger les fichiers",
-        "VIEW_LOGS": "Visualiser le journal"
+        "VIEW_LOGS": "Visualiser le journal",
+        "RELOAD_APP": "Recharger l'application"
     },
     "FOOTER": {
         "VERSION": "Version",
