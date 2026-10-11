@@ -438,22 +438,31 @@ namespace ChocoPlayer
             }
         }
 
+        // Applies the remembered tracks without overwriting the preference: the saved name stays the one
+        // the user actually picked, instead of drifting to the closest match of each new file
         private void RestorePreferredTracks()
         {
-            if (_trackListener == null) return;
+            var mp = _mediaPlayer;
+            if (mp == null) return;
 
             if (!string.IsNullOrEmpty(_audioLanguageSelected))
             {
-                int audioTrackId = FindAudioTrackByLanguage(_audioLanguageSelected);
-                if (audioTrackId != -1)
-                    _trackListener.OnAudioTrackSelected(audioTrackId);
+                int audioTrackId = _audioLanguageSelected == TrackMatcher.DISABLED
+                    ? -1
+                    : FindAudioTrackByLanguage(_audioLanguageSelected);
+
+                if ((audioTrackId != -1 || _audioLanguageSelected == TrackMatcher.DISABLED) && audioTrackId != mp.AudioTrack)
+                    Task.Run(() => mp.SetAudioTrack(audioTrackId));
             }
 
             if (!string.IsNullOrEmpty(_subtitleLanguageSelected))
             {
-                int subtitleTrackId = FindSubtitleTrackByLanguage(_subtitleLanguageSelected);
-                if (subtitleTrackId != -1)
-                    _trackListener.OnSubtitleTrackSelected(subtitleTrackId);
+                int subtitleTrackId = _subtitleLanguageSelected == TrackMatcher.DISABLED
+                    ? -1
+                    : FindSubtitleTrackByLanguage(_subtitleLanguageSelected);
+
+                if ((subtitleTrackId != -1 || _subtitleLanguageSelected == TrackMatcher.DISABLED) && subtitleTrackId != mp.Spu)
+                    Task.Run(() => mp.SetSpu(subtitleTrackId));
             }
         }
 
@@ -913,16 +922,19 @@ namespace ChocoPlayer
         // ══════════════════════════════════════════════════════════════════════
         // Audio / Subtitle track helpers
         // ══════════════════════════════════════════════════════════════════════
+        // -1 is the "Disable" entry: remembered as DISABLED so the choice is restored too
         private string GetAudioTrackLanguage(int trackId)
         {
-            if (_mediaPlayer == null || trackId == -1) return "";
+            if (trackId == -1) return TrackMatcher.DISABLED;
+            if (_mediaPlayer == null) return "";
             var track = _mediaPlayer.AudioTrackDescription?.FirstOrDefault(t => t.Id == trackId);
             return (track.HasValue && track.Value.Id != 0) ? track.Value.Name ?? "" : "";
         }
 
         private string GetSubtitleTrackLanguage(int trackId)
         {
-            if (_mediaPlayer == null || trackId == -1) return "";
+            if (trackId == -1) return TrackMatcher.DISABLED;
+            if (_mediaPlayer == null) return "";
             var track = _mediaPlayer.SpuDescription?.FirstOrDefault(t => t.Id == trackId);
             return (track.HasValue && track.Value.Id != 0) ? track.Value.Name ?? "" : "";
         }
@@ -947,52 +959,10 @@ namespace ChocoPlayer
         private int FindSubtitleTrackByLanguage(string language)
             => FindTrackByLanguage(language, _mediaPlayer?.SpuDescription);
 
-        private int FindTrackByLanguage(string language, TrackDescription[]? tracks)
+        private static int FindTrackByLanguage(string language, TrackDescription[]? tracks)
         {
-            if (string.IsNullOrEmpty(language) || tracks == null || tracks.Length == 0) return -1;
-
-            string languageLower = language.ToLower();
-            int bestMatchId      = -1;
-            int smallestDistance = int.MaxValue;
-
-            foreach (var track in tracks)
-            {
-                if (track.Name == null) continue;
-
-                string trackNameLower = track.Name.ToLower();
-                if (trackNameLower == languageLower || trackNameLower.Contains(languageLower))
-                    return track.Id;
-
-                int distance = LevenshteinDistance(trackNameLower, languageLower);
-                if (distance < smallestDistance)
-                {
-                    smallestDistance = distance;
-                    bestMatchId      = track.Id;
-                }
-            }
-
-            return (bestMatchId != -1 && smallestDistance <= language.Length / 2) ? bestMatchId : -1;
-        }
-
-        private static int LevenshteinDistance(string source, string target)
-        {
-            if (string.IsNullOrEmpty(source)) return target?.Length ?? 0;
-            if (string.IsNullOrEmpty(target)) return source.Length;
-
-            int sl = source.Length, tl = target.Length;
-            var d  = new int[sl + 1, tl + 1];
-
-            for (int i = 0; i <= sl; i++) d[i, 0] = i;
-            for (int j = 0; j <= tl; j++) d[0, j] = j;
-
-            for (int i = 1; i <= sl; i++)
-                for (int j = 1; j <= tl; j++)
-                {
-                    int cost = target[j - 1] == source[i - 1] ? 0 : 1;
-                    d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
-                }
-
-            return d[sl, tl];
+            if (tracks == null || tracks.Length == 0) return -1;
+            return TrackMatcher.FindBestTrack(language, tracks.Select(t => (t.Id, (string?)t.Name)));
         }
 
         // ══════════════════════════════════════════════════════════════════════
