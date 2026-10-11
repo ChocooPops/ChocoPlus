@@ -1,49 +1,22 @@
-@if (activated) {
-    <div class="container" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}" [title]="(isInList ? 'TUTO.REMOVE_INTO_LIST' : 'TUTO.ADD_INTO_LIST') | translate">
-        @if(!typeButton) {
-        <div class="iconWrap"
-            [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}">
-            @if(isInList) {
-            <img class="icon icon--leave" [src]="srcInListLeave">
-            <img class="icon icon--enter" [src]="srcInListEnter">
-            }@else {
-            <img class="icon icon--leave" [src]="srcNotListLeave">
-            <img class="icon icon--enter" [src]="srcNotListEnter">
-            }
-        </div>
-        }@else {
-        <div class="largestContainerButtonGrey">
-            @if(isInList) {
-            <img [src]="favoris">
-            }@else {
-            <img [src]="notFavoris">
-            }
-            <p> {{ 'BUTTON.MYLIST' | translate }} </p>
-        </div>
-        }
+@let leave = isInList ? srcInListLeave : srcNotListLeave;
+@let enter = isInList ? srcInListEnter : srcNotListEnter;
+
+<div class="container"
+    [class.cursor-pointer]="isConnected && cursor"
+    [class.is-offline]="!isConnected"
+    [attr.title]="isConnected ? ((isInList ? 'TUTO.REMOVE_INTO_LIST' : 'TUTO.ADD_INTO_LIST') | translate) : null"
+    (click)="onClick()">
+    @if (!typeButton) {
+    <div class="iconWrap"
+        [class.containerMovieButton]="typeDisplaying"
+        [class.MovieButtonSizeIfDisplayTypeIsTrue]="!typeDisplaying">
+        <img class="icon icon--leave" [src]="leave">
+        <img class="icon icon--enter" [src]="isConnected ? enter : leave">
     </div>
-}@else {
-    <div class="container is-offline">
-        @if(!typeButton) {
-        <div class="iconWrap"
-            [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}">
-            @if(isInList) {
-            <img class="icon icon--leave" [src]="srcInListLeave">
-            <img class="icon icon--enter" [src]="srcInListLeave">
-            }@else {
-            <img class="icon icon--leave" [src]="srcNotListLeave">
-            <img class="icon icon--enter" [src]="srcNotListLeave">
-            }
-        </div>
-        }@else {
-        <div class="largestContainerButtonGrey">
-            @if(isInList) {
-            <img [src]="favoris">
-            }@else {
-            <img [src]="notFavoris">
-            }
-            <p> {{ 'BUTTON.MYLIST' | translate }} </p>
-        </div>
-        }
+    } @else {
+    <div class="largestContainerButtonGrey">
+        <img [src]="isInList ? favoris : notFavoris">
+        <p>{{ 'BUTTON.MYLIST' | translate }}</p>
     </div>
-}
+    }
+</div>

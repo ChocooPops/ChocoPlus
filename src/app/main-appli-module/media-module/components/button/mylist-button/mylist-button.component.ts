@@ -4,6 +4,7 @@ import { Subject, take, takeUntil, filter, finalize } from 'rxjs';
 import { UserService } from '../../../../user-module/service/user/user.service';
 import { MediaModel } from '../../../models/media.interface';
 import { TranslatePipe } from '@ngx-translate/core';
+import { VerifUserAlreadyConnectedService } from '../../../../../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
 
 @Component({
   selector: 'app-mylist-button',
@@ -18,10 +19,10 @@ export class MylistButtonComponent {
   @Input() typeButton: boolean = false;
   @Input() typeDisplaying: boolean = false;
   @Input() media!: MediaModel;
-  @Input() activated: boolean = true;
 
   isInList: boolean = false;
   isToggling: boolean = false;
+  isConnected!: boolean;
 
   public readonly srcNotListEnter: string = 'icon/notInMyListEnter.svg';
   public readonly srcNotListLeave: string = 'icon/notInMyListLeave.svg';
@@ -32,9 +33,12 @@ export class MylistButtonComponent {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+    private readonly verifUserConncted: VerifUserAlreadyConnectedService
+  ) { }
 
   ngOnInit(): void {
+    this.isConnected = this.verifUserConncted.IsConnectedValue();
     this.userService.getMyListChanged().pipe(
       filter((changedId: number) => changedId === this.media.id),
       takeUntil(this.destroy$)
@@ -57,7 +61,7 @@ export class MylistButtonComponent {
   }
 
   onClick(): void {
-    if (!this.activated || !this.cursor || this.isToggling) return;
+    if (!this.isConnected || !this.cursor || this.isToggling) return;
     if (!this.media || this.media.id <= 0) return;
 
     this.isToggling = true;

@@ -1,31 +1,19 @@
-@if (activated) {
-    <div class="container-button" (click)="onClick()" [ngClass]="{'cursor-pointer': cursor}" [title]="'TUTO.EDIT_METADATA' | translate">
-        @if(!typeButton) {
-        <div class="iconWrap"
-            [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}">
-            <img class="icon icon--leave" [src]="srcImageLeave">
-            <img class="icon icon--enter" [src]="srcImageEnter">
-        </div>
-        }@else {
-        <div class="largestContainerButtonGrey">
-            <img [src]="modify">
-            <p>{{ 'BUTTON.MODIFY' | translate }}</p>
-        </div>
-        }
+<div class="container-button"
+    [class.cursor-pointer]="isConnected && cursor"
+    [class.is-offline]="!isConnected"
+    [attr.title]="isConnected ? ('TUTO.EDIT_METADATA' | translate) : null"
+    (click)="isConnected && onClick()">
+    @if (!typeButton) {
+    <div class="iconWrap"
+        [class.containerMovieButton]="typeDisplaying"
+        [class.MovieButtonSizeIfDisplayTypeIsTrue]="!typeDisplaying">
+        <img class="icon icon--leave" [src]="srcImageLeave">
+        <img class="icon icon--enter" [src]="isConnected ? srcImageEnter : srcImageLeave">
     </div>
-}@else {
-    <div class="container-button is-offline">
-        @if(!typeButton) {
-        <div class="iconWrap"
-            [ngClass]="{'containerMovieButton' : typeDisplaying, 'MovieButtonSizeIfDisplayTypeIsTrue' : !typeDisplaying}">
-            <img class="icon icon--leave" [src]="srcImageLeave">
-            <img class="icon icon--enter" [src]="srcImageLeave">
-        </div>
-        }@else {
-        <div class="largestContainerButtonGrey">
-            <img [src]="modify">
-            <p>{{ 'BUTTON.MODIFY' | translate }}</p>
-        </div>
-        }
+    } @else {
+    <div class="largestContainerButtonGrey">
+        <img [src]="modify">
+        <p>{{ 'BUTTON.MODIFY' | translate }}</p>
     </div>
-}
+    }
+</div>

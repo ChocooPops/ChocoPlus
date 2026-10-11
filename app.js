@@ -964,6 +964,34 @@ function updateProgressEpisodeById(seriesId, seasonId, episodeId, progress) {
   }
 }
 
+
+function shuffleMediaPosters(media) {
+  const POSTER_KEYS = [
+    "srcPosterSpecial",
+    "srcPosterLicense",
+    "srcPosterHorizontal",
+    "srcPosterNormal",
+  ];
+
+  const shuffle = (arr) => {
+    const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+  };
+
+  const result = { ...media };
+  for (const key of POSTER_KEYS) {
+    const value = result[key];
+    if (Array.isArray(value) && value.length > 1) {
+      result[key] = shuffle(value);
+    }
+  }
+  return result;
+}
+
 //=========================================================================================//*
 //=========================================================================================//*
 //=================================== MAIN IPC DOWNLOAD ===================================//*
@@ -1048,7 +1076,11 @@ ipcMain.handle('list-downloads', () => {
   for (const { metadataPath } of sortedDirs) {
     try {
       const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-      downloads.push(formatSeriesSeasons(metadata.media));
+
+      let formatedMedia = formatSeriesSeasons(metadata.media);
+      formatedMedia = shuffleMediaPosters(formatedMedia);
+
+      downloads.push(formatSeriesSeasons(formatedMedia));
     } catch (error) {
       // Corrupt metadata: This entry is ignored
     }

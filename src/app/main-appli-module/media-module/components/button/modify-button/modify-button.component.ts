@@ -4,6 +4,7 @@ import { EditionParametersService } from '../../../../edition-module/services/ed
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 import { TranslatePipe } from '@ngx-translate/core';
+import { VerifUserAlreadyConnectedService } from '../../../../../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
 
 @Component({
   selector: 'app-modify-button',
@@ -19,16 +20,22 @@ export class ModifyButtonComponent {
   @Input() typeDisplaying: boolean = false;
   @Input() idMedia !: number;
   @Input() mediaType !: MediaTypeModel;
-  @Input() activated: boolean = true;
 
-  srcImageEnter: String = "icon/modifyEnter.svg";
-  srcImageLeave: String = "icon/modifyLeave.svg"
-  modify: String = "icon/modify.svg";
+  srcImageEnter: string = "icon/modifyEnter.svg";
+  srcImageLeave: string = "icon/modifyLeave.svg"
+  modify: string = "icon/modify.svg";
+  isConnected!: boolean;
 
-  constructor(private readonly editionParametersService: EditionParametersService) { }
+  constructor(private readonly editionParametersService: EditionParametersService,
+    private readonly verifUserConncted: VerifUserAlreadyConnectedService
+  ) { }
 
+  ngOnInit(): void {
+    this.isConnected = this.verifUserConncted.IsConnectedValue();
+  }
+  
   onClick(): void {
-    if (!this.activated) return;
+    if (!this.isConnected) return;
     if (!this.idMedia || this.idMedia <= 0) return;
     if (!this.cursor) return;
     if (this.idMedia && this.mediaType) {
