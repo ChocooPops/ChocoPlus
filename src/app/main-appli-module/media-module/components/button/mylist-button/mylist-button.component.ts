@@ -1,5 +1,4 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { Subject, take, takeUntil, filter, finalize } from 'rxjs';
 import { UserService } from '../../../../user-module/service/user/user.service';
 import { MediaModel } from '../../../models/media.interface';
@@ -9,7 +8,7 @@ import { VerifUserAlreadyConnectedService } from '../../../../../launch-module/s
 @Component({
   selector: 'app-mylist-button',
   standalone: true,
-  imports: [NgClass, TranslatePipe],
+  imports: [TranslatePipe],
   templateUrl: './mylist-button.component.html',
   styleUrls: ['./mylist-button.component.css', '../../../../common-module/styles/movie-button.css']
 })
