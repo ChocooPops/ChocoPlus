@@ -1241,6 +1241,13 @@ namespace ChocoPlayer
         private void ChocoPlayer_FormClosing(object? sender, FormClosingEventArgs e)
         {
 
+            string progress = GetProgressPercent();
+            
+            if (_hasSeasons)
+                Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + _mediaId + " : " + _currentSeasonId + " : " + _currentEpisodeId + " : " + progress);
+            else
+                Console.WriteLine("UPDATE_PROGRESS : MOVIE : " + _mediaId + " : " + progress);
+
             _mouseDetectionTimer?.Stop();
             _mouseDetectionTimer?.Dispose();
             _seekDebounceTimer?.Stop();
@@ -1248,8 +1255,6 @@ namespace ChocoPlayer
             _volumeDebounceTimer?.Stop();
             _volumeDebounceTimer?.Dispose();
             _playerControls?.StopTimer();
-
-            string progress = GetProgressPercent();
 
             try
             {
@@ -1266,10 +1271,6 @@ namespace ChocoPlayer
             _apiService?.Dispose();
             _seasonsMenu?.ClearEpisodes();
 
-            if (_hasSeasons)
-                Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + _mediaId + " : " + _currentSeasonId + " : " + _currentEpisodeId + " : " + progress);
-            else
-                Console.WriteLine("UPDATE_PROGRESS : MOVIE : " + _mediaId + " : " + progress);
         }
 
         // Watch progress in percent (time / length * 100), formatted with a dot as decimal separator

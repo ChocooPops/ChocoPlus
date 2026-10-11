@@ -120,7 +120,9 @@ function saveWindowState() {
 }
 
 function createWindow() {
-   // Load the previous state of the window
+  let isClosingWindow = false;
+
+  // Load the previous state of the window
   const windowState = loadWindowState();
 
   // Creating the main window using the saved dimensions
@@ -180,9 +182,22 @@ function createWindow() {
     mainWindow.webContents.send('window-unmaximized');
   });
 
-  // Handling window closure
-  mainWindow.on('close', () => {
+  mainWindow.on('close', (event) => {
+    if (isClosingWindow) return;
+
     saveWindowState();
+
+    if (!isCSharpRunning()) return;
+
+    event.preventDefault();
+    isClosingWindow = true;
+    //mainWindow.hide(); // optional: the user sees the window close immediately
+
+    stopCSharpProcess(false).finally(() => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.close();
+      }
+    });
   });
 
   mainWindow.on('closed', () => {
@@ -791,8 +806,8 @@ function collectSeriesEntries(seriesDir, onlySeasonId) {
 }
 
 function getAllEpisodesBySeriesId(seriesId) {
-  if (!seriesId) return episodes;
   const episodes = [];
+  if (!seriesId) return episodes;
   try {
     if (!seriesId) return episodes;
     const seriesPath = path.join(downloadsRootPath, String(seriesId));
@@ -1064,8 +1079,12 @@ ipcMain.handle('is-episode-downloaded', (event, data) => {
 
 ipcMain.handle('get-media-info', (event, mediaId) => {
   const metadataPath = path.join(downloadsRootPath, String(mediaId), FILE_METADATA);
-  const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
-  return metadata.info;
+  if (fs.existsSync(metadataPath)) {
+    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+    return metadata.info;
+  } else {
+    return null;
+  }
 });
 
 ipcMain.handle('get-all-episodes', (event, data) => {
@@ -1122,79 +1141,107 @@ ipcMain.handle('secureStore:deleteRefreshToken', async () =>
 //===================================== CHOCO PLAYER ======================================//
 //=========================================================================================//
 //=========================================================================================//
-function stopCSharpProcess(force = false) {
+
+function isCSharpRunning() {
+  return Boolean(csharpProcess && csharpProcess.exitCode === null && csharpProcess.signalCode === null);
+}
+
+function stopCSharpProcess(force = false, timeoutMs = 3000) {
   mediaLaunched.id = 0;
   mediaLaunched.type = MediaType.OTHER;
 
   return new Promise((resolve) => {
-    if (!csharpProcess || csharpProcess.killed) {
+    const proc = csharpProcess;
+    if (!proc || proc.exitCode !== null || proc.signalCode !== null) {
       csharpProcess = null;
       return resolve();
     }
 
-    csharpProcess.once('close', () => {
-      csharpProcess = null;
+    let timer = null;
+    proc.once('close', () => {
+      clearTimeout(timer);
+      if (csharpProcess === proc) csharpProcess = null;
       resolve();
     });
 
-    try {
+    const kill = (useForce) => {
       if (process.platform === 'win32') {
-        exec(`taskkill /pid ${csharpProcess.pid} /T ${force ? '/F' : ''}`);
+        exec(`taskkill /pid ${proc.pid} /T${useForce ? ' /F' : ''}`, () => {});
       } else {
-        csharpProcess.kill('SIGTERM');
+        proc.kill(useForce ? 'SIGKILL' : 'SIGTERM');
       }
+    };
+
+    try {
+      kill(force);
+      if (!force) timer = setTimeout(() => kill(true), timeoutMs);
     } catch (e) {
+      clearTimeout(timer);
       csharpProcess = null;
       resolve();
     }
   });
 }
 
-ipcMain.handle('launch-choco-player', async (event, dataObject) => {
-  try {
-    
-    mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.LAUNCHING });
+let launchQueue = Promise.resolve();
 
-    if (  
-      (mediaLaunched.type === MediaType.MOVIE && mediaLaunched.id === dataObject.MediaId) 
-      || 
+ipcMain.handle('launch-choco-player', (event, dataObject) => {
+  const run = launchQueue.then(() => launchChocoPlayer(dataObject));
+  launchQueue = run.catch(() => {});
+  return run;
+});
+
+async function launchChocoPlayer(dataObject) {
+  try {
+    // Same media already playing: nothing to do.
+    if (
+      (mediaLaunched.type === MediaType.MOVIE && mediaLaunched.id === dataObject.MediaId) ||
       (mediaLaunched.type === MediaType.SERIES && mediaLaunched.id === dataObject.EpisodeId)
     ) {
       return;
     }
 
-    // Check if a process is already running
-    if (csharpProcess && !csharpProcess.killed) {
-      await stopCSharpProcess(true);
-      if (mediaLaunched.type === MediaType.MOVIE) {
-        mainWindow.webContents.send('choco-player-status', { MediaId: mediaLaunched.id ?? 0 });
-      } else if (mediaLaunched.type === MediaType.SERIES) {
-        mainWindow.webContents.send('choco-player-status', { EpisodeId: mediaLaunched.id ?? 0 });
+    // Another media is playing: stop it cleanly before launching the new one.
+    if (isCSharpRunning()) {
+      const previous = { ...mediaLaunched };
+      await stopCSharpProcess(false);
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        if (previous.type === MediaType.MOVIE) {
+          mainWindow.webContents.send('choco-player-status', { MediaId: previous.id });
+        } else if (previous.type === MediaType.SERIES) {
+          mainWindow.webContents.send('choco-player-status', { EpisodeId: previous.id });
+        }
       }
     }
+
+    if (!mainWindow || mainWindow.isDestroyed()) return;
+
+    // Sent after the stop: otherwise the old process's CLOSED would arrive after this LAUNCHING.
+    mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.LAUNCHING });
 
     mediaLaunched.id = 0;
     mediaLaunched.type = MediaType.OTHER;
 
     if (dataObject.MediaType === MediaType.MOVIE) {
       mediaLaunched.id = dataObject.MediaId;
-      mediaLaunched.type = dataObject.MediaType;
+      mediaLaunched.type = MediaType.MOVIE;
+
       const metadata = getMetadataByMediaId(dataObject.MediaId);
       if (metadata && metadata.videoPath) {
         dataObject.Url = metadata.videoPath;
       }
     } else if (dataObject.MediaType === MediaType.SERIES) {
       mediaLaunched.id = dataObject.EpisodeId;
-      mediaLaunched.type = dataObject.MediaType;
+      mediaLaunched.type = MediaType.SERIES;
 
       const metadata = getMetadataByEpisodeId(dataObject.MediaId, dataObject.SeasonId, dataObject.EpisodeId);
       if (metadata && metadata.videoPath) {
         dataObject.Url = metadata.videoPath;
       }
 
-      const episodes = getAllEpisodesBySeriesId(dataObject.MediaId);
-      dataObject.EpisodesStorage = episodes;
+      dataObject.EpisodesStorage = getAllEpisodesBySeriesId(dataObject.MediaId);
     } else {
+      mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
       return;
     }
 
@@ -1209,66 +1256,79 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
     dataObject.HEADER_SECRET = process.env.HEADER_SECRET_API;
     dataObject.WatchProgress = dataObject.WatchProgress ?? 0;
 
-    let csharpAppPath = '';
-    if (app.isPackaged) {
-      csharpAppPath = path.join(process.resourcesPath, 'ChocoPlayer', 'ChocoPlayer.exe');
-    } else {
-      csharpAppPath = path.join(
-        __dirname,
-        'ChocoPlayer', 'bin', 'Debug', 'net9.0-windows', 'ChocoPlayer.exe'
-      );
-    }
+    const csharpAppPath = app.isPackaged
+      ? path.join(process.resourcesPath, 'ChocoPlayer', 'ChocoPlayer.exe')
+      : path.join(__dirname, 'ChocoPlayer', 'bin', 'Debug', 'net9.0-windows', 'ChocoPlayer.exe');
 
-    const jsonString = JSON.stringify(dataObject);
+    const proc = spawn(csharpAppPath, [JSON.stringify(dataObject)], {
+      detached: false,
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+    csharpProcess = proc;
 
-    csharpProcess = spawn(
-      csharpAppPath,
-      [jsonString],
-      {
-        detached: false,
-        stdio: ['ignore', 'pipe', 'pipe']
-      }
-    );
+    // The handlers below only act on THIS process, never on the one that replaced it.
+    const isCurrent = () => csharpProcess === proc;
+    const canSend = () => isCurrent() && mainWindow && !mainWindow.isDestroyed();
 
-    csharpProcess.stdout.on('data', async (data) => {
-      const stdoutBuffer = data.toString();
+    // stdout can split a line across two chunks: keep the unfinished end for the next chunk.
+    let stdoutRest = '';
 
-      const lines = stdoutBuffer.split('\n');
+    proc.stdout.on('data', (data) => {
+      const lines = (stdoutRest + data.toString()).split('\n');
+      stdoutRest = lines.pop();
 
       for (const rawLine of lines) {
         const message = rawLine.trim();
-        if (!mainWindow || mainWindow.isDestroyed()) return;
+        if (!message) continue;
 
-        if (message.startsWith(NEW_EPISODE_ID) && mediaLaunched.type === MediaType.SERIES) {
-          const id = Number(message.split(' : ')[1].trim());
-          mediaLaunched.id = id;
+        if (message.startsWith(NEW_EPISODE_ID)) {
+          if (isCurrent() && mediaLaunched.type === MediaType.SERIES) {
+            mediaLaunched.id = Number(message.split(' : ')[1].trim());
+          }
           continue;
         }
 
         if (Object.values(ProcessStatus).includes(message)) {
-          mainWindow.webContents.send('choco-player-status', { status: message });
+          if (canSend()) {
+            mainWindow.webContents.send('choco-player-status', { status: message });
+          }
           continue;
-        } else if (message.startsWith(UPDATE_PROGRESS)) {
-          const mediaId = Number(message.split(' : ')[2].trim());
+        }
+
+        if (message.startsWith(UPDATE_PROGRESS)) {
+          const parts = message.split(' : ').map((part) => part.trim());
+          const mediaId = Number(parts[2]);
+
           if (message.includes(MediaType.MOVIE)) {
-            const progress = Number(message.split(' : ')[3].trim());
-            updateProgressMovieById(mediaId, progress)
-            mainWindow.webContents.send('choco-player-status', { MediaId: mediaId, WatchProgress: progress, StateProgress: getStatProgressType(progress) });
-            continue;
+            const progress = Number(parts[3]);
+            // Written to disk in all cases (even if the window is closed or the process was replaced).
+            updateProgressMovieById(mediaId, progress);
+            if (canSend()) {
+              mainWindow.webContents.send('choco-player-status', {
+                MediaId: mediaId,
+                WatchProgress: progress,
+                StateProgress: getStatProgressType(progress)
+              });
+            }
           } else if (message.includes(MediaType.EPISODE)) {
-            const seasonId = Number(message.split(' : ')[3].trim());
-            const episodeId = Number(message.split(' : ')[4].trim());
-            const progress = Number(message.split(' : ')[5].trim());
+            const seasonId = Number(parts[3]);
+            const episodeId = Number(parts[4]);
+            const progress = Number(parts[5]);
             updateProgressEpisodeById(mediaId, seasonId, episodeId, progress);
-            mainWindow.webContents.send('choco-player-status', { EpisodeId: episodeId, WatchProgress: progress, StateProgress: getStatProgressType(progress) });
-            continue;
+            if (canSend()) {
+              mainWindow.webContents.send('choco-player-status', {
+                EpisodeId: episodeId,
+                WatchProgress: progress,
+                StateProgress: getStatProgressType(progress)
+              });
+            }
           }
         }
       }
-
     });
 
-    csharpProcess.on('close', (code) => {
+    proc.on('close', () => {
+      if (!isCurrent()) return;
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
       }
@@ -1277,17 +1337,26 @@ ipcMain.handle('launch-choco-player', async (event, dataObject) => {
       csharpProcess = null;
     });
 
-    csharpProcess.on('error', (err) => {
+    proc.on('error', (err) => {
+      console.error('ChocoPlayer error:', err);
+      if (!isCurrent()) return;
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
+      }
+      mediaLaunched.id = 0;
+      mediaLaunched.type = MediaType.OTHER;
       csharpProcess = null;
     });
 
     return 'C# Player launched';
   } catch (err) {
-    mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('choco-player-status', { status: ProcessStatus.CLOSED });
+    }
     await stopCSharpProcess(true);
     throw new Error(err.message);
   }
-});
+}
 
 //=========================================================================================//*
 //=========================================================================================//*
@@ -1377,7 +1446,9 @@ ipcMain.handle('delete-cache', async () => {
 });
 
 ipcMain.handle('reload-app', async () => {
-  await stopCSharpProcess(true);
+  if (isCSharpRunning()) {
+    await stopCSharpProcess(false);
+  }
   if (hasActiveDownloads()) {
     await abortActiveDownloads();
   }
@@ -1413,7 +1484,7 @@ ipcMain.handle('window-close', () => {
 let isQuitting = false;
 app.on('before-quit', async (event) => {
   if (isQuitting) return;
-  const needsCleanup = (csharpProcess && !csharpProcess.killed) || hasActiveDownloads() || hasActiveDeletions();
+  const needsCleanup = (isCSharpRunning()) || hasActiveDownloads() || hasActiveDeletions();
 
   if (!needsCleanup) return;
 
@@ -1421,8 +1492,8 @@ app.on('before-quit', async (event) => {
   isQuitting = true;
 
   try {
-    if (csharpProcess && !csharpProcess.killed) {
-      await stopCSharpProcess(true);
+    if (isCSharpRunning()) {
+      await stopCSharpProcess(false);
     }
     if (hasActiveDownloads()) {
       await abortActiveDownloads();
