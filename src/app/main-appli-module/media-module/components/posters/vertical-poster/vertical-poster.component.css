@@ -1,7 +1,13 @@
+@property --poster-fade-alpha {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 1;
+}
+
 .containerPoster {
     z-index: 20;
     display: grid;
-    grid-template: 83% 17% / 100%;
+    grid-template: 100% / 100%;
     margin: 0;
     transition: transform 0.4s ease-out, border 0.3s, box-shadow 0.1s;
     border-radius: 5px;
@@ -14,6 +20,21 @@
     display: grid;
     grid-template: 100% / 100%;
     flex-direction: column;
+    overflow: hidden;
+}
+
+.containerPosterContent {
+    display: grid;
+    grid-template: 83% 17% / 100%;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background-color: transparent;
+    transition: background-color 0.2s;
+}
+
+.heightForEdition .containerPosterContent {
+    grid-template: 100% / 100%;
     overflow: hidden;
 }
 
@@ -41,8 +62,12 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border: transparent solid 2px;
-        transition: opacity 0.3s;
+        border: transparent solid 2px;;
+    }
+
+    > img {
+        mask-image: linear-gradient(to bottom, black 75%, rgba(0, 0, 0, var(--poster-fade-alpha)));
+        transition: opacity 0.2s, --poster-fade-alpha 0.2s;
     }
 }
 
@@ -160,6 +185,14 @@
 
     .containerInterfacePoster {
         opacity: 1;
+    }
+
+    .containerPosterPicture img {
+        --poster-fade-alpha: 0;
+    }
+
+    .containerPosterContent {
+        background-color: #141414;
     }
 }
 
