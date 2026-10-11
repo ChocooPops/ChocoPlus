@@ -11,6 +11,7 @@
 
 - [Vue d'ensemble](#-vue-densemble)
 - [Fonctionnalités principales](#-fonctionnalités-principales)
+- [Téléchargements et mode hors ligne](#-téléchargements-et-mode-hors-ligne)
 - [Architecture](#-architecture)
 - [Modèle de données](#-modèle-de-données)
 - [Internationalisation](#-internationalisation-i18n)
@@ -35,6 +36,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - **Architecture hybride** : Interface Electron/Angular + Lecteur natif C#/WinForms
 - **Sélections dynamiques** : Création de sélections thématiques de films/séries par type de page
 - **Streaming HLS** : Support du streaming adaptatif avec hls.js (Fonctionnalité obsolète)
+- **Téléchargement et mode hors ligne** : Films et épisodes téléchargés sur le disque, consultables et lisibles sans connexion
 - **Authentification sécurisée** : Stockage sécurisé des tokens avec Keytar
 - **Graphiques interactifs** : Visualisation d'un graphe avec D3.js et de plusieurs statistiques personnelles
 - **Multilingue** : Interface disponible en français, anglais et japonais
@@ -45,7 +47,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - **Inscription avec validation admin** : Les nouveaux comptes doivent être approuvés
 - **Authentification JWT** : Connexion sécurisée avec refresh tokens
 - **Profils personnalisés** : Photo de profil, informations personnelles
-- **Gestion des rôles** : ADMIN, USER, FAMILY, NOT_ACTIVATE, SUSPENDED
+- **Gestion des rôles** : ADMIN, USER, FAMILY, NOT_ACTIVATE, SUSPENDED (seuls ADMIN et FAMILY peuvent télécharger des médias)
 
 ### Navigation et catalogue
 - **Page Accueil** : Actualités avec News en vedette et sélections de films ou séries à la une = catalogue de film par réalisateur
@@ -69,6 +71,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - **Lecteur natif C#** : Performance optimale avec LibVLCSharp
 - **Sous-titres** : Support multi-langues synchronisé
 - **Reprises de lecture** : Système de statistiques pour continuer où vous vous êtes arrêté
+- **Lecture locale prioritaire** : Un film ou un épisode téléchargé est lu depuis le disque plutôt qu'en streaming
 - **Contrôles personnalisés** : Interface overlay avec gestion plein écran
 - **Communication IPC** : Coordination avec l'interface Electron
 
@@ -81,6 +84,99 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
   - Diagramme fromage des catégories les plus visionnées
   - Statistique de nombre d'heure de visionnage par date
 - **Suivi de visionnage** : État NOT_WATCHED, IN_PROGRESS ou FINISHED par média/épisode
+
+## 📥 Téléchargements et mode hors ligne
+
+Les films et les épisodes peuvent être téléchargés sur le disque pour être regardés sans connexion.
+
+> **Accès** : les téléchargements sont réservés aux rôles **ADMIN** et **FAMILY**. Pour les autres rôles, les boutons de téléchargement et l'accès à la page Téléchargements ne sont pas affichés.
+
+Tout le travail sur les fichiers (téléchargement, annulation, suppression, lecture des métadonnées) est fait par le **Main Process** (`app.js`). L'interface Angular le pilote par IPC.
+
+### Pages
+
+- **Page Téléchargements** (`/downloads`) : liste des médias téléchargés, progression en cours, historique, répartition de l'espace disque et suppression
+- **Mode hors ligne** (`/offline-app`) : version de l'application utilisable sans connexion, limitée aux contenus téléchargés
+
+### Stockage sur le disque
+
+Les téléchargements sont rangés dans le dossier `userData` d'Electron (`%APPDATA%/ChocoPlus/downloads` sous Windows) :
+
+```
+downloads/
+├── <movieId>/                    # Film
+│   ├── metadata.json             # { media, info, videoPath }
+│   ├── images/                   # Posters, fond, logo
+│   └── <fichier vidéo>
+│
+└── <seriesId>/                   # Série
+    ├── metadata.json             # { media, info } (sans vidéo)
+    ├── images/                   # Posters de la série et des saisons
+    └── <seasonId>/
+        └── <episodeId>/
+            ├── metadata.json     # { episode, videoPath }
+            ├── images/           # Poster de l'épisode
+            └── <fichier vidéo>
+```
+
+- Le nom du fichier vidéo vient de l'en-tête `Content-Disposition` de l'API. À défaut, il est déduit du `Content-Type` (`.mkv` par défaut).
+- La vidéo est d'abord écrite dans un fichier `.part`, renommé une fois le téléchargement complet.
+- Les images sont téléchargées localement et référencées en `file:///` dans les métadonnées.
+- Les champs propres à l'affichage en ligne (crédits, catégories, progression…) sont retirés avant l'écriture du `metadata.json`.
+
+### Déroulement d'un téléchargement
+
+1. L'interface récupère les métadonnées du média auprès de l'API, puis appelle `download-media`.
+2. Le Main Process télécharge les images, puis la vidéo depuis `download/download-movie/<id>` ou `download/download-episode/<id>` (avec le token JWT et la clé secrète de l'API).
+3. La progression est envoyée à l'interface avec l'événement `download-progress` : au plus une fois toutes les 500 ms ou à chaque point de pourcentage, puis `percent: 100` à la fin. L'interface en déduit la vitesse et le temps restant.
+4. Pour un épisode, les métadonnées de la série ne sont téléchargées que si elles ne sont pas déjà sur le disque.
+
+### Annulation
+
+- `cancel-download` interrompt le téléchargement en cours (`AbortController`). Il attend que les fichiers partiels soient supprimés, puis renvoie `{ key, fileName }`.
+- `fileName` est le nom du fichier vidéo s'il était connu, sinon le titre du film ou le nom de l'épisode.
+- Si l'annulation arrive pendant que l'interface récupère encore les métadonnées, elle est mise en attente. Le `download-media` qui suit est alors ignoré, et l'annulation renvoie le nom tiré de ses métadonnées. Sans `download-media` au bout de 30 secondes, elle renvoie `fileName: null`.
+- Après un échec ou une annulation, seul le dossier de l'épisode est supprimé. Les dossiers de la saison et de la série ne sont supprimés que s'ils sont vides et qu'aucun autre épisode de la même série n'est en cours de téléchargement.
+
+### Suppression
+
+`delete-download` supprime un film, une série, une saison ou un épisode. Une saison sans épisode et une série sans saison sont supprimées automatiquement. Le résultat contient :
+- `entries` : la liste des éléments supprimés (`{ key, fileName, episode }`)
+- `media` : les métadonnées du média concerné
+- `hasNoEpisode` : pour un épisode, `true` si sa saison n'a plus aucun épisode (sinon `null`)
+
+Les suppressions ne sont jamais interrompues, pour ne pas laisser un dossier à moitié supprimé.
+
+### Saisons d'une série téléchargée
+
+`list-downloads` et `download-media` renvoient les séries avec leurs saisons formatées :
+- `hasNoEpisodes` : la saison n'a aucun épisode téléchargé
+- `isClicked` : la saison sélectionnée à l'ouverture, celle de l'épisode créé ou mis à jour le plus récemment
+
+### Progression hors ligne
+
+Quand ChocoPlayer signale une progression (`UPDATE_PROGRESS`), elle est aussi écrite dans le `metadata.json` du film ou de l'épisode téléchargé (`watchProgress`, `stateProgress`, `updatedAt`). Un média est considéré comme terminé à partir de 93 % de visionnage. `get-last-watched-episode` utilise ces dates pour retrouver le dernier épisode regardé d'une série.
+
+### Fermeture et rechargement
+
+À la fermeture de l'application ou lors d'un `reload-app`, les téléchargements en cours sont annulés (fichiers partiels supprimés) et les suppressions en cours sont attendues avant de continuer.
+
+### IPC disponibles
+
+| Canal | Rôle |
+|-------|------|
+| `download-media` | Télécharge un film ou un épisode (et les métadonnées de la série si besoin) |
+| `cancel-download` | Annule un téléchargement et renvoie `{ key, fileName }` |
+| `download-progress` | Événement de progression envoyé à l'interface |
+| `delete-download` | Supprime un film, une série, une saison ou un épisode |
+| `list-downloads` | Liste les médias téléchargés, du plus ancien au plus récent |
+| `download-is-empty` | Indique si aucun média n'est téléchargé |
+| `is-media-downloaded` | Indique si un film ou une série est téléchargé |
+| `is-episode-downloaded` | Indique si un épisode est téléchargé |
+| `get-media-info` | Renvoie les informations (`info`) d'un média téléchargé |
+| `get-all-episodes` | Renvoie les épisodes téléchargés d'une saison, triés par numéro |
+| `get-last-watched-episode` | Renvoie le dernier épisode regardé d'une série téléchargée |
+| `get-storage-info` | Renvoie l'espace disque total et libre, la taille des téléchargements et celle du cache |
 
 ## 🏗️ Architecture
 
@@ -106,6 +202,7 @@ ChocoPlus utilise une architecture hybride particulière :
 │  │  - Window Management                   │ │        │
 │  │  - Secure Token Storage (Keytar)       │ │        │
 │  │  - File System Operations              │ │        │
+│  │  - Downloads & Offline Storage         │ │        │
 │  │  - Process Spawning                    │ │        │
 │  └────────────────────────────────────────┘ │        │
 └─────────────────────────────────────────────┘        │
@@ -646,12 +743,27 @@ Lors du lancement de ChocoPlayer, Electron transmet :
 - Token d'authentification (récupéré via Keytar)
 - Informations du média à lire
 - Configuration du streaming
+- Le chemin du fichier vidéo local (`Url`) si le film ou l'épisode est téléchargé : il est alors lu en priorité
+- Pour une série, la liste des épisodes téléchargés (`EpisodesStorage`)
+
+En retour, ChocoPlayer écrit des messages sur sa sortie standard, lus ligne par ligne par Electron :
+
+| Message | Rôle |
+|---------|------|
+| `LAUNCHING`, `NETWORK_SLOWDOWN`, `STREAMING`, `CLOSED` | État du lecteur, relayé à l'interface (`choco-player-status`) |
+| `NEW_EPISODE_ID : <id>` | Passage à un autre épisode dans le lecteur |
+| `UPDATE_PROGRESS : MOVIE : <mediaId> : <progress>` | Progression d'un film |
+| `UPDATE_PROGRESS : EPISODE : <seriesId> : <seasonId> : <episodeId> : <progress>` | Progression d'un épisode |
+
+La progression est relayée à l'interface (`WatchProgress`, `StateProgress`) et enregistrée dans les métadonnées si le média est téléchargé.
 
 ### Gestion des processus
 
-- ChocoPlayer est un processus enfant spawné par Electron
-- À la fermeture de l'app, Electron termine proprement ChocoPlayer (`taskkill`)
-- Support de plusieurs instances si nécessaire (détection via PID)
+- Une seule instance de ChocoPlus peut être ouverte : une deuxième tentative de lancement remet la fenêtre existante au premier plan
+- ChocoPlayer est un processus enfant spawné par Electron, et un seul lecteur tourne à la fois
+- Les lancements sont mis en file d'attente : relancer le même média ne fait rien, lancer un autre média ferme d'abord le lecteur en cours
+- ChocoPlayer est d'abord fermé proprement (`taskkill` sans `/F`), puis de force après 3 secondes s'il ne s'est pas arrêté
+- À la fermeture de la fenêtre, Electron attend la fin de ChocoPlayer ; à la fermeture de l'app ou lors d'un rechargement, il attend aussi l'annulation des téléchargements et la fin des suppressions en cours
 
 ### Streaming vidéo
 
