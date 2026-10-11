@@ -479,6 +479,9 @@ namespace ChocoPlayer
                     g2d.DrawString($"{Locale.Get("season.season")} {_seasons[i].SeasonNumber}", font, brush, itemRect.X + 15, itemRect.Y + (itemRect.Height - font.Height) / 2);
                 }
 
+                if (_seasons[i].HasNoEpisode)
+                    DrawNoEpisodeBadge(g2d, itemRect);
+
                 if (isSelected)
                 {
                     int checkSize = 12;
@@ -515,6 +518,29 @@ namespace ChocoPlayer
                 {
                     g2d.FillRectangle(brush, scrollbarX, handleY, scrollbarWidth, handleHeight);
                 }
+            }
+        }
+
+        // Red dot + label on the right of a season row that has no available episode
+        private void DrawNoEpisodeBadge(Graphics g2d, Rectangle itemRect)
+        {
+            Color red = Color.FromArgb(229, 57, 53);
+            string label = Locale.Get("season.empty");
+            int rightMargin = 45; // keeps room for the selection check mark
+
+            using (Font font = new Font("Segoe UI", FontDropdown - 1, FontStyle.Regular))
+            using (SolidBrush brush = new SolidBrush(red))
+            {
+                SizeF textSize = g2d.MeasureString(label, font);
+                float textX = itemRect.Right - rightMargin - textSize.Width;
+                float textY = itemRect.Y + (itemRect.Height - textSize.Height) / 2;
+
+                int dotSize = 8;
+                float dotX = textX - dotSize - 6;
+                float dotY = itemRect.Y + (itemRect.Height - dotSize) / 2f;
+
+                g2d.FillEllipse(brush, dotX, dotY, dotSize, dotSize);
+                g2d.DrawString(label, font, brush, textX, textY);
             }
         }
 
@@ -807,12 +833,14 @@ namespace ChocoPlayer
             public int Id { get; set; }
             public string Name { get; set; }
             public int SeasonNumber { get; set; }
+            public bool HasNoEpisode { get; set; }
 
-            public SeasonItem(int id, string name, int seasonNumber)
+            public SeasonItem(int id, string name, int seasonNumber, bool hasNoEpisode = false)
             {
                 Id = id;
                 Name = name;
                 SeasonNumber = seasonNumber;
+                HasNoEpisode = hasNoEpisode;
             }
         }
 

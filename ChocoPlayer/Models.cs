@@ -8,6 +8,7 @@ namespace ChocoPlayer
         public int SeriesId { get; set; }
         public string Name { get; set; }
         public int SeasonNumber { get; set; }
+        public bool HasNoEpisode { get; set; }
 
         public Season(int id, int seriesId, string name, int seasonNumber)
         {

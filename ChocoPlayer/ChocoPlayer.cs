@@ -43,6 +43,7 @@ namespace ChocoPlayer
         private List<Season> _seasons = new();
         private bool _isFullscreen = false;
         private bool _hasSeasons = false;
+        private bool _isConnected;
         private string _episodeFormat = "300w";
         private Dictionary<int, List<SeasonsMenu.EpisodeItem>> _episodesCache = new();
 
@@ -125,6 +126,7 @@ namespace ChocoPlayer
         {
             _mediaId       = mediaId;
             _currentSeasonId = seasonId;
+            _isConnected     = isConnected;
             _watchProgress = watchProgress;
 
             if (isConnected)
@@ -347,7 +349,7 @@ namespace ChocoPlayer
 
                 if (seasons != null)
                 {
-                    var seasonItems = seasons.Select(s => new SeasonsMenu.SeasonItem(s.Id, s.Name, s.SeasonNumber)).ToList();
+                    var seasonItems = seasons.Select(s => new SeasonsMenu.SeasonItem(s.Id, s.Name, s.SeasonNumber, !_isConnected && s.HasNoEpisode)).ToList();
                     int idx = seasonIndex > 0 ? seasonIndex : 0;
                     _seasonsMenu.LoadSeasons(seasonItems, idx);
                     LoadEpisodesForSeason(seasons[idx].Id);

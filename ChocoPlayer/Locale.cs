@@ -23,6 +23,7 @@ namespace ChocoPlayer
                 ["season.loading"]     = "Chargement...",
                 ["season.episode"]     = "ÉP.",
                 ["season.playing"]     = "En lecture",
+                ["season.empty"]       = "Aucun épisode",
             },
             ["en"] = new()
             {
@@ -39,6 +40,7 @@ namespace ChocoPlayer
                 ["season.loading"]     = "Loading...",
                 ["season.episode"]     = "EP.",
                 ["season.playing"]     = "Now Playing",
+                ["season.empty"]       = "No episode",
             },
             ["ja"] = new()
             {
@@ -55,6 +57,7 @@ namespace ChocoPlayer
                 ["season.loading"]     = "読み込み中...",
                 ["season.episode"]     = "EP.",
                 ["season.playing"]     = "再生中",
+                ["season.empty"]       = "エピソードなし",
             },
         };
 

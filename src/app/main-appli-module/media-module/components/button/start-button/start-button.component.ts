@@ -119,7 +119,8 @@ export class StartButtonComponent {
         Id: season.id,
         SeriesId: season.seriesId,
         Name: season.name,
-        SeasonNumber: season.seasonNumber
+        SeasonNumber: season.seasonNumber,
+        HasNoEpisode: season.hasNoEpisodes
     })) : [];
     return chocoPlayer;
   }
