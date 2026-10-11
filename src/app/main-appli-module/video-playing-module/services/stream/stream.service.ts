@@ -10,7 +10,6 @@ import { ProcessStatus } from '../../models/process-status.enum';
 import { TranslationLanguageService } from '../../../../common-module/services/translation-language/translation-language.service';
 import { VerifUserAlreadyConnectedService } from '../../../../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
 import { UserHistoricService } from '../../../user-module/service/user-historic/user-historic.service';
-import { MediaProgressingModel } from '../../models/media-progressing.interface';
 
 declare const window: any;
 
@@ -40,10 +39,10 @@ export class StreamService {
       if (data.status && Object.values(ProcessStatus).includes(data.status)) {
         this.csharpProcessStatusSubject.next(data.status);
       }
+      this.setWatchProgressByMediaOffLine(data);
       if (this.verifConnection.IsConnectedValue()) {
         this.setWatchProgressByMediaOnline(data);
       }
-      this.setWatchProgressByMediaOffLine(data);
     });
   }
 
