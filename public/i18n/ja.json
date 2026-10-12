@@ -242,7 +242,8 @@
             "DEACTIVATED": "無効",
             "MEDIA_LOGO_DISPLAY": "ポスターにロゴまたはタイトルを表示",
             "SHOW_LOGO": "ロゴ",
-            "SHOW_TITLE": "タイトル"
+            "SHOW_TITLE": "タイトル",
+            "SOUND_VIDEO": "紹介動画の音声を有効にする"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "データベースの表示は、性能の低いコンピューターで大量のリソースを消費する可能性があります",

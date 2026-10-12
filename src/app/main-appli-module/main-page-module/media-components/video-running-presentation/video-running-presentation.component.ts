@@ -8,6 +8,7 @@ import { RestreamButtonComponent } from '../../../media-module/components/button
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import { AutoPlayVideoService } from '../../../common-module/services/auto-play-video/auto-play-video.service';
 import { MediaLogoDisplayService } from '../../../common-module/services/media-logo-display/media-logo-display.service';
+import { SoundVideoService } from '../../../common-module/services/sound-video/sound-video.service';
 import { CutoffButtonComponent } from '../../../media-module/components/button/cutoff-button/cutoff-button.component';
 import { NewsVideoRunningModel } from '../../../news-module/models/news-video-running.interface';
 import { StreamService } from '../../../video-playing-module/services/stream/stream.service';
@@ -46,11 +47,13 @@ export class VideoRunningPresentationComponent {
   constructor(private readonly compressedPosterService: CompressedPosterService,
     private readonly streamService: StreamService,
     private readonly autoPlayVideoService: AutoPlayVideoService,
-    private readonly mediaLogoDisplayService: MediaLogoDisplayService
+    private readonly mediaLogoDisplayService: MediaLogoDisplayService,
+    private readonly soundVideoService: SoundVideoService
   ) { }
 
   ngOnInit(): void {
     this.showLogo = this.mediaLogoDisplayService.getShowLogo();
+    this.currentVolume = this.soundVideoService.getInitialVolume();
     this.srcLogo = this.compressedPosterService.getLogoForMediaPresentationTopHead(this.newsMedia.media);
     this.srcBackground = this.compressedPosterService.getBackgroundForNewsVideoRunning(this.newsMedia);
     this.seasons = (this.newsMedia.media as SeriesModel).seasons;
@@ -87,7 +90,12 @@ export class VideoRunningPresentationComponent {
     const video = this.videoRef?.nativeElement;
     if (!video || !this.isVideoLoaded) return;
     if (this.isVisible) {
-      video.play().catch(() => { /* autoplay disabled or playback paused */ });
+      video.play().catch((error: DOMException) => {
+        if (error.name === 'NotAllowedError' && video.volume > 0) {
+          video.volume = 0;
+          video.play().catch(() => { /* autoplay disabled or playback paused */ });
+        }
+      });
     } else {
       video.pause();
     }
@@ -150,6 +158,7 @@ export class VideoRunningPresentationComponent {
   }
 
   setCurrentVolume(volume: number): void {
+    this.soundVideoService.setSessionVolume(volume);
     const video = this.videoRef?.nativeElement;
     if (video) video.volume = volume;
   }

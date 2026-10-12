@@ -242,7 +242,8 @@
             "DEACTIVATED": "Disabled",
             "MEDIA_LOGO_DISPLAY": "Show logo or title on posters",
             "SHOW_LOGO": "Logo",
-            "SHOW_TITLE": "Title"
+            "SHOW_TITLE": "Title",
+            "SOUND_VIDEO": "Enable presentation video sound"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "Viewing the database can consume a lot of resources on less powerful computers",

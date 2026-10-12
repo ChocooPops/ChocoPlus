@@ -13,6 +13,7 @@ import { LicenseService } from '../../../license-module/service/license/licence.
 import { LicenseModel } from '../../../license-module/model/license.interface';
 import { AutoPlayVideoService } from '../../../common-module/services/auto-play-video/auto-play-video.service';
 import { MediaLogoDisplayService } from '../../../common-module/services/media-logo-display/media-logo-display.service';
+import { SoundVideoService } from '../../../common-module/services/sound-video/sound-video.service';
 import { take } from 'rxjs';
 
 @Injectable({
@@ -26,7 +27,8 @@ export class ParameterAppliService {
     private readonly formatMediaPageService: FormatMediaPageService,
     private readonly licenseService: LicenseService,
     private readonly autoPlayVideoService: AutoPlayVideoService,
-    private readonly mediaLogoDisplayService: MediaLogoDisplayService
+    private readonly mediaLogoDisplayService: MediaLogoDisplayService,
+    private readonly soundVideoService: SoundVideoService
   ) { }
 
   private id: number = 0;
@@ -274,6 +276,25 @@ export class ParameterAppliService {
     },
     {
       id: this.getId(),
+      name: "USER.APP_SETTINGS.SOUND_VIDEO",
+      radioButton: [
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.ACTIVATED",
+          value: true,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.DEACTIVATED",
+          value: false,
+          state: false
+        }
+      ],
+      call: null
+    },
+    {
+      id: this.getId(),
       name: "USER.APP_SETTINGS.MEDIA_LOGO_DISPLAY",
       radioButton: [
         {
@@ -423,12 +444,20 @@ export class ParameterAppliService {
       this.radioButtonOtherOption[1].radioButton[i].state = this.radioButtonOtherOption[1].radioButton[i].value === currentAutoPlayVideo;
     }
 
+    //INIT SOUND VIDEO BUTTON;
+    const callBackSoundVideo: any = (state: boolean) => this.soundVideoService.setSoundVideo(state);
+    this.radioButtonOtherOption[2].call = callBackSoundVideo;
+    const currentSoundVideo: boolean = this.soundVideoService.getSoundVideo();
+    for (let i: number = 0; i < this.radioButtonOtherOption[2].radioButton.length; i++) {
+      this.radioButtonOtherOption[2].radioButton[i].state = this.radioButtonOtherOption[2].radioButton[i].value === currentSoundVideo;
+    }
+
     //INIT MEDIA LOGO DISPLAY BUTTON;
     const callBackMediaLogoDisplay: any = (state: boolean) => this.mediaLogoDisplayService.setShowLogo(state);
-    this.radioButtonOtherOption[2].call = callBackMediaLogoDisplay;
+    this.radioButtonOtherOption[3].call = callBackMediaLogoDisplay;
     const currentShowLogo: boolean = this.mediaLogoDisplayService.getShowLogo();
-    for (let i: number = 0; i < this.radioButtonOtherOption[2].radioButton.length; i++) {
-      this.radioButtonOtherOption[2].radioButton[i].state = this.radioButtonOtherOption[2].radioButton[i].value === currentShowLogo;
+    for (let i: number = 0; i < this.radioButtonOtherOption[3].radioButton.length; i++) {
+      this.radioButtonOtherOption[3].radioButton[i].state = this.radioButtonOtherOption[3].radioButton[i].value === currentShowLogo;
     }
 
     //INIT LICENSE LIST FOR SELECT;
