@@ -1055,37 +1055,42 @@ ipcMain.handle('get-storage-info', () => {
 });
 
 ipcMain.handle('list-downloads', () => {
-  const entries = fs.readdirSync(downloadsRootPath, { withFileTypes: true });
+  if (!fs.existsSync(downloadsRootPath)) return [];
+  try {
+    const entries = fs.readdirSync(downloadsRootPath, { withFileTypes: true });
 
-  const sortedDirs = entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => {
-      const dirPath = path.join(downloadsRootPath, entry.name);
-      const metadataPath = path.join(dirPath, FILE_METADATA);
-      if (!fs.existsSync(metadataPath)) return null;
-      const stats = fs.statSync(dirPath);
-      return {
-        metadataPath,
-        time: stats.birthtimeMs || stats.mtimeMs // creation, else modification
-      };
-    })
-    .filter((dir) => dir !== null)
-    .sort((a, b) => a.time - b.time); // oldest first
+    const sortedDirs = entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => {
+        const dirPath = path.join(downloadsRootPath, entry.name);
+        const metadataPath = path.join(dirPath, FILE_METADATA);
+        if (!fs.existsSync(metadataPath)) return null;
+        const stats = fs.statSync(dirPath);
+        return {
+          metadataPath,
+          time: stats.birthtimeMs || stats.mtimeMs // creation, else modification
+        };
+      })
+      .filter((dir) => dir !== null)
+      .sort((a, b) => a.time - b.time); // oldest first
 
-  const downloads = [];
-  for (const { metadataPath } of sortedDirs) {
-    try {
-      const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
+    const downloads = [];
+    for (const { metadataPath } of sortedDirs) {
+      try {
+        const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8'));
 
-      let formatedMedia = formatSeriesSeasons(metadata.media);
-      formatedMedia = shuffleMediaPosters(formatedMedia);
+        let formatedMedia = formatSeriesSeasons(metadata.media);
+        formatedMedia = shuffleMediaPosters(formatedMedia);
 
-      downloads.push(formatSeriesSeasons(formatedMedia));
-    } catch (error) {
-      // Corrupt metadata: This entry is ignored
+        downloads.push(formatSeriesSeasons(formatedMedia));
+      } catch (error) {
+        // Corrupt metadata: This entry is ignored
+      }
     }
+    return downloads;
+  } catch(error) {
+    return []
   }
-  return downloads;
 });
 
 ipcMain.handle('download-is-empty', () => {
