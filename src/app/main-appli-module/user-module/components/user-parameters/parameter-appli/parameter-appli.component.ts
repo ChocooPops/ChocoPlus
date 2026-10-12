@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { ParameterAppliService } from '../../service/parameter-appli/parameter-appli.service';
+import { ParameterAppliService } from '../../../service/parameter-appli/parameter-appli.service';
 import { InputOptionSelectorComponent } from '../input-option-selector/input-option-selector.component';
-import { InputSelectComponent } from '../../../edition-module/components/input-select/input-select.component';
-import { ParamaterAppliModel } from '../../dto/parameter-appli.interface';
-import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
-import { UserParametersService } from '../../service/user-parameters/user-parameters.service';
-import { MenuType } from '../../../menu-module/model/menu-type.enum';
+import { InputSelectComponent } from '../../../../edition-module/components/input-select/input-select.component';
+import { ParamaterAppliModel } from '../../../dto/parameter-appli.interface';
+import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
+import { UserParametersService } from '../../../service/user-parameters/user-parameters.service';
+import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({

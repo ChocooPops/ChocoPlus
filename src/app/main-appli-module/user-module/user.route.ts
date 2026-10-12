@@ -8,7 +8,7 @@ import { UsersManageComponent } from "./components/users-manage-page/users-manag
 import { ViewDataComponent } from "./components/view-data-page/view-data/view-data.component";
 import { IsAdminGuard } from "../../common-module/guards/is-admin.user.guard";
 import { UnauthorizedPageComponent } from "../../common-module/components/unauthorized-page/unauthorized-page.component";
-import { ParameterAppliComponent } from "./components/parameter-appli/parameter-appli.component";
+import { ParameterAppliComponent } from "./components/user-parameters/parameter-appli/parameter-appli.component";
 import { DocumentationComponent } from "./components/documentation/documentation.component";
 
 export const userRoutes: Routes = [

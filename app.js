@@ -132,7 +132,7 @@ function createWindow() {
     x: windowState.x,
     y: windowState.y,
     minHeight: 580,
-    minWidth: 620,
+    minWidth: 670,
     resizable: true,
     frame: false,
     transparent: false,

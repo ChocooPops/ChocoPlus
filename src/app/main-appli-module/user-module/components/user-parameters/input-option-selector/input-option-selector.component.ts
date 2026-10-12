@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { fromEvent, Subscription } from 'rxjs';
-import { SimpleModel } from '../../../../common-module/models/simple-model';
+import { SimpleModel } from '../../../../../common-module/models/simple-model';
 
 @Component({
   selector: 'app-input-option-selector',
@@ -34,7 +34,6 @@ export class InputOptionSelectorComponent {
   }
 
   ngOnInit(): void {
-    // Les options peuvent changer de ligne quand la place disponible change
     this.subscription.add(
       fromEvent(window, 'resize').subscribe(() => this.placeIndicator(false))
     );
@@ -45,7 +44,6 @@ export class InputOptionSelectorComponent {
   }
 
   ngAfterViewChecked(): void {
-    // Suit l'option sélectionnée, y compris quand elle est changée depuis l'extérieur (réinitialisation)
     this.placeIndicator(true);
   }
 
@@ -82,10 +80,6 @@ export class InputOptionSelectorComponent {
     return 0;
   }
 
-  /**
-   * Place le repère sur l'option sélectionnée. Les styles sont écrits directement sur l'élément,
-   * sans passer par le template, pour pouvoir être recalculés après l'affichage.
-   */
   private placeIndicator(onlyIfMoved: boolean): void {
     const indicatorElement: HTMLElement | undefined = this.indicator?.nativeElement;
     if (!indicatorElement) {
@@ -114,7 +108,6 @@ export class InputOptionSelectorComponent {
     this.renderer.setStyle(indicatorElement, 'opacity', '1');
 
     if (isFirstPlacement) {
-      // Le glissement n'est activé qu'après la première pose, pour ne pas partir du coin du cadre
       requestAnimationFrame(() => this.renderer.addClass(indicatorElement, 'indicator-animated'));
     }
   }
