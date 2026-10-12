@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ParameterAppliService } from '../../service/parameter-appli/parameter-appli.service';
-import { InputRadioButtonComponent } from '../../../edition-module/components/input-radio-button/input-radio-button.component';
+import { InputOptionSelectorComponent } from '../input-option-selector/input-option-selector.component';
 import { InputSelectComponent } from '../../../edition-module/components/input-select/input-select.component';
 import { ParamaterAppliModel } from '../../dto/parameter-appli.interface';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
@@ -11,7 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-parameter-appli',
   standalone: true,
-  imports: [InputRadioButtonComponent, InputSelectComponent, TranslatePipe],
+  imports: [InputOptionSelectorComponent, InputSelectComponent, TranslatePipe],
   templateUrl: './parameter-appli.component.html',
   styleUrl: './parameter-appli.component.css'
 })

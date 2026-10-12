@@ -10,8 +10,8 @@
         @for(param of radioButtonPosterFilm; track param.id) {
         <div class="container-param">
             <p class="title-param"> {{ param.name | translate }} </p>
-            <app-input-radio-button [radioButton]="param.radioButton"
-                (changeEmit)="onChangePosterFilm(param.id, $event)"></app-input-radio-button>
+            <app-input-option-selector [options]="param.radioButton"
+                (changeEmit)="onChangePosterFilm(param.id, $event)"></app-input-option-selector>
         </div>
         }
     </div>
@@ -26,8 +26,8 @@
         @for(param of radioButtonPosterLicense; track param.id) {
         <div class="container-param">
             <p class="title-param"> {{ param.name | translate}} </p>
-            <app-input-radio-button [radioButton]="param.radioButton"
-                (changeEmit)="onChangePosterLicense(param.id, $event)"></app-input-radio-button>
+            <app-input-option-selector [options]="param.radioButton"
+                (changeEmit)="onChangePosterLicense(param.id, $event)"></app-input-option-selector>
         </div>
         }
     </div>
@@ -39,8 +39,8 @@
         @for(param of radioButtonPosterFormat; track param.id) {
         <div class="container-param">
             <p class="title-param"> {{ param.name | translate}} </p>
-            <app-input-radio-button [radioButton]="param.radioButton"
-                (changeEmit)="onChangePosterFormat(param.id, $event)"></app-input-radio-button>
+            <app-input-option-selector [options]="param.radioButton"
+                (changeEmit)="onChangePosterFormat(param.id, $event)"></app-input-option-selector>
         </div>
         }
     </div>
@@ -52,8 +52,8 @@
         @for(param of radioButtonOtherOption; track param.id) {
         <div class="container-param">
             <p class="title-param"> {{ param.name | translate }} </p>
-            <app-input-radio-button [radioButton]="param.radioButton"
-                (changeEmit)="onChangeOpeningPage(param.id, $event)"></app-input-radio-button>
+            <app-input-option-selector [options]="param.radioButton"
+                (changeEmit)="onChangeOpeningPage(param.id, $event)"></app-input-option-selector>
         </div>
         }
         <div class="container-license-select" [class.visible]="showLicenseSelect">

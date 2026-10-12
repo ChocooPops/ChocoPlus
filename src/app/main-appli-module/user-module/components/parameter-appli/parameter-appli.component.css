@@ -56,10 +56,10 @@
   font-size: 18px;
   color: #6f6f6f;
   margin: 0;
-  font-weight: normal;
+  font-weight: 500;
 }
 
-app-input-radio-button {
+app-input-option-selector {
   padding-left: 14px;
 }
 
