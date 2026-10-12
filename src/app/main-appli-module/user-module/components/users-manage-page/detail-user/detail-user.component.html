@@ -1,64 +1,50 @@
-<div class="container" [ngClass]="[back, currentClass]">
+<div class="container">
 
     <div class="container-menu">
-        <div class="container-detail-type" (click)="displayInfoUser()"
-            [ngClass]="{'detail-false' : detailType, 'detail-true' : !detailType, 'info' : true}">
-            <p> {{ 'USER.USER_MANAGEMENT.INFO' | translate }} </p>
-        </div>
-        <div class="container-detail-type" (click)="displayStats()"
-            [ngClass]="{'detail-false' : !detailType, 'detail-true' : detailType, 'stats' : true}">
-            <p> {{ 'USER.USER_MANAGEMENT.STATS' | translate }} </p>
-        </div>
+        <app-input-option-selector [options]="detailOptions" (changeEmit)="onChangeDetail($event)"></app-input-option-selector>
     </div>
 
-    <div class="container-details">
-        @if(detailType) {
-        <div class="container-detail">
-            <app-user-historic [userId]="user.id" [changeParametersSelected]="false"></app-user-historic>
-        </div>
-        }@else {
-        <div class="container-info">
-            <div class="container-pp">
-                <img [src]="user.profilPhoto">
-                <div class="container-pp-tmp"></div>
+    @if(detailType) {
+    <div class="container-historic">
+        <app-user-historic [userId]="user.id" [changeParametersSelected]="false"></app-user-historic>
+    </div>
+    } @else {
+    <div class="container-info">
+        <img class="pp" [src]="user.profilPhoto" (error)="errorPp($event)">
+
+        <div class="container-fields">
+            <div class="container-input">
+                <p class="label">{{ 'USER.USER_MANAGEMENT.ID' | translate }}</p>
+                <p class="field">{{ user.id }}</p>
             </div>
-
-            <form [formGroup]="formGroup">
-                <div class="container-inputs">
-                    <div class="container-input">
-                        <label>Id : </label>
-                        <input placeholder="Id" [formControlName]="formControlId">
-                    </div>
-                    <div class="container-input">
-                        <label>{{ 'USER.USER_MANAGEMENT.EMAIL' | translate }}</label>
-                        <input placeholder="Adresse mail" [formControlName]="formControlEmail">
-                    </div>
-                </div>
-
-                <div class="container-inputs">
-                    <div class="container-input">
-                        <label>{{ 'USER.USER_MANAGEMENT.FIRST_NAME' | translate }}</label>
-                        <input placeholder="Prénom" [formControlName]="formControlFirstName">
-                    </div>
-                    <div class="container-input">
-                        <label>{{ 'USER.USER_MANAGEMENT.LAST_NAME' | translate }}</label>
-                        <input placeholder="Nom" [formControlName]="formControlLastName">
-                    </div>
-                </div>
-
-                <div class="container-inputs">
-                    <div class="container-input">
-                        <label>{{ 'USER.USER_MANAGEMENT.PSEUDO' | translate }}</label>
-                        <input placeholder="Pseudo" [formControlName]="formControlPseudo">
-                    </div>
-                    <div class="container-input">
-                        <label>{{ 'USER.USER_MANAGEMENT.DATE_BIRTH' | translate }}</label>
-                        <input type="date" [formControlName]="formControlDateBorn">
-                    </div>
-                </div>
-            </form>
+            <div class="container-input">
+                <p class="label">{{ 'USER.USER_MANAGEMENT.EMAIL' | translate }}</p>
+                <p class="field" [title]="user.email">{{ user.email }}</p>
+            </div>
+            <div class="container-input">
+                <p class="label">{{ 'USER.USER_MANAGEMENT.FIRST_NAME' | translate }}</p>
+                <p class="field">{{ user.firstName }}</p>
+            </div>
+            <div class="container-input">
+                <p class="label">{{ 'USER.USER_MANAGEMENT.LAST_NAME' | translate }}</p>
+                <p class="field">{{ user.lastName }}</p>
+            </div>
+            <div class="container-input">
+                <p class="label">{{ 'USER.USER_MANAGEMENT.PSEUDO' | translate }}</p>
+                <p class="field">{{ user.pseudo }}</p>
+            </div>
+            <div class="container-input">
+                <p class="label">{{ 'USER.USER_MANAGEMENT.DATE_BIRTH' | translate }}</p>
+                <p class="field">{{ user.dateBorn | date: 'dd/MM/yyyy' }}</p>
+            </div>
+            @if(user.createdAt) {
+            <div class="container-input">
+                <p class="label">{{ 'USER.USER_MANAGEMENT.CREATED_AT' | translate }}</p>
+                <p class="field">{{ user.createdAt | date: 'dd/MM/yyyy' }}</p>
+            </div>
+            }
         </div>
-        }
     </div>
+    }
 
 </div>

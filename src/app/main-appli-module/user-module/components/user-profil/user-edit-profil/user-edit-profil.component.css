@@ -67,6 +67,7 @@
   cursor: pointer;
   flex-shrink: 0;
   transition: border-color 0.3s;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.2);
 
   &:hover {
     .container-tmp { opacity: 0.5; }

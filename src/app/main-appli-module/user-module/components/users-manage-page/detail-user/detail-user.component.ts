@@ -1,60 +1,38 @@
 import { Component, Input } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { UserModel } from '../../../dto/user.model';
-import { NgClass } from '@angular/common';
 import { UserHistoricComponent } from '../../user-historic-page/user-historic/user-historic.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SimpleModel } from '../../../../../common-module/models/simple-model';
+import { InputOptionSelectorComponent } from '../../user-parameters-app/input-option-selector/input-option-selector.component';
 
 @Component({
   selector: 'app-detail-user',
   standalone: true,
-  imports: [NgClass, UserHistoricComponent, ReactiveFormsModule, TranslatePipe],
+  imports: [DatePipe, UserHistoricComponent, TranslatePipe, InputOptionSelectorComponent],
   templateUrl: './detail-user.component.html',
   styleUrls: ['./detail-user.component.css']
 })
 export class DetailUserComponent {
 
+  private readonly idInfo: number = 1;
+  private readonly idStats: number = 2;
+
   @Input() user !: UserModel;
-  @Input() back !: string;
   detailType: boolean = false;
-  currentClass: 'height-user-historic' | 'height-user-perso' = 'height-user-perso';
+  srcDefaultPp: string = 'pp/pp.jpg';
 
-  formGroup !: FormGroup;
-  formControlId: string = 'inputId';
-  formControlEmail: string = 'inputEmail';
-  formControlFirstName: string = 'inputFirstName';
-  formControlLastName: string = 'inputLastName';
-  formControlPseudo: string = 'inputPseudo';
-  formControlDateBorn: string = 'inputDateBorn';
+  detailOptions: SimpleModel[] = [
+    { id: this.idInfo, name: 'USER.USER_MANAGEMENT.INFO', state: true },
+    { id: this.idStats, name: 'USER.USER_MANAGEMENT.STATS', state: false }
+  ];
 
-  constructor(private fb: FormBuilder) { }
-
-  ngOnInit(): void {
-    this.initForm();
+  onChangeDetail(id: number): void {
+    this.detailType = id === this.idStats;
   }
 
-  initForm(): void {
-    this.formGroup = this.fb.group({
-      inputId: [this.user.id],
-      inputEmail: [this.user.email],
-      inputFirstName: [this.user.firstName],
-      inputLastName: [this.user.lastName],
-      inputPseudo: [this.user.pseudo],
-      inputDateBorn: ['']
-    });
-    this.formGroup.get(this.formControlDateBorn)?.setValue(new Date(this.user.dateBorn).toISOString().split('T')[0]);
-    this.formGroup.disable();
-  }
-
-  displayInfoUser(): void {
-    this.detailType = false;
-    this.currentClass = 'height-user-perso';
-  }
-
-  displayStats(): void {
-    this.detailType = true;
-    this.currentClass = 'height-user-historic';
+  errorPp(event: Event): void {
+    (event.target as HTMLImageElement).src = this.srcDefaultPp;
   }
 
 }

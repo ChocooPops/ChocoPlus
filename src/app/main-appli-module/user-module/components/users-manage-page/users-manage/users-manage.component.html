@@ -1,52 +1,53 @@
 <app-popup (emitActionData)="onEmitDelete()"></app-popup>
+
 <div class="container">
-    <div class="container-select">
+
+    <div class="title">
+        <p> {{ 'MENU.USER.USER_MANAGEMENT' | translate }} <span class="count">{{ userList.length }}</span></p>
         <div class="container-reset" (click)="onClickReset()" [title]="'TUTO.REFRESH' | translate">
             <img [src]="srcReset">
         </div>
-        <div class="select" #inputSelect (click)="onClickSelection()"
-            [ngClass]="{'border-radius-bottom' : displaySelect, 'border-radius-global' : !displaySelect}">
-            <p> {{ optionSelected.name | translate }} </p>
-            <img [src]="srcArrow" class="arrow">
-            @if(displaySelect) {
-            <div class="container-options">
-                @for(option of options; track option.id) {
-                <div class="container-option" (click)="onClickOption(option, $event)">
-                    <p> {{ option.name | translate }} </p>
-                </div>
-                }
-            </div>
-            }
-        </div>
+    </div>
+
+    <div class="container-filter">
+        <app-input-option-selector [options]="options" (changeEmit)="onChangeOption($event)"></app-input-option-selector>
     </div>
 
     <div class="container-user-list">
         @for(user of userList; track user.id; let idx = $index) {
-        <div class="container-user" [ngClass]="{'back-dark' : idx % 2 === 0, 'back-clear' : idx % 2 !== 0}">
-            <img [src]="user.profilPhoto" (error)="errorPpUser(user.id)" loading="lazy">
-            <p class="text"> {{ user.pseudo | titlecase }} {{ user.lastName | uppercase }} -- {{ user.firstName |
-                titlecase }} </p>
-            <div class="container-role"
-                [ngClass]="{'back-yellow' : user.role === RoleModel.ADMIN, 'back-green' : user.role === RoleModel.USER, 'back-blue' : user.role === RoleModel.FAMILY, 'back-red' : user.role === RoleModel.SUSPENDED, 'back-grey' : user.role === RoleModel.NOT_ACTIVATE}">
-                <div class="point"
-                    [ngClass]="{'point-yellow' : user.role === RoleModel.ADMIN, 'point-green' : user.role === RoleModel.USER, 'point-blue' : user.role === RoleModel.FAMILY, 'point-red' : user.role === RoleModel.SUSPENDED, 'point-grey' : user.role === RoleModel.NOT_ACTIVATE}">
+        <div class="container-user" [class.container-user-open]="detailList[idx] || actionList[idx]">
+            <div class="user-row">
+                <img [src]="user.profilPhoto" (error)="errorPpUser(user.id)" loading="lazy">
+                <div class="container-identity">
+                    <p class="pseudo"> {{ user.pseudo | titlecase }} </p>
+                    <p class="name"> {{ user.lastName | uppercase }} {{ user.firstName | titlecase }} </p>
                 </div>
-                <p> {{ user.role }} </p>
+                <div class="container-role" [attr.data-role]="user.role">
+                    <div class="point"></div>
+                    <p> {{ user.role }} </p>
+                </div>
+                <div class="container-bt">
+                    <button type="button" class="button" [class.button-active]="detailList[idx]"
+                        (click)="displayDetailByUser(idx)">{{ 'BUTTON.DETAILS' | translate }}</button>
+                    <button type="button" class="button button-action" [class.button-active]="actionList[idx]"
+                        (click)="displayActionByUser(idx)">{{ 'BUTTON.ACTION' | translate }}</button>
+                    <button type="button" class="button button-delete"
+                        (click)="onClickDelete(user.id)">{{ 'BUTTON.DELETE' | translate }}</button>
+                </div>
+                @if (actionList[idx]) {
+                <app-action-user (emitActionClick)="onClickAction(idx, $event)" (emitOutClick)="hiddenActionByIndex(idx)"
+                    [user]="user"></app-action-user>
+                }
             </div>
-            <div class="container-bt">
-                <p (click)="displayDetailByUser(idx)">{{ 'BUTTON.DETAILS' | translate }}</p>
-                <p (click)="displayActionByUser(idx)">{{ 'BUTTON.ACTION' | translate }}</p>
-                <p (click)="onClickDelete(user.id)">{{ 'BUTTON.DELETE' | translate }}</p>
-            </div>
-            @if (actionList[idx]) {
-            <app-action-user (emitActionClick)="onClickAction(idx, $event)" (emitOutClick)="hiddenActionByIndex(idx)"
-                [user]="user" [back]="idx % 2 === 0 ? 'back-dark' : 'back-clear'"></app-action-user>
+            @if(detailList[idx]) {
+            <app-detail-user [user]="user"></app-detail-user>
             }
         </div>
-        @if(detailList[idx]) {
-        <app-detail-user class="container-detail-user" [user]="user"
-            [back]="idx % 2 === 0 ? 'back-dark' : 'back-clear'"></app-detail-user>
-        }
+        } @empty {
+        <div class="container-empty">
+            <p> {{ 'USER.USER_MANAGEMENT.NO_USER' | translate }} </p>
+        </div>
         }
     </div>
+
 </div>

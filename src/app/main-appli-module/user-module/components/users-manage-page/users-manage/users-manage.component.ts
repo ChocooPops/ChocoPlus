@@ -1,7 +1,6 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Subscription, take } from 'rxjs';
 import { UserModel } from '../../../dto/user.model';
-import { NgClass } from '@angular/common';
 import { UpperCasePipe, TitleCasePipe } from '@angular/common';
 import { RoleModel } from '../../../../../common-module/models/role.enum';
 import { SimpleModel } from '../../../../../common-module/models/simple-model';
@@ -13,11 +12,12 @@ import { DetailUserComponent } from '../detail-user/detail-user.component';
 import { UserParametersService } from '../../../service/user-parameters/user-parameters.service';
 import { MenuType } from '../../../../menu-module/model/menu-type.enum';
 import { TranslatePipe } from '@ngx-translate/core';
+import { InputOptionSelectorComponent } from '../../user-parameters-app/input-option-selector/input-option-selector.component';
 
 @Component({
   selector: 'app-users-manage',
   standalone: true,
-  imports: [NgClass, TranslatePipe, UpperCasePipe, TitleCasePipe, ActionUserComponent, PopupComponent, DetailUserComponent],
+  imports: [TranslatePipe, UpperCasePipe, TitleCasePipe, ActionUserComponent, PopupComponent, DetailUserComponent, InputOptionSelectorComponent],
   templateUrl: './users-manage.component.html',
   styleUrls: ['./users-manage.component.css']
 })
@@ -29,12 +29,9 @@ export class UsersManageComponent {
   detailList: boolean[] = [];
   RoleModel = RoleModel;
   options: SimpleModel[] = [];
-  srcArrow: string = 'icon/arrow.svg';
   srcReset: string = 'icon/modify.svg';
-  displaySelect: boolean = false;
   optionSelected !: SimpleModel;
 
-  @ViewChild('inputSelect') refSelect !: ElementRef;
   @ViewChild(PopupComponent) popupRef !: PopupComponent;
 
   constructor(private readonly usersManageService: UsersManageService,
@@ -58,26 +55,15 @@ export class UsersManageComponent {
   srcDefaultPp: string = 'pp/pp.jpg';
   errorPpUser(id: number): void {
     const index: number = this.userList.findIndex((item: UserModel) => item.id === id);
-    if (id >= 0) {
+    if (index >= 0) {
       this.userList[index].profilPhoto = this.srcDefaultPp;
     }
   }
 
-  onClickSelection(): void {
-    this.displaySelect = true;
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (this.refSelect) {
-      const isClickInside: boolean = this.refSelect.nativeElement.contains(event.target);
-      if (!isClickInside) {
-        this.displaySelect = false;
-      }
-    }
-  }
-
   private getAllUserByOption(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
     this.subscription = this.usersManageService.getUserList().subscribe((data: UserModel[]) => {
       this.userList = this.usersManageService.getUserFiltered(this.optionSelected, data);
       this.setActionList();
@@ -99,7 +85,7 @@ export class UsersManageComponent {
   private setDetailList(): void {
     this.detailList = [];
     this.userList.forEach(() => {
-      this.actionList.push(false);
+      this.detailList.push(false);
     })
   }
 
@@ -121,11 +107,12 @@ export class UsersManageComponent {
     this.actionList[index] = false;
   }
 
-  onClickOption(option: SimpleModel, event: MouseEvent): void {
-    event.stopPropagation();
-    this.optionSelected = option;
-    this.displaySelect = false;
-    this.getAllUserByOption();
+  onChangeOption(id: number): void {
+    const option: SimpleModel | undefined = this.options.find((item: SimpleModel) => item.id === id);
+    if (option) {
+      this.optionSelected = option;
+      this.getAllUserByOption();
+    }
   }
 
   private currentUserId: number | undefined = undefined;
