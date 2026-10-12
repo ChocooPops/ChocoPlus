@@ -47,6 +47,7 @@ export class UserTabComponent {
   public readonly srcDefaultPp: string = 'pp/pp.jpg';
   public readonly srcReset: string = 'icon/modify.svg';
   public readonly srcRandom: string = 'icon/random.svg';
+  public srcUserPhoto: string = this.srcDefaultPp;
 
   csharpProcessStatus!: ProcessStatus;
   ProcessStatus = ProcessStatus;
@@ -70,10 +71,13 @@ export class UserTabComponent {
       this.userService.getCurrentUser().subscribe((user: UserModel | undefined) => {
         if (user) {
           this.user = user;
+          this.srcUserPhoto = this.user.profilPhoto;
           if (this.user.role != RoleModel.ADMIN && this.disableParamAdmin) {
             this.userMenu = this.userMenu.slice(0, this.userMenu.length - 1);
             this.disableParamAdmin = false;
           }
+        } else {
+          this.srcUserPhoto = this.srcDefaultPp;
         }
       })
     );
@@ -183,7 +187,7 @@ export class UserTabComponent {
   }
 
   errorPpUser(): void {
-    this.user.profilPhoto = this.srcDefaultPp;
+    this.srcUserPhoto = this.srcDefaultPp;
   }
 
   onToggleTranslationKeys(event: MouseEvent): void {

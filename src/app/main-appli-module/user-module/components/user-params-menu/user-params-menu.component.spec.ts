@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserParamsComponent } from './user-params.component';
+import { UserParamsComponent } from './user-params-menu.component';
 
 describe('UserParamsComponent', () => {
   let component: UserParamsComponent;

@@ -11,22 +11,23 @@ import { TitleCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-user-params',
+  selector: 'app-user-params-menu',
   standalone: true,
   imports: [DatePipe, NgClass, TitleCasePipe, TranslatePipe],
-  templateUrl: './user-params.component.html',
-  styleUrl: './user-params.component.css'
+  templateUrl: './user-params-menu.component.html',
+  styleUrl: './user-params-menu.component.css'
 })
-export class UserParamsComponent {
+export class UserParamsMenuComponent {
 
   currentUser: UserModel | undefined = undefined;
   subscription !: Subscription;
   userParams: MenuTabModel[] = [];
   RoleModel = RoleModel;
   disableParamAdmin: boolean = true;
+  srcDefaultPp: string = 'pp/pp.jpg';
 
-  constructor(private userService: UserService,
-    private userParametersService: UserParametersService
+  constructor(private readonly userService: UserService,
+    private readonly userParametersService: UserParametersService
   ) {
     this.userParams = this.userParametersService.getAllUserTabMenu();
   }
@@ -54,7 +55,6 @@ export class UserParamsComponent {
     this.userParametersService.navigateByUserTabId(id);
   }
 
-  srcDefaultPp: string = 'pp/pp.jpg';
   errorPpUser(): void {
     if (this.currentUser) {
       this.currentUser.profilPhoto = this.srcDefaultPp;

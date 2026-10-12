@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, HostListener, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { UserParamsComponent } from './components/user-params/user-params.component';
+import { UserParamsMenuComponent } from './components/user-params-menu/user-params-menu.component';
 import { MenuTmpComponent } from '../menu-module/components/menu-tmp/menu-tmp.component';
 import { MenuTabService } from '../menu-module/service/menu-tab/menu-tab.service';
 import { LoadOpeningPageService } from '../../launch-module/services/load-opening-page/load-opening-page.service';
@@ -9,7 +9,7 @@ import { PageModel } from '../../launch-module/models/page.enum';
 @Component({
   selector: 'app-user-page',
   standalone: true,
-  imports: [RouterOutlet, UserParamsComponent, MenuTmpComponent],
+  imports: [RouterOutlet, UserParamsMenuComponent, MenuTmpComponent],
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css'
 })

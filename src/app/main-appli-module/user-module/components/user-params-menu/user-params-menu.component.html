@@ -1,16 +1,14 @@
 <div class="container-user-params">
-    @if(currentUser) {
     <div class="container-info-user">
         <div class="container-pp">
-            <img [src]="currentUser.profilPhoto" (error)="errorPpUser()">
+            <img [src]="currentUser ? currentUser.profilPhoto : srcDefaultPp" (error)="errorPpUser()">
             <div class="container-tmp"></div>
         </div>
         <div class="info-user">
-            <p class="pseudo"> {{ currentUser.pseudo | titlecase }} </p>
-            <p class="text"> {{ currentUser.role}} </p>
-            <p class="text"> Depuis le {{ currentUser.createdAt | date:'mediumDate' }} </p>
+            <p class="pseudo"> {{ currentUser?.pseudo | titlecase }} </p>
+            <p class="text"> {{ currentUser?.role}} </p>
+            <p class="text"> Depuis le {{ currentUser?.createdAt | date:'mediumDate' }} </p>
         </div>
-
     </div>
     <div class="container-params">
         @for (param of userParams; track param.id) {
@@ -21,5 +19,4 @@
         </div>
         }
     </div>
-    }
 </div>
