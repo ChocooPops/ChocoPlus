@@ -165,7 +165,7 @@ function createWindow() {
   );
 
   // Open the developer tools if necessary
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   // Removing the menu bar
   mainWindow.setMenu(null);
