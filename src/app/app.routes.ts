@@ -1,28 +1,22 @@
 import { Routes } from '@angular/router';
-import { MainAppliComponent } from './main-appli-module/main-appli.component';
-import { mainAppliRoutes } from './main-appli-module/main-appli.routes';
-import { LaunchPageComponent } from './launch-module/launch-page.component';
-import { launchRoutes } from './launch-module/launch-page.routes';
 import { IsActivatedUserGuard } from './common-module/guards/is-activated-user.guard';
-import { OfflineAppliComponent } from './offline-appli-module/offline-appli.component';
-import { offlineAppliRoutes } from './offline-appli-module/offline-appli.routes';
 
 export const routes: Routes = [
     {
         path: 'main-app',
         canActivate: [IsActivatedUserGuard],
-        component: MainAppliComponent,
-        children: mainAppliRoutes
+        loadComponent: () => import('./main-appli-module/main-appli.component').then(m => m.MainAppliComponent),
+        loadChildren: () => import('./main-appli-module/main-appli.routes').then(m => m.mainAppliRoutes)
     },
     {
         path: 'offline-app',
-        component: OfflineAppliComponent,
-        children: offlineAppliRoutes
+        loadComponent: () => import('./offline-appli-module/offline-appli.component').then(m => m.OfflineAppliComponent),
+        loadChildren: () => import('./offline-appli-module/offline-appli.routes').then(m => m.offlineAppliRoutes)
     },
     {
         path: 'launch-app',
-        component: LaunchPageComponent,
-        children: launchRoutes
+        loadComponent: () => import('./launch-module/launch-page.component').then(m => m.LaunchPageComponent),
+        loadChildren: () => import('./launch-module/launch-page.routes').then(m => m.launchRoutes)
     },
     {
         path: '',

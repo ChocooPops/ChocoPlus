@@ -1,27 +1,23 @@
 import { Routes } from '@angular/router';
-import { RegisterComponent } from './components/register/register.component';
-import { PreloadMainAppComponent } from './components/preload-main-app/preload-main-app.component';
-import { LoginComponent } from './components/login/login.component';
-import { PreloadOfflineAppComponent } from './components/preload-offline-app/preload-offline-app.component';
 import { IsActivatedUserGuard } from '../common-module/guards/is-activated-user.guard';
 
 export const launchRoutes: Routes = [
     {
         path: 'login',
-        component: LoginComponent
+        loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
     },
     {
         path: 'register',
-        component: RegisterComponent
+        loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent)
     },
     {
         path: 'preload-stream-app',
         canActivate: [IsActivatedUserGuard],
-        component: PreloadMainAppComponent
+        loadComponent: () => import('./components/preload-main-app/preload-main-app.component').then(m => m.PreloadMainAppComponent)
     },
     {
         path: 'preload-offline-app',
-        component: PreloadOfflineAppComponent
+        loadComponent: () => import('./components/preload-offline-app/preload-offline-app.component').then(m => m.PreloadOfflineAppComponent)
     },
     {
         path: '**',

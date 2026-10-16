@@ -1,7 +1,4 @@
 import { Routes } from '@angular/router';
-import { EditionPageComponent } from './edition-module/edition-page.component';
-import { UserPageComponent } from './user-module/user-page.component';
-import { UnauthorizedPageComponent } from '../common-module/components/unauthorized-page/unauthorized-page.component';
 import { IsAdminOrFamilyGuard } from '../common-module/guards/is-admin-or-family-user.guard';
 
 export const mainAppliRoutes: Routes = [
@@ -40,12 +37,12 @@ export const mainAppliRoutes: Routes = [
     },
     {
         path: 'edition',
-        component: EditionPageComponent,
+        loadComponent: () => import('./edition-module/edition-page.component').then(m => m.EditionPageComponent),
         loadChildren: () => import('./edition-module/edition-page.routes').then(m => m.editionRoutes)
     },
     {
         path: 'user',
-        component: UserPageComponent,
+        loadComponent: () => import('./user-module/user-page.component').then(m => m.UserPageComponent),
         loadChildren: () => import('./user-module/user.route').then(m => m.userRoutes)
     },
     {
@@ -58,7 +55,7 @@ export const mainAppliRoutes: Routes = [
     },
     {
         path: 'unauthorized',
-        component: UnauthorizedPageComponent
+        loadComponent: () => import('../common-module/components/unauthorized-page/unauthorized-page.component').then(m => m.UnauthorizedPageComponent)
     },
     {
         path: '**',

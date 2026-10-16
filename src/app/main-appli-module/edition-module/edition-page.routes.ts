@@ -1,112 +1,128 @@
 import { Routes } from "@angular/router";
-import { SettingModifyOrderLicenseComponent } from './components/setting-modify-order-license/setting-modify-order-license.component';
-import { SettingAddCategoryComponent } from './components/setting-add-category/setting-add-category.component';
-import { SettingModifyCategoryComponent } from './components/setting-modify-category/setting-modify-category.component';
-import { SettingAddSelectionComponent } from './components/setting-add-selection/setting-add-selection.component';
-import { SettingAddLicenseComponent } from './components/setting-add-license/setting-add-license.component';
-import { SettingModifyMovieComponent } from './components/setting-modify-movie/setting-modify-movie.component';
-import { SettingModifySelectionComponent } from './components/setting-modify-selection/setting-modify-selection.component';
-import { SettingModifyLicenseComponent } from './components/setting-modify-license/setting-modify-license.component';
-import { SettingAddMovieComponent } from './components/setting-add-movie/setting-add-movie.component';
-import { SettingNotFoundComponent } from '../../common-module/components/setting-not-found/setting-not-found.component';
-import { SettingModifyNewsComponent } from "./components/setting-modify-news/setting-modify-news.component";
-import { SettingAddSeriesComponent } from "./components/setting-add-series/setting-add-series.component";
-import { SettingModifySeriesComponent } from "./components/setting-modify-series/setting-modify-series.component";
-import { SettingModifyNewsMovieRunningComponent } from "./components/setting-modify-news-movie-running/setting-modify-news-movie-running.component";
-import { SettingModifyNewsSeriesRunningComponent } from "./components/setting-modify-news-series-running/setting-modify-news-series-running.component";
-import { SettingModifyHomePageSelectionsComponent } from "./components/setting-modify-home-page-selections/setting-modify-home-page-selections.component";
-import { SettingModifyCreditComponent } from "./components/setting-modify-credit/setting-modify-credit.component";
-import { SettingAddCreditComponent } from "./components/setting-add-credit/setting-add-credit.component";
-import { SettingModifyVersionComponent } from "./components/setting-modify-version/setting-modify-version.component";
 import { IsAdminGuard } from "../../common-module/guards/is-admin.user.guard";
-import { UnauthorizedPageComponent } from "../../common-module/components/unauthorized-page/unauthorized-page.component";
 
 export const editionRoutes: Routes = [
     {
         path: 'modify-news',
-        component: SettingModifyNewsComponent
+        loadComponent: () => import("./components/setting-modify-news/setting-modify-news.component").then(m => m.SettingModifyNewsComponent)
     },
     {
         path: 'add-category',
-        component: SettingAddCategoryComponent
+        loadComponent: () => import("./components/setting-add-category/setting-add-category.component").then(m => m.SettingAddCategoryComponent)
     },
     {
         path: 'modify-category',
         children: [
-            { path: ':id', component: SettingModifyCategoryComponent },
-            { path: '', component: SettingModifyCategoryComponent }
+            { 
+                path: ':id', 
+                loadComponent: () => import("./components/setting-modify-category/setting-modify-category.component").then(m => m.SettingModifyCategoryComponent) 
+            },
+            { 
+                path: '', 
+                loadComponent: () => import("./components/setting-modify-category/setting-modify-category.component").then(m => m.SettingModifyCategoryComponent) 
+            }
         ]
     },
     {
         path: 'add-movie',
-        component: SettingAddMovieComponent
+        loadComponent: () => import("./components/setting-add-movie/setting-add-movie.component").then(m => m.SettingAddMovieComponent)
     },
     {
         path: 'create-selection',
-        component: SettingAddSelectionComponent
+        loadComponent: () => import("./components/setting-add-selection/setting-add-selection.component").then(m => m.SettingAddSelectionComponent)
     },
     {
         path: 'add-series',
-        component: SettingAddSeriesComponent
+        loadComponent: () => import("./components/setting-add-series/setting-add-series.component").then(m => m.SettingAddSeriesComponent)
     },
     {
         path: 'modify-series',
         children: [
-            { path: ':id', component: SettingModifySeriesComponent },
-            { path: '', component: SettingModifySeriesComponent }
+            { 
+                path: ':id', 
+                loadComponent: () => import("./components/setting-modify-series/setting-modify-series.component").then(m => m.SettingModifySeriesComponent) 
+            },
+            { 
+                path: '', 
+                loadComponent: () => import("./components/setting-modify-series/setting-modify-series.component").then(m => m.SettingModifySeriesComponent) 
+            }
         ]
     },
     {
         path: 'add-credit',
-        component: SettingAddCreditComponent,
+        loadComponent: () => import("./components/setting-add-credit/setting-add-credit.component").then(m => m.SettingAddCreditComponent)
     },
     {
         path: 'modify-credit',
         children: [
-            { path: ':id', component: SettingModifyCreditComponent },
-            { path: '', component: SettingModifyCreditComponent }
+            { 
+                path: ':id', 
+                loadComponent: () => import("./components/setting-modify-credit/setting-modify-credit.component").then(m => m.SettingModifyCreditComponent) 
+            },
+            { 
+                path: '', 
+                loadComponent: () => import("./components/setting-modify-credit/setting-modify-credit.component").then(m => m.SettingModifyCreditComponent) 
+            }
         ]
     },
     {
         path: 'create-license',
-        component: SettingAddLicenseComponent
+        loadComponent: () => import("./components/setting-add-license/setting-add-license.component").then(m => m.SettingAddLicenseComponent)
     },
     {
         path: 'modify-movie',
         children: [
-            { path: ':id', component: SettingModifyMovieComponent },
-            { path: '', component: SettingModifyMovieComponent }
+            { 
+                path: ':id', 
+                loadComponent: () => import("./components/setting-modify-movie/setting-modify-movie.component").then(m => m.SettingModifyMovieComponent) 
+            },
+            { 
+                path: '', 
+                loadComponent: () => import("./components/setting-modify-movie/setting-modify-movie.component").then(m => m.SettingModifyMovieComponent) 
+            }
         ]
     },
     {
         path: 'modify-selection',
         children: [
-            { path: ':id', component: SettingModifySelectionComponent },
-            { path: '', component: SettingModifySelectionComponent }
+            { 
+                path: ':id', 
+                loadComponent: () => import("./components/setting-modify-selection/setting-modify-selection.component").then(m => m.SettingModifySelectionComponent) 
+            },
+            { 
+                path: '', 
+                loadComponent: () => import("./components/setting-modify-selection/setting-modify-selection.component").then(m => m.SettingModifySelectionComponent) 
+            }
         ]
     },
     {
         path: 'modify-license',
         children: [
-            { path: ':id', component: SettingModifyLicenseComponent },
-            { path: '', component: SettingModifyLicenseComponent }
+            { 
+                path: ':id', 
+                loadComponent: () => import("./components/setting-modify-license/setting-modify-license.component").then(m => m.SettingModifyLicenseComponent) 
+            },
+            { 
+                path: '', 
+                loadComponent: () => import("./components/setting-modify-license/setting-modify-license.component").then(m => m.SettingModifyLicenseComponent) 
+            }
         ]
     },
     {
         path: 'modify-license-order',
-        component: SettingModifyOrderLicenseComponent
+        loadComponent: () => import("./components/setting-modify-order-license/setting-modify-order-license.component").then(m => m.SettingModifyOrderLicenseComponent)
     },
     {
         path: 'modify-news-movie-running',
-        component: SettingModifyNewsMovieRunningComponent
+        loadComponent: () => import("./components/setting-modify-news-movie-running/setting-modify-news-movie-running.component").then(m => m.SettingModifyNewsMovieRunningComponent)
     },
     {
         path: 'modify-news-series-running',
-        component: SettingModifyNewsSeriesRunningComponent
+        loadComponent: () => import("./components/setting-modify-news-series-running/setting-modify-news-series-running.component").then(m => m.SettingModifyNewsSeriesRunningComponent)
     },
     {
         path: 'modify-home-page',
-        component: SettingModifyHomePageSelectionsComponent
+        loadComponent: () => import("./components/setting-modify-home-page-selections/setting-modify-home-page-selections.component").then(m => m.SettingModifyHomePageSelectionsComponent)
     },
     {
         path: 'library',
@@ -116,7 +132,7 @@ export const editionRoutes: Routes = [
     {
         path: 'version',
         canActivate: [IsAdminGuard],
-        component: SettingModifyVersionComponent
+        loadComponent: () => import("./components/setting-modify-version/setting-modify-version.component").then(m => m.SettingModifyVersionComponent)
     },
     {
         path: 'admin-params',
@@ -125,10 +141,10 @@ export const editionRoutes: Routes = [
     },
     {
         path: 'unauthorized',
-        component: UnauthorizedPageComponent,
+        loadComponent: () => import("../../common-module/components/unauthorized-page/unauthorized-page.component").then(m => m.UnauthorizedPageComponent)
     },
     {
         path: '**',
-        component: SettingNotFoundComponent
+        loadComponent: () => import("../../common-module/components/setting-not-found/setting-not-found.component").then(m => m.SettingNotFoundComponent)
     }
-]
+];
