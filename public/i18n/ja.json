@@ -36,6 +36,15 @@
             "EXPENSION": "拡張",
             "GATHERING": "集合",
             "STOP": "停止"
+        },
+        "SERVER_SETTINGS": {
+            "SETTING_TITLE": "サーバーとの通信設定",
+            "TITLE": "サーバーとの通信",
+            "MAIN_URL": "メインサーバーのURL：",
+            "SECURE_DOMAIN": "セキュリティヘッダー名：",
+            "DASHBOARD_KEY": "セキュリティヘッダーのキー：",
+            "TEST": "テスト",
+            "SAVE": "保存"
         }
     },
     "OFFLINE": {

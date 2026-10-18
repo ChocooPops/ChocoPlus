@@ -1,0 +1,233 @@
+.container-server-settings {
+    position: relative;
+    margin-top: 5px;
+}
+
+.container-icon {
+    height: 35px;
+    width: 35px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+    cursor: pointer;
+
+    img {
+        height: 16px;
+        width: 16px;
+    }
+
+    &:hover,
+    &.active {
+        background-color: #232323;
+    }
+}
+
+.container-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 100;
+    width: 480px;
+    box-sizing: border-box;
+    padding-inline: 30px;
+    padding-block: 30px;
+    border-radius: 5px;
+    background-color: #161616;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    cursor: default;
+
+    p {
+        margin: 0;
+    }
+}
+
+.animationMenuAppears {
+    animation: 0.2s enterServerMenu ease-out;
+}
+
+@keyframes enterServerMenu {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animationMenuDisappears {
+    animation: 0.2s leaveServerMenu ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes leaveServerMenu {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.container-test-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: 0.1s fadeInTestOverlay ease-out;
+}
+
+.container-test-popup {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    background-color: #1e1e1e;
+    border: 1.5px solid #3a3a3a;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: 0.2s enterServerMenu ease-out;
+}
+
+.test-result-icon {
+    height: 25%;
+}
+
+@keyframes fadeInTestOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.title {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.container-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-text {
+    width: 100%;
+    height: 42px;
+    border: 1.5px solid var(--edit-border);
+    border-radius: 5px;
+    background: var(--edit-background);
+    box-sizing: border-box;
+    color: var(--edit-color);
+    font-size: 15px;
+    padding-left: 15px;
+    transition: border-color 0.2s;
+
+    &::placeholder {
+        color: var(--edit-placeholder);
+    }
+
+    &:focus {
+        outline: none;
+        border-color: var(--edit-border-hover);
+    }
+}
+
+.container-input-password {
+    position: relative;
+
+    .input-text {
+        padding-right: 45px;
+    }
+}
+
+.button-visibility {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 50px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    img {
+        height: 15px;
+        width: 15px;
+    }
+
+    &:hover {
+        background-color: #232323;
+    }
+}
+
+.label {
+    color: #fff;
+    font-size: 15px;
+}
+
+.container-buttons {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+.button {
+    width: 150px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.button-test {
+    border: 1.5px solid #3a3a3a;
+    color: #7b7b7b;
+
+    &:hover {
+        border-color: #888;
+        color: #9a9a9a;
+    }
+}
+
+.button-save {
+    border: 1.5px solid #ffd301;
+    background-color: #FFD812;
+    color: black;
+
+    &:hover {
+        background-color: #FFCB21;
+        border-color: #FFCB21;
+    }
+}

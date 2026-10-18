@@ -74,7 +74,7 @@ img {
     --edit-background: #111;
     --edit-background-hover: #222;
     --edit-color: #aaa;
-    --edit-placeholder: #aaa;
+    --edit-placeholder: #6b6b6b;
 }
 
 app-news-alert {

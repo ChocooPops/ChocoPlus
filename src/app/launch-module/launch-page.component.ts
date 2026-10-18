@@ -12,11 +12,12 @@ import { BadVersionComponent } from './components/bad-version/bad-version.compon
 import { NavigationButtonComponent } from '../main-appli-module/menu-module/components/navigation-button/navigation-button.component';
 import { ElectronService } from '../common-module/services/electron/electron.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ServerSettingsComponent } from './components/server-settings/server-settings.component';
 
 @Component({
   selector: 'app-launch-page',
   standalone: true,
-  imports: [TranslatePipe, RouterOutlet, BadVersionComponent, NavigationButtonComponent],
+  imports: [TranslatePipe, RouterOutlet, BadVersionComponent, NavigationButtonComponent, ServerSettingsComponent],
   templateUrl: './launch-page.component.html',
   styleUrls: ['./launch-page.component.css', '../../app/common-module/styles/loader.css']
 })

@@ -36,6 +36,15 @@
             "EXPENSION": "Expansion",
             "GATHERING": "Gathering",
             "STOP": "Stop"
+        },
+        "SERVER_SETTINGS": {
+            "SETTING_TITLE": "Server Communication Settings",
+            "TITLE": "Server communication",
+            "MAIN_URL": "Main server URL:",
+            "SECURE_DOMAIN": "Security Header Name:",
+            "DASHBOARD_KEY": "Security Header Key:",
+            "TEST": "Test",
+            "SAVE": "Save"
         }
     },
     "OFFLINE": {

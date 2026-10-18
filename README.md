@@ -428,79 +428,56 @@ Cela créera l'exécutable dans : `ChocoPlayer/bin/Debug/net9.0-windows/ChocoPla
 
 ## ⚙️ Configuration
 
-### Fichier .env
+### Paramètres du serveur
 
-ChocoPlus utilise un fichier `.env` pour gérer les variables d'environnement sensibles et la configuration de l'API. Ce fichier doit être créé à la racine du projet.
+ChocoPlus n'utilise plus de fichier `.env`. Les informations de connexion au serveur se renseignent directement dans l'application et sont stockées de manière sécurisée avec **Keytar**, dans le gestionnaire d'identifiants du système (Gestionnaire d'identifiants Windows, Trousseau macOS, libsecret sous Linux).
 
-#### Création du fichier .env
+#### Renseigner les paramètres
 
-Créez un fichier `.env` à la racine avec le contenu suivant :
-```env
-# URL de l'API backend
-API_URL=http://localhost:3000
+1. Lancez l'application.
+2. Sur la page de lancement, cliquez sur l'icône des paramètres serveur (en haut à droite, à côté du bouton de rechargement).
+3. Remplissez les trois champs :
 
-# Clés de sécurité pour l'authentification API
-HEADER_SECRET_API=SF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQNPmergSF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQNPmerg
-HEADER_NAME_FIELD_SECRET_API=X-API-Secret-Key-Choco-Plus
-```
+| Champ | Clé Keytar | Description | Exemple |
+|-------|------------|-------------|---------|
+| Url principale du serveur | `MAIN_URL` | URL de base de l'API REST backend | `http://localhost:3000` |
+| Nom de domaine sécurisé | `SECURE_DOMAIN` | Nom du header HTTP contenant la clé secrète | `X-API-Secret-Key-Choco-Plus` |
+| Clé de dashboard sécurité | `DASHBOARD_KEY` | Clé secrète envoyée dans ce header | Chaîne aléatoire sécurisée |
 
-#### Variables disponibles
+4. Cliquez sur **Tester** pour vérifier que le serveur répond avec ces valeurs, avant de les enregistrer.
+5. Cliquez sur **Enregistrer** : les valeurs sont écrites dans Keytar et l'application se recharge pour les prendre en compte.
 
-| Variable | Description | Exemple |
-|----------|-------------|---------|
-| `API_URL` | URL de base de l'API REST backend | `http://localhost:3000` ou `https://api.chocoplus.com` |
-| `HEADER_SECRET_API` | Clé secrète pour l'authentification des requêtes API | Chaîne aléatoire sécurisée |
-| `HEADER_NAME_FIELD_SECRET_API` | Nom du header HTTP contenant la clé secrète | `X-API-Secret-Key-Choco-Plus` |
+> Au premier lancement, aucune valeur n'est enregistrée : l'application ne peut pas joindre l'API tant que ces paramètres ne sont pas renseignés.
 
 #### Fonctionnement
 
-Les variables d'environnement sont chargées au démarrage de l'application via le processus principal d'Electron et transmises de manière sécurisée à l'interface Angular :
+Les valeurs sont enregistrées dans Keytar sous le service `my-app-server`, une entrée par clé (`MAIN_URL`, `SECURE_DOMAIN`, `DASHBOARD_KEY`).
 
-1. **Main Process** (app.js) : Charge le `.env` avec `dotenv` et transmet les variables via `additionalArguments`
-2. **Preload Script** (preload.js) : Récupère les arguments et les expose via `contextBridge`
-3. **Angular** (environment.ts) : Accède aux variables de manière synchrone via `window.electron`
+1. **Main Process** (app.js) : au démarrage, lit les trois valeurs dans Keytar avant de créer la fenêtre et les garde en mémoire. Elles sont mises à jour à chaque enregistrement (`secureStore:setKeyTarServer`). Enregistrer un champ vide supprime l'entrée correspondante dans Keytar.
+2. **Preload Script** (preload.js) : récupère les valeurs de manière synchrone (`secureStore:getServerSettingsSync`) et les expose via `contextBridge`. Le preload est réexécuté à chaque rechargement de la page, ce qui permet d'appliquer de nouvelles valeurs sans redémarrer Electron.
+3. **Angular** (environment.ts) : accède aux valeurs via `window.electron`.
 
 ```typescript
-// Exemple d'utilisation dans environment.ts
-const apiUrl: string = window.electron?.apiUrl || 'http://localhost:3000';
-const headerSecret: string = window.electron?.headerSecret || 'default-secret';
-const headerName: string = window.electron?.headerName || 'X-API-Secret-Key';
+// environment.ts
+const apiUrl: string = window.electron?.apiUrl || '';
+const headerSecret: string = window.electron?.headerSecret || '';
+const headerName: string = window.electron?.headerName || '';
 ```
+
+Les mêmes valeurs sont utilisées par le processus principal pour les téléchargements et transmises à **ChocoPlayer** (`BaseUrl`, `HEADER_NAME`, `HEADER_SECRET`).
 
 #### Sécurité
 
 ⚠️ **Important** :
-- Le fichier `.env` est inclus dans `.gitignore` et ne doit **jamais** être commité
-- Pour la production, le fichier `.env` est copié dans les ressources de l'application packagée
-- Les utilisateurs finaux peuvent modifier le `.env` à côté de l'exécutable pour pointer vers leur propre instance d'API
-- Les clés secrètes doivent être régénérées pour chaque environnement (dev, staging, production)
-
-#### Configuration pour le build
-
-Lors de la création de l'exécutable, le fichier `.env` est automatiquement inclus grâce à la configuration `electron-builder` dans `package.json` :
-
-```json
-"extraResources": [
-  {
-    "from": ".env",
-    "to": ".env"
-  }
-]
-```
-
-L'application packagée recherchera le `.env` dans cet ordre de priorité :
-1. À côté de l'exécutable (pour les utilisateurs finaux)
-2. Dans le dossier `resources` de l'application
-3. Utilisation des valeurs par défaut si aucun fichier n'est trouvé
+- Les valeurs sont chiffrées par le système d'exploitation et ne sont stockées dans aucun fichier du projet ni de l'application packagée
+- Chaque utilisateur renseigne ses propres paramètres pour pointer vers son instance d'API
+- Les clés secrètes doivent être différentes pour chaque environnement (dev, staging, production)
 
 ### Variables d'environnement
 
 ```typescript
-const apiUrl: string = '';
-const headerSecret: string = '';
-const headerName: string = '';
-
 export const environment = {
+    apiUrl: apiUrl,
     apiUrlAuth: apiUrl + '/auth',
     apiUrlMedia: apiUrl + '/media',
     apiUrlMovie: apiUrl + '/movie',
@@ -618,10 +595,6 @@ Le fichier `package.json` contient la configuration complète :
       "from": "resources/ChocoPlayer",
       "to": "ChocoPlayer",
       "filter": ["**/*"]
-    },
-    {
-      "from": ".env",
-      "to": ".env"
     }
   ],
   "win": {

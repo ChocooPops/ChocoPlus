@@ -41,13 +41,16 @@ let mediaLaunched = {
   type: MediaType.OTHER,
 }
 
-const envPath = app.isPackaged
-  ? path.join(process.resourcesPath, '.env')
-  : path.join(__dirname, '.env');
-require('dotenv').config({ path: envPath });
+const TOKEN_SERVICE = 'my-app-auth';
+const SERVER_SERVICE = 'my-app-server';
+const TOKEN_ACCOUNT = 'refresh-token';
 
-const SERVICE = 'my-app-auth';
-const ACCOUNT = 'refresh-token';
+// Server settings (keytar), stored in memory for preloading, downloads, and ChocoPlayer
+const serverSettings = {
+  MAIN_URL: '',
+  SECURE_DOMAIN: '',
+  DASHBOARD_KEY: ''
+};
 
 let mainWindow;
 let csharpProcess = null;
@@ -140,12 +143,7 @@ function createWindow() {
     ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true, // Isolation du contexte pour la sécurité
-      additionalArguments: [
-        `--api-url=${process.env.API_URL || 'http://localhost:3000'}`,
-        `--header-secret=${process.env.HEADER_SECRET_API}`,
-        `--header-name=${process.env.HEADER_NAME_FIELD_SECRET_API}`
-      ]
+      contextIsolation: true, // Context isolation for security
     },
     icon: path.join(__dirname, 'dist/choco-plus/browser/icon.ico'),
   });
@@ -165,7 +163,7 @@ function createWindow() {
   );
 
   // Open the developer tools if necessary
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   // Removing the menu bar
   mainWindow.setMenu(null);
@@ -381,13 +379,12 @@ async function downloadVideo(mediaType, id, targetDir, key, signal) {
       return reject(new Error(`Unsupported media type for video download: ${mediaType}`));
     }
 
-    const apiUrl = (process.env.API_URL || 'http://localhost:3000').replace(/\/+$/, '');
-    const videoUrl = new URL(`${apiUrl}/${endpoint}`);
+    const videoUrl = new URL(`${serverSettings.MAIN_URL}/${endpoint}`);
     const protocol = videoUrl.protocol === 'https:' ? https : http;
 
     const headers = { Authorization: `Bearer ${token}` };
-    if (process.env.HEADER_NAME_FIELD_SECRET_API && process.env.HEADER_SECRET_API) {
-      headers[process.env.HEADER_NAME_FIELD_SECRET_API] = process.env.HEADER_SECRET_API;
+    if (serverSettings.SECURE_DOMAIN && serverSettings.DASHBOARD_KEY) {
+      headers[serverSettings.SECURE_DOMAIN] = serverSettings.DASHBOARD_KEY;
     }
 
     let failResponse = null;
@@ -1161,17 +1158,40 @@ ipcMain.handle('delete-download', (event, data) => {
 //=========================================================================================//
 //=========================================================================================//
 async function getToken() {
-  return keytar.getPassword(SERVICE, ACCOUNT);
+  return await keytar.getPassword(TOKEN_SERVICE, TOKEN_ACCOUNT);
 }
+
+async function loadServerSettings() {
+  for (const account of Object.keys(serverSettings)) {
+    serverSettings[account] = await keytar.getPassword(SERVER_SERVICE, account) ?? '';
+  }
+}
+
 ipcMain.handle('secureStore:setRefreshToken', async (_e, token) => {
-  keytar.setPassword(SERVICE, ACCOUNT, token)
+  await keytar.setPassword(TOKEN_SERVICE, TOKEN_ACCOUNT, token)
 });
 ipcMain.handle('secureStore:getRefreshToken', async () =>
   getToken()
 );
 ipcMain.handle('secureStore:deleteRefreshToken', async () =>
-  keytar.deletePassword(SERVICE, ACCOUNT)
+  await keytar.deletePassword(TOKEN_SERVICE, TOKEN_ACCOUNT)
 );
+
+ipcMain.handle('secureStore:setKeyTarServer', async (_e, data) => {
+  const { account, value } = data;
+  if (!value) {
+    await keytar.deletePassword(SERVER_SERVICE, account)
+  } else {
+    await keytar.setPassword(SERVER_SERVICE, account, value)
+  }
+  if (account in serverSettings) {
+    serverSettings[account] = value ?? '';
+  }
+});
+
+ipcMain.on('secureStore:getServerSettingsSync', (event) => {
+  event.returnValue = serverSettings;
+});
 
 //=========================================================================================//
 //=========================================================================================//
@@ -1283,14 +1303,14 @@ async function launchChocoPlayer(dataObject) {
     }
 
     const bounds = mainWindow.getBounds();
-    dataObject.BaseUrl = process.env.API_URL;
+    dataObject.BaseUrl = serverSettings.MAIN_URL;
     dataObject.PositionX = bounds.x;
     dataObject.PositionY = bounds.y;
     dataObject.IsMaximized = mainWindow.isMaximized();
     dataObject.IsFullScreen = mainWindow.isFullScreen();
     dataObject.Token = await getToken();
-    dataObject.HEADER_NAME = process.env.HEADER_NAME_FIELD_SECRET_API;
-    dataObject.HEADER_SECRET = process.env.HEADER_SECRET_API;
+    dataObject.HEADER_NAME = serverSettings.SECURE_DOMAIN;
+    dataObject.HEADER_SECRET = serverSettings.DASHBOARD_KEY;
     dataObject.WatchProgress = dataObject.WatchProgress ?? 0;
 
     const csharpAppPath = app.isPackaged
@@ -1400,7 +1420,10 @@ async function launchChocoPlayer(dataObject) {
 //=================================== MAIN APPLICATION ===================================//*
 //=========================================================================================//*
 //=========================================================================================//*
-app.on('ready', createWindow);
+app.on('ready', async () => {
+  await loadServerSettings();
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -1483,6 +1506,7 @@ ipcMain.handle('delete-cache', async () => {
 });
 
 ipcMain.handle('reload-app', async () => {
+  await loadServerSettings();
   if (isCSharpRunning()) {
     await stopCSharpProcess(false);
   }

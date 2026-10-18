@@ -1,0 +1,60 @@
+<div class="container-server-settings">
+
+    <div class="container-icon" [class.active]="isMenuOpen && !isMenuClosing" (click)="toggleMenu()" [title]="'LAUNCH.SERVER_SETTINGS.SETTING_TITLE' | translate">
+        <img [src]="srcIcon">
+    </div>
+
+    @if (isMenuOpen) {
+        <form class="container-menu" [formGroup]="formGroup" (ngSubmit)="onSave()"
+            [class.animationMenuAppears]="!isMenuClosing"
+            [class.animationMenuDisappears]="isMenuClosing"
+            (animationend)="onMenuAnimationEnd($event)">
+            <p class="title">{{ 'LAUNCH.SERVER_SETTINGS.TITLE' | translate }}</p>
+
+            <div class="container-field">
+                <label class="label" [for]="ServerSettingKeyTar.MAIN_URL">{{ 'LAUNCH.SERVER_SETTINGS.MAIN_URL' | translate }}</label>
+                <input class="input-text" [id]="ServerSettingKeyTar.MAIN_URL" type="text" [formControlName]="ServerSettingKeyTar.MAIN_URL" placeholder="http://localhost:3000"/>
+            </div>
+
+            <div class="container-field">
+                <label class="label" [for]="ServerSettingKeyTar.SECURE_DOMAIN">{{ 'LAUNCH.SERVER_SETTINGS.SECURE_DOMAIN' | translate }}</label>
+                <div class="container-input-password">
+                    <input class="input-text" [id]="ServerSettingKeyTar.SECURE_DOMAIN" [type]="isTextVisible[ServerSettingKeyTar.SECURE_DOMAIN] ? 'text' : 'password'"
+                        [formControlName]="ServerSettingKeyTar.SECURE_DOMAIN" placeholder="X-API-Secret-Key-Choco-Plus" (input)="hideText(ServerSettingKeyTar.SECURE_DOMAIN)"/>
+                    <button class="button-visibility" type="button" (click)="toggleVisibility(ServerSettingKeyTar.SECURE_DOMAIN)">
+                        <img [src]="isTextVisible[ServerSettingKeyTar.SECURE_DOMAIN] ? srcVisible : srcNotVisible">
+                    </button>
+                </div>
+            </div>
+
+            <div class="container-field">
+                <label class="label" [for]="ServerSettingKeyTar.DASHBOARD_KEY">{{ 'LAUNCH.SERVER_SETTINGS.DASHBOARD_KEY' | translate }}</label>
+                <div class="container-input-password">
+                    <input class="input-text" [id]="ServerSettingKeyTar.DASHBOARD_KEY" [type]="isTextVisible[ServerSettingKeyTar.DASHBOARD_KEY] ? 'text' : 'password'"
+                        [formControlName]="ServerSettingKeyTar.DASHBOARD_KEY" placeholder="SF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQ" (input)="hideText(ServerSettingKeyTar.DASHBOARD_KEY)"/>
+                    <button class="button-visibility" type="button" (click)="toggleVisibility(ServerSettingKeyTar.DASHBOARD_KEY)">
+                        <img [src]="isTextVisible[ServerSettingKeyTar.DASHBOARD_KEY] ? srcVisible : srcNotVisible">
+                    </button>
+                </div>
+            </div>
+            
+            <div class="container-buttons">
+                <button class="button button-test" type="button" (click)="onTest()">{{ 'LAUNCH.SERVER_SETTINGS.TEST' | translate }}</button>
+                <button class="button button-save" type="submit">{{ 'LAUNCH.SERVER_SETTINGS.SAVE' | translate }}</button>
+            </div>
+
+            @if (testStatus !== 'idle') {
+                <div class="container-test-overlay" (click)="hideTestResult()">
+                    <div class="container-test-popup">
+                        @if (isTesting()) {
+                            <div class="little-spinner"></div>
+                        } @else {
+                            <img class="test-result-icon" [src]="testStatus === 'success' ? srcSuccess : srcError">
+                        }
+                    </div>
+                </div>
+            }
+        </form>
+    }
+
+</div>

@@ -1,10 +1,11 @@
 declare const window: any;
 
-const apiUrl: string = window.electron.apiUrl;
-const headerSecret: string = window.electron?.headerSecret || 'SF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQNPmergSF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQNPmerg';
-const headerName: string = window.electron?.headerName || 'X-API-Secret-Key-Choco-Plus';
+const apiUrl: string = window.electron?.apiUrl || '';
+const headerSecret: string = window.electron?.headerSecret || '';
+const headerName: string = window.electron?.headerName || '';
 
 export const environment = {
+    apiUrl: apiUrl,
     apiUrlAuth: apiUrl + '/auth',
     apiUrlMedia: apiUrl + '/media',
     apiUrlMovie: apiUrl + '/movie',

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { TokenModel } from '../../models/token.model';
 import { LoginModel } from '../../models/login.model';
@@ -11,6 +11,7 @@ import { UserModel } from '../../../main-appli-module/user-module/dto/user.model
 import { RoleModel } from '../../../common-module/models/role.enum';
 import { MessageReturnedModel } from '../../../common-module/models/message-returned.interface';
 import { RegisterModel } from '../../models/register.model';
+import { ServerSettingKeyTarModel } from '../../models/server-setting-key-tar.enum';
 
 declare global {
   interface Window {
@@ -18,12 +19,15 @@ declare global {
       setRefreshToken(token: any): Promise<void>;
       getRefreshToken(): Promise<string | null>;
       deleteRefreshToken(): Promise<void>;
+      setKeyTarServer(data: any): Promise<void>;
     };
   }
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
+  private accessToken: string | null = null;
 
   private readonly urlRegister: string = 'register';
   private readonly urlSendVerificationCode: string = 'send-verification-code';
@@ -32,15 +36,12 @@ export class AuthService {
 
   private apiUrlAuth = environment.apiUrlAuth;
 
-  // Access token uniquement en mémoire
-  private accessToken: string | null = null;
-
   private jwtHelper = new JwtHelperService();
 
   constructor(
-    private http: HttpClient,
-    private router: Router,
-    private userService: UserService
+    private readonly http: HttpClient,
+    private readonly router: Router,
+    private readonly userService: UserService
   ) { }
 
   /**
@@ -172,6 +173,23 @@ export class AuthService {
       }),
       map(() => undefined),
       catchError(() => of(undefined))
+    );
+  }
+
+  public async setKeyTarFromServerSetting(account: ServerSettingKeyTarModel, value: string): Promise<void> {
+    await window.electron?.setKeyTarServer({ account, value })
+  }
+
+  public testConnection(url: string, headerName: string, headerSecret: string): Observable<boolean> {
+    let headers: HttpHeaders = new HttpHeaders({ skipInterceptor: 'true' });
+
+    if (headerName && headerSecret) {
+      headers = headers.set(headerName, headerSecret);
+    }
+
+    return this.http.get(`${url}`, { headers }).pipe(
+      map(() => true),
+      catchError(() => of(false))
     );
   }
 

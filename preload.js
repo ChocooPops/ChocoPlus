@@ -1,9 +1,9 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-// Récupérer les valeurs depuis les arguments de process
-const apiUrl = process.argv.find(arg => arg.startsWith('--api-url='))?.split('=')[1];
-const headerSecret = process.argv.find(arg => arg.startsWith('--header-secret='))?.split('=')[1] || 'SF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQNPmergSF76KE6eNKz9Y6hQYFtz7fC8h3XG8848KQNPmerg';
-const headerName = process.argv.find(arg => arg.startsWith('--header-name='))?.split('=')[1] || 'X-API-Secret-Key-Choco-Plus';
+const serverSettings = ipcRenderer.sendSync('secureStore:getServerSettingsSync');
+const apiUrl = serverSettings.MAIN_URL ?? '';
+const headerName = serverSettings.SECURE_DOMAIN ?? '';
+const headerSecret = serverSettings.DASHBOARD_KEY ?? '';
 
 contextBridge.exposeInMainWorld('electron', {
   invoke: (channel, args) => ipcRenderer.invoke(channel, args),
@@ -15,6 +15,8 @@ contextBridge.exposeInMainWorld('electron', {
   setRefreshToken: (token) => ipcRenderer.invoke('secureStore:setRefreshToken', token),
   getRefreshToken: () => ipcRenderer.invoke('secureStore:getRefreshToken'),
   deleteRefreshToken: () => ipcRenderer.invoke('secureStore:deleteRefreshToken'),
+  setKeyTarServer: (data) => ipcRenderer.invoke('secureStore:setKeyTarServer', data),
+
   getVersion: () => ipcRenderer.invoke('get-version'),
 
   onChocoPlayerStatus: (callback) => ipcRenderer.on('choco-player-status', (_event, data) => callback(data)),
