@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, from, map, Observable, take, BehaviorSubject, switchMap, throwError, catchError, Subject, of, shareReplay, distinctUntilChanged, finalize } from 'rxjs';
+import { forkJoin, from, map, Observable, take, BehaviorSubject, switchMap, throwError, catchError, Subject, of, shareReplay, distinctUntilChanged, finalize, combineLatest, concatMap, toArray, takeUntil, merge } from 'rxjs';
 import { MediaService } from '../media/media.service';
 import { MediaModel } from '../../models/media.interface';
 import { MediaInfoModel } from '../../models/media-info.interface';
@@ -23,6 +23,9 @@ declare const window: any;
 export class DownloadService {
 
   private progressSubjects: Map<string, BehaviorSubject<ProgressDownload | undefined>> = new Map();
+  private seasonCancelSubjects: Map<string, Subject<void>> = new Map();
+  private seasonCurrentEpisodeKeys: Map<string, string> = new Map();
+  private seasonStartedEpisodeIds: Map<string, number[]> = new Map();
 
   private readonly seriesMetadataRefreshedThisSession: Set<number> = new Set<number>();
 
@@ -69,7 +72,7 @@ export class DownloadService {
     }
   }
 
-  private formatKey(id: number, mediaType: MediaTypeModel): string {
+  public formatKey(id: number, mediaType: MediaTypeModel): string {
     return `${mediaType}-${id}`;
   }
 
@@ -208,38 +211,36 @@ export class DownloadService {
     return this.getOrCreateProgressSubject(key).asObservable(); 
   }
 
-  public replaceProgressKey(oldKey: string, overrides?: Partial<ProgressDownload>): void {
-    const oldSubject = this.progressSubjects.get(oldKey);
+  public observeProgressByIds(keys: string[]): Observable<(ProgressDownload | undefined)[]> {
+    if (keys.length === 0) return of([]);
 
-    if (!oldSubject) {
-      return;
-    }
+    return combineLatest(
+      keys.map(key => this.getOrCreateProgressSubject(key).pipe(map(progress => ( progress ))))
+    );
+  }
+
+  public replaceProgressKey(oldKey: string, overrides?: Partial<ProgressDownload>): void {
+    const liveSubject = this.progressSubjects.get(oldKey);
+    if (!liveSubject) return;
 
     const newKey = `${oldKey}-${Date.now()}`;
-    const oldValue = oldSubject.value;
+    const oldValue = liveSubject.value;
 
-    const newSubject = new BehaviorSubject<ProgressDownload | undefined>(
-      oldValue
-        ? {
-            ...oldValue,
-            ...overrides,
-            key: newKey,
-          }
-        : undefined
+    const archivedSubject = new BehaviorSubject<ProgressDownload | undefined>(
+      oldValue ? { ...oldValue, ...overrides, key: newKey } : undefined
     );
 
     const entries = Array.from(this.progressSubjects.entries());
-
     this.progressSubjects.clear();
 
     for (const [key, subject] of entries) {
       if (key === oldKey) {
-        this.progressSubjects.set(newKey, newSubject);
-      } else {
-        this.progressSubjects.set(key, subject);
+        this.progressSubjects.set(newKey, archivedSubject);
       }
+      this.progressSubjects.set(key, subject);
     }
 
+    liveSubject.next(undefined);
     this.progressChangedSubject.next();
   }
 
@@ -409,6 +410,112 @@ export class DownloadService {
     );
   }
 
+  private markEpisodesAsWaiting(seriesId: number, episodes: EpisodeModel[]): void {
+    episodes.forEach((episode: EpisodeModel) => {
+      const key: string = this.formatKey(episode.id, MediaTypeModel.EPISODE);
+      this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.DOWNLOAD));
+      this.addProgressEpisode(seriesId, episode.id);
+    });
+  }
+
+  public downloadSeason(seriesId: number, seasonId: number, episodes: EpisodeModel[]): Observable<void> {
+    const seasonKey: string = this.formatKey(seasonId, MediaTypeModel.SEASON);
+    this.setOrCreateProgressDonwload(seasonKey, this.initProgressDownload(seasonKey, ProgressTypeOperation.DOWNLOAD));
+
+    const cancel$: Subject<void> = new Subject<void>();
+    this.seasonCancelSubjects.set(seasonKey, cancel$);
+
+    const startedEpisodeIds: number[] = [];
+    this.seasonStartedEpisodeIds.set(seasonKey, startedEpisodeIds);
+
+    return this.readAllEpisodesFromSeriesAndSeasonId(seriesId, seasonId).pipe(
+      take(1),
+      concatMap((episodesAlreadyDownloaded: EpisodeModel[]) => {
+        const toDownload = episodes.filter(
+          episode => !episodesAlreadyDownloaded.some(d => d.id === episode.id)
+        );
+
+        if (toDownload.length === 0) return of(void 0);
+
+        this.markEpisodesAsWaiting(seriesId, toDownload);
+
+        return from(toDownload).pipe(
+          concatMap((episode: EpisodeModel) => {
+            this.seasonCurrentEpisodeKeys.set(seasonKey, this.formatKey(episode.id, MediaTypeModel.EPISODE));
+            startedEpisodeIds.push(episode.id);
+            return this.downloadEpisode(seriesId, seasonId, episode.id).pipe(
+              catchError(() => of(void 0))
+            );
+          }),
+          takeUntil(cancel$),
+          toArray(),
+          map(() => void 0)
+        );
+      }),
+      finalize(() => {
+        this.setOrCreateProgressDonwload(seasonKey, undefined);
+        this.seasonCancelSubjects.delete(seasonKey);
+        this.seasonCurrentEpisodeKeys.delete(seasonKey);
+        this.seasonStartedEpisodeIds.delete(seasonKey);
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
+  }
+
+  public cancelSeasonDownload(seriesId: number, seasonId: number, episodes: EpisodeModel[]): Observable<void> {
+    const seasonKey: string = this.formatKey(seasonId, MediaTypeModel.SEASON);
+
+    const currentEpisodeKey: string | undefined = this.seasonCurrentEpisodeKeys.get(seasonKey);
+    const startedEpisodeIds: number[] = [...(this.seasonStartedEpisodeIds.get(seasonKey) ?? [])];
+
+    const cancel$: Subject<void> | undefined = this.seasonCancelSubjects.get(seasonKey);
+    cancel$?.next();
+    cancel$?.complete();
+    this.seasonCancelSubjects.delete(seasonKey);
+
+    this.setOrCreateProgressDonwload(seasonKey, this.initProgressDownload(seasonKey, ProgressTypeOperation.CANCELED));
+
+    const inProgressEpisodes: EpisodeModel[] = episodes.filter((episode: EpisodeModel) => {
+      const key: string = this.formatKey(episode.id, MediaTypeModel.EPISODE);
+      const progress: ProgressDownload | undefined = this.progressSubjects.get(key)?.value;
+      if (!progress || progress.type !== ProgressTypeOperation.DOWNLOAD || progress.percent >= 100) return false;
+      return key === currentEpisodeKey || progress.percent > 0;
+    });
+
+    episodes.forEach((episode: EpisodeModel) => {
+      if (inProgressEpisodes.some((inProgress: EpisodeModel) => inProgress.id === episode.id)) return;
+      const key: string = this.formatKey(episode.id, MediaTypeModel.EPISODE);
+      const progress: ProgressDownload | undefined = this.progressSubjects.get(key)?.value;
+      if (progress && progress.type === ProgressTypeOperation.DOWNLOAD && progress.percent <= 0) {
+        this.setOrCreateProgressDonwload(key, undefined);
+        this.removeProgressEpisode(seriesId, episode.id);
+      }
+    });
+
+    const cancelInProgress$: Observable<void> = inProgressEpisodes.length === 0
+      ? of(void 0)
+      : forkJoin(
+          inProgressEpisodes.map((episode: EpisodeModel) => this.cancelDownload(this.formatKey(episode.id, MediaTypeModel.EPISODE)))
+        ).pipe(map(() => void 0));
+
+    return cancelInProgress$.pipe(
+      switchMap(() => this.readAllEpisodesFromSeriesAndSeasonId(seriesId, seasonId)),
+      map((onDisk: EpisodeModel[]) => onDisk
+        .map((episode: EpisodeModel) => episode.id)
+        .filter((id: number) => startedEpisodeIds.includes(id))
+      ),
+      switchMap((toDelete: number[]) => from(toDelete).pipe(
+        concatMap((episodeId: number) => this.deleteDownloadsForEpisode(seriesId, seasonId, episodeId).pipe(
+          catchError(() => of(void 0))
+        )),
+        toArray()
+      )),
+      map(() => void 0),
+      catchError(() => of(void 0)),
+      finalize(() => this.setOrCreateProgressDonwload(seasonKey, undefined))
+    );
+  }
+
   public cancelDownload(key: string): Observable<void> {
     this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.CANCELED));
     return from(window.electron.cancelDownload({ key }) as Promise<{ key: string, fileName: string | null }>).pipe(
@@ -510,6 +617,57 @@ export class DownloadService {
     );
   }
 
+  public deleteDownloadsForSeason(seriesId: number, seasonId: number, episodes: EpisodeModel[]): Observable<void> {
+    const key: string = this.formatKey(seasonId, MediaTypeModel.SEASON);
+    episodes.forEach((episode: EpisodeModel) => {
+      this.addProgressEpisode(seriesId, episode.id);
+      const episodeKey: string = this.formatKey(episode.id, MediaTypeModel.EPISODE);
+      this.setOrCreateProgressDonwload(episodeKey, this.initProgressDownload(episodeKey, ProgressTypeOperation.DELETION))
+    });
+    this.setOrCreateProgressDonwload(key, this.initProgressDownload(key, ProgressTypeOperation.DELETION))
+    return from(window.electron.deleteDownload(
+        {
+          mediaId: seriesId,
+          seasonId,
+          mediaType: MediaTypeModel.SEASON
+        }
+      ) as Promise<{ entries: { key: string, fileName: string | null, episode: EpisodeModel | null }[], media: MediaModel | null }>).pipe(
+      map((result) => {
+        result.entries.forEach(({ key, fileName, episode }) => {
+          this.replaceProgressKey(key, { fileName: fileName ?? '', percent: 100 });
+          if (episode) {
+            if (this.seriesPage) {
+              this.seriesPage.deleteEpisodeBySeasonId(seriesId, episode.seasonId, episode.id);
+            }
+            this.updateDonwloadBytesStorage(-(episode.bytes ?? 0));
+          } else if (key.startsWith(`${MediaTypeModel.SEASON}`)) {
+            this.updateSeasonBySeriesId(seriesId, Number(key.split('-')[1]), true);
+          }
+        });
+        if (result.media) {
+          if (this.seriesPage) {
+            this.seriesPage.setEpisodeBySeriesId(seriesId, []);
+          }
+          this.deleteMediaIntoList(result.media.id);
+        }
+      }),
+      catchError((error) => {
+        this.setOrCreateProgressDonwload(key, undefined);
+        return throwError(() => error)
+      }),
+      finalize(() => {
+        episodes.forEach((episode: EpisodeModel) => {
+          const episodeKey: string = this.formatKey(episode.id, MediaTypeModel.EPISODE);
+          if (this.progressSubjects.get(episodeKey)?.value?.type === ProgressTypeOperation.DELETION) {
+            this.setOrCreateProgressDonwload(episodeKey, undefined);
+          }
+          this.removeProgressEpisode(seriesId, episode.id);
+        });
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
+  }
+
   public deleteDownloadsForEpisode(mediaId: number, seasonId: number, episodeId: number): Observable<void> {
     const key: string = this.formatKey(episodeId, MediaTypeModel.EPISODE);
     this.addProgressEpisode(mediaId, episodeId);
@@ -527,7 +685,7 @@ export class DownloadService {
           this.replaceProgressKey(key, { fileName: fileName ?? '', percent: 100 });
           if (episode && this.seriesPage) {
             if (this.seriesPage) {
-              this.seriesPage.deleteEpisodeBySeasonId(mediaId, episode.seasonId, episode.id);              
+              this.seriesPage.deleteEpisodeBySeasonId(mediaId, episode.seasonId, episode.id);
             }
             this.updateDonwloadBytesStorage(-(episode.bytes ?? 0));
           }

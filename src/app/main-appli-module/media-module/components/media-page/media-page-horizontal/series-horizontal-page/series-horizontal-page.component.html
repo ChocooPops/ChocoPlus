@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-horizontal-page">
     <div class="container-first-line">
         @if (mediaInfoLoaded) {
         <div class="container-info">
@@ -74,6 +74,16 @@
             </div>
             }
         </div>
+
+        @if (!user || user.role === Role.ADMIN || user.role === Role.FAMILY) {
+            @if (episodes && episodes.length > 0) {
+                <app-download-season [seriesId]="series.id" [seasonId]="seasonSelected.id" [seasonNumber]="seasonSelected.seasonNumber" [episodes]="episodes"></app-download-season>
+            } @else if (!episodes) {
+                <div class="container-download-season-loader container-animation-gradient-little">
+                </div>
+            }
+        }
+
         @if (episodes) {
         <app-episode-poster-horizontal-view [series]="series" [episodes]="episodes" [user]="user"></app-episode-poster-horizontal-view>
         } @else {

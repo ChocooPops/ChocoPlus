@@ -10,11 +10,12 @@ import { FormatMediaPageModel } from '../../../../models/format-media-page-enum'
 import { TranslatePipe } from '@ngx-translate/core';
 import { TitleCasePipe } from '@angular/common';
 import { JobPipe } from '../../../../../../common-module/pipe/job.pipe';
+import { DownloadSeasonComponent } from '../../../button/download-season/download-season.component';
 
 @Component({
   selector: 'app-series-vertical-page',
   standalone: true,
-  imports: [JobPipe, NgClass, TitleCasePipe, EpisodePosterVerticalViewComponent, EpisodePosterVerticalViewLoadingComponent, SimilarPosterHorizontalComponent, SimilarPosterHorizontalLoadingComponent, DatePipe, TranslatePipe],
+  imports: [JobPipe, NgClass, DownloadSeasonComponent, TitleCasePipe, EpisodePosterVerticalViewComponent, EpisodePosterVerticalViewLoadingComponent, SimilarPosterHorizontalComponent, SimilarPosterHorizontalLoadingComponent, DatePipe, TranslatePipe],
   templateUrl: './series-page.component.html',
   styleUrls: ['./series-page.component.css', '../../../../../common-module/styles/animation.css', '../../media-page.css'],
 })

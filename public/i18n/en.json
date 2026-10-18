@@ -128,6 +128,12 @@
     "DOWNLOAD": {
         "PAGE_TITLE": "Downloads",
         "DOWNLOAD": "Download",
+        "DOWNLOAD_SEASON": "Download season",
+        "DOWNLOAD_EPISODE": "Processing episodes ...",
+        "DELETE_SEASON": "Delete season",
+        "DOWNLOADING_SEASON": "Downloading season {{number}}",
+        "DELETING_SEASON": "Deleting season {{number}}",
+        "CANCELING_SEASON": "Canceling season {{number}}",
         "WAITING": "Waiting for metadata",
         "DOWNLOADING": "Downloading",
         "DELETE_DOWNLOAD": "Delete download",

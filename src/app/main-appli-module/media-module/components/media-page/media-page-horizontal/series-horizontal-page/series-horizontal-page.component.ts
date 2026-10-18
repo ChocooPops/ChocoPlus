@@ -10,11 +10,12 @@ import { CreditPosterComponent } from '../../../posters/credit-poster/credit-pos
 import { CreditPosterLoadingComponent } from '../../../posters/credit-poster-loading/credit-poster-loading.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TitleCasePipe } from '@angular/common';
+import { DownloadSeasonComponent } from '../../../button/download-season/download-season.component';
 
 @Component({
   selector: 'app-series-horizontal-page',
   standalone: true,
-  imports: [NgClass, TranslatePipe, TitleCasePipe, EpisodePosterHorizontalViewComponent, EpisodePosterHorizontalViewLoadingComponent, CreditPosterComponent, CreditPosterLoadingComponent, SimilarPosterVerticalComponent, SimilarPosterVerticalLoadingComponent],
+  imports: [NgClass, DownloadSeasonComponent, TranslatePipe, TitleCasePipe, EpisodePosterHorizontalViewComponent, EpisodePosterHorizontalViewLoadingComponent, CreditPosterComponent, CreditPosterLoadingComponent, SimilarPosterVerticalComponent, SimilarPosterVerticalLoadingComponent],
   templateUrl: './series-horizontal-page.component.html',
   styleUrls: ['./series-horizontal-page.component.css', '../../../../../common-module/styles/animation.css'],
 })

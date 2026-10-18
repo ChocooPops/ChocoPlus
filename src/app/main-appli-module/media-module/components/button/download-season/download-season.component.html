@@ -1,0 +1,28 @@
+<div class="download-season-button"
+    [ngClass]="seriesOperationInProgress ? DownloadStatus.UNAVAILABLE : downloadStatus"
+    (click)="onClick()">
+
+    @if (seriesOperationInProgress) {
+        <img [src]="srcUnavailable">
+        <p> {{ 'DOWNLOAD.UNAVAILABLE_IN_PROGRESS' | translate }} </p>        
+    }@else if (downloadStatus === DownloadStatus.WAITING) {
+        <img [src]="srcDownload"> 
+        <p> {{ 'DOWNLOAD.DOWNLOAD_EPISODE' | translate }} </p>       
+    }  @else if (downloadStatus === DownloadStatus.IN_PROGRESS) {
+        <img [src]="srcDownload"> 
+        <p> {{ getLabelDuringDownload() }} </p>
+    } @else if (downloadStatus === DownloadStatus.DELETION) {
+        <div class="deletion-spinner"></div>
+        <p> {{ getLabelDuringDeletion() }} </p>
+    } @else if (downloadStatus === DownloadStatus.CANCELED) {
+        <img [src]="srcCancelDl">
+        <p> {{ getLabelDuringCancellation() }} </p>
+    } @else if (downloadStatus === DownloadStatus.DOWNLOADED)  {
+        <img [src]="srcDeleteDl">
+        <p> {{ getLabelDuringSuppression() }} </p>
+    } @else {
+        <img [src]="srcDownload"> 
+        <p> {{ getNormalLabel() }} </p>   
+    }
+    
+</div>

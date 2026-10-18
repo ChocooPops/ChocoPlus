@@ -1,4 +1,4 @@
-.container {
+.container-horizontal-page {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -83,6 +83,8 @@ p {
 
 .season-clicked {
     background-color: #FFD300;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+
     p {
         color: black;
     }
@@ -90,6 +92,8 @@ p {
 
 .season-not-clicked {
     background-color: #2E2E2E;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+    
     p {
         color: white;
     }
@@ -115,4 +119,9 @@ p {
     top: -6px;
     right: -6px;
     opacity: 0.9;
+}
+
+.container-download-season-loader {
+    width: 350px;
+    height: 40px;
 }

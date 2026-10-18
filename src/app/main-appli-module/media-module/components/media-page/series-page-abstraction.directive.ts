@@ -15,18 +15,21 @@ import { DownloadService } from '../../services/download/download.service';
 import { UserService } from '../../../user-module/service/user/user.service';
 import { UserModel } from '../../../user-module/dto/user.model';
 import { SeasonModel } from '../../models/series/season.interface';
+import { RoleModel } from '../../../../common-module/models/role.enum';
 
 @Directive({})
 export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
 
   @Input() series!: SeriesModel;
+  seasonSelected!: SeasonModel;
 
   protected abortControllerEpisodes = new AbortController();
   protected subscriptionEpisodes!: Subscription;
   protected user!: UserModel | undefined;
 
   srcSucces: string = 'icon/success.svg';
-
+  public readonly Role = RoleModel;
+  
   seasonsLoading: number[] = [];
   seasonsPosterTmp: number[] = [];
   episodes: EpisodeModel[] | undefined = [];
@@ -229,6 +232,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
   }
 
   private loadSeasonEpisodes(index: number): void {
+    this.seasonSelected = this.series.seasons[index];
     this.resetIsClickedSeason(index);
     this.fetchEpisodesBySeason(this.series.seasons[index].id);
     this.seriesService.loadLastSeasonWatchedBySeriesId(this.series.id, this.series.seasons[index].id);

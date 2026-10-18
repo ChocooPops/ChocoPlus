@@ -1,0 +1,98 @@
+.download-season-button {
+    height: 40px;
+    width: max-content;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    padding-inline: 15px;
+    border: 1.4px solid transparent;
+    border-radius: 5px;
+    transition: opacity 0.3s, border-color 0.3s, border-style 0.3s;
+}
+
+.status-icon {
+    width: 20px;
+    height: 20px;
+}
+
+img {
+    height: 20px;
+    width: 20px;
+    transition: filter 0.3s;
+}
+
+p {
+    margin: 0;
+    font-size: 14;
+    font-weight: bold;
+    color: white;
+}
+
+.NOT_DOWNLOADED {
+    cursor: pointer;
+    border-color: white;
+    border-style: solid;
+    opacity: 0.45;
+
+    img {
+        filter: brightness(0) invert(1);
+    }
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.WAITING, .IN_PROGRESS, .DELETION, .CANCELED {
+    border-color: #FFD301;
+    border-style: dashed;
+    cursor: default;
+    opacity: 0.8;
+
+    img {
+        filter: brightness(0) invert(1);
+    }
+}
+
+.DOWNLOADED {
+    border-color: #FFD301;
+    background-color: transparent;
+    cursor: pointer;
+    opacity: 0.6;
+
+    img {
+        filter: brightness(0) invert(1);
+    }
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.UNAVAILABLE {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: white;
+    border-style: solid;
+}
+
+.deletion-spinner {
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: transparent;
+    border-top-color: #FFD301;
+    animation: deletion-spin 1s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes deletion-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

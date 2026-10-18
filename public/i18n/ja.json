@@ -128,6 +128,12 @@
     "DOWNLOAD": {
         "PAGE_TITLE": "ダウンロード",
         "DOWNLOAD": "ダウンロード",
+        "DOWNLOAD_SEASON": "シーズン",
+        "DOWNLOAD_EPISODE": "エピソードを処理中...",
+        "DELETE_SEASON": "シーズンを削除",
+        "DOWNLOADING_SEASON": "シーズン{{number}}をダウンロード中",
+        "DELETING_SEASON": "シーズン{{number}}を削除中",
+        "CANCELING_SEASON": "シーズン{{number}}のダウンロードを中止中",
         "WAITING": "メタデータの取得待ち",
         "DOWNLOADING": "ダウンロード中",
         "DELETE_DOWNLOAD": "ダウンロードを削除",

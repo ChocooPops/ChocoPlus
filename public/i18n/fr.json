@@ -128,6 +128,12 @@
     "DOWNLOAD": {
         "PAGE_TITLE": "Téléchargements",
         "DOWNLOAD": "Télécharger",
+        "DOWNLOAD_SEASON": "Télécharger la saison",
+        "DOWNLOAD_EPISODE": "Traitement d'épisode en cours ...",
+        "DELETE_SEASON": "Supprimer la saison",
+        "DOWNLOADING_SEASON": "Téléchargement de la saison {{number}} en cours",
+        "DELETING_SEASON": "Suppression de la saison {{number}} en cours",
+        "CANCELING_SEASON": "Annulation de la saison {{number}} en cours",
         "WAITING": "En attente des métadonnées",
         "DOWNLOADING": "Téléchargement en cours",
         "DELETE_DOWNLOAD": "Supprimer le téléchargement",
