@@ -203,7 +203,7 @@ export class DownloadService {
   public getDownloadsHistory(): ProgressDownload[] {
     return Array.from(this.progressSubjects.values())
       .map((subject: BehaviorSubject<ProgressDownload | undefined>) => subject.value)
-      .filter((value): value is ProgressDownload => !!value)
+      .filter((value): value is ProgressDownload => !!value && !value.key.startsWith(MediaTypeModel.SEASON))
       .reverse();
   }
   
@@ -230,15 +230,7 @@ export class DownloadService {
       oldValue ? { ...oldValue, ...overrides, key: newKey } : undefined
     );
 
-    const entries = Array.from(this.progressSubjects.entries());
-    this.progressSubjects.clear();
-
-    for (const [key, subject] of entries) {
-      if (key === oldKey) {
-        this.progressSubjects.set(newKey, archivedSubject);
-      }
-      this.progressSubjects.set(key, subject);
-    }
+    this.progressSubjects.set(newKey, archivedSubject);
 
     liveSubject.next(undefined);
     this.progressChangedSubject.next();
