@@ -100,3 +100,8 @@ p {
 .crossButtonDisappears {
     opacity: 0;
 }
+.download-button-placeholder {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}

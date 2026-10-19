@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { EditionParametersService } from '../../../../edition-module/services/edition-parameters/edition-parameters.service';
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { MenuType } from '../../../../menu-module/model/menu-type.enum';
@@ -9,7 +8,7 @@ import { VerifUserAlreadyConnectedService } from '../../../../../launch-module/s
 @Component({
   selector: 'app-modify-button',
   standalone: true,
-  imports: [NgClass, TranslatePipe],
+  imports: [TranslatePipe],
   templateUrl: './modify-button.component.html',
   styleUrls: ['./modify-button.component.css', '../../../../common-module/styles/movie-button.css']
 })

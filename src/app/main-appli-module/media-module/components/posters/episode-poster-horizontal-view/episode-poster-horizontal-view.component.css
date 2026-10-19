@@ -182,3 +182,8 @@ p {
     transform: translate(-50%, -50%);
   }
 }
+.download-button-placeholder {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+}

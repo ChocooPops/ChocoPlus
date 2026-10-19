@@ -37,7 +37,11 @@
                 <div class="container-title-row">
                     <p class="title"> {{episode.episodeNumber}}. {{episode.name}} </p>
                     @if (!user || user.role === Role.ADMIN || user.role === Role.FAMILY) {
-                        <app-download-button [mediaId]="episode.seriesId" [mediaType]="MediaType.EPISODE" [seasonId]="episode.seasonId" [episodeId]="episode.id"></app-download-button>
+                        @defer (on idle) {
+                            <app-download-button [mediaId]="episode.seriesId" [mediaType]="MediaType.EPISODE" [seasonId]="episode.seasonId" [episodeId]="episode.id"></app-download-button>
+                        } @placeholder {
+                            <div class="download-button-placeholder container-animation-gradient-normal"></div>
+                        }
                     }
                 </div>
                 <p class="other-info">

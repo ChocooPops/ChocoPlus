@@ -135,9 +135,13 @@
 
         @if (!user || user.role === Role.ADMIN || user.role === Role.FAMILY) {
             @if (episodes && episodes.length > 0) {
-                <app-download-season [seriesId]="series.id" [seasonId]="seasonSelected.id" [seasonNumber]="seasonSelected.seasonNumber" [episodes]="episodes"></app-download-season>
+                @defer (on idle) {
+                    <app-download-season [seriesId]="series.id" [seasonId]="seasonSelected.id" [seasonNumber]="seasonSelected.seasonNumber" [episodes]="episodes"></app-download-season>
+                } @placeholder {
+                    <div class="container-download-season-loader container-animation-gradient-normal"></div>
+                }
             } @else if (!episodes) {
-                <div class="container-download-season-loader container-animation-gradient-little">
+                <div class="container-download-season-loader container-animation-gradient-normal">
                 </div>
             }
         }

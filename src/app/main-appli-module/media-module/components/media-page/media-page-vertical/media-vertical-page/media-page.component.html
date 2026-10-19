@@ -12,7 +12,11 @@
                         <app-start-button [media]="media" [seasons]="seasons" [launch]="'start'" [isOnline]="isOnLine"></app-start-button>
                     }
                     @if (media.mediaType === MediaType.MOVIE && (!user || user.role === Role.ADMIN || user.role === Role.FAMILY)) {
-                        <app-download-button [mediaId]="media.id" [mediaType]="media.mediaType"></app-download-button>
+                        @defer (on idle) {
+                            <app-download-button [mediaId]="media.id" [mediaType]="media.mediaType"></app-download-button>
+                        } @placeholder {
+                            <div class="download-button-placeholder container-animation-gradient-normal"></div>
+                        }
                     }
                 </div>
                 <div class="container-groupe-button-other">
