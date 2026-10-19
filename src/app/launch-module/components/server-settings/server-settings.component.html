@@ -47,7 +47,7 @@
                 <div class="container-test-overlay" (click)="hideTestResult()">
                     <div class="container-test-popup">
                         @if (isTesting()) {
-                            <div class="little-spinner"></div>
+                            <div class="very-little-spinner"></div>
                         } @else {
                             <img class="test-result-icon" [src]="testStatus === 'success' ? srcSuccess : srcError">
                         }
