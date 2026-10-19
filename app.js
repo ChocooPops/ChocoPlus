@@ -44,6 +44,8 @@ let mediaLaunched = {
 const TOKEN_SERVICE = 'my-app-auth';
 const SERVER_SERVICE = 'my-app-server';
 const TOKEN_ACCOUNT = 'refresh-token';
+const SETTINGS_SERVICE = 'my-app-settings';
+const FORCE_STOP_PLAYER_ACCOUNT = 'force-stop-player';
 
 // Server settings (keytar), stored in memory for preloading, downloads, and ChocoPlayer
 const serverSettings = {
@@ -54,6 +56,7 @@ const serverSettings = {
 
 let mainWindow;
 let csharpProcess = null;
+let forceStopChocoPlayer = false;
 
 // Check that only one instance of the application is open
 const gotTheLock = app.requestSingleInstanceLock();
@@ -163,7 +166,7 @@ function createWindow() {
   );
 
   // Open the developer tools if necessary
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   // Removing the menu bar
   mainWindow.setMenu(null);
@@ -191,7 +194,7 @@ function createWindow() {
     isClosingWindow = true;
     //mainWindow.hide(); // optional: the user sees the window close immediately
 
-    stopCSharpProcess(false).finally(() => {
+    stopCSharpProcess().finally(() => {
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.close();
       }
@@ -1189,6 +1192,18 @@ ipcMain.handle('secureStore:setKeyTarServer', async (_e, data) => {
   }
 });
 
+async function loadForceStopPlayer() {
+  forceStopChocoPlayer = (await keytar.getPassword(SETTINGS_SERVICE, FORCE_STOP_PLAYER_ACCOUNT)) === 'true';
+}
+
+ipcMain.handle('secureStore:setForceStopPlayer', async (_e, state) => {
+  forceStopChocoPlayer = Boolean(state);
+  await keytar.setPassword(SETTINGS_SERVICE, FORCE_STOP_PLAYER_ACCOUNT, String(forceStopChocoPlayer));
+});
+ipcMain.handle('secureStore:getForceStopPlayer', () =>
+  forceStopChocoPlayer
+);
+
 ipcMain.on('secureStore:getServerSettingsSync', (event) => {
   event.returnValue = serverSettings;
 });
@@ -1203,7 +1218,7 @@ function isCSharpRunning() {
   return Boolean(csharpProcess && csharpProcess.exitCode === null && csharpProcess.signalCode === null);
 }
 
-function stopCSharpProcess(force = false, timeoutMs = 3000) {
+function stopCSharpProcess(force = forceStopChocoPlayer, timeoutMs = 3000) {
   mediaLaunched.id = 0;
   mediaLaunched.type = MediaType.OTHER;
 
@@ -1261,7 +1276,7 @@ async function launchChocoPlayer(dataObject) {
     // Another media is playing: stop it cleanly before launching the new one.
     if (isCSharpRunning()) {
       const previous = { ...mediaLaunched };
-      await stopCSharpProcess(false);
+      await stopCSharpProcess();
       if (mainWindow && !mainWindow.isDestroyed()) {
         if (previous.type === MediaType.MOVIE) {
           mainWindow.webContents.send('choco-player-status', { MediaId: previous.id });
@@ -1422,6 +1437,7 @@ async function launchChocoPlayer(dataObject) {
 //=========================================================================================//*
 app.on('ready', async () => {
   await loadServerSettings();
+  await loadForceStopPlayer();
   createWindow();
 });
 
@@ -1508,7 +1524,7 @@ ipcMain.handle('delete-cache', async () => {
 ipcMain.handle('reload-app', async () => {
   await loadServerSettings();
   if (isCSharpRunning()) {
-    await stopCSharpProcess(false);
+    await stopCSharpProcess();
   }
   if (hasActiveDownloads()) {
     await abortActiveDownloads();
@@ -1554,7 +1570,7 @@ app.on('before-quit', async (event) => {
 
   try {
     if (isCSharpRunning()) {
-      await stopCSharpProcess(false);
+      await stopCSharpProcess();
     }
     if (hasActiveDownloads()) {
       await abortActiveDownloads();

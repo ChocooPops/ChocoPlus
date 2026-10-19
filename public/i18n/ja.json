@@ -258,7 +258,9 @@
             "MEDIA_LOGO_DISPLAY": "ポスターにロゴまたはタイトルを表示",
             "SHOW_LOGO": "ロゴ",
             "SHOW_TITLE": "タイトル",
-            "SOUND_VIDEO": "紹介動画の音声を有効にする"
+            "SOUND_VIDEO": "紹介動画の音声を有効にする",
+            "FORCE_STOP_PLAYER": "動画プレーヤーを強制終了する",
+            "FORCE_STOP_PLAYER_DESCRIPTION": "有効：プレーヤーはすぐに終了しますが、再生の進行状況は保存も送信もされません。\n無効：終了前に再生の進行状況が保存・送信されますが、終了に時間がかかる場合があります。"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "データベースの表示は、性能の低いコンピューターで大量のリソースを消費する可能性があります",

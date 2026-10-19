@@ -52,6 +52,9 @@
         @for(param of radioButtonOtherOption; track param.id) {
         <div class="container-param">
             <p class="title-param"> {{ param.name | translate }} </p>
+            @if(param.description) {
+                <p class="description-param"> {{ param.description | translate }} </p>
+            }
             <app-input-option-selector [options]="param.radioButton"
                 (changeEmit)="onChangeOpeningPage(param.id, $event)"></app-input-option-selector>
         </div>

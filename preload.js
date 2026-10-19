@@ -16,6 +16,8 @@ contextBridge.exposeInMainWorld('electron', {
   getRefreshToken: () => ipcRenderer.invoke('secureStore:getRefreshToken'),
   deleteRefreshToken: () => ipcRenderer.invoke('secureStore:deleteRefreshToken'),
   setKeyTarServer: (data) => ipcRenderer.invoke('secureStore:setKeyTarServer', data),
+  setForceStopPlayer: (state) => ipcRenderer.invoke('secureStore:setForceStopPlayer', state),
+  getForceStopPlayer: () => ipcRenderer.invoke('secureStore:getForceStopPlayer'),
 
   getVersion: () => ipcRenderer.invoke('get-version'),
 

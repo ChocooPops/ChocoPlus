@@ -14,6 +14,7 @@ import { LicenseModel } from '../../../license-module/model/license.interface';
 import { AutoPlayVideoService } from '../../../common-module/services/auto-play-video/auto-play-video.service';
 import { MediaLogoDisplayService } from '../../../common-module/services/media-logo-display/media-logo-display.service';
 import { SoundVideoService } from '../../../common-module/services/sound-video/sound-video.service';
+import { ForceStopPlayerService } from '../../../common-module/services/force-stop-player/force-stop-player.service';
 import { take } from 'rxjs';
 
 @Injectable({
@@ -28,7 +29,8 @@ export class ParameterAppliService {
     private readonly licenseService: LicenseService,
     private readonly autoPlayVideoService: AutoPlayVideoService,
     private readonly mediaLogoDisplayService: MediaLogoDisplayService,
-    private readonly soundVideoService: SoundVideoService
+    private readonly soundVideoService: SoundVideoService,
+    private readonly forceStopPlayerService: ForceStopPlayerService
   ) { }
 
   private id: number = 0;
@@ -311,6 +313,26 @@ export class ParameterAppliService {
         }
       ],
       call: null
+    },
+    {
+      id: this.getId(),
+      name: "USER.APP_SETTINGS.FORCE_STOP_PLAYER",
+      description: "USER.APP_SETTINGS.FORCE_STOP_PLAYER_DESCRIPTION",
+      radioButton: [
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.ACTIVATED",
+          value: true,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.DEACTIVATED",
+          value: false,
+          state: false
+        }
+      ],
+      call: null
     }
   ]
 
@@ -459,6 +481,15 @@ export class ParameterAppliService {
     for (let i: number = 0; i < this.radioButtonOtherOption[3].radioButton.length; i++) {
       this.radioButtonOtherOption[3].radioButton[i].state = this.radioButtonOtherOption[3].radioButton[i].value === currentShowLogo;
     }
+
+    //INIT FORCE STOP PLAYER BUTTON;
+    const callBackForceStopPlayer: any = (state: boolean) => this.forceStopPlayerService.setForceStopPlayer(state);
+    this.radioButtonOtherOption[4].call = callBackForceStopPlayer;
+    this.forceStopPlayerService.getForceStopPlayer().then((currentForceStopPlayer: boolean) => {
+      for (let i: number = 0; i < this.radioButtonOtherOption[4].radioButton.length; i++) {
+        this.radioButtonOtherOption[4].radioButton[i].state = this.radioButtonOtherOption[4].radioButton[i].value === currentForceStopPlayer;
+      }
+    });
 
     //INIT LICENSE LIST FOR SELECT;
     this.availableLicenses = [];

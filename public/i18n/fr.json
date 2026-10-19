@@ -258,7 +258,9 @@
             "MEDIA_LOGO_DISPLAY": "Affichage du logo ou du titre sur les posters",
             "SHOW_LOGO": "Logo",
             "SHOW_TITLE": "Titre",
-            "SOUND_VIDEO": "Activer le son de la vidéo de présentation"
+            "SOUND_VIDEO": "Activer le son de la vidéo de présentation",
+            "FORCE_STOP_PLAYER": "Forcer l'arrêt du lecteur vidéo",
+            "FORCE_STOP_PLAYER_DESCRIPTION": "Activé : le lecteur se ferme immédiatement, mais la progression de lecture n'est ni sauvegardée ni envoyée.\nDésactivé : la progression est sauvegardée et envoyée avant la fermeture, mais l'arrêt peut prendre plus de temps."
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "La visualisation de la base de donnée peut consommer énormément de ressource pour les ordinateurs les moins performant",

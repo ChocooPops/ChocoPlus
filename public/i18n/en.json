@@ -258,7 +258,9 @@
             "MEDIA_LOGO_DISPLAY": "Show logo or title on posters",
             "SHOW_LOGO": "Logo",
             "SHOW_TITLE": "Title",
-            "SOUND_VIDEO": "Enable presentation video sound"
+            "SOUND_VIDEO": "Enable presentation video sound",
+            "FORCE_STOP_PLAYER": "Force stop of the video player",
+            "FORCE_STOP_PLAYER_DESCRIPTION": "Enabled: the player closes immediately, but the watch progress is neither saved nor sent.\nDisabled: the watch progress is saved and sent before closing, but stopping may take longer."
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "Viewing the database can consume a lot of resources on less powerful computers",

@@ -59,6 +59,13 @@
   font-weight: 500;
 }
 
+.description-param {
+  font-size: 14px;
+  color: #5a5a5a;
+  margin: 0;
+  white-space: pre-line;
+}
+
 app-input-option-selector {
   padding-left: 14px;
 }
