@@ -124,7 +124,7 @@
     border-color: #FFD301;
     border-style: dashed;
     background-color: transparent;
-    cursor: default;
+    cursor: pointer;
 
     img {
         filter: brightness(0) invert(1);
@@ -135,7 +135,7 @@
     border-color: #FFD301;
     border-style: solid;
     background-color: transparent;
-    cursor: default;
+    cursor: pointer;
 
     img {
         filter: brightness(0) invert(1);

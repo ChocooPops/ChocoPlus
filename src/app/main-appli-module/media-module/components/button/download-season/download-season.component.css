@@ -56,12 +56,19 @@ p {
 .WAITING, .IN_PROGRESS, .DELETION, .CANCELED {
     border-color: #FFD301;
     border-style: dashed;
-    cursor: default;
     opacity: 0.8;
 
     img {
         filter: brightness(0) invert(1);
     }
+}
+
+.WAITING, .IN_PROGRESS {
+    cursor: pointer;
+}
+
+.DELETION, .CANCELED {
+    cursor: default;
 }
 
 .DOWNLOADED {
