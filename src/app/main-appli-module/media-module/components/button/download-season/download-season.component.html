@@ -7,10 +7,10 @@
             <img [src]="srcUnavailable">
             <p> {{ 'DOWNLOAD.UNAVAILABLE_IN_PROGRESS' | translate }} </p>        
         }@else if (downloadStatus === DownloadStatus.WAITING) {
-            <img [src]="srcDownload"> 
+            <img [src]="srcUnavailable">
             <p> {{ 'DOWNLOAD.DOWNLOAD_EPISODE' | translate }} </p>       
         }  @else if (downloadStatus === DownloadStatus.IN_PROGRESS) {
-            <img [src]="srcDownload"> 
+            <div class="deletion-spinner"></div>
             <p> {{ getLabelDuringDownload() }} </p>
         } @else if (downloadStatus === DownloadStatus.DELETION) {
             <div class="deletion-spinner"></div>

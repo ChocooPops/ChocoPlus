@@ -29,9 +29,7 @@ export class DownloadMenuButtonComponent {
   public ProgressTypeOperation = ProgressTypeOperation;
 
   public srcDlMovie: string = 'icon/dl_movie.svg';
-  public srcDlSeries: string = 'icon/dl_series.svg';
-  public srcDlDelete: string = 'icon/dl_delete.svg';
-  public srcDlCancel: string = 'icon/dl_cancel.svg';
+  public srcDlEpisode: string = 'icon/dl_episode.svg';
 
   public historicInProgress: HistoricProgressView[] = [];
 
@@ -192,7 +190,7 @@ export class DownloadMenuButtonComponent {
     if (key.startsWith(`${MediaTypeModel.MOVIE}-`)) {
       return this.srcDlMovie;
     } else {
-      return this.srcDlSeries;
+      return this.srcDlEpisode;
     }
   }
 

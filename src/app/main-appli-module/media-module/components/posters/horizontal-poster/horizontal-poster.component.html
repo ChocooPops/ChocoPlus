@@ -6,8 +6,12 @@
     <app-news-alert [visibility]="!isHover" [isRecent]="media.isRecent" [mediaType]="media.mediaType"></app-news-alert>
     
     @if (!isOnLine) {
-        <app-delete-download-button [mediaId]="media.id" [mediaType]="media.mediaType"
-            [style.--poster-width.vw]="dimension.width" [posterZoomed]="isHover"></app-delete-download-button>
+        @defer (on idle) {
+            <app-delete-download-button [mediaId]="media.id" [mediaType]="media.mediaType"
+                [style.--poster-width.vw]="dimension.width" [posterZoomed]="isHover"></app-delete-download-button>
+        } @placeholder {
+            <div class="delete-download-placeholder container-animation-gradient-big" [style.--poster-width.vw]="dimension.width"></div>
+        }
     }
 
     <div class="container-poster-content">

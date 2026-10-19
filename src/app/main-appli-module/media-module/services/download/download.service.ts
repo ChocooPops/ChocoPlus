@@ -445,7 +445,7 @@ export class DownloadService {
         );
       }),
       finalize(() => {
-        this.setOrCreateProgressDonwload(seasonKey, undefined);
+        this.replaceProgressKey(seasonKey, { percent: 100 });
         this.seasonCancelSubjects.delete(seasonKey);
         this.seasonCurrentEpisodeKeys.delete(seasonKey);
         this.seasonStartedEpisodeIds.delete(seasonKey);
@@ -504,7 +504,7 @@ export class DownloadService {
       )),
       map(() => void 0),
       catchError(() => of(void 0)),
-      finalize(() => this.setOrCreateProgressDonwload(seasonKey, undefined))
+      finalize(() => this.replaceProgressKey(seasonKey, { percent: 100 }))
     );
   }
 

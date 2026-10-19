@@ -138,7 +138,7 @@
         "PAGE_TITLE": "Téléchargements",
         "DOWNLOAD": "Télécharger",
         "DOWNLOAD_SEASON": "Télécharger la saison",
-        "DOWNLOAD_EPISODE": "Traitement d'épisode en cours ...",
+        "DOWNLOAD_EPISODE": "Traitement d'épisodes en cours ...",
         "DELETE_SEASON": "Supprimer la saison",
         "DOWNLOADING_SEASON": "Téléchargement de la saison {{number}} en cours",
         "DELETING_SEASON": "Suppression de la saison {{number}} en cours",

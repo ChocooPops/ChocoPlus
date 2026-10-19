@@ -370,3 +370,13 @@
         border-radius: 1px;
     }
 }
+
+.delete-download-placeholder {
+    position: absolute;
+    top: clamp(6px, calc(var(--poster-width, 10vw) * 0.06), 14px);
+    right: clamp(6px, calc(var(--poster-width, 10vw) * 0.06), 14px);
+    height: clamp(28px, calc(var(--poster-width, 10vw) * 0.22), 46px);
+    width: clamp(28px, calc(var(--poster-width, 10vw) * 0.22), 46px);
+    pointer-events: none;
+    z-index: 30;
+}

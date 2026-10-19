@@ -154,6 +154,22 @@ p {
     }
 }
 
+.colored-icon {
+    height: 20px;
+    width: 20px;
+    flex-shrink: 0;
+    -webkit-mask: var(--icon-src) center / contain no-repeat;
+    mask: var(--icon-src) center / contain no-repeat;
+}
+
+.cancel-icon {
+    background-color: #FF8000;
+}
+
+.deletion-icon {
+    background-color: #C11616;
+}
+
 .second-line {
     padding-left: 30px;
 

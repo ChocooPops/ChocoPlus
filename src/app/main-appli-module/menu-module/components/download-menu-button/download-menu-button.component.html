@@ -1,7 +1,3 @@
-
-
-
-
 <div class="container-download-menu" (click)="onClick()">
     
     <div class="container-icon" [title]="'MENU.MAIN.DOWNLOADS' | translate">
@@ -55,7 +51,7 @@
                         }
                     }@else if (historic.type === ProgressTypeOperation.CANCELED) {
                         <div class="first-line">
-                            <img [src]="srcDlCancel">
+                            <span class="colored-icon cancel-icon" [style.--icon-src]="'url(' + getSrcIcon(historic.key) + ')'"></span>
                             <p> {{ historic.fileName || historic.key }} </p>
                         </div>
                         @if (historic.percent < 100) {
@@ -72,7 +68,7 @@
                         }
                     }@else {
                         <div class="first-line">
-                            <img [src]="srcDlDelete">
+                            <span class="colored-icon deletion-icon" [style.--icon-src]="'url(' + getSrcIcon(historic.key) + ')'"></span>
                             <p> {{ historic.fileName || historic.key }} </p>
                         </div>
                         @if (historic.percent < 100) {
