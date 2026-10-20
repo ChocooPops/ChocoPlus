@@ -231,6 +231,10 @@ export class DownloadButtonComponent {
   }
 
   private download(): void {
+    if (!this.user) {
+      this.operationWorking = false;
+      return;
+    }
     const download$ = this.mediaType === MediaTypeModel.EPISODE
       ? this.downloadService.downloadEpisode(this.mediaId, this.seasonId, this.episodeId)
       : this.downloadService.downloadMovie(this.mediaId);

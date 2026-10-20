@@ -1,9 +1,13 @@
 <div class="btn-ring"
-    [ngClass]="[((seriesOperationInProgress) || !user) ? DownloadStatus.UNAVAILABLE : downloadStatus]"
+    [ngClass]="[seriesOperationInProgress || 
+        (!user && downloadStatus !== DownloadStatus.DOWNLOADED && downloadStatus !== DownloadStatus.DELETION) 
+        ? DownloadStatus.UNAVAILABLE : downloadStatus]"
     [style.height.px]="heightCircle" [style.width.px]="heightCircle"
     [style.border-width.px]="widthBorder" (click)="onClick()">
 
-    @if ((seriesOperationInProgress) || !user) {
+    @if (seriesOperationInProgress || 
+        (!user && downloadStatus !== DownloadStatus.DOWNLOADED && downloadStatus !== DownloadStatus.DELETION)
+    ) {
         <img [src]="srcUnavailable" class="unavailable" [style.height.px]="heightIcon" [style.width.px]="heightIcon">
     } @else if(downloadStatus === DownloadStatus.IN_PROGRESS) {
     <svg class="water-scene" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
