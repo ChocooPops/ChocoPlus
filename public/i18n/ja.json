@@ -126,7 +126,8 @@
         "SIMILAR_TITLES": "類似タイトル",
         "EPISODES": "エピソード",
         "CASTING": "キャスト",
-        "DESCRIPTION": "概要"
+        "DESCRIPTION": "概要",
+        "REMAINING": "残り"
     },
     "SEARCH_PAGE": {
         "RESULT": "結果",

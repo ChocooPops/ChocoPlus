@@ -42,6 +42,7 @@ export class EpisodePosterHorizontalViewComponent {
   srcIconInfo: string = 'icon/info.svg';
   srcEpisode: string = 'icon/episode.svg';
   srcNoContent: string = 'icon/no-content.svg';
+  readonly srcSuccess: string = 'icon/success.svg';
 
   MediaType = MediaTypeModel;
   Role = RoleModel;
@@ -93,6 +94,16 @@ export class EpisodePosterHorizontalViewComponent {
 
   getBytesEpisode(bytes: number): string {
     return this.globalFormattingService.convertBytesToMegaOrGiga(bytes)
+  }
+
+  getCurrentTimeProgress(idx: number): string {
+    const duration: number = this.episodes[idx]?.duration ?? 0;
+    return this.globalFormattingService.formatDuration(duration * this.episodeProgress[idx].watchProgress / 100);
+  }
+
+  getRemainingTimeProgress(idx: number): string {
+    const duration: number = this.episodes[idx]?.duration ?? 0;
+    return this.globalFormattingService.formatDuration(duration * (100 - this.episodeProgress[idx].watchProgress) / 100);
   }
 
   onError(idx: number): void {

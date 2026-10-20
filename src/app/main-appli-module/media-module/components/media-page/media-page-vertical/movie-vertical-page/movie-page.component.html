@@ -88,9 +88,23 @@
             }
         </div>
 
-        <div class="separation-bar"> 
-            @if(historicProgress.stateProgress !== ProgressState.NOT_WATCHED) {
-            <div class="progress" [style.width.%]="historicProgress.watchProgress"></div>
+        <div class="container-separation-bar">
+            <div class="separation-bar">
+                @if (historicProgress.stateProgress === ProgressState.FINISHED) {
+                <div class="progress" [style.width.%]="100"></div>
+                } @else if (historicProgress.stateProgress === ProgressState.IN_PROGRESS) {
+                <div class="progress" [style.width.%]="historicProgress.watchProgress">
+                    <div class="progress-bubble top">{{ getCurrentTimeProgress() }}</div>
+                </div>
+                }
+
+            </div>
+            @if (historicProgress.stateProgress === ProgressState.FINISHED) {
+            <div class="progress-finished">
+                <img [src]="srcSuccess">
+            </div>
+            } @else if (historicProgress.stateProgress === ProgressState.IN_PROGRESS) {
+            <p class="progress-remaining">{{ getRemainingTimeProgress() }} {{ 'MEDIA_PAGE.REMAINING' | translate }}</p>
             }
         </div>
 

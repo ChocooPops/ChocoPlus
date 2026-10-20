@@ -126,7 +126,6 @@ p {
 }
 
 .separation-bar {
-    margin-block: 15px;
     width: 100%;
     background-color: var(--white-dark);
     height: 2px;

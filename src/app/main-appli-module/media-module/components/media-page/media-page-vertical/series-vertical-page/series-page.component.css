@@ -1,3 +1,8 @@
+.separation-bar {
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
 .container-series {
     display: flex;
     padding-inline: 50px;

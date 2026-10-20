@@ -126,7 +126,8 @@
         "SIMILAR_TITLES": "Titres similaires",
         "EPISODES": "Episodes",
         "CASTING": "Casting",
-        "DESCRIPTION": "Description"
+        "DESCRIPTION": "Description",
+        "REMAINING": "restante(s)"
     },
     "SEARCH_PAGE": {
         "RESULT": "Résultat",

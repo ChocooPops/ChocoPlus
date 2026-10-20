@@ -38,6 +38,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
   @Output() setHistoric = new EventEmitter<MediaProgressingModel | undefined>();
 
   poster: string | undefined = undefined;
+  readonly srcSuccess: string = 'icon/success.svg';
 
   duration!: string;
   resolution!: string;
@@ -46,6 +47,7 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
 
   ProgressState = ProgressStateMedia;
   historicProgress!: MediaProgressingModel;
+
 
   constructor(imagePreloaderService: ImagePreloaderService,
     similarTitleService: SimilarTitleService,
@@ -82,7 +84,18 @@ export class MovieVerticalPageComponent extends MoviePageAbstraction {
       this.bytes = this.globalFormattingService.convertBytesToMegaOrGiga(this.movie.bytes);
     }
     this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.movie.id, this.movie.watchProgress, this.movie.stateProgress);
+
     this.setHistoric.emit(this.historicProgress);
+  }
+
+  getCurrentTimeProgress(): string {
+    const duration: number = this.movie?.duration ?? 0;
+    return this.globalFormattingService.formatDuration(duration * this.historicProgress.watchProgress / 100);
+  }
+
+  getRemainingTimeProgress(): string {
+    const duration: number = this.movie?.duration ?? 0;
+    return this.globalFormattingService.formatDuration(duration * (100 - this.historicProgress.watchProgress) / 100);
   }
 
   onErrorPoster(): void {

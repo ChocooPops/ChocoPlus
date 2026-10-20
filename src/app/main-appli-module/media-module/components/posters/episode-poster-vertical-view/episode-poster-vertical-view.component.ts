@@ -13,11 +13,12 @@ import { MediaTypeModel } from '../../../models/media-type.enum';
 import { DownloadButtonComponent } from '../../button/download-button/download-button.component';
 import { UserModel } from '../../../../user-module/dto/user.model';
 import { RoleModel } from '../../../../../common-module/models/role.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-episode-poster-vertical-view',
   standalone: true,
-  imports: [DatePipe, NewsAlertComponent, StartButtonComponent, DownloadButtonComponent],
+  imports: [DatePipe, NewsAlertComponent, StartButtonComponent, DownloadButtonComponent, TranslatePipe],
   templateUrl: './episode-poster-vertical-view.component.html',
   styleUrls: ['./episode-poster-vertical-view.component.css', '../../../../common-module/styles/animation.css']
 })
@@ -33,6 +34,7 @@ export class EpisodePosterVerticalViewComponent {
   ProgressState = ProgressStateMedia;
   srcEpisode: string = 'icon/episode.svg';
   srcNoContent: string = 'icon/no-content.svg';
+  readonly srcSuccess: string = 'icon/success.svg';
 
   MediaType = MediaTypeModel;
   Role = RoleModel;
@@ -59,6 +61,16 @@ export class EpisodePosterVerticalViewComponent {
 
   getBytesEpisode(bytes: number): string {
     return this.globalFormattingService.convertBytesToMegaOrGiga(bytes)
+  }
+
+  getCurrentTimeProgress(idx: number): string {
+    const duration: number = this.episodes[idx]?.duration ?? 0;
+    return this.globalFormattingService.formatDuration(duration * this.episodeProgress[idx].watchProgress / 100);
+  }
+
+  getRemainingTimeProgress(idx: number): string {
+    const duration: number = this.episodes[idx]?.duration ?? 0;
+    return this.globalFormattingService.formatDuration(duration * (100 - this.episodeProgress[idx].watchProgress) / 100);
   }
 
   onError(idx: number): void {

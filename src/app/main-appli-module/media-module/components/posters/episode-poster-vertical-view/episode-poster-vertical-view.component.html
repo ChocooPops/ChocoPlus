@@ -9,27 +9,44 @@
                 <div class="container-index">
                     <p class="index">{{ episode.episodeNumber}}</p>
                 </div>
-                <div class="container-poster" (click)="start.onClick()">
+                <div class="container-poster-progress">
+                    <div class="container-poster" (click)="start.onClick()">
 
-                    <app-news-alert [visibility]="true" [isRecent]="episode.isRecent"
-                        [mediaType]="MediaType.EPISODE"></app-news-alert>
+                        <app-news-alert [visibility]="true" [isRecent]="episode.isRecent"
+                            [mediaType]="MediaType.EPISODE"></app-news-alert>
 
-                    <div class="container-tmp-poster">
-                        <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
-                            [episode]="episode" [seasons]="series.seasons"></app-start-button>
-                        @if (episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
-                        <app-start-button (click)="$event.stopPropagation()" [typeButton]="true" [typeDisplaying]="true" [media]="series"
-                            [episode]="episode" [seasons]="series.seasons" [launch]="'start'"></app-start-button>
+                        <div class="container-tmp-poster">
+                            <app-start-button #start [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                                [episode]="episode" [seasons]="series.seasons"></app-start-button>
+                            @if (episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED) {
+                            <app-start-button (click)="$event.stopPropagation()" [typeButton]="true" [typeDisplaying]="true" [media]="series"
+                                [episode]="episode" [seasons]="series.seasons" [launch]="'start'"></app-start-button>
+                            }
+                        </div>
+                        @if (episodePoster[idx]) {
+                        <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
                         }
                     </div>
-                    @if (episodePoster[idx]) {
-                    <img [src]="episodePoster[idx]" loading="lazy" decoding="async" (error)="onError(idx)">
-                    }
-                    @if(episodeProgress[idx].stateProgress !== ProgressState.NOT_WATCHED && episodeProgress[idx].watchProgress > 0 && episodeProgress[idx].watchProgress < 100) {
-                    <div class="container-progress">
-                        <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress"></div>
+                    <div class="container-separation-bar">
+                        @if (episodeProgress[idx].stateProgress === ProgressState.FINISHED || episodeProgress[idx].stateProgress === ProgressState.IN_PROGRESS) {
+                        <div class="separation-bar">
+                            @if (episodeProgress[idx].stateProgress === ProgressState.FINISHED) {
+                            <div class="progress" [style.width.%]="100"></div>
+                            } @else {
+                            <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress">
+                                <div class="progress-bubble top">{{ getCurrentTimeProgress(idx) }}</div>
+                            </div>
+                            }
+                        </div>
+                        @if (episodeProgress[idx].stateProgress === ProgressState.FINISHED) {
+                        <div class="progress-finished">
+                            <img [src]="srcSuccess">
+                        </div>
+                        } @else {
+                        <p class="progress-remaining">{{ getRemainingTimeProgress(idx) }} {{ 'MEDIA_PAGE.REMAINING' | translate }}</p>
+                        }
+                        }
                     </div>
-                    }
                 </div>
             </div>
 

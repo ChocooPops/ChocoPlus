@@ -58,10 +58,12 @@ export class MediaHorizontalBackgroundComponent {
 
   ProgressState = ProgressStateMedia;
   historicProgress!: MediaProgressingModel;
+  readonly srcSuccess: string = 'icon/success.svg';
 
   isOnLine!: boolean;
   user!: UserModel | undefined;
   Role = RoleModel;
+
 
   constructor(private readonly compressedPosterService: CompressedPosterService,
     private readonly globalFormattingService: GlobalFormattingService,
@@ -100,7 +102,9 @@ export class MediaHorizontalBackgroundComponent {
       const movie: MovieModel = this.media as MovieModel;
       this.duration = this.globalFormattingService.extractHourAndMinute(movie.duration) || '2015';
       this.resolution = movie?.resolution || 'any quality';
+      
       this.historicProgress = this.historicWatchProgressService.getHistoricMovieProgressById(this.media.id, movie.watchProgress, movie.stateProgress);
+
       if (movie.bytes && movie.bytes > 0) {
         this.bytes = this.globalFormattingService.convertBytesToMegaOrGiga(movie.bytes);
       } else {
@@ -109,6 +113,16 @@ export class MediaHorizontalBackgroundComponent {
     } else if (this.media.mediaType === MediaTypeModel.SERIES) {
       this.nbSeasons = (this.media as SeriesModel).seasons.length;
     }
+  }
+
+  getCurrentTimeProgress(): string {
+    const duration: number = (this.media as MovieModel)?.duration ?? 0;
+    return this.globalFormattingService.formatDuration(duration * this.historicProgress.watchProgress / 100);
+  }
+
+  getRemainingTimeProgress(): string {
+    const duration: number = (this.media as MovieModel)?.duration ?? 0;
+    return this.globalFormattingService.formatDuration(duration * (100 - this.historicProgress.watchProgress) / 100);
   }
 
   private resetLoading(): void {

@@ -215,28 +215,104 @@ p {
   margin: 0;
 }
 
-.separation-bar {
+.container-separation-bar {
   top: calc(30vw - 100px);
-  position: absolute;
+  position: relative;
   width: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: min-content;
+}
+
+.separation-bar {
+  flex: 1;
   background-color: var(--white-dark);
   height: 2px;
   border-radius: 1px;
   position: relative;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .progress {
+  position: relative;
   height: 100%;
+  border-radius: 1px;
   background-color: #ffd301;
+}
+
+.progress-bubble {
+  position: absolute;
+  left: 100%;
+  transform: translateX(-50%);
+  padding-block: 4px;
+  padding-inline: 12px;
+  border-radius: 4px;
+  background-color: #ffd301;
+  color: #000;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+  }
+
+  &.bottom {
+    position: absolute;
+    top: calc(100% + 9px);
+
+    &::after {
+      bottom: 100%;
+      border-bottom-color: #ffd301;
+    }
+  }
+
+  &.top {
+    bottom: calc(100% + 9px);
+
+    &::after {
+      top: 100%;
+      border-top-color: #ffd301;
+    }
+  }
+}
+
+.progress-remaining {
+  color: var(--white-dark);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.progress-finished {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #ffd301;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    width: 12px;
+    height: 12px;
+    filter: brightness(0);
+  }
 }
 
 @media (max-width: 800px) {
   .poster {
     top: -20px;
   }
-  .separation-bar {
+  .container-separation-bar {
     top: calc(30vw - 20px);
   }
 }
@@ -245,4 +321,17 @@ p {
     width: 40px;
     height: 40px;
     flex-shrink: 0;
+}
+
+@media (max-width: 1920px) {
+  .progress-bubble {
+    padding-block: 3px;
+    padding-inline: 9px;
+    border-radius: 3px;
+    font-size: 11px;
+  }
+
+  .progress-remaining {
+    font-size: 12px;
+  }
 }

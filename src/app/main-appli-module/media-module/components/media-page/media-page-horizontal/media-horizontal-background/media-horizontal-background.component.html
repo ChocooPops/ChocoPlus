@@ -25,13 +25,28 @@
                 <p class="title-poster"> {{title}}</p>
                 }
             </div>
+
             @if (media.mediaType === MediaType.MOVIE) {
-            <div class="separation-bar">
-                @if(historicProgress.stateProgress !== ProgressState.NOT_WATCHED && historicProgress.watchProgress > 0 && historicProgress.watchProgress < 100) {
-                <div class="progress" [style.width.%]="historicProgress.watchProgress"></div>
+            <div class="container-separation-bar">
+                <div class="separation-bar">
+                    @if (historicProgress.stateProgress === ProgressState.FINISHED) {
+                    <div class="progress" [style.width.%]="100"></div>
+                    } @else if (historicProgress.stateProgress === ProgressState.IN_PROGRESS) {
+                    <div class="progress" [style.width.%]="historicProgress.watchProgress">
+                        <div class="progress-bubble bottom">{{ getCurrentTimeProgress() }}</div>
+                    </div>
+                    }
+                </div>
+                @if (historicProgress.stateProgress === ProgressState.FINISHED) {
+                <div class="progress-finished">
+                    <img [src]="srcSuccess">
+                </div>
+                } @else if (historicProgress.stateProgress === ProgressState.IN_PROGRESS) {
+                <p class="progress-remaining">{{ getRemainingTimeProgress() }} {{ 'MEDIA_PAGE.REMAINING' | translate }}</p>
                 }
             </div>
             }
+            
         </div>
         <div class="container-info-button">
             <div class="container-info">

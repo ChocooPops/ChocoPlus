@@ -39,6 +39,24 @@ export class GlobalFormattingService {
     }
   }
 
+  public formatDuration(duration: number | undefined): string {
+    if (!duration) {
+      return '0 s';
+    }
+    const totalSeconds = Math.floor(duration / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours === 0 && minutes === 0) {
+      return `${seconds} s`;
+    }
+    if (hours === 0) {
+      return `${minutes} min`;
+    }
+    return `${hours}h ${String(minutes).padStart(2, '0')}min`;
+  }
+
   public getFormatEpisode(duration: number | undefined): string {
     if (!duration) return '0min';
 
