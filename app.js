@@ -1330,7 +1330,7 @@ async function launchChocoPlayer(dataObject) {
 
     const csharpAppPath = app.isPackaged
       ? path.join(process.resourcesPath, 'ChocoPlayer', 'ChocoPlayer.exe')
-      : path.join(__dirname, 'ChocoPlayer', 'bin', 'Debug', 'net9.0-windows', 'ChocoPlayer.exe');
+      : path.join(__dirname, 'resources', 'ChocoPlayer', 'ChocoPlayer.exe');
 
     const proc = spawn(csharpAppPath, [JSON.stringify(dataObject)], {
       detached: false,

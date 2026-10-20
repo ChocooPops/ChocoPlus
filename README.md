@@ -393,7 +393,7 @@ readonly availableLangs: LangOption[] = [
 
 - **Node.js** : 18.x ou supérieur
 - **npm** : 9.x ou supérieur
-- **.NET SDK** : 9.0 ou supérieur
+- **.NET SDK** : 9.0 ou supérieur (uniquement pour compiler ChocoPlayer : l'application publiée n'a pas besoin de .NET)
 - **Angular** : 18.0 ou supérieur
 - **Visual Studio 2022** ou **VS Code** avec extension C#
 
@@ -416,15 +416,24 @@ cd ChocoPlus
 npm install
 ```
 
-### 3. Compiler le projet ChocoPlayer (C#)
+### 3. Publier le projet ChocoPlayer (C#)
+
+ChocoPlayer est publié en mode **self-contained** : le runtime .NET 9 est embarqué à côté de l'exécutable, donc la machine qui lance ChocoPlus n'a pas besoin d'installer .NET.
 
 ```bash
 cd ChocoPlayer
-dotnet build --configuration Debug
+rm -rf ../resources/ChocoPlayer
+dotnet publish ChocoPlayer.csproj --configuration Release --runtime win-x64 --self-contained true --output ../resources/ChocoPlayer
 cd ..
 ```
 
-Cela créera l'exécutable dans : `ChocoPlayer/bin/Debug/net9.0-windows/ChocoPlayer.exe`
+Cela créera l'exécutable (avec le runtime .NET, les DLL et le dossier `libvlc/`) dans : `resources/ChocoPlayer/ChocoPlayer.exe`
+
+> Le dossier est vidé avant la publication pour ne pas garder d'anciens fichiers d'un build précédent.
+>
+> Ne pas activer `PublishTrimmed` (non supporté par WinForms) ni `PublishSingleFile` (LibVLC charge ses plugins depuis le dossier `libvlc/` sur le disque).
+
+Cette commande est à relancer après chaque modification du code C#, car Electron lance l'exécutable de `resources/ChocoPlayer`, en développement comme en production.
 
 ## ⚙️ Configuration
 
@@ -547,28 +556,17 @@ cd ChocoPlayer
 dotnet run
 ```
 
+Pour que ChocoPlus utilise les modifications, republier ChocoPlayer avec la commande de l'étape [3. Publier le projet ChocoPlayer](#3-publier-le-projet-chocoplayer-c).
+
 ## 📦 Build et déploiement
 
 ### Préparer le build de production
 
-#### 1. Compiler ChocoPlayer en Release
+#### 1. Publier ChocoPlayer
 
-```bash
-cd ChocoPlayer
-dotnet publish --configuration Release --runtime win-x64 --self-contained false
-```
+Publier ChocoPlayer avec la commande de l'étape [3. Publier le projet ChocoPlayer](#3-publier-le-projet-chocoplayer-c). Electron Builder inclura automatiquement le dossier `resources/ChocoPlayer` dans l'application packagée via la configuration `extraResources` du `package.json`.
 
-#### 2. Copier les fichiers compilés
-
-Copier **TOUS** les fichiers du dossier `ChocoPlayer/bin/Debug/net9.0-windows/` (ou `Release`) vers :
-
-```
-resources/ChocoPlayer/
-```
-
-Cette étape est **cruciale** : Electron Builder inclura automatiquement le dossier `resources/ChocoPlayer` dans l'application packagée via la configuration `extraResources` du `package.json`.
-
-#### 3. Créer l'exécutable Electron
+#### 2. Créer l'exécutable Electron
 
 ```bash
 npx electron-builder --win
@@ -606,7 +604,7 @@ Le fichier `package.json` contient la configuration complète :
 
 ### Chemins d'exécution
 
-- **Développement** : `__dirname/ChocoPlayer/bin/Debug/net9.0-windows/ChocoPlayer.exe`
+- **Développement** : `__dirname/resources/ChocoPlayer/ChocoPlayer.exe`
 - **Production** : `process.resourcesPath/ChocoPlayer/ChocoPlayer.exe`
 
 ## 📁 Structure du projet
@@ -643,7 +641,7 @@ ChocoPlus/
 │   └── Program.cs
 │
 ├── resources/                   # Ressources pour le build
-│   └── ChocoPlayer/             # ⚠️ Copier les fichiers compilés ici pour prod
+│   └── ChocoPlayer/             # ⚠️ Généré par dotnet publish (self-contained)
 │
 ├── dist/                        # Build Angular (généré)
 ├── node_modules/                # Dépendances Node.js
