@@ -35,7 +35,7 @@
                     <div class="progress" [style.width.%]="100"></div>
                     } @else {
                     <div class="progress" [style.width.%]="episodeProgress[idx].watchProgress">
-                        <div class="progress-bubble top">{{ getCurrentTimeProgress(idx) }}</div>
+                        <div class="progress-bubble top" [class.first-episode]="idx === 0">{{ getCurrentTimeProgress(idx) }}</div>
                     </div>
                     }
                 </div>

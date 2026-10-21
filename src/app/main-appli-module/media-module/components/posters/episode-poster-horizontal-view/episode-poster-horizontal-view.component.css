@@ -229,6 +229,17 @@ p {
       border-top-color: #FFD301;
     }
   }
+
+  &.first-episode {
+    transform: none;
+    border-bottom-left-radius: 0;
+
+    &::after {
+      left: 0;
+      transform: none;
+      border-width: 9px 10px 0 0;
+    }
+  }
 }
 
 .progress-remaining {
