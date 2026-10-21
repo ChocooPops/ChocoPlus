@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { TitleBarComponent } from './common-module/components/title-bar/title-bar.component';
 import { Subscription } from 'rxjs';
 import { FullscreenService } from './common-module/services/fullscreen/fullscreen.service';
-import { SavePathService } from './main-appli-module/common-module/services/save-path/save-path.service';
 
 @Component({
   selector: 'app-root',
@@ -18,9 +17,7 @@ export class AppComponent {
   subscription : Subscription = new Subscription();
   isFullScreen !: boolean;
 
-  constructor(private readonly fullscreenService: FullscreenService,
-    private readonly savePathService: SavePathService
-  ) { }
+  constructor(private readonly fullscreenService: FullscreenService) { }
 
   async ngOnInit() : Promise<void> {
     await this.fullscreenService.initFullScreen();
@@ -51,12 +48,6 @@ export class AppComponent {
       if (!isInput) {
         event.preventDefault();
       }
-    }
-    if (event.altKey && event.key === 'ArrowLeft') {
-      this.savePathService.back();
-    }
-    if (event.altKey && event.key === 'ArrowRight') {
-      this.savePathService.forward();
     }
   }
 }

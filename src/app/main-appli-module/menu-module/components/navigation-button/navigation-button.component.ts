@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { SavePathService } from '../../../common-module/services/save-path/save-path.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { combineLatest, Subscription } from 'rxjs';
@@ -46,6 +46,21 @@ export class NavigationButtonComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  public onKeydown(event: KeyboardEvent): void {
+    if (!event.altKey || event.repeat) {
+      return;
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.goBack();
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.goForward();
+    }
   }
 
   public goBack() {

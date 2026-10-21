@@ -360,6 +360,10 @@ export class VideoPlayingComponent {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent): void {
+    // Alt + ← / → is reserved for navigation (AppComponent)
+    if (event.altKey) {
+      return;
+    }
     if (event.key === " ") {
       event.preventDefault();
       this.setPauseOrPlayVideo();
