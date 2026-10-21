@@ -3,7 +3,7 @@ import { SeriesModel } from '../../../models/series/series.interface';
 import { EpisodeModel } from '../../../models/series/episode.interface';
 import { MediaProgressingModel } from '../../../../video-playing-module/models/media-progressing.interface';
 import { ProgressStateMedia } from '../../../models/progress-state-media.enum';
-import { GlobalFormattingService } from '../../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../../common-module/services/global-formatting/global-formatting.service';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { HistoricWatchProgressService } from '../../../../video-playing-module/services/historic-watch-progress/historic-watch-progress.service';
 import { Subscription } from 'rxjs';

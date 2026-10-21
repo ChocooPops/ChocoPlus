@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, of, catchError } from 'rxjs';
-import { GlobalFormattingService } from '../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../common-module/services/global-formatting/global-formatting.service';
 import { MovieModel } from '../../models/movie-model';
 import { MediaTypeModel } from '../../models/media-type.enum';
 import { ProgressStateMedia } from '../../models/progress-state-media.enum';

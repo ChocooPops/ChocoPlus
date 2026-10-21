@@ -75,20 +75,22 @@ export class StreamService {
   }
 
   private setWatchProgressByMediaOnline(chocoPlayer: ChocoPlayerModel): void {
-    if (chocoPlayer.EpisodeId && chocoPlayer.EpisodeId > 0) {
-      // this.seriesService.fetchGetWatchProgressForEpisode(chocoPlayer.EpisodeId).pipe(take(1)).subscribe((data) => {
-      //   this.historicWatchProgressService.updateHistoricEpisodeById(chocoPlayer.EpisodeId, data.watchProgress, data.state);
-      // });
-      this.userHistoricService.saveWathcingProgressUserForEpisode(chocoPlayer.EpisodeId, chocoPlayer.WatchProgress)
-        .pipe(take(1))
-        .subscribe();
-    } else if (chocoPlayer.MediaId && chocoPlayer.MediaId > 0) {
-      // this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((data) => {
-      //   this.historicWatchProgressService.updateHistoricMovieById(chocoPlayer.MediaId, data.watchProgress, data.state);
-      // });
-      this.userHistoricService.saveWathcingProgressUserForMovie(chocoPlayer.MediaId, chocoPlayer.WatchProgress)
-        .pipe(take(1))
-        .subscribe()
+    if (chocoPlayer.WatchProgress >= 0) {
+      if (chocoPlayer?.EpisodeId > 0) {
+        // this.seriesService.fetchGetWatchProgressForEpisode(chocoPlayer.EpisodeId).pipe(take(1)).subscribe((data) => {
+        //   this.historicWatchProgressService.updateHistoricEpisodeById(chocoPlayer.EpisodeId, data.watchProgress, data.state);
+        // });
+        this.userHistoricService.saveWathcingProgressUserForEpisode(chocoPlayer.EpisodeId, chocoPlayer.WatchProgress)
+          .pipe(take(1))
+          .subscribe();
+      } else if (chocoPlayer?.MediaId > 0) {
+        // this.movieService.fetchGetWatchProgressForMovie(chocoPlayer.MediaId).pipe(take(1)).subscribe((data) => {
+        //   this.historicWatchProgressService.updateHistoricMovieById(chocoPlayer.MediaId, data.watchProgress, data.state);
+        // });
+        this.userHistoricService.saveWathcingProgressUserForMovie(chocoPlayer.MediaId, chocoPlayer.WatchProgress)
+          .pipe(take(1))
+          .subscribe()
+      }
     }
   }
 

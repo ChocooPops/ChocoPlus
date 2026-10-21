@@ -1,6 +1,6 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { EpisodeModel } from '../../../models/series/episode.interface';
-import { GlobalFormattingService } from '../../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../../common-module/services/global-formatting/global-formatting.service';
 import { DatePipe } from '@angular/common';
 import { StartButtonComponent } from '../../button/start-button/start-button.component';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';

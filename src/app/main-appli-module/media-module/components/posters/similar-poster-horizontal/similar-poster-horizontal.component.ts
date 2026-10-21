@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SelectionType } from '../../../models/selection-type.enum';
 import { MylistButtonComponent } from '../../button/mylist-button/mylist-button.component';
 import { StartButtonComponent } from '../../button/start-button/start-button.component';
-import { GlobalFormattingService } from '../../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../../common-module/services/global-formatting/global-formatting.service';
 import { DatePipe } from '@angular/common';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { MediaModel } from '../../../models/media.interface';

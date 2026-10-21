@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { GlobalFormattingService } from '../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../common-module/services/global-formatting/global-formatting.service';
 
 @Component({
   selector: 'app-progress-bar',

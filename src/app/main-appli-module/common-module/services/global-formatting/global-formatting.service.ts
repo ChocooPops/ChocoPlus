@@ -41,7 +41,7 @@ export class GlobalFormattingService {
 
   public formatDuration(duration: number | undefined): string {
     if (!duration) {
-      return '0 s';
+      return '1 s';
     }
     const totalSeconds = Math.floor(duration / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -49,7 +49,7 @@ export class GlobalFormattingService {
     const seconds = totalSeconds % 60;
 
     if (hours === 0 && minutes === 0) {
-      return `${seconds} s`;
+      return `${Math.max(seconds, 1)} s`;
     }
     if (hours === 0) {
       return `${minutes} min`;

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { GlobalFormattingService } from '../../../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../../../common-module/services/global-formatting/global-formatting.service';
 import { ImagePreloaderService } from '../../../../../../common-module/services/image-preloader/image-preloader.service';
 import { CompressedPosterService } from '../../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { SimilarTitleService } from '../../../../services/similar-title/similar-title.service';

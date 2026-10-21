@@ -10,7 +10,7 @@ import { FormatMediaPageButtonComponent } from '../../../button/format-media-pag
 import { NgClass } from '@angular/common';
 import { ScalePoster } from '../../../../../common-module/models/scale-poster.enum';
 import { MediaTypeModel } from '../../../../models/media-type.enum';
-import { GlobalFormattingService } from '../../../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../../../common-module/services/global-formatting/global-formatting.service';
 import { MovieModel } from '../../../../models/movie-model';
 import { DatePipe } from '@angular/common';
 import { SeasonModel } from '../../../../models/series/season.interface';

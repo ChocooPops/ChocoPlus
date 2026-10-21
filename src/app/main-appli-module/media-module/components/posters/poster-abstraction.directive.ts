@@ -3,7 +3,7 @@ import { DisplayOrderService } from '../../services/display-order/display-order.
 import { Subscription } from 'rxjs';
 import { DimensionModel } from '../../../../common-module/models/dimension.interface';
 import { GeometricDimensionSelectionModel } from '../../models/geometric-dimension-selection.interface';
-import { GlobalFormattingService } from '../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../common-module/services/global-formatting/global-formatting.service';
 import { SelectionType } from '../../models/selection-type.enum';
 import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import { PaginationPosterService } from '../../services/pagination-poster/pagination-poster.service';

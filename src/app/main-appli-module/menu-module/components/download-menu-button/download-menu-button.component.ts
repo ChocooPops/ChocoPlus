@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HistoricProgressView, ProgressDownload, ProgressTypeOperation } from '../../../media-module/models/progress-download.interface';
 import { DownloadService } from '../../../media-module/services/download/download.service';
-import { GlobalFormattingService } from '../../../common-module/services/verif-timer/global-formatting.service';
+import { GlobalFormattingService } from '../../../common-module/services/global-formatting/global-formatting.service';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
