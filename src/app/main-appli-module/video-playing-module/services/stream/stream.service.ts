@@ -95,7 +95,7 @@ export class StreamService {
   }
 
   private setWatchProgressByMediaOffLine(chocoPlayer: ChocoPlayerModel): void {
-    if (!chocoPlayer.StateProgress) return;
+    if (!chocoPlayer.StateProgress || !chocoPlayer.WatchProgress) return;
     
     if (chocoPlayer.EpisodeId && chocoPlayer.EpisodeId > 0) {
       this.historicWatchProgressService.updateHistoricEpisodeById(chocoPlayer.EpisodeId, chocoPlayer.WatchProgress, chocoPlayer.StateProgress);
