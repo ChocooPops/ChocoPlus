@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { catchError, combineLatest, delay, filter, map, Observable, of, Subscription, switchMap, take, timeout } from 'rxjs';
 import { CharacterService } from '../../../offline-appli-module/game-module/services/character/character.service';
 import { CloudService } from '../../../offline-appli-module/game-module/services/cloud/cloud.service';
-import { GoldService } from '../../../offline-appli-module/game-module/services/gold/gold.service';
+import { EntityService } from '../../../offline-appli-module/game-module/services/entity/entity.service';
 import { PlateformService } from '../../../offline-appli-module/game-module/services/plateform/plateform.service';
 import { SkyService } from '../../../offline-appli-module/game-module/services/sky/sky.service';
 import { TreeService } from '../../../offline-appli-module/game-module/services/tree/tree.service';
@@ -40,7 +40,7 @@ export class PreloadOfflineAppComponent {
   constructor(private readonly router: Router,
     private readonly characterService: CharacterService,
     private readonly cloudService: CloudService,
-    private readonly goldService: GoldService,
+    private readonly entityService: EntityService,
     private readonly plateformService: PlateformService,
     private readonly skyService: SkyService,
     private readonly treeService: TreeService,
@@ -91,7 +91,7 @@ export class PreloadOfflineAppComponent {
       this.cloudService.getCloudByIndice(2).getSpriteIsLoad(),
       this.cloudService.getCloudByIndice(3).getSpriteIsLoad(),
       this.cloudService.getCloudByIndice(4).getSpriteIsLoad(),
-      this.goldService.getGold().getSpriteIsLoad(),
+      this.entityService.getSpritesIsLoad(),
       this.plateformService.getPlateform().getSpriteIsLoad(),
       this.skyService.getSky().getSpriteIsLoad(),
       this.treeService.getYellowTreeSprite().getSpriteIsLoad(),

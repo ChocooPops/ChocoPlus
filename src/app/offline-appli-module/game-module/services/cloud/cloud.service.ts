@@ -6,24 +6,17 @@ import { SpriteObserver } from '../sprite-observer.service';
 })
 export class CloudService {
 
-  private srcCloudImage: string[] = [
-    'game/cloud-5.png',
-    'game/cloud-4.png',
-    'game/cloud-3.png',
-    'game/cloud-2.png',
-    'game/cloud-1.png',
+  // from farthest to nearest, speed in px/s (parallax: farther = slower)
+  private cloudLayers: { src: string, speed: number }[] = [
+    { src: 'game/cloud-5.png', speed: 60 },
+    { src: 'game/cloud-4.png', speed: 75 },
+    { src: 'game/cloud-3.png', speed: 90 },
+    { src: 'game/cloud-2.png', speed: 110 },
+    { src: 'game/cloud-1.png', speed: 145 },
   ];
-  private clouds: SpriteObserver[] = [];
-
-  constructor() {
-    let speed: number = 70;
-    let differenceSpeed: number = 10;
-    this.srcCloudImage.forEach((src: string) => {
-      const cloud: SpriteObserver = new SpriteObserver(src, 0, 0, 450, speed);
-      this.clouds.push(cloud);
-      speed -= differenceSpeed;
-    });
-  }
+  private clouds: SpriteObserver[] = this.cloudLayers.map(
+    (layer) => new SpriteObserver(layer.src, 0, 0, 450, layer.speed)
+  );
 
   public getCloudByIndice(index: number): SpriteObserver {
     if (index >= 0 && index < this.clouds.length) {

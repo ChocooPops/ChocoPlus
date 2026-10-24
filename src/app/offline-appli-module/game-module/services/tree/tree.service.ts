@@ -8,8 +8,10 @@ export class TreeService {
 
   private srcYellowTree: string = 'game/tree-yellow.png';
   private srcBlueTree: string = 'game/tree-blue.png';
-  private yellowTree: SpriteObserver = new SpriteObserver(this.srcYellowTree, 0, -45, 450, 60);
-  private blueTree: SpriteObserver = new SpriteObserver(this.srcBlueTree, 0, -80, 420, 80);
+  // yellow in the foreground: faster than the ground (200 px/s)
+  private yellowTree: SpriteObserver = new SpriteObserver(this.srcYellowTree, 0, -45, 450, 300);
+  // blue behind the character: slower than the ground
+  private blueTree: SpriteObserver = new SpriteObserver(this.srcBlueTree, 0, -80, 420, 170);
 
   public getYellowTreeSprite(): SpriteObserver {
     return this.yellowTree;

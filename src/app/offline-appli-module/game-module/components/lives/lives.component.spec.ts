@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GoldComponent } from './gold.component';
+import { LivesComponent } from './lives.component';
 
-describe('GoldComponent', () => {
-  let component: GoldComponent;
-  let fixture: ComponentFixture<GoldComponent>;
+describe('LivesComponent', () => {
+  let component: LivesComponent;
+  let fixture: ComponentFixture<LivesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GoldComponent]
+      imports: [LivesComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(GoldComponent);
+    fixture = TestBed.createComponent(LivesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

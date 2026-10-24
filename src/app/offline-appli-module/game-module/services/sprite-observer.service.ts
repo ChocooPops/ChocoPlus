@@ -2,6 +2,7 @@ import { SpriteModel } from "../models/sprite.interface";
 import { BehaviorSubject, Observable } from "rxjs";
 import { DimensionModel } from "../../../common-module/models/dimension.interface";
 import { ElementRef } from "@angular/core";
+import { getPixelArtHeight } from "../models/pixel-art";
 
 export class SpriteObserver {
 
@@ -28,15 +29,19 @@ export class SpriteObserver {
         }
     }
 
-    constructor(image: string, x: number, y: number, height: number, speed: number) {
-        this.init(image, x, y, height, speed);
+    // sourcePixelSize: if set, the height is derived from the common pixel-art scale
+    constructor(image: string, x: number, y: number, height: number, speed: number, sourcePixelSize?: number) {
+        this.init(image, x, y, height, speed, sourcePixelSize);
     }
 
-    private async init(image: string, x: number, y: number, height: number, speed: number): Promise<void> {
+    private async init(image: string, x: number, y: number, height: number, speed: number, sourcePixelSize?: number): Promise<void> {
         this.widthWindows = window.innerWidth;
         try {
             const dimension = await this.getImageDimensions(image);
             this.originelDimension = dimension;
+            if (sourcePixelSize) {
+                height = getPixelArtHeight(dimension.height, sourcePixelSize);
+            }
             const ratio: number = dimension.height / height;
             const width: number = dimension.width / ratio;
 

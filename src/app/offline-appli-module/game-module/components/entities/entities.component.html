@@ -1,0 +1,21 @@
+@for(entity of entities; track entity.id) {
+@if(isIncomingFromBehind(entity)) {
+<p class="incoming" [style.top.px]="entity.y + entity.height / 2">!</p>
+}
+<div class="entity" [class.collected]="entity.state === 'collected' && entity.kind !== 'gold'"
+    [class.defeated]="entity.state === 'defeated'" [class.hit]="entity.hitCooldown > 0"
+    [class.glitch]="isGlitched(entity)" [class.teleporting]="isAboutToTeleport(entity)"
+    [style.width.px]="entity.width" [style.height.px]="entity.height" [style.transform]="getTransform(entity)">
+    @if(entity.trail; as trail) {
+    <div class="trail" [class.flip]="entity.flipX" [style.left.px]="trail.x" [style.top.px]="trail.y"
+        [style.width.px]="trail.width" [style.height.px]="trail.height">
+        <img [src]="trail.image" [style.width.px]="trail.imageWidth" [style.height.px]="trail.height">
+    </div>
+    }
+    <img class="sprite" [src]="entity.image" [class.flip]="entity.flipX">
+    @if(entity.overlay; as overlay) {
+    <img class="overlay" [src]="overlay.image" [class.flip]="entity.flipX" [style.left.px]="overlay.x"
+        [style.top.px]="overlay.y" [style.width.px]="overlay.width" [style.height.px]="overlay.height">
+    }
+</div>
+}

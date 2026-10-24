@@ -1,7 +1,7 @@
-import { Component, Renderer2, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { PlateformService } from '../../services/plateform/plateform.service';
 import { AbstractElementComponent } from '../abstract-element.component';
-import { SpriteModel } from '../../models/sprite.interface';
+import { SpriteObserver } from '../../services/sprite-observer.service';
 
 @Component({
   selector: 'app-plateform',
@@ -12,30 +12,21 @@ import { SpriteModel } from '../../models/sprite.interface';
 })
 export class PlateformComponent extends AbstractElementComponent {
 
-  public plateform !: SpriteModel;
+  @ViewChild('imgComponent') imgComponent !: ElementRef;
 
-  constructor(private plateformService: PlateformService,
-    render: Renderer2
-  ) {
-    super(render);
+  constructor(private plateformService: PlateformService) {
+    super();
   }
 
-  override ngOnInit(): void {
-    this.initIteration(4);
-    this.plateformService.getPlateform().getSprite().subscribe((sprite: SpriteModel) => {
-      this.plateform = sprite;
-      this.setAnimationScrolling(this.plateform);
-    });
+  protected override getSpriteObserver(): SpriteObserver {
+    return this.plateformService.getPlateform();
   }
 
+  // Measures the actual ground position, used by the character and the entities
   onImageLoad(): void {
-    if (this.plateformService.getPlateform().isLoad()) {
+    if (this.plateformService.getPlateform().isLoad() && this.imgComponent) {
       this.plateformService.getPlateform().setComponent(this.imgComponent);
     }
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: UIEvent): void {
-    this.plateformService.getPlateform().setClientRectCharacter();
-  }
 }

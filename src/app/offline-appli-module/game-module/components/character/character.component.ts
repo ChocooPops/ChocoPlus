@@ -1,8 +1,8 @@
-import { Component, HostListener, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { SpriteModel } from '../../models/sprite.interface';
 import { CharacterService } from '../../services/character/character.service';
-import { PlateformService } from '../../services/plateform/plateform.service';
-import { AbstractElementComponent } from '../abstract-element.component';
+import { GameStateService } from '../../services/game-state/game-state.service';
 
 @Component({
   selector: 'app-character',
@@ -11,25 +11,23 @@ import { AbstractElementComponent } from '../abstract-element.component';
   templateUrl: './character.component.html',
   styleUrls: ['./character.component.css', '../../style/scroll.css']
 })
-export class CharacterComponent extends AbstractElementComponent {
+export class CharacterComponent implements OnInit, OnDestroy {
 
   character!: SpriteModel;
   sparks !: SpriteModel;
   rainbow !: SpriteModel;
+  invincible: boolean = false;
+
+  private subscription: Subscription = new Subscription();
 
   constructor(private characterService: CharacterService,
-    private plateformService: PlateformService,
-    render: Renderer2
-  ) {
-    super(render);
-  }
+    private gameStateService: GameStateService
+  ) { }
 
-  override ngOnInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.characterService.getCharacter().getSprite().subscribe((sprite: SpriteModel) => {
         this.character = sprite;
-        this.characterService.setSparks();
-        this.characterService.setRainbow();
       })
     )
     this.subscription.add(
@@ -43,44 +41,14 @@ export class CharacterComponent extends AbstractElementComponent {
       })
     )
     this.subscription.add(
-      this.plateformService.getPlateform().getSprite().subscribe((sprite: SpriteModel) => {
-        if (sprite.offsetY) {
-          this.characterService.setYAccordingToPlateform(sprite.offsetY);
-        }
+      this.gameStateService.getIsInvincible().subscribe((invincible: boolean) => {
+        this.invincible = invincible;
       })
     )
-    this.characterService.startTimer();
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.characterService.stopTimer();
-    this.characterService.setKeyLeft(false);
-    this.characterService.setKeyRight(false);
-    this.characterService.setKeySpace(false);
-  }
-
-  @HostListener('window:keydown', ['$event'])
-  async onKeyDown(event: KeyboardEvent): Promise<void> {
-    if (event.key === 'ArrowLeft') {
-      this.characterService.setKeyLeft(true);
-    }
-    if (event.key === 'ArrowRight') {
-      this.characterService.setKeyRight(true);
-    }
-    if (event.key === ' ') {
-      this.characterService.setKeySpace(true);
-    }
-  }
-
-  @HostListener('window:keyup', ['$event'])
-  onKeyUp(event: KeyboardEvent) {
-    if (event.key === 'ArrowLeft') {
-      this.characterService.setKeyLeft(false);
-    }
-    if (event.key === 'ArrowRight') {
-      this.characterService.setKeyRight(false);
-    }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

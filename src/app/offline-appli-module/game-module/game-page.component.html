@@ -1,15 +1,15 @@
-<div class="container-game">
+<div class="container-game" [class.game-paused]="status !== 'playing'">
     <app-stars></app-stars>
     <app-sky></app-sky>
-    <app-cloud [index]="0"></app-cloud>
-    <app-cloud [index]="1"></app-cloud>
-    <app-cloud [index]="2"></app-cloud>
-    <app-cloud [index]="3"></app-cloud>
-    <app-cloud [index]="4"></app-cloud>
+    @for(index of cloudIndexes; track index) {
+    <app-cloud [index]="index"></app-cloud>
+    }
     <app-tree [type]="true"></app-tree>
     <app-character></app-character>
-    <app-gold></app-gold>
+    <app-entities></app-entities>
     <app-plateform></app-plateform>
     <app-tree [type]="false"></app-tree>
+    <app-lives></app-lives>
     <app-score></app-score>
+    <app-game-overlay></app-game-overlay>
 </div>

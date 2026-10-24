@@ -1,0 +1,13 @@
+.blink {
+    animation: blink-hurt 0.15s steps(2, jump-none) infinite;
+}
+
+@keyframes blink-hurt {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0.25;
+    }
+}

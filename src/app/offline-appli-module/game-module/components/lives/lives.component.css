@@ -1,0 +1,43 @@
+.container-lives {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin-top: 60px;
+    margin-left: 30px;
+}
+
+.hearts {
+    display: flex;
+    gap: 12px;
+}
+
+.heart {
+    width: 56px;
+    height: 48px;
+    fill: #FF4D6D;
+    transition: fill 0.2s, opacity 0.2s;
+}
+
+.heart.empty {
+    fill: #FFFFFF;
+    opacity: 0.25;
+}
+
+.lucky {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+
+    img {
+        height: 70px;
+        image-rendering: pixelated;
+    }
+
+    p {
+        margin: 0;
+        font-family: "wendy";
+        font-size: 50px;
+        color: #3DDC84;
+    }
+}

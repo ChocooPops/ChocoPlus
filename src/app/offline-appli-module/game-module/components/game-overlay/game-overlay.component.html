@@ -1,0 +1,14 @@
+@if(status !== 'playing') {
+<div class="container-overlay">
+    @if(status === 'paused') {
+    <p class="title">{{ 'OFFLINE.GAME_PAUSE' | translate }}</p>
+    <p class="hint">{{ 'OFFLINE.GAME_RESUME_HINT' | translate }}</p>
+    } @else {
+    <p class="title">{{ 'OFFLINE.GAME_OVER' | translate }}</p>
+    <p class="score">{{ 'OFFLINE.GAME_SCORE' | translate }} {{ score }}</p>
+    <p class="score">{{ 'OFFLINE.GAME_BEST_SCORE' | translate }} {{ bestScore }}</p>
+    <p class="score">{{ 'OFFLINE.GAME_KILLS' | translate }} {{ kills }}</p>
+    <p class="hint">{{ 'OFFLINE.GAME_RESTART_HINT' | translate }}</p>
+    }
+</div>
+}

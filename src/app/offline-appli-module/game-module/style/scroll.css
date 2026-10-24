@@ -7,13 +7,17 @@
 
 .container-element img {
     flex-shrink: 0;
-    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
 
 .scroll-content {
     display: flex;
     width: max-content;
     position: absolute;
+    animation-name: scroll-game;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
 }
 
 .container-sprite {
@@ -22,6 +26,6 @@
     padding: 0;
 
     img {
-        image-rendering: crisp-edges;
+        image-rendering: pixelated;
     }
 }

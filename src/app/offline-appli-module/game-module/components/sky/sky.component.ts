@@ -1,7 +1,7 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractElementComponent } from '../abstract-element.component';
 import { SkyService } from '../../services/sky/sky.service';
-import { SpriteModel } from '../../models/sprite.interface';
+import { SpriteObserver } from '../../services/sprite-observer.service';
 
 @Component({
   selector: 'app-sky',
@@ -12,27 +12,12 @@ import { SpriteModel } from '../../models/sprite.interface';
 })
 export class SkyComponent extends AbstractElementComponent {
 
-  public sprite !: SpriteModel;
-
-  constructor(private skyService: SkyService,
-    render: Renderer2
-  ) {
-    super(render)
+  constructor(private skyService: SkyService) {
+    super();
   }
 
-  ngAfterViewInit(): void {
-    this.skyService.getSky().getSprite().subscribe((data: SpriteModel) => {
-      this.sprite = data;
-      this.setAnimationScrolling(this.sprite);
-    })
-  }
-
-  override ngOnInit(): void {
-    this.initIteration(4);
-    this.skyService.getSky().getSprite().subscribe((data: SpriteModel) => {
-      this.sprite = data;
-      this.setAnimationScrolling(this.sprite);
-    })
+  protected override getSpriteObserver(): SpriteObserver {
+    return this.skyService.getSky();
   }
 
 }

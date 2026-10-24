@@ -7,7 +7,7 @@ import { SpriteObserver } from '../sprite-observer.service';
 export class SkyService {
 
   private srcSky: string = 'game/sky.png';
-  private sky: SpriteObserver = new SpriteObserver(this.srcSky, 0, 0, 300, 400);
+  private sky: SpriteObserver = new SpriteObserver(this.srcSky, 0, 0, 300, 12);
 
   public getSky(): SpriteObserver {
     return this.sky;

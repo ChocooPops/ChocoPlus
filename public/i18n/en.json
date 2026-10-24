@@ -50,7 +50,14 @@
     "OFFLINE": {
         "LOGIN": "Login",
         "GAME": "Game",
-        "DOWNLOADS": "Downloads"
+        "DOWNLOADS": "Downloads",
+        "GAME_PAUSE": "Pause",
+        "GAME_RESUME_HINT": "Press P to resume",
+        "GAME_OVER": "Game Over",
+        "GAME_SCORE": "Score:",
+        "GAME_BEST_SCORE": "Best score:",
+        "GAME_KILLS": "Enemies defeated:",
+        "GAME_RESTART_HINT": "Press Enter to play again"
     },
     "MENU": {
         "MAIN": {

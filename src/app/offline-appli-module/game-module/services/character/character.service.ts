@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SpriteObserver } from '../sprite-observer.service';
 import { PlateformService } from '../plateform/plateform.service';
+import { HitboxModel, RectModel } from '../../models/game-entity.interface';
+import { getHitboxRect } from '../../models/collision';
 
 @Injectable({
   providedIn: 'root'
@@ -15,21 +17,36 @@ export class CharacterService {
   private sparks !: SpriteObserver;
   private rainbow !: SpriteObserver;
 
+  private readonly SOURCE_PIXEL_SIZE: number = 20;
+  private readonly START_X: number = 100;
+  private readonly MOVE_SPEED: number = 300;
+  // faster when moving back: it goes the same way as the ground scrolling
+  private readonly MOVE_BACK_SPEED: number = 450;
+  private readonly JUMP_VELOCITY: number = 1750;
+  private readonly GRAVITY: number = 3500;
+  // speed kept when the jump key is released while rising (short jump)
+  private readonly JUMP_CUT: number = 0.45;
+  private readonly BOUNCE_RATIO: number = 0.65;
+  // bounce off an enemy with the jump key held: higher than a normal jump
+  private readonly SUPER_BOUNCE_RATIO: number = 1.15;
+  // press tolerance before / after the impact to get the super bounce
+  private readonly JUMP_BUFFER_S: number = 0.15;
+  private readonly SUPER_BOUNCE_LATE_S: number = 0.12;
+  private readonly HITBOX: HitboxModel = { left: 0.1, right: 0.9, top: 0.08, bottom: 0.95 };
+
   private keyRightActivate: boolean = false;
   private keyLeftActivate: boolean = false;
-  private keySpaceActivate: boolean = false;
+  private keyJumpActivate: boolean = false;
+  private jumpBufferTimer: number = 0;
+  private superBounceLateTimer: number = 0;
 
-  private timerDeplacement: any | null;
-  private fallingCharacter: boolean = false;
-
-  private heightJump: number = 35;
-  private gravity: number = this.heightJump;
-  private incrementationGravity: number = 1.4;
+  private velocityY: number = 0;
+  private grounded: boolean = true;
 
   constructor(private plateformService: PlateformService) {
-    this.sparks = new SpriteObserver(this.srcSparks, 100, 0, 100, 5);
-    this.rainbow = new SpriteObserver(this.srcRainbow, 100, 0, 100, 5);
-    this.character = new SpriteObserver(this.srcCharacter, 100, 0, 100, 6);
+    this.sparks = new SpriteObserver(this.srcSparks, 100, 0, 100, 0);
+    this.rainbow = new SpriteObserver(this.srcRainbow, 100, 0, 100, 0);
+    this.character = new SpriteObserver(this.srcCharacter, this.START_X, 0, 100, this.MOVE_SPEED, this.SOURCE_PIXEL_SIZE);
   }
 
   public getCharacter(): SpriteObserver {
@@ -52,110 +69,130 @@ export class CharacterService {
     this.keyRightActivate = state;
   }
 
-  public setKeySpace(state: boolean): void {
-    this.keySpaceActivate = state;
-  }
-
-  public setYAccordingToPlateform(newY: number) {
-    this.character.setY(newY - this.character.getHeight());
-  }
-
-  public moveForward(): void {
-    const actualX: number = this.character.getX();
-    const speed: number = this.character.getSpeed();
-    this.character.setX(actualX + speed);
-  }
-
-  public moveBack(): void {
-    const actualX: number = this.character.getX();
-    const speed: number = this.character.getSpeed();
-    this.character.setX(actualX - speed);
-  }
-
-  public setJump(): void {
-    if (!this.fallingCharacter) {
-      this.character.setY(this.character.getY() - this.gravity);
-      this.gravity -= this.incrementationGravity;
-      if (this.gravity <= 0) {
-        this.fallingCharacter = true;
-      }
-    } else {
-      this.character.setY(this.character.getY() + this.gravity);
-      this.gravity += this.incrementationGravity;
-      if (this.gravity > this.heightJump) {
-        this.gravity = this.heightJump;
-        this.keySpaceActivate = false;
-        this.fallingCharacter = false;
-        const newY = this.plateformService.getPlateform().getOffsetY();
-        if (newY) {
-          this.setYAccordingToPlateform(newY);
-        }
+  public setKeyJump(state: boolean): void {
+    if (state && !this.keyJumpActivate) {
+      this.jumpBufferTimer = this.JUMP_BUFFER_S;
+      // pressed right after a simple bounce: turn it into a super bounce
+      if (this.superBounceLateTimer > 0) {
+        this.superBounceLateTimer = 0;
+        this.velocityY = -this.JUMP_VELOCITY * this.SUPER_BOUNCE_RATIO;
       }
     }
-  }
-
-  private ifCharacterIsOutsideWindowLeft(): boolean {
-    if (this.character.getX() - this.character.getSpeed() > 0) {
-      return false;
-    } else {
-      return true;
+    if (!state && this.velocityY < 0) {
+      this.velocityY *= this.JUMP_CUT;
     }
+    this.keyJumpActivate = state;
   }
 
-  private ifCharacterOutsideWindowRight(): boolean {
-    if (this.character.getX() + this.character.getWidth() + this.character.getSpeed() >= this.character.getWidthWindows()) {
-      return true;
-    } else {
-      return false;
+  public releaseKeys(): void {
+    this.keyLeftActivate = false;
+    this.keyRightActivate = false;
+    this.keyJumpActivate = false;
+    this.jumpBufferTimer = 0;
+    this.superBounceLateTimer = 0;
+  }
+
+  public reset(): void {
+    this.releaseKeys();
+    this.velocityY = 0;
+    this.grounded = true;
+    const groundY: number | null = this.getGroundY();
+    this.character.updateSprite({ x: this.START_X, ...(groundY !== null && { y: groundY }) });
+    this.updateAttachedSprites();
+  }
+
+  public isFalling(): boolean {
+    return !this.grounded && this.velocityY > 0;
+  }
+
+  public bounce(): void {
+    const superBounce: boolean = this.keyJumpActivate || this.jumpBufferTimer > 0;
+    // several enemies stomped at once: keep the strongest bounce
+    this.velocityY = Math.min(this.velocityY, -this.JUMP_VELOCITY * (superBounce ? this.SUPER_BOUNCE_RATIO : this.BOUNCE_RATIO));
+    this.superBounceLateTimer = superBounce || this.velocityY <= -this.JUMP_VELOCITY ? 0 : this.SUPER_BOUNCE_LATE_S;
+    this.jumpBufferTimer = 0;
+    this.grounded = false;
+  }
+
+  public getHitbox(): RectModel {
+    return getHitboxRect({
+      x: this.character.getX(),
+      y: this.character.getY(),
+      width: this.character.getWidth(),
+      height: this.character.getHeight()
+    }, this.HITBOX);
+  }
+
+  public update(deltaTime: number): void {
+    const groundY: number | null = this.getGroundY();
+    if (!this.character.isLoad() || groundY === null) {
+      return;
     }
+    this.jumpBufferTimer = Math.max(this.jumpBufferTimer - deltaTime, 0);
+    this.superBounceLateTimer = Math.max(this.superBounceLateTimer - deltaTime, 0);
+
+    const direction: number = Number(this.keyRightActivate) - Number(this.keyLeftActivate);
+    const maxX: number = this.character.getWidthWindows() - this.character.getWidth();
+    const speed: number = direction < 0 ? this.MOVE_BACK_SPEED : this.MOVE_SPEED;
+    const x: number = Math.min(Math.max(this.character.getX() + direction * speed * deltaTime, 0), maxX);
+    let y: number = this.character.getY();
+
+    if (this.grounded) {
+      if (this.keyJumpActivate) {
+        this.velocityY = -this.JUMP_VELOCITY;
+        this.grounded = false;
+      } else {
+        y = groundY;
+      }
+    }
+    if (!this.grounded) {
+      this.velocityY += this.GRAVITY * deltaTime;
+      y += this.velocityY * deltaTime;
+      if (y >= groundY) {
+        y = groundY;
+        this.velocityY = 0;
+        this.grounded = true;
+      }
+    }
+
+    this.character.updateSprite({ x, y });
+    this.updateAttachedSprites();
   }
 
-  public startTimer(): void {
-    this.stopTimer();
-    this.timerDeplacement = setInterval(() => {
-      if (this.keyLeftActivate && !this.ifCharacterIsOutsideWindowLeft()) {
-        this.moveBack();
-      }
-      if (this.keyRightActivate && !this.ifCharacterOutsideWindowRight()) {
-        this.moveForward();
-      }
-      if (this.keySpaceActivate) {
-        this.setJump();
-      }
-    }, 20)
+  private getGroundY(): number | null {
+    const plateformY: number | null = this.plateformService.getGroundY();
+    return plateformY === null ? null : plateformY - this.character.getHeight();
   }
 
-  public stopTimer(): void {
-    clearInterval(this.timerDeplacement);
-    this.timerDeplacement = null;
-  }
+  // The sparks and the rainbow follow the character at the same scale
+  private updateAttachedSprites(): void {
+    const originelHeight: number = this.character.getOriginelDimension().height;
+    if (!originelHeight || !this.sparks.isLoad() || !this.rainbow.isLoad()) {
+      return;
+    }
+    const ratio: number = originelHeight / this.character.getHeight();
+    const x: number = this.character.getX();
+    const y: number = this.character.getY();
+    const characterWidth: number = this.character.getWidth();
+    const characterHeight: number = this.character.getHeight();
 
-  public setSparks(): void {
-    const ratio: number = this.character.getOriginelDimension().height / this.character.getHeight();
-    const height: number = this.sparks.getOriginelDimension().height / ratio;
-    const width: number = this.sparks.getOriginelDimension().width / ratio;
-    const x: number = this.character.getX() - (width - this.character.getWidth()) / 2;
-    const y: number = this.character.getY() - (height - this.character.getHeight()) / 2;
+    const sparksHeight: number = this.sparks.getOriginelDimension().height / ratio;
+    const sparksWidth: number = this.sparks.getOriginelDimension().width / ratio;
     this.sparks.updateSprite({
-      height: height,
-      width: width,
-      x: x,
-      y: y
-    })
-  }
+      height: sparksHeight,
+      width: sparksWidth,
+      x: x - (sparksWidth - characterWidth) / 2,
+      y: y - (sparksHeight - characterHeight) / 2
+    });
 
-  public setRainbow(): void {
-    const ratio: number = this.character.getOriginelDimension().height / this.character.getHeight();
-    const height: number = this.rainbow.getOriginelDimension().height / ratio;
-    const width: number = this.rainbow.getOriginelDimension().width / ratio;
-    const x: number = this.character.getX() - width + this.character.getWidth() * 0.3;
-    const y: number = this.character.getY() - (height - this.character.getHeight()) / 2;
+    const rainbowHeight: number = this.rainbow.getOriginelDimension().height / ratio;
+    const rainbowWidth: number = this.rainbow.getOriginelDimension().width / ratio;
     this.rainbow.updateSprite({
-      height: height,
-      width: width,
-      x: x,
-      y: y
-    })
+      height: rainbowHeight,
+      width: rainbowWidth,
+      x: x - rainbowWidth + characterWidth * 0.3,
+      y: y - (rainbowHeight - characterHeight) / 2
+    });
   }
 
 }

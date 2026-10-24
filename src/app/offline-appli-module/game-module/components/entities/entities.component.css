@@ -1,0 +1,157 @@
+.entity {
+    position: absolute;
+    left: 0;
+    top: 0;
+    will-change: transform;
+}
+
+.sprite {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+/* behind the sprite (DOM order), clipped to its visible part, attached to the sprite by its right edge */
+.trail {
+    position: absolute;
+    overflow: hidden;
+
+    img {
+        position: absolute;
+        right: 0;
+        top: 0;
+        max-width: none;
+        image-rendering: pixelated;
+    }
+}
+
+/* in front of the sprite (DOM order) */
+.overlay {
+    position: absolute;
+    max-width: none;
+    image-rendering: pixelated;
+}
+
+.flip {
+    transform: scaleX(-1);
+}
+
+.hit .sprite {
+    animation: entity-hit 0.1s steps(2, jump-none) infinite;
+}
+
+.collected .sprite {
+    animation: entity-collected 0.48s ease-out forwards;
+}
+
+.defeated .sprite {
+    animation: entity-defeated 0.48s ease-in forwards;
+}
+
+.defeated .sprite.flip {
+    animation-name: entity-defeated-flip;
+}
+
+/* permanent glitch: jumpy offsets and colours */
+.glitch:not(.defeated) .sprite {
+    animation: entity-glitch 0.9s steps(1, end) infinite;
+}
+
+/* about to teleport: fast flicker */
+.teleporting:not(.defeated) .sprite {
+    animation: entity-teleporting 0.08s steps(1, end) infinite;
+}
+
+/* warning on the left edge: an enemy is coming from behind */
+.incoming {
+    position: absolute;
+    left: 20px;
+    margin: 0;
+    transform: translateY(-50%);
+    font-family: "wendy";
+    font-size: 110px;
+    color: #FF4D6D;
+    animation: entity-hit 0.2s steps(2, jump-none) infinite;
+}
+
+.defeated .trail,
+.collected .overlay,
+.defeated .overlay {
+    animation: entity-fade 0.48s ease-in forwards;
+}
+
+@keyframes entity-collected {
+    to {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+@keyframes entity-defeated {
+    to {
+        transform: scaleY(-0.4) translateY(-60%);
+        opacity: 0;
+    }
+}
+
+@keyframes entity-defeated-flip {
+    to {
+        transform: scaleX(-1) scaleY(-0.4) translateY(-60%);
+        opacity: 0;
+    }
+}
+
+@keyframes entity-glitch {
+    0% {
+        transform: none;
+        filter: none;
+    }
+
+    70% {
+        transform: translate(-6px, 3px) skewX(8deg);
+        filter: hue-rotate(90deg) saturate(3);
+    }
+
+    76% {
+        transform: translate(8px, -2px);
+        filter: invert(1);
+    }
+
+    82% {
+        transform: translate(-3px, 0) scaleY(0.85);
+        filter: hue-rotate(-120deg);
+    }
+
+    88% {
+        transform: none;
+        filter: none;
+    }
+}
+
+@keyframes entity-teleporting {
+    0% {
+        opacity: 1;
+        transform: translate(-10px, 0);
+        filter: invert(1);
+    }
+
+    50% {
+        opacity: 0.2;
+        transform: translate(10px, -4px);
+        filter: hue-rotate(180deg);
+    }
+}
+
+@keyframes entity-hit {
+    to {
+        opacity: 0.3;
+    }
+}
+
+@keyframes entity-fade {
+    to {
+        opacity: 0;
+    }
+}

@@ -50,7 +50,14 @@
     "OFFLINE": {
         "LOGIN": "ログイン",
         "GAME": "ゲーム",
-        "DOWNLOADS": "ダウンロード"
+        "DOWNLOADS": "ダウンロード",
+        "GAME_PAUSE": "ポーズ",
+        "GAME_RESUME_HINT": "Pキーで再開",
+        "GAME_OVER": "ゲームオーバー",
+        "GAME_SCORE": "スコア：",
+        "GAME_BEST_SCORE": "ベストスコア：",
+        "GAME_KILLS": "倒した敵：",
+        "GAME_RESTART_HINT": "Enterキーでもう一度プレイ"
     },
     "MENU": {
         "MAIN": {

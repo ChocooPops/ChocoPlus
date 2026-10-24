@@ -1,7 +1,7 @@
-import { Component, Renderer2, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AbstractElementComponent } from '../abstract-element.component';
-import { SpriteModel } from '../../models/sprite.interface';
 import { TreeService } from '../../services/tree/tree.service';
+import { SpriteObserver } from '../../services/sprite-observer.service';
 
 @Component({
   selector: 'app-tree',
@@ -13,39 +13,13 @@ import { TreeService } from '../../services/tree/tree.service';
 export class TreeComponent extends AbstractElementComponent {
 
   @Input() type: boolean = true;
-  public tree !: SpriteModel;
 
-  constructor(private treeService: TreeService,
-    render: Renderer2
-  ) {
-    super(render)
+  constructor(private treeService: TreeService) {
+    super();
   }
 
-  ngAfterViewInit(): void {
-    this.initializeTree();
-  }
-
-  override ngOnInit(): void {
-    this.initIteration(2);
-    this.initializeTree();
-  }
-
-  private initializeTree(): void {
-    if (this.type) {
-      this.subscription.add(
-        this.treeService.getBlueTreeSprite().getSprite().subscribe((sprite) => {
-          this.tree = sprite;
-          this.setAnimationScrolling(this.tree);
-        })
-      )
-    } else {
-      this.subscription.add(
-        this.treeService.getYellowTreeSprite().getSprite().subscribe((sprite) => {
-          this.tree = sprite;
-          this.setAnimationScrolling(this.tree);
-        })
-      )
-    }
+  protected override getSpriteObserver(): SpriteObserver {
+    return this.type ? this.treeService.getBlueTreeSprite() : this.treeService.getYellowTreeSprite();
   }
 
 }
