@@ -8,6 +8,7 @@ import { GameStateService } from '../game-state/game-state.service';
 import { AttachedSpriteModel, EntityKind, GameEntity, RectModel, TrailModel } from '../../models/game-entity.interface';
 import { ENTITY_CONFIGS, EntityConfig, GOLD_COLLECTED_SRC, OverlayConfig, TrailConfig } from '../../models/entity-config';
 import { getHitboxRect, intersects, randomBetween } from '../../models/collision';
+import { SkyService } from '../sky/sky.service';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 
 @Injectable({
@@ -32,7 +33,7 @@ export class EntityService {
   private readonly EMERGE_START_RATIO: number = 0.8;
   private readonly EMERGE_AFTER_HIT: number = 0.4;
   // luck: coin attraction radius and speed
-  private readonly MAGNET_RADIUS: number = 450;
+  private readonly MAGNET_RADIUS: number = 900;
   private readonly MAGNET_SPEED: number = 900;
   // minimum distance ahead of the player where an enemy may fall or teleport
   private readonly SAFE_DISTANCE: number = 300;
@@ -85,7 +86,8 @@ export class EntityService {
     private readonly plateformService: PlateformService,
     private readonly scoreService: ScoreService,
     private readonly gameStateService: GameStateService,
-    private readonly imagePreloaderService: ImagePreloaderService
+    private readonly imagePreloaderService: ImagePreloaderService,
+    private readonly skyService: SkyService
   ) {
     this.collectedImageLoad$ = from(this.imagePreloaderService.preloadImages([GOLD_COLLECTED_SRC]).then(() => true));
     this.reset();
@@ -272,7 +274,8 @@ export class EntityService {
     if (config.groundAnchor !== null) {
       y = this.getGroundedY(config, height, groundY);
     } else if (config.skyBand) {
-      y = randomBetween(config.skyBand) - height / 2;
+      const sky: SpriteObserver = this.skyService.getSky();
+      y = sky.getY() + sky.getHeight() / 2 + randomBetween(config.skyBand) - height / 2;
     }
     const entity: GameEntity = this.createEntity(kind, this.widthWindows, y);
     const speed: number = config.speed * (config.isEnemy ? 1 + (difficulty - 1) * 0.4 : 1);
@@ -516,7 +519,8 @@ export class EntityService {
       case 'gold':
         this.scoreService.addScore(this.POINTS.gold * (this.gameStateService.isLucky() ? 2 : 1));
         this.setCollected(entity);
-        this.resizeCentered(entity, GOLD_COLLECTED_SRC, entity.height * 2.5);
+        // gold-touch.gif plays only once: its own URL makes each collection restart from the first frame
+        this.resizeCentered(entity, `${GOLD_COLLECTED_SRC}?${entity.id}`, entity.height * 2.5);
         break;
       case 'angel':
         if (!this.gameStateService.addLife()) {

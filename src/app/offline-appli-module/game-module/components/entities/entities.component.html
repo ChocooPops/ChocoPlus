@@ -1,4 +1,5 @@
 @for(entity of entities; track entity.id) {
+@if(isInLayer(entity)) {
 @if(isIncomingFromBehind(entity)) {
 <p class="incoming" [style.top.px]="entity.y + entity.height / 2">!</p>
 }
@@ -18,4 +19,5 @@
         [style.top.px]="overlay.y" [style.width.px]="overlay.width" [style.height.px]="overlay.height">
     }
 </div>
+}
 }

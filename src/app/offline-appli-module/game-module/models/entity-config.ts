@@ -42,7 +42,7 @@ export interface EntityConfig {
     fromBehind?: boolean,
     // false = never spawned by the timers, only dropped or created by another entity
     autoSpawn?: boolean,
-    // flies in the sky: distance from the top of the screen to the sprite's centre [min, max]
+    // flies in the sky: offset in px from the centre of the sky layer (sky.png) to the sprite's centre [min, max]
     skyBand?: [number, number],
     // drops `count` entities from the anchor point (fractions of the unflipped image) so they land at random
     // screen positions; inheritSpeed = fraction of the dropper's horizontal speed they keep while falling
@@ -252,9 +252,9 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         trail: null,
         overlay: null,
         isEnemy: false,
-        skyBand: [235, 265],
+        skyBand: [-15, 15],
         stomp: { hitPoints: 1, points: 10, coins: 3 },
-        drops: { kind: 'bomb', count: 2, anchorX: 0.91, anchorY: 0.85, inheritSpeed: 0.3 }
+        drops: { kind: 'bomb', count: 3, anchorX: 0.91, anchorY: 0.85, inheritSpeed: 0.3 }
     },
     // dropped by usa: hurts on contact, explodes on the ground
     bomb: {

@@ -85,7 +85,8 @@ export class GamePageComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.gameStateService.isGameOver()) {
-      if (!event.repeat && (event.key === 'Enter' || event.key === ' ')) {
+      // Enter only: Space is the jump key and would restart by accident right after dying
+      if (!event.repeat && event.key === 'Enter') {
         this.gameLoopService.restart();
       }
       return;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { EntityService } from '../../services/entity/entity.service';
 import { GameEntity } from '../../models/game-entity.interface';
 import { ENTITY_CONFIGS } from '../../models/entity-config';
@@ -12,11 +12,19 @@ import { ENTITY_CONFIGS } from '../../models/entity-config';
 })
 export class EntitiesComponent {
 
+  // 'world' = entities drawn behind the character, 'effects' = pickup effects drawn in front of it
+  @Input() layer: 'world' | 'effects' = 'world';
+
   // array mutated in place by the game loop: no subscription needed
   public readonly entities: GameEntity[];
 
   constructor(entityService: EntityService) {
     this.entities = entityService.getEntities();
+  }
+
+  public isInLayer(entity: GameEntity): boolean {
+    const isEffect: boolean = entity.state === 'collected';
+    return this.layer === 'effects' ? isEffect : !isEffect;
   }
 
   public getTransform(entity: GameEntity): string {
