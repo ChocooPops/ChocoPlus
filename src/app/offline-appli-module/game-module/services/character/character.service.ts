@@ -17,7 +17,9 @@ export class CharacterService {
   private sparks !: SpriteObserver;
   private rainbow !: SpriteObserver;
 
-  private readonly SOURCE_PIXEL_SIZE: number = 20;
+  private readonly SOURCE_PIXEL_SIZE: number = 5;
+  private readonly RAINBOW_PIXEL_SIZE: number = 23 / 19;
+  private readonly SPARKS_PIXEL_SIZE: number = 20;
   private readonly START_X: number = 100;
   private readonly MOVE_SPEED: number = 300;
   // faster when moving back: it goes the same way as the ground scrolling
@@ -44,8 +46,8 @@ export class CharacterService {
   private grounded: boolean = true;
 
   constructor(private plateformService: PlateformService) {
-    this.sparks = new SpriteObserver(this.srcSparks, 100, 0, 100, 0);
-    this.rainbow = new SpriteObserver(this.srcRainbow, 100, 0, 100, 0);
+    this.sparks = new SpriteObserver(this.srcSparks, 100, 0, 100, 0, this.SPARKS_PIXEL_SIZE);
+    this.rainbow = new SpriteObserver(this.srcRainbow, 100, 0, 100, 0, this.RAINBOW_PIXEL_SIZE);
     this.character = new SpriteObserver(this.srcCharacter, this.START_X, 0, 100, this.MOVE_SPEED, this.SOURCE_PIXEL_SIZE);
   }
 
@@ -164,34 +166,23 @@ export class CharacterService {
     return plateformY === null ? null : plateformY - this.character.getHeight();
   }
 
-  // The sparks and the rainbow follow the character at the same scale
+  // The sparks (centred) and the rainbow (behind) follow the character; each one has its own size
   private updateAttachedSprites(): void {
-    const originelHeight: number = this.character.getOriginelDimension().height;
-    if (!originelHeight || !this.sparks.isLoad() || !this.rainbow.isLoad()) {
+    if (!this.character.isLoad() || !this.sparks.isLoad() || !this.rainbow.isLoad()) {
       return;
     }
-    const ratio: number = originelHeight / this.character.getHeight();
     const x: number = this.character.getX();
     const y: number = this.character.getY();
     const characterWidth: number = this.character.getWidth();
     const characterHeight: number = this.character.getHeight();
 
-    const sparksHeight: number = this.sparks.getOriginelDimension().height / ratio;
-    const sparksWidth: number = this.sparks.getOriginelDimension().width / ratio;
     this.sparks.updateSprite({
-      height: sparksHeight,
-      width: sparksWidth,
-      x: x - (sparksWidth - characterWidth) / 2,
-      y: y - (sparksHeight - characterHeight) / 2
+      x: x - (this.sparks.getWidth() - characterWidth) / 2,
+      y: y - (this.sparks.getHeight() - characterHeight) / 2
     });
-
-    const rainbowHeight: number = this.rainbow.getOriginelDimension().height / ratio;
-    const rainbowWidth: number = this.rainbow.getOriginelDimension().width / ratio;
     this.rainbow.updateSprite({
-      height: rainbowHeight,
-      width: rainbowWidth,
-      x: x - rainbowWidth + characterWidth * 0.3,
-      y: y - (rainbowHeight - characterHeight) / 2
+      x: x - this.rainbow.getWidth() + characterWidth * 0.3,
+      y: y - (this.rainbow.getHeight() - characterHeight) / 2
     });
   }
 

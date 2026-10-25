@@ -108,7 +108,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         wave: null,
         trail: {
             src: 'game/rainbow-devil.gif',
-            sourcePixelSize: 20,
+            sourcePixelSize: 23 / 19,
             anchorX: 204,
             anchorY: 20
         },
@@ -230,7 +230,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         // same attachment as rainbow.gif on character.gif (body drawn at the same place)
         trail: {
             src: 'game/rainbow-troll.gif',
-            sourcePixelSize: 20,
+            sourcePixelSize: 23 / 19,
             anchorX: 0.3 * 194,
             anchorY: 194 / 34
         },
@@ -241,7 +241,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
     // flies in the sky and bombs the ground; harmless, reachable with a super bounce (off the troll on tall screens)
     usa: {
         src: 'game/usa.gif',
-        sourcePixelSize: 20,
+        sourcePixelSize: 48 / 22,
         speed: 450,
         groundRelative: false,
         flipX: true,
@@ -302,7 +302,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
     },
     angel: {
         src: 'game/angel.gif',
-        sourcePixelSize: 20,
+        sourcePixelSize: 5,
         speed: 110,
         groundRelative: false,
         flipX: false,
@@ -338,7 +338,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
     // lucky clover: activates luck (coins x2 and attracted)
     paddy: {
         src: 'game/paddy.gif',
-        sourcePixelSize: 20,
+        sourcePixelSize: 5,
         speed: 150,
         groundRelative: false,
         flipX: false,
