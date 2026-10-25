@@ -357,9 +357,9 @@ export class EntityService {
   private explode(entity: GameEntity, kind: EntityKind, groundY: number): void {
     const blast: GameEntity = this.createEntity(kind, 0, 0);
     blast.x = entity.x + entity.width / 2 - blast.width * this.EXPLOSION_ANCHOR.x;
-    blast.y = entity.falling
+    blast.y = (entity.falling
       ? entity.y + entity.height / 2 - blast.height * this.EXPLOSION_ANCHOR.y
-      : groundY - blast.height * this.EXPLOSION_ANCHOR.bottom;
+      : groundY - blast.height * this.EXPLOSION_ANCHOR.bottom) + ENTITY_CONFIGS[kind].offsetY;
     blast.vx = -this.plateformService.getGroundSpeed();
     this.pendingEntities.push(blast);
     entity.state = 'removed';

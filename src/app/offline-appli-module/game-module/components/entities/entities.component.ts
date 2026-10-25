@@ -12,8 +12,9 @@ import { ENTITY_CONFIGS } from '../../models/entity-config';
 })
 export class EntitiesComponent {
 
-  // 'world' = entities drawn behind the character, 'effects' = pickup effects drawn in front of it
-  @Input() layer: 'world' | 'effects' = 'world';
+  // 'world' = entities drawn behind the character, 'effects' = pickup effects drawn in front of it,
+  // 'foreground' = entities configured to be drawn in front of the platform
+  @Input() layer: 'world' | 'effects' | 'foreground' = 'world';
 
   // array mutated in place by the game loop: no subscription needed
   public readonly entities: GameEntity[];
@@ -23,8 +24,10 @@ export class EntitiesComponent {
   }
 
   public isInLayer(entity: GameEntity): boolean {
-    const isEffect: boolean = entity.state === 'collected';
-    return this.layer === 'effects' ? isEffect : !isEffect;
+    if (entity.state === 'collected') {
+      return this.layer === 'effects';
+    }
+    return ENTITY_CONFIGS[entity.kind].foreground === true ? this.layer === 'foreground' : this.layer === 'world';
   }
 
   public getTransform(entity: GameEntity): string {

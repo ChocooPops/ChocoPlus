@@ -56,7 +56,9 @@ export interface EntityConfig {
     // gives each instance its own image URL so its GIF animation restarts from the first frame
     uniqueImage?: boolean,
     // swings from side to side while falling
-    swingWhileFalling?: boolean
+    swingWhileFalling?: boolean,
+    // drawn in front of the platform instead of behind the character
+    foreground?: boolean
 }
 
 export interface TrailConfig {
@@ -254,7 +256,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         isEnemy: false,
         skyBand: [-15, 15],
         stomp: { hitPoints: 1, points: 10, coins: 3 },
-        drops: { kind: 'bomb', count: 3, anchorX: 0.91, anchorY: 0.85, inheritSpeed: 0.3 }
+        drops: { kind: 'bomb', count: 4, anchorX: 0.91, anchorY: 0.85, inheritSpeed: 0.3 }
     },
     // dropped by usa: hurts on contact, explodes on the ground
     bomb: {
@@ -288,14 +290,15 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         spawnInterval: [0, 0],
         spawnHeight: [0, 0],
         groundAnchor: null,
-        offsetY: 0,
+        offsetY: 40,
         wave: null,
         trail: null,
         overlay: null,
         isEnemy: true,
         autoSpawn: false,
         lifetime: 0.6,
-        uniqueImage: true
+        uniqueImage: true,
+        foreground: true
     },
     angel: {
         src: 'game/angel.gif',
