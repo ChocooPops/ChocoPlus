@@ -23,8 +23,11 @@ export interface EntityConfig {
     // sprite drawn in front of and centred on the sprite, like the character's sparks
     overlay: OverlayConfig | null,
     isEnemy: boolean,
-    // enemy: stomps needed, points and coins dropped when defeated
-    stomp?: { hitPoints: number, points: number, coins: number },
+    // size multiplier on top of the common pixel-art scale (also applied to trail and overlay)
+    scale?: number,
+    // enemy: stomps needed, points and coins dropped when defeated;
+    // tolerance = top fraction of the hitbox that counts as a stomp (default STOMP_TOLERANCE)
+    stomp?: { hitPoints: number, points: number, coins: number, tolerance?: number },
     // moves by hopping: initial speed [min, max] in px/s, gravity in px/s²
     hop?: { velocity: [number, number], gravity: number },
     // rises out of the ground as it approaches the player
@@ -36,7 +39,24 @@ export interface EntityConfig {
     // permanent glitch visual effect
     glitch?: boolean,
     // comes in from the left, behind the player, and moves right
-    fromBehind?: boolean
+    fromBehind?: boolean,
+    // false = never spawned by the timers, only dropped or created by another entity
+    autoSpawn?: boolean,
+    // flies in the sky: distance from the top of the screen to the sprite's centre [min, max]
+    skyBand?: [number, number],
+    // drops `count` entities from the anchor point (fractions of the unflipped image) so they land at random
+    // screen positions; inheritSpeed = fraction of the dropper's horizontal speed they keep while falling
+    drops?: { kind: EntityKind, count: number, anchorX: number, anchorY: number, inheritSpeed: number },
+    // gravity in px/s² while falling (default: coin gravity)
+    gravity?: number,
+    // turns into this entity when it lands or touches the player
+    explodeInto?: EntityKind,
+    // removed after this many seconds
+    lifetime?: number,
+    // gives each instance its own image URL so its GIF animation restarts from the first frame
+    uniqueImage?: boolean,
+    // swings from side to side while falling
+    swingWhileFalling?: boolean
 }
 
 export interface TrailConfig {
@@ -191,6 +211,92 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         stomp: { hitPoints: 1, points: 4, coins: 0 },
         fromBehind: true
     },
+    // giant on the ground: walk between its legs, or reach its top with a super bounce off another enemy
+    troll: {
+        src: 'game/troll.gif',
+        sourcePixelSize: 194 / 34,
+        scale: 6,
+        speed: 40,
+        groundRelative: true,
+        flipX: true,
+        hitbox: { left: 0.2, right: 0.97, top: 0.03, bottom: 0.8 },
+        spawnInterval: [20, 30],
+        spawnHeight: [0, 0],
+        groundAnchor: 0.95,
+        offsetY: 0,
+        wave: null,
+        // same attachment as rainbow.gif on character.gif (body drawn at the same place)
+        trail: {
+            src: 'game/rainbow-troll.gif',
+            sourcePixelSize: 20,
+            anchorX: 0.3 * 194,
+            anchorY: 194 / 34
+        },
+        overlay: null,
+        isEnemy: true,
+        stomp: { hitPoints: 3, points: 15, coins: 8, tolerance: 0.15 }
+    },
+    // flies in the sky and bombs the ground; harmless, reachable with a super bounce (off the troll on tall screens)
+    usa: {
+        src: 'game/usa.gif',
+        sourcePixelSize: 20,
+        speed: 450,
+        groundRelative: false,
+        flipX: true,
+        hitbox: { left: 0.83, right: 0.99, top: 0, bottom: 0.89 },
+        spawnInterval: [18, 28],
+        spawnHeight: [0, 0],
+        groundAnchor: null,
+        offsetY: 0,
+        wave: { amplitude: 10, frequency: 1.5 },
+        trail: null,
+        overlay: null,
+        isEnemy: false,
+        skyBand: [235, 265],
+        stomp: { hitPoints: 1, points: 10, coins: 3 },
+        drops: { kind: 'bomb', count: 2, anchorX: 0.91, anchorY: 0.85, inheritSpeed: 0.3 }
+    },
+    // dropped by usa: hurts on contact, explodes on the ground
+    bomb: {
+        src: 'game/bombe.png',
+        sourcePixelSize: 16,
+        speed: 0,
+        groundRelative: false,
+        flipX: false,
+        hitbox: { left: 0.2, right: 0.75, top: 0.4, bottom: 0.89 },
+        spawnInterval: [0, 0],
+        spawnHeight: [0, 0],
+        groundAnchor: 0.89,
+        offsetY: 0,
+        wave: null,
+        trail: null,
+        overlay: null,
+        isEnemy: true,
+        autoSpawn: false,
+        gravity: 1400,
+        explodeInto: 'explosion',
+        swingWhileFalling: true
+    },
+    // left by a bomb: hurts during its whole animation (lifetime = GIF duration)
+    explosion: {
+        src: 'game/explosion.gif',
+        sourcePixelSize: 9,
+        speed: 0,
+        groundRelative: true,
+        flipX: false,
+        hitbox: { left: 0.2, right: 0.8, top: 0.2, bottom: 0.95 },
+        spawnInterval: [0, 0],
+        spawnHeight: [0, 0],
+        groundAnchor: null,
+        offsetY: 0,
+        wave: null,
+        trail: null,
+        overlay: null,
+        isEnemy: true,
+        autoSpawn: false,
+        lifetime: 0.6,
+        uniqueImage: true
+    },
     angel: {
         src: 'game/angel.gif',
         sourcePixelSize: 20,
@@ -229,11 +335,11 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
     // lucky clover: activates luck (coins x2 and attracted)
     paddy: {
         src: 'game/paddy.gif',
-        sourcePixelSize: 258 / 34,
+        sourcePixelSize: 20,
         speed: 150,
         groundRelative: false,
         flipX: false,
-        hitbox: { left: 0.1, right: 0.95, top: 0.1, bottom: 0.95 },
+        hitbox: { left: 0.4, right: 0.97, top: 0.15, bottom: 0.95 },
         spawnInterval: [25, 40],
         spawnHeight: [260, 380],
         groundAnchor: null,

@@ -32,6 +32,10 @@ export class EntitiesComponent {
     return !!teleport && entity.teleportsLeft > 0 && !entity.falling && entity.teleportTimer < teleport.warning;
   }
 
+  public isSwinging(entity: GameEntity): boolean {
+    return ENTITY_CONFIGS[entity.kind].swingWhileFalling === true && entity.falling;
+  }
+
   // Enemy still off-screen on the left, coming from behind
   public isIncomingFromBehind(entity: GameEntity): boolean {
     return entity.state === 'active' && entity.vx > 0 && entity.x + entity.width < 0;

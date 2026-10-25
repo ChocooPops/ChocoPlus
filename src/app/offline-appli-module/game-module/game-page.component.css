@@ -6,3 +6,36 @@
     margin: 0;
     overflow: hidden;
 }
+
+/* above the pause overlay so it can also resume the game */
+.pause-button {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    padding: 0;
+    border: 5px solid #FFDE36;
+    background-color: rgba(10, 10, 30, 0.45);
+    color: #FFDE36;
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.15s;
+
+    svg {
+        width: 36px;
+        height: 42px;
+        fill: currentColor;
+    }
+}
+
+.pause-button:hover {
+    background-color: rgba(255, 222, 54, 0.25);
+}
+
+.pause-button:active {
+    transform: translateX(-50%) scale(0.92);
+}

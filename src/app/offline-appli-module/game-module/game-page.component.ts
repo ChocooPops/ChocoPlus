@@ -1,5 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 import { StarsComponent } from './components/stars/stars.component';
 import { PlateformComponent } from './components/plateform/plateform.component';
 import { SkyComponent } from './components/sky/sky.component';
@@ -21,7 +22,7 @@ import { MenuTabService } from '../../main-appli-module/menu-module/service/menu
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [StarsComponent, ScoreComponent, LivesComponent, GameOverlayComponent, TreeComponent, EntitiesComponent, PlateformComponent, SkyComponent, CloudComponent, CharacterComponent],
+  imports: [TranslatePipe, StarsComponent, ScoreComponent, LivesComponent, GameOverlayComponent, TreeComponent, EntitiesComponent, PlateformComponent, SkyComponent, CloudComponent, CharacterComponent],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.css'
 })
@@ -66,6 +67,11 @@ export class GamePageComponent implements OnInit, OnDestroy {
     this.entityService.setWidthWindows(width);
   }
 
+  public onTogglePause(): void {
+    this.characterService.releaseKeys();
+    this.gameStateService.togglePause();
+  }
+
   @HostListener('window:blur')
   onBlur(): void {
     this.characterService.releaseKeys();
@@ -100,9 +106,10 @@ export class GamePageComponent implements OnInit, OnDestroy {
         break;
       case 'p':
       case 'P':
+      case 'Pause':
+      case 'Escape':
         if (!event.repeat) {
-          this.characterService.releaseKeys();
-          this.gameStateService.togglePause();
+          this.onTogglePause();
         }
         break;
     }

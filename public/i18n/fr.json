@@ -52,12 +52,13 @@
         "GAME": "Jeu",
         "DOWNLOADS": "Téléchargements",
         "GAME_PAUSE": "Pause",
+        "GAME_RESUME": "Reprendre",
         "GAME_RESUME_HINT": "Appuie sur P pour reprendre",
         "GAME_OVER": "Game Over",
         "GAME_SCORE": "Score :",
         "GAME_BEST_SCORE": "Meilleur score :",
         "GAME_KILLS": "Ennemis elimines :",
-        "GAME_RESTART_HINT": "Appuie sur Entrée pour rejouer"
+        "GAME_RESTART_HINT": "Appuie sur Entree pour rejouer"
     },
     "MENU": {
         "MAIN": {

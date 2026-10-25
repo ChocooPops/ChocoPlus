@@ -1,6 +1,6 @@
-export type EntityKind = 'gold' | 'devil' | 'melon' | 'zombie' | 'pumpkin' | 'wtf' | 'mexinyan' | 'angel' | 'powerup' | 'paddy';
+export type EntityKind = 'gold' | 'devil' | 'melon' | 'zombie' | 'pumpkin' | 'wtf' | 'mexinyan' | 'troll' | 'usa' | 'bomb' | 'explosion' | 'angel' | 'powerup' | 'paddy';
 
-export type EntityState = 'active' | 'collected' | 'defeated';
+export type EntityState = 'active' | 'collected' | 'defeated' | 'removed';
 
 export type GameStatus = 'playing' | 'paused' | 'gameover';
 
@@ -39,6 +39,8 @@ export interface GameEntity extends RectModel {
     emerge: number,
     teleportTimer: number,
     teleportsLeft: number,
+    // remaining screen X positions where the entity will drop something, in flight order
+    dropTargets: number[],
     trail: TrailModel | null,
     overlay: AttachedSpriteModel | null
 }

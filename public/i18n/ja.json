@@ -52,6 +52,7 @@
         "GAME": "ゲーム",
         "DOWNLOADS": "ダウンロード",
         "GAME_PAUSE": "ポーズ",
+        "GAME_RESUME": "再開",
         "GAME_RESUME_HINT": "Pキーで再開",
         "GAME_OVER": "ゲームオーバー",
         "GAME_SCORE": "スコア：",

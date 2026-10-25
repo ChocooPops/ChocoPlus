@@ -4,7 +4,7 @@
 }
 <div class="entity" [class.collected]="entity.state === 'collected' && entity.kind !== 'gold'"
     [class.defeated]="entity.state === 'defeated'" [class.hit]="entity.hitCooldown > 0"
-    [class.glitch]="isGlitched(entity)" [class.teleporting]="isAboutToTeleport(entity)"
+    [class.glitch]="isGlitched(entity)" [class.teleporting]="isAboutToTeleport(entity)" [class.swinging]="isSwinging(entity)"
     [style.width.px]="entity.width" [style.height.px]="entity.height" [style.transform]="getTransform(entity)">
     @if(entity.trail; as trail) {
     <div class="trail" [class.flip]="entity.flipX" [style.left.px]="trail.x" [style.top.px]="trail.y"

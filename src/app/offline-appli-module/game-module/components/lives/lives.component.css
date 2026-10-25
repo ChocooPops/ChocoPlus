@@ -29,8 +29,12 @@
     gap: 12px;
     margin-top: 12px;
 
+    /* only the cat and its mug, without the rainbow */
     img {
+        width: 75px;
         height: 70px;
+        object-fit: cover;
+        object-position: right;
         image-rendering: pixelated;
     }
 

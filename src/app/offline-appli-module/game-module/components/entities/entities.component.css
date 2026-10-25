@@ -59,6 +59,12 @@
     animation: entity-glitch 0.9s steps(1, end) infinite;
 }
 
+/* falling bomb: swings around its fuse */
+.swinging .sprite {
+    transform-origin: 50% 20%;
+    animation: entity-swing 0.35s ease-in-out infinite alternate;
+}
+
 /* about to teleport: fast flicker */
 .teleporting:not(.defeated) .sprite {
     animation: entity-teleporting 0.08s steps(1, end) infinite;
@@ -147,6 +153,16 @@
 @keyframes entity-hit {
     to {
         opacity: 0.3;
+    }
+}
+
+@keyframes entity-swing {
+    from {
+        transform: rotate(-18deg);
+    }
+
+    to {
+        transform: rotate(18deg);
     }
 }
 

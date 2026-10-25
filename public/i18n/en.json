@@ -52,6 +52,7 @@
         "GAME": "Game",
         "DOWNLOADS": "Downloads",
         "GAME_PAUSE": "Pause",
+        "GAME_RESUME": "Resume",
         "GAME_RESUME_HINT": "Press P to resume",
         "GAME_OVER": "Game Over",
         "GAME_SCORE": "Score:",

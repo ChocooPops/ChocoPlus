@@ -37,19 +37,24 @@ export class EntityService {
   private readonly SAFE_DISTANCE: number = 300;
   // warning delay before an enemy coming from behind enters the screen
   private readonly FROM_BEHIND_WARNING_S: number = 1;
+  // drops: minimum spacing between two drop positions, and screen margin
+  private readonly DROP_MIN_GAP: number = 250;
+  private readonly DROP_SCREEN_MARGIN: number = 0.05;
+  // explosion.gif: horizontal / vertical centre and bottom of the blast, as fractions of the image
+  private readonly EXPLOSION_ANCHOR: { x: number, y: number, bottom: number } = { x: 0.5, y: 0.51, bottom: 1 };
   private readonly POINTS: Record<'gold' | 'angelBonus', number> = { gold: 1, angelBonus: 5 };
 
   // one template sprite per kind: preloads the image and gives the width/height ratio
   private templates: Record<EntityKind, SpriteObserver> = this.KINDS.reduce((templates, kind) => {
     const config: EntityConfig = ENTITY_CONFIGS[kind];
-    templates[kind] = new SpriteObserver(config.src, 0, 0, 0, config.speed, config.sourcePixelSize);
+    templates[kind] = new SpriteObserver(config.src, 0, 0, 0, config.speed, config.sourcePixelSize / (config.scale ?? 1));
     return templates;
   }, {} as Record<EntityKind, SpriteObserver>);
 
   private trailTemplates: Partial<Record<EntityKind, SpriteObserver>> = this.KINDS.reduce((templates, kind) => {
     const trail: TrailConfig | null = ENTITY_CONFIGS[kind].trail;
     if (trail) {
-      templates[kind] = new SpriteObserver(trail.src, 0, 0, 0, 0, trail.sourcePixelSize);
+      templates[kind] = new SpriteObserver(trail.src, 0, 0, 0, 0, trail.sourcePixelSize / (ENTITY_CONFIGS[kind].scale ?? 1));
     }
     return templates;
   }, {} as Partial<Record<EntityKind, SpriteObserver>>);
@@ -57,7 +62,7 @@ export class EntityService {
   private overlayTemplates: Partial<Record<EntityKind, SpriteObserver>> = this.KINDS.reduce((templates, kind) => {
     const overlay: OverlayConfig | null = ENTITY_CONFIGS[kind].overlay;
     if (overlay) {
-      templates[kind] = new SpriteObserver(overlay.src, 0, 0, 0, 0, overlay.sourcePixelSize);
+      templates[kind] = new SpriteObserver(overlay.src, 0, 0, 0, 0, overlay.sourcePixelSize / (ENTITY_CONFIGS[kind].scale ?? 1));
     }
     return templates;
   }, {} as Partial<Record<EntityKind, SpriteObserver>>);
@@ -125,13 +130,20 @@ export class EntityService {
     for (const entity of this.entities) {
       if (this.updateEntity(entity, deltaTime, groundY)) {
         if (entity.state === 'active') {
-          this.checkCollision(entity, characterHitbox);
+          this.checkCollision(entity, characterHitbox, groundY);
         }
         this.entities[writeIndex++] = entity;
       }
     }
     this.entities.length = writeIndex;
-    this.entities.push(...this.pendingEntities);
+    for (const entity of this.pendingEntities) {
+      // giant entities (and their huge trail) are drawn behind the others so they never hide them
+      if ((ENTITY_CONFIGS[entity.kind].scale ?? 1) > 1) {
+        this.entities.unshift(entity);
+      } else {
+        this.entities.push(entity);
+      }
+    }
     this.pendingEntities.length = 0;
   }
 
@@ -147,7 +159,7 @@ export class EntityService {
     for (const kind of this.KINDS) {
       const config: EntityConfig = ENTITY_CONFIGS[kind];
       this.spawnTimers[kind] -= deltaTime;
-      if (this.spawnTimers[kind] > 0 || !this.isKindLoaded(kind)) {
+      if (config.autoSpawn === false || this.spawnTimers[kind] > 0 || !this.isKindLoaded(kind)) {
         continue;
       }
       // pending enemies go from most to least overdue (queue),
@@ -179,10 +191,11 @@ export class EntityService {
     const config: EntityConfig = ENTITY_CONFIGS[kind];
     const width: number = this.templates[kind].getWidth();
     const height: number = this.templates[kind].getHeight();
+    const id: number = this.nextId++;
     return {
-      id: this.nextId++,
+      id,
       kind,
-      image: config.src,
+      image: config.uniqueImage ? `${config.src}?${id}` : config.src,
       flipX: config.flipX,
       x,
       y,
@@ -202,7 +215,8 @@ export class EntityService {
       hitCooldown: 0,
       emerge: config.emergeFromGround ? 0 : 1,
       teleportTimer: config.teleport ? randomBetween(config.teleport.interval) : 0,
-      teleportsLeft: config.teleport?.count ?? 0
+      teleportsLeft: config.teleport?.count ?? 0,
+      dropTargets: []
     };
   }
 
@@ -246,9 +260,12 @@ export class EntityService {
   private spawn(kind: EntityKind, groundY: number, difficulty: number): void {
     const config: EntityConfig = ENTITY_CONFIGS[kind];
     const height: number = this.templates[kind].getHeight();
-    const y: number = config.groundAnchor !== null
-      ? this.getGroundedY(config, height, groundY)
-      : groundY - randomBetween(config.spawnHeight) - height / 2;
+    let y: number = groundY - randomBetween(config.spawnHeight) - height / 2;
+    if (config.groundAnchor !== null) {
+      y = this.getGroundedY(config, height, groundY);
+    } else if (config.skyBand) {
+      y = randomBetween(config.skyBand) - height / 2;
+    }
     const entity: GameEntity = this.createEntity(kind, this.widthWindows, y);
     const speed: number = config.speed * (config.isEnemy ? 1 + (difficulty - 1) * 0.4 : 1);
     entity.vx = -(speed + (config.groundRelative ? this.plateformService.getGroundSpeed() : 0));
@@ -268,7 +285,73 @@ export class EntityService {
     if (config.emergeFromGround) {
       entity.y += height;
     }
+    if (config.drops) {
+      entity.dropTargets = this.pickDropTargets(entity, config, groundY);
+    }
     this.pendingEntities.push(entity);
+  }
+
+  // Picks random landing spots on screen (spaced by at least DROP_MIN_GAP), then converts them into
+  // drop positions: the dropped entity keeps the dropper's speed while falling, so it lands further on.
+  // Sorted in the order they will be flown over.
+  private pickDropTargets(entity: GameEntity, config: EntityConfig, groundY: number): number[] {
+    if (!config.drops) {
+      return [];
+    }
+    const droppedConfig: EntityConfig = ENTITY_CONFIGS[config.drops.kind];
+    const droppedHeight: number = this.templates[config.drops.kind].getHeight();
+    const landingY: number = droppedConfig.groundAnchor !== null
+      ? groundY - droppedHeight * droppedConfig.groundAnchor
+      : groundY - droppedHeight;
+    const fallDistance: number = Math.max(landingY - (entity.y + entity.height * config.drops.anchorY), 0);
+    const fallTime: number = Math.sqrt(2 * fallDistance / (droppedConfig.gravity ?? this.COIN_GRAVITY));
+    const drift: number = entity.vx * config.drops.inheritSpeed * fallTime;
+
+    // landing spots whose drop position is on screen
+    const margin: number = this.widthWindows * this.DROP_SCREEN_MARGIN;
+    const range: [number, number] = [
+      Math.max(margin, drift),
+      Math.min(this.widthWindows - margin, this.widthWindows + drift)
+    ];
+    const landings: number[] = [];
+    for (let tries = 0; landings.length < config.drops.count && tries < 50; tries++) {
+      const x: number = randomBetween(range);
+      if (landings.every((landing: number) => Math.abs(landing - x) >= this.DROP_MIN_GAP)) {
+        landings.push(x);
+      }
+    }
+    return landings
+      .map((landing: number) => landing - drift)
+      .sort((a: number, b: number) => entity.vx < 0 ? b - a : a - b);
+  }
+
+  private getDropAnchorX(entity: GameEntity, config: EntityConfig): number {
+    const anchorX: number = config.drops ? config.drops.anchorX : 0.5;
+    return entity.x + entity.width * (config.flipX ? 1 - anchorX : anchorX);
+  }
+
+  // Drops `drops.kind` from the anchor point: it falls keeping the dropper's horizontal speed
+  private dropFrom(entity: GameEntity, config: EntityConfig): void {
+    if (!config.drops) {
+      return;
+    }
+    const dropped: GameEntity = this.createEntity(config.drops.kind, 0, entity.y + entity.height * config.drops.anchorY);
+    dropped.x = this.getDropAnchorX(entity, config) - dropped.width / 2;
+    dropped.vx = entity.vx * config.drops.inheritSpeed;
+    dropped.falling = true;
+    this.pendingEntities.push(dropped);
+  }
+
+  // Replaces the entity by its explosion: on the ground if it has landed, centred on it otherwise
+  private explode(entity: GameEntity, kind: EntityKind, groundY: number): void {
+    const blast: GameEntity = this.createEntity(kind, 0, 0);
+    blast.x = entity.x + entity.width / 2 - blast.width * this.EXPLOSION_ANCHOR.x;
+    blast.y = entity.falling
+      ? entity.y + entity.height / 2 - blast.height * this.EXPLOSION_ANCHOR.y
+      : groundY - blast.height * this.EXPLOSION_ANCHOR.bottom;
+    blast.vx = -this.plateformService.getGroundSpeed();
+    this.pendingEntities.push(blast);
+    entity.state = 'removed';
   }
 
   // Coin that pops out of a position then falls back to the ground
@@ -326,6 +409,9 @@ export class EntityService {
     entity.age += deltaTime;
     entity.x += entity.vx * deltaTime;
 
+    if (entity.state === 'removed' || (config.lifetime !== undefined && entity.age >= config.lifetime)) {
+      return false;
+    }
     if (entity.state !== 'active') {
       entity.stateTime += deltaTime;
       return entity.stateTime < this.STATE_ANIMATION_DURATION_S;
@@ -339,7 +425,7 @@ export class EntityService {
       const landingY: number = config.groundAnchor !== null
         ? this.getGroundedY(config, entity.height, groundY)
         : groundY - entity.height;
-      entity.vy += (config.fallFromSky?.gravity ?? this.COIN_GRAVITY) * deltaTime;
+      entity.vy += (config.gravity ?? config.fallFromSky?.gravity ?? this.COIN_GRAVITY) * deltaTime;
       entity.y += entity.vy * deltaTime;
       if (entity.y >= landingY) {
         entity.y = landingY;
@@ -361,6 +447,20 @@ export class EntityService {
       entity.y = this.getGroundedY(config, entity.height, groundY) + (1 - entity.emerge) * entity.height;
     } else if (config.wave) {
       entity.y = entity.baseY + Math.sin(entity.age * config.wave.frequency) * config.wave.amplitude;
+    }
+
+    if (config.explodeInto && !entity.falling) {
+      this.explode(entity, config.explodeInto, groundY);
+      return false;
+    }
+
+    if (entity.dropTargets.length > 0) {
+      const anchorX: number = this.getDropAnchorX(entity, config);
+      const target: number = entity.dropTargets[0];
+      if (entity.vx < 0 ? anchorX <= target : anchorX >= target) {
+        entity.dropTargets.shift();
+        this.dropFrom(entity, config);
+      }
     }
 
     if (config.teleport && entity.teleportsLeft > 0 && !entity.falling) {
@@ -394,8 +494,12 @@ export class EntityService {
     return entity.x + right > 0;
   }
 
-  private checkCollision(entity: GameEntity, characterHitbox: RectModel): void {
+  private checkCollision(entity: GameEntity, characterHitbox: RectModel, groundY: number): void {
     const config: EntityConfig = ENTITY_CONFIGS[entity.kind];
+    // dropped coins can only be collected once they have landed
+    if (entity.kind === 'gold' && entity.falling) {
+      return;
+    }
     const entityHitbox: RectModel = getHitboxRect(entity, config.hitbox, entity.flipX);
     if (entity.hitCooldown > 0 || !intersects(characterHitbox, entityHitbox)) {
       return;
@@ -421,7 +525,10 @@ export class EntityService {
         this.setCollected(entity);
         break;
       default:
-        if (config.stomp && this.isStomp(characterHitbox, entityHitbox)) {
+        if (config.explodeInto) {
+          this.gameStateService.hurt();
+          this.explode(entity, config.explodeInto, groundY);
+        } else if (config.stomp && this.isStomp(characterHitbox, entityHitbox, config.stomp.tolerance ?? this.STOMP_TOLERANCE)) {
           this.stompEnemy(entity, config);
         } else if (config.isEnemy) {
           this.gameStateService.hurt();
@@ -448,10 +555,10 @@ export class EntityService {
     entity.stateTime = 0;
   }
 
-  private isStomp(characterHitbox: RectModel, enemyHitbox: RectModel): boolean {
+  private isStomp(characterHitbox: RectModel, enemyHitbox: RectModel, tolerance: number): boolean {
     const characterBottom: number = characterHitbox.y + characterHitbox.height;
     return (this.characterFalling || this.stompGraceTimer > 0) &&
-      characterBottom <= enemyHitbox.y + enemyHitbox.height * this.STOMP_TOLERANCE;
+      characterBottom <= enemyHitbox.y + enemyHitbox.height * tolerance;
   }
 
   private setCollected(entity: GameEntity): void {
