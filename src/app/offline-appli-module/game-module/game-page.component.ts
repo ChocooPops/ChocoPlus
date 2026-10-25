@@ -11,6 +11,7 @@ import { EntitiesComponent } from './components/entities/entities.component';
 import { ScoreComponent } from './components/score/score.component';
 import { LivesComponent } from './components/lives/lives.component';
 import { GameOverlayComponent } from './components/game-overlay/game-overlay.component';
+import { SpriteSelectionComponent } from './components/sprite-selection/sprite-selection.component';
 import { PlateformService } from './services/plateform/plateform.service';
 import { CharacterService } from './services/character/character.service';
 import { EntityService } from './services/entity/entity.service';
@@ -22,7 +23,7 @@ import { MenuTabService } from '../../main-appli-module/menu-module/service/menu
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [TranslatePipe, StarsComponent, ScoreComponent, LivesComponent, GameOverlayComponent, TreeComponent, EntitiesComponent, PlateformComponent, SkyComponent, CloudComponent, CharacterComponent],
+  imports: [TranslatePipe, StarsComponent, ScoreComponent, LivesComponent, GameOverlayComponent, SpriteSelectionComponent, TreeComponent, EntitiesComponent, PlateformComponent, SkyComponent, CloudComponent, CharacterComponent],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.css'
 })
@@ -30,6 +31,9 @@ export class GamePageComponent implements OnInit, OnDestroy {
 
   public readonly cloudIndexes: number[] = [0, 1, 2, 3, 4];
   public status: GameStatus = 'playing';
+  public spriteSelectionOpen: boolean = false;
+  // the game is resumed on closing only if the panel paused it
+  private pausedBySpriteSelection: boolean = false;
 
   private subscription: Subscription = new Subscription();
 
@@ -72,6 +76,21 @@ export class GamePageComponent implements OnInit, OnDestroy {
     this.gameStateService.togglePause();
   }
 
+  public onOpenSpriteSelection(): void {
+    this.characterService.releaseKeys();
+    this.pausedBySpriteSelection = this.gameStateService.isPlaying();
+    this.gameStateService.pause();
+    this.spriteSelectionOpen = true;
+  }
+
+  public onCloseSpriteSelection(): void {
+    this.spriteSelectionOpen = false;
+    if (this.pausedBySpriteSelection) {
+      this.gameStateService.resume();
+    }
+    this.pausedBySpriteSelection = false;
+  }
+
   @HostListener('window:blur')
   onBlur(): void {
     this.characterService.releaseKeys();
@@ -82,6 +101,13 @@ export class GamePageComponent implements OnInit, OnDestroy {
   onKeyDown(event: KeyboardEvent): void {
     // Alt + arrows is reserved for the app navigation
     if (event.altKey) {
+      return;
+    }
+    // the sprite panel takes the keyboard: only Escape (close) does something
+    if (this.spriteSelectionOpen) {
+      if (event.key === 'Escape' && !event.repeat) {
+        this.onCloseSpriteSelection();
+      }
       return;
     }
     if (this.gameStateService.isGameOver()) {
@@ -105,12 +131,17 @@ export class GamePageComponent implements OnInit, OnDestroy {
         event.preventDefault();
         this.characterService.setKeyJump(true);
         break;
-      case 'p':
-      case 'P':
       case 'Pause':
       case 'Escape':
         if (!event.repeat) {
-          this.onTogglePause();
+          this.characterService.releaseKeys();
+          this.gameStateService.pause();
+        }
+        break;
+      // only Enter resumes a paused game
+      case 'Enter':
+        if (!event.repeat) {
+          this.gameStateService.resume();
         }
         break;
     }

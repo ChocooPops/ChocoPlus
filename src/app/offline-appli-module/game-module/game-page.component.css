@@ -7,12 +7,17 @@
     overflow: hidden;
 }
 
-/* above the pause overlay so it can also resume the game */
-.pause-button {
+/* above the pause overlay so the buttons stay usable while paused */
+.top-buttons {
     position: absolute;
     top: 50px;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+}
+
+.game-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -32,10 +37,10 @@
     }
 }
 
-.pause-button:hover {
+.game-button:hover {
     background-color: rgba(255, 222, 54, 0.25);
 }
 
-.pause-button:active {
-    transform: translateX(-50%) scale(0.92);
+.game-button:active {
+    transform: scale(0.92);
 }

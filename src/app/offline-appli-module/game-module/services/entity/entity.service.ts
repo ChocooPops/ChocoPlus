@@ -6,9 +6,10 @@ import { PlateformService } from '../plateform/plateform.service';
 import { ScoreService } from '../score/score.service';
 import { GameStateService } from '../game-state/game-state.service';
 import { AttachedSpriteModel, EntityKind, GameEntity, RectModel, TrailModel } from '../../models/game-entity.interface';
-import { ENTITY_CONFIGS, EntityConfig, GOLD_COLLECTED_SRC, OverlayConfig, TrailConfig } from '../../models/entity-config';
+import { ENTITY_CONFIGS, EntityConfig, GOLD_COLLECTED_SRC, OverlayConfig, TrailConfig, WARNING_SRC } from '../../models/entity-config';
 import { getHitboxRect, intersects, randomBetween } from '../../models/collision';
 import { SkyService } from '../sky/sky.service';
+import { SpriteSelectionService } from '../sprite-selection/sprite-selection.service';
 import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 
 @Injectable({
@@ -87,9 +88,14 @@ export class EntityService {
     private readonly scoreService: ScoreService,
     private readonly gameStateService: GameStateService,
     private readonly imagePreloaderService: ImagePreloaderService,
-    private readonly skyService: SkyService
+    private readonly skyService: SkyService,
+    private readonly spriteSelectionService: SpriteSelectionService
   ) {
-    this.collectedImageLoad$ = from(this.imagePreloaderService.preloadImages([GOLD_COLLECTED_SRC]).then(() => true));
+    // shown when a coin is collected, the coming-from-behind warning and the previews of the sprite selection panel
+    const extraImages: string[] = [GOLD_COLLECTED_SRC, WARNING_SRC, ...this.KINDS
+      .map((kind: EntityKind) => ENTITY_CONFIGS[kind].previewSrc)
+      .filter((src: string | undefined): src is string => !!src)];
+    this.collectedImageLoad$ = from(this.imagePreloaderService.preloadImages(extraImages).then(() => true));
     this.reset();
   }
 
@@ -165,35 +171,56 @@ export class EntityService {
   private updateSpawns(deltaTime: number, groundY: number): void {
     const difficulty: number = this.getDifficulty();
     const elapsed: number = this.gameStateService.getElapsedTime();
-    let dueEnemy: EntityKind | null = null;
+    let nextEnemy: EntityKind | null = null;
     for (const kind of this.KINDS) {
       const config: EntityConfig = ENTITY_CONFIGS[kind];
       this.spawnTimers[kind] -= deltaTime;
-      if (config.autoSpawn === false || this.spawnTimers[kind] > 0 || !this.isKindLoaded(kind)) {
+      if (config.autoSpawn === false || !this.isKindLoaded(kind) || !this.spriteSelectionService.isEnabled(kind)) {
         continue;
       }
-      // a shooter that fires until defeated stays on screen: never two of them at the same spot
-      if (config.shooter && config.shooter.shots === undefined && this.isKindActive(kind)) {
-        this.spawnTimers[kind] = this.MIN_ENEMY_GAP_S;
-        continue;
-      }
-      // pending enemies go from most to least overdue (queue),
+      // enemies wait for a slot; among those that can spawn, the most overdue goes first (queue),
       // otherwise the first in the list would always take the slot and the last ones would almost never appear
       if (config.isEnemy) {
-        if (dueEnemy === null || this.spawnTimers[kind] < this.spawnTimers[dueEnemy]) {
-          dueEnemy = kind;
+        if (this.canEnemySpawn(kind) && (nextEnemy === null || this.spawnTimers[kind] < this.spawnTimers[nextEnemy])) {
+          nextEnemy = kind;
         }
         continue;
       }
-      this.spawn(kind, groundY, difficulty);
-      this.spawnTimers[kind] = randomBetween(config.spawnInterval);
+      if (this.spawnTimers[kind] <= 0) {
+        this.spawn(kind, groundY, difficulty);
+        this.spawnTimers[kind] = randomBetween(config.spawnInterval);
+      }
     }
-    // two enemies too close together would make the passage impossible
-    if (dueEnemy !== null && elapsed - this.lastEnemySpawn >= this.MIN_ENEMY_GAP_S) {
-      this.spawn(dueEnemy, groundY, difficulty);
+    // two enemies too close together would make the passage impossible: one enemy per MIN_ENEMY_GAP_S at most.
+    // The slot is always filled once the game has started, even if no enemy is due yet, so that with only a few
+    // sprites selected there are still as many enemies as the gap allows
+    const slotFree: boolean = elapsed - this.lastEnemySpawn >= this.MIN_ENEMY_GAP_S;
+    if (nextEnemy !== null && slotFree && (this.spawnTimers[nextEnemy] <= 0 || elapsed >= this.FIRST_ENEMY_DELAY_S)) {
+      this.spawn(nextEnemy, groundY, difficulty);
       this.lastEnemySpawn = elapsed;
-      this.spawnTimers[dueEnemy] = randomBetween(ENTITY_CONFIGS[dueEnemy].spawnInterval) / difficulty;
+      this.spawnTimers[nextEnemy] = randomBetween(ENTITY_CONFIGS[nextEnemy].spawnInterval) / difficulty;
     }
+  }
+
+  private canEnemySpawn(kind: EntityKind): boolean {
+    const config: EntityConfig = ENTITY_CONFIGS[kind];
+    // a shooter that fires until defeated stays on screen: never two of them at the same spot
+    if (config.shooter && config.shooter.shots === undefined && this.isKindActive(kind)) {
+      return false;
+    }
+    return this.isSpawnAreaFree(kind);
+  }
+
+  // The previous entity of the same kind must have left its entry point, or they would be stacked
+  private isSpawnAreaFree(kind: EntityKind): boolean {
+    const config: EntityConfig = ENTITY_CONFIGS[kind];
+    if (config.fallFromSky) {
+      return true;
+    }
+    return ![...this.entities, ...this.pendingEntities].some((entity: GameEntity) =>
+      entity.kind === kind && entity.state === 'active' &&
+      (config.fromBehind ? entity.x < 0 : entity.x + entity.width > this.widthWindows)
+    );
   }
 
   private isKindActive(kind: EntityKind): boolean {

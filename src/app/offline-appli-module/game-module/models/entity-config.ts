@@ -2,6 +2,8 @@ import { EntityKind, HitboxModel } from "./game-entity.interface";
 
 export interface EntityConfig {
     src: string,
+    // image shown in the sprite selection panel instead of `src`
+    previewSrc?: string,
     // source image pixels per art pixel (final size: see GAME_PIXEL_SIZE)
     sourcePixelSize: number,
     // px/s towards the left; if groundRelative, added to the ground speed
@@ -87,6 +89,9 @@ export interface OverlayConfig {
 }
 
 export const GOLD_COLLECTED_SRC: string = 'game/gold-touch.gif';
+
+// shown on the left edge while an enemy is about to come from behind
+export const WARNING_SRC: string = 'game/warning.png';
 
 // bullet pointing left: red tip, brass case, black outline
 export const BULLET_SRC: string = 'data:image/svg+xml;utf8,' + encodeURIComponent(
@@ -319,6 +324,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
     // flies in the sky and bombs the ground; harmless, reachable with a super bounce (off the troll on tall screens)
     usa: {
         src: 'game/usa.gif',
+        previewSrc: 'game/usa-setting.gif',
         sourcePixelSize: 48 / 22,
         speed: 450,
         groundRelative: false,

@@ -1,0 +1,21 @@
+<!-- mousedown preventDefault keeps focus off the buttons, so Space still jumps once the panel is closed -->
+<div class="container-selection" (mousedown)="$event.preventDefault()">
+    <div class="panel">
+        <p class="title">{{ 'OFFLINE.GAME_SPRITES' | translate }}</p>
+        <p class="hint">{{ 'OFFLINE.GAME_SPRITES_HINT' | translate }}</p>
+        <div class="grid">
+            @for(kind of kinds; track kind) {
+            <button class="card" tabindex="-1" [class.enemy]="isDangerous(kind)" [class.disabled]="disabled.has(kind)"
+                (click)="onToggle(kind)">
+                <img [src]="getImage(kind)" [alt]="getName(kind)">
+                <span>{{ getName(kind) }}</span>
+            </button>
+            }
+        </div>
+        <div class="actions">
+            <button tabindex="-1" (click)="onSetAll(true)">{{ 'OFFLINE.GAME_SPRITES_ALL' | translate }}</button>
+            <button tabindex="-1" (click)="onSetAll(false)">{{ 'OFFLINE.GAME_SPRITES_NONE' | translate }}</button>
+            <button tabindex="-1" class="close" (click)="onClose()">{{ 'OFFLINE.GAME_SPRITES_CLOSE' | translate }}</button>
+        </div>
+    </div>
+</div>

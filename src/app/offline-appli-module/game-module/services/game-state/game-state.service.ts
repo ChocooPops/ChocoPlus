@@ -128,6 +128,12 @@ export class GameStateService {
     }
   }
 
+  public resume(): void {
+    if (this.statusSubject.value === 'paused') {
+      this.statusSubject.next('playing');
+    }
+  }
+
   public togglePause(): void {
     if (this.statusSubject.value === 'paused') {
       this.statusSubject.next('playing');

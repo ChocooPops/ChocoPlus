@@ -14,21 +14,36 @@
     <app-lives></app-lives>
     <app-score></app-score>
     <app-game-overlay></app-game-overlay>
-    @if(status !== 'gameover') {
-    <!-- mousedown preventDefault keeps focus off the button, so Space still jumps instead of clicking it -->
-    <button class="pause-button" tabindex="-1" (mousedown)="$event.preventDefault()" (click)="onTogglePause()"
-        [attr.aria-label]="(status === 'paused' ? 'OFFLINE.GAME_RESUME' : 'OFFLINE.GAME_PAUSE') | translate"
-        [title]="((status === 'paused' ? 'OFFLINE.GAME_RESUME' : 'OFFLINE.GAME_PAUSE') | translate) + ' (P)'">
-        @if(status === 'paused') {
-        <svg viewBox="0 0 6 7" shape-rendering="crispEdges">
-            <path d="M0 0h2v1h1v1h1v1h1v1H4v1H3v1H2v1H0z" />
-        </svg>
-        } @else {
-        <svg viewBox="0 0 6 7" shape-rendering="crispEdges">
-            <rect x="0" y="0" width="2" height="7" />
-            <rect x="4" y="0" width="2" height="7" />
-        </svg>
+    <!-- mousedown preventDefault keeps focus off the buttons, so Space still jumps instead of clicking them -->
+    <div class="top-buttons">
+        <button class="game-button" tabindex="-1" (mousedown)="$event.preventDefault()"
+            (click)="onOpenSpriteSelection()" [attr.aria-label]="'OFFLINE.GAME_SPRITES' | translate"
+            [title]="'OFFLINE.GAME_SPRITES' | translate">
+            <svg viewBox="0 0 7 7" shape-rendering="crispEdges">
+                <rect x="0" y="0" width="3" height="3" />
+                <rect x="4" y="0" width="3" height="3" />
+                <rect x="0" y="4" width="3" height="3" />
+                <rect x="4" y="4" width="3" height="3" />
+            </svg>
+        </button>
+        @if(status !== 'gameover') {
+        <button class="game-button" tabindex="-1" (mousedown)="$event.preventDefault()" (click)="onTogglePause()"
+            [attr.aria-label]="(status === 'paused' ? 'OFFLINE.GAME_RESUME' : 'OFFLINE.GAME_PAUSE') | translate"
+            [title]="status === 'paused' ? ('OFFLINE.GAME_RESUME' | translate) + ' (Enter)' : ('OFFLINE.GAME_PAUSE' | translate) + ' (Esc)'">
+            @if(status === 'paused') {
+            <svg viewBox="0 0 6 7" shape-rendering="crispEdges">
+                <path d="M0 0h2v1h1v1h1v1h1v1H4v1H3v1H2v1H0z" />
+            </svg>
+            } @else {
+            <svg viewBox="0 0 6 7" shape-rendering="crispEdges">
+                <rect x="0" y="0" width="2" height="7" />
+                <rect x="4" y="0" width="2" height="7" />
+            </svg>
+            }
+        </button>
         }
-    </button>
+    </div>
+    @if(spriteSelectionOpen) {
+    <app-sprite-selection (closed)="onCloseSpriteSelection()"></app-sprite-selection>
     }
 </div>

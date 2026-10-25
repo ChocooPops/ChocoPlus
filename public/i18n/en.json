@@ -53,11 +53,16 @@
         "DOWNLOADS": "Downloads",
         "GAME_PAUSE": "Pause",
         "GAME_RESUME": "Resume",
-        "GAME_RESUME_HINT": "Press P to resume",
+        "GAME_RESUME_HINT": "Press Enter to resume",
         "GAME_OVER": "Game Over",
         "GAME_SCORE": "Score:",
         "GAME_BEST_SCORE": "Best score:",
         "GAME_KILLS": "Enemies defeated:",
+        "GAME_SPRITES": "Sprites",
+        "GAME_SPRITES_HINT": "Click a sprite to enable or disable it",
+        "GAME_SPRITES_ALL": "Enable all",
+        "GAME_SPRITES_NONE": "Disable all",
+        "GAME_SPRITES_CLOSE": "Close",
         "GAME_RESTART_HINT": "Press Enter to play again"
     },
     "MENU": {

@@ -53,11 +53,16 @@
         "DOWNLOADS": "Téléchargements",
         "GAME_PAUSE": "Pause",
         "GAME_RESUME": "Reprendre",
-        "GAME_RESUME_HINT": "Appuie sur P pour reprendre",
+        "GAME_RESUME_HINT": "Appuie sur Entree pour reprendre",
         "GAME_OVER": "Game Over",
         "GAME_SCORE": "Score :",
         "GAME_BEST_SCORE": "Meilleur score :",
         "GAME_KILLS": "Ennemis elimines :",
+        "GAME_SPRITES": "Sprites",
+        "GAME_SPRITES_HINT": "Clique sur un sprite pour l'activer ou le désactiver",
+        "GAME_SPRITES_ALL": "Tout activer",
+        "GAME_SPRITES_NONE": "Tout désactiver",
+        "GAME_SPRITES_CLOSE": "Fermer",
         "GAME_RESTART_HINT": "Appuie sur Entree pour rejouer"
     },
     "MENU": {

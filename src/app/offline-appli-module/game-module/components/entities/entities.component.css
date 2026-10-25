@@ -79,11 +79,9 @@
 .incoming {
     position: absolute;
     left: 20px;
-    margin: 0;
+    height: 110px;
     transform: translateY(-50%);
-    font-family: "wendy";
-    font-size: 110px;
-    color: #FF4D6D;
+    image-rendering: pixelated;
     animation: entity-hit 0.2s steps(2, jump-none) infinite;
 }
 

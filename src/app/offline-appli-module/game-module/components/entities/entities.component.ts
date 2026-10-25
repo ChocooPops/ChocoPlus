@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { EntityService } from '../../services/entity/entity.service';
 import { GameEntity } from '../../models/game-entity.interface';
-import { ENTITY_CONFIGS } from '../../models/entity-config';
+import { ENTITY_CONFIGS, WARNING_SRC } from '../../models/entity-config';
 
 @Component({
   selector: 'app-entities',
@@ -15,6 +15,8 @@ export class EntitiesComponent {
   // 'world' = entities drawn behind the character, 'effects' = pickup effects drawn in front of it,
   // 'foreground' = entities configured to be drawn in front of the platform
   @Input() layer: 'world' | 'effects' | 'foreground' = 'world';
+
+  public readonly warningSrc: string = WARNING_SRC;
 
   // array mutated in place by the game loop: no subscription needed
   public readonly entities: GameEntity[];

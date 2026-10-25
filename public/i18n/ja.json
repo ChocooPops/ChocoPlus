@@ -53,11 +53,16 @@
         "DOWNLOADS": "ダウンロード",
         "GAME_PAUSE": "ポーズ",
         "GAME_RESUME": "再開",
-        "GAME_RESUME_HINT": "Pキーで再開",
+        "GAME_RESUME_HINT": "Enterキーで再開",
         "GAME_OVER": "ゲームオーバー",
         "GAME_SCORE": "スコア：",
         "GAME_BEST_SCORE": "ベストスコア：",
         "GAME_KILLS": "倒した敵：",
+        "GAME_SPRITES": "スプライト",
+        "GAME_SPRITES_HINT": "クリックでスプライトをオン／オフ",
+        "GAME_SPRITES_ALL": "すべてオン",
+        "GAME_SPRITES_NONE": "すべてオフ",
+        "GAME_SPRITES_CLOSE": "閉じる",
         "GAME_RESTART_HINT": "Enterキーでもう一度プレイ"
     },
     "MENU": {

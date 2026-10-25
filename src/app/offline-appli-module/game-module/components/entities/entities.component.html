@@ -1,7 +1,7 @@
 @for(entity of entities; track entity.id) {
 @if(isInLayer(entity)) {
 @if(isIncomingFromBehind(entity)) {
-<p class="incoming" [style.top.px]="entity.y + entity.height / 2">!</p>
+<img class="incoming" [src]="warningSrc" [style.top.px]="entity.y + entity.height / 2">
 }
 <div class="entity" [class.collected]="entity.state === 'collected' && entity.kind !== 'gold'"
     [class.defeated]="entity.state === 'defeated'" [class.hit]="entity.hitCooldown > 0"
