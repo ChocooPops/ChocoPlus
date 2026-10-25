@@ -730,6 +730,12 @@ namespace ChocoPlayer
         // ══════════════════════════════════════════════════════════════════════
         private void ClickOverlay_MouseDown(object? sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Right)
+            {
+                ShowTrackSettingsMenuAtCursor(e.Location);
+                return;
+            }
+
             if (e.Button != MouseButtons.Left || _mediaPlayer == null) return;
 
             if (_windowWasInactive)
@@ -780,6 +786,19 @@ namespace ChocoPlayer
                 _mediaPlayer.Play();
                 _playerControls?.SetPlaying(true);
             }
+        }
+
+        private void ShowTrackSettingsMenuAtCursor(Point overlayLocation)
+        {
+            if (_trackSettingsMenu == null) return;
+
+            _seasonsMenu?.Hide();
+
+            int   titleBarHeight = _isMiniMode ? _miniPlayerButton!.GetTitleBarHeight() : 0;
+            Point formLocation   = this.PointToClient(_clickOverlay!.PointToScreen(overlayLocation));
+
+            _trackSettingsMenu.ShowAt(formLocation, this.ClientSize.Width, this.ClientSize.Height, titleBarHeight);
+            ShowControls();
         }
 
         // ══════════════════════════════════════════════════════════════════════

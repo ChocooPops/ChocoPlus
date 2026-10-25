@@ -69,13 +69,37 @@ namespace ChocoPlayer
             }
         }
 
+        public void ShowAt(Point cursor, int windowWidth, int windowHeight, int topReserved = 0)
+        {
+            var (menuW, menuH) = GetMenuSize(windowWidth);
+            menuW = Math.Min(menuW, windowWidth);
+            menuH = Math.Min(menuH, Math.Max(80, windowHeight - topReserved));
+
+            int x = cursor.X + menuW <= windowWidth  ? cursor.X : cursor.X - menuW;
+            int y = cursor.Y + menuH <= windowHeight ? cursor.Y : cursor.Y - menuH;
+            x = Math.Clamp(x, 0, Math.Max(0, windowWidth - menuW));
+            y = Math.Clamp(y, topReserved, Math.Max(topReserved, windowHeight - menuH));
+
+            this.SetBounds(x, y, menuW, menuH);
+
+            this.Visible          = true;
+            _audioScrollOffset    = 0;
+            _subtitleScrollOffset = 0;
+            this.BringToFront();
+            RefreshImmediate();
+        }
+
+        private (int Width, int Height) GetMenuSize(int windowWidth)
+        {
+            if (windowWidth >= 1400)      { _sizeLevel = 3; return (MENU_WIDTH, MENU_HEIGHT); }
+            else if (windowWidth >= 1000) { _sizeLevel = 2; return (640, 520); }
+            else if (windowWidth >= 500)  { _sizeLevel = 1; return (500, 440); }
+            else                          { _sizeLevel = 0; return (380, 300); }
+        }
+
         public void SetPosition(int buttonX, int buttonY, bool isFullScreen, int windowWidth, int windowHeight, int topReserved = 0)
         {
-            int menuW, menuH;
-            if (windowWidth >= 1400)      { menuW = MENU_WIDTH; menuH = MENU_HEIGHT; _sizeLevel = 3; }
-            else if (windowWidth >= 1000) { menuW = 640;        menuH = 520;         _sizeLevel = 2; }
-            else if (windowWidth >= 500)  { menuW = 500;        menuH = 440;         _sizeLevel = 1; }
-            else                          { menuW = 380;        menuH = 300;         _sizeLevel = 0; }
+            var (menuW, menuH) = GetMenuSize(windowWidth);
 
             int gap = Math.Clamp((buttonY - topReserved) / 35, 4, 20);
             menuH = Math.Min(menuH, Math.Max(80, buttonY - topReserved - gap));
