@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+export const STARS_SRC: string = 'game/stars.gif';
+
 @Component({
   selector: 'app-stars',
   standalone: true,
@@ -9,6 +11,6 @@ import { Component } from '@angular/core';
 })
 export class StarsComponent {
 
-  srcImageStars: string = 'game/stars.gif';
+  srcImageStars: string = STARS_SRC;
 
 }

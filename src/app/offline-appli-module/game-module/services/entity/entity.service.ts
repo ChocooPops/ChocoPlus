@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, from, map, Observable } from 'rxjs';
 import { SpriteObserver } from '../sprite-observer.service';
 import { CharacterService } from '../character/character.service';
 import { PlateformService } from '../plateform/plateform.service';
@@ -8,6 +8,7 @@ import { GameStateService } from '../game-state/game-state.service';
 import { AttachedSpriteModel, EntityKind, GameEntity, RectModel, TrailModel } from '../../models/game-entity.interface';
 import { ENTITY_CONFIGS, EntityConfig, GOLD_COLLECTED_SRC, OverlayConfig, TrailConfig } from '../../models/entity-config';
 import { getHitboxRect, intersects, randomBetween } from '../../models/collision';
+import { ImagePreloaderService } from '../../../../common-module/services/image-preloader/image-preloader.service';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,9 @@ export class EntityService {
     return templates;
   }, {} as Partial<Record<EntityKind, SpriteObserver>>);
 
+  // shown when a coin is collected: not a template, preloaded on its own
+  private collectedImageLoad$: Observable<boolean>;
+
   private entities: GameEntity[] = [];
   private pendingEntities: GameEntity[] = [];
   private spawnTimers: Record<EntityKind, number> = {} as Record<EntityKind, number>;
@@ -80,9 +84,10 @@ export class EntityService {
   constructor(private readonly characterService: CharacterService,
     private readonly plateformService: PlateformService,
     private readonly scoreService: ScoreService,
-    private readonly gameStateService: GameStateService
+    private readonly gameStateService: GameStateService,
+    private readonly imagePreloaderService: ImagePreloaderService
   ) {
-    this.templates.gold.getImageDimensions(GOLD_COLLECTED_SRC);
+    this.collectedImageLoad$ = from(this.imagePreloaderService.preloadImages([GOLD_COLLECTED_SRC]).then(() => true));
     this.reset();
   }
 
@@ -96,7 +101,10 @@ export class EntityService {
       ...Object.values(this.trailTemplates),
       ...Object.values(this.overlayTemplates)
     ];
-    return combineLatest(sprites.map((sprite: SpriteObserver) => sprite.getSpriteIsLoad())).pipe(
+    return combineLatest([
+      ...sprites.map((sprite: SpriteObserver) => sprite.getSpriteIsLoad()),
+      this.collectedImageLoad$
+    ]).pipe(
       map((states: boolean[]) => states.every(Boolean))
     );
   }

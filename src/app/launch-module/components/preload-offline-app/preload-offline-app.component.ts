@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, combineLatest, delay, filter, map, Observable, of, Subscription, switchMap, take, timeout } from 'rxjs';
+import { catchError, combineLatest, delay, filter, from, map, Observable, of, Subscription, switchMap, take, timeout } from 'rxjs';
 import { CharacterService } from '../../../offline-appli-module/game-module/services/character/character.service';
 import { CloudService } from '../../../offline-appli-module/game-module/services/cloud/cloud.service';
 import { EntityService } from '../../../offline-appli-module/game-module/services/entity/entity.service';
 import { PlateformService } from '../../../offline-appli-module/game-module/services/plateform/plateform.service';
 import { SkyService } from '../../../offline-appli-module/game-module/services/sky/sky.service';
 import { TreeService } from '../../../offline-appli-module/game-module/services/tree/tree.service';
+import { STARS_SRC } from '../../../offline-appli-module/game-module/components/stars/stars.component';
+import { ImagePreloaderService } from '../../../common-module/services/image-preloader/image-preloader.service';
 import { DownloadService } from '../../../main-appli-module/media-module/services/download/download.service';
 import { ButtonFormComponent } from '../button-form/button-form.component';
 import { TypeButtonModel } from '../../models/type-button.model';
@@ -44,7 +46,8 @@ export class PreloadOfflineAppComponent {
     private readonly plateformService: PlateformService,
     private readonly skyService: SkyService,
     private readonly treeService: TreeService,
-    private readonly downloadService: DownloadService
+    private readonly downloadService: DownloadService,
+    private readonly imagePreloaderService: ImagePreloaderService
   ) { }
 
   ngOnDestroy(): void {
@@ -95,7 +98,8 @@ export class PreloadOfflineAppComponent {
       this.plateformService.getPlateform().getSpriteIsLoad(),
       this.skyService.getSky().getSpriteIsLoad(),
       this.treeService.getYellowTreeSprite().getSpriteIsLoad(),
-      this.treeService.getBlueTreeSprite().getSpriteIsLoad()
+      this.treeService.getBlueTreeSprite().getSpriteIsLoad(),
+      from(this.imagePreloaderService.preloadImages([STARS_SRC]).then(() => true))
     ]).pipe(
       filter((states: boolean[]) => states.every(Boolean)),
       take(1),
