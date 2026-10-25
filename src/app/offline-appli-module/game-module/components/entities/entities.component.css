@@ -65,6 +65,11 @@
     animation: entity-swing 0.35s ease-in-out infinite alternate;
 }
 
+/* about to shoot: quick recoil flicker */
+.aiming:not(.defeated) .sprite {
+    animation: entity-hit 0.1s steps(2, jump-none) infinite;
+}
+
 /* about to teleport: fast flicker */
 .teleporting:not(.defeated) .sprite {
     animation: entity-teleporting 0.08s steps(1, end) infinite;

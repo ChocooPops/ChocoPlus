@@ -43,6 +43,11 @@ export class EntitiesComponent {
     return !!teleport && entity.teleportsLeft > 0 && !entity.falling && entity.teleportTimer < teleport.warning;
   }
 
+  public isAboutToShoot(entity: GameEntity): boolean {
+    const shooter = ENTITY_CONFIGS[entity.kind].shooter;
+    return !!shooter && entity.shotsLeft > 0 && entity.vx === 0 && entity.shotTimer < shooter.warning;
+  }
+
   public isSwinging(entity: GameEntity): boolean {
     return ENTITY_CONFIGS[entity.kind].swingWhileFalling === true && entity.falling;
   }

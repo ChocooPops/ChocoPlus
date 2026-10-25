@@ -21,7 +21,7 @@ export class EntityService {
   private readonly STATE_ANIMATION_DURATION_S: number = 0.48;
   private readonly POWERUP_DROP_INTERVAL_S: number = 0.9;
   private readonly POWERUP_BURST_COINS: number = 6;
-  private readonly MIN_ENEMY_GAP_S: number = 1.2;
+  private readonly MIN_ENEMY_GAP_S: number = 1;
   private readonly FIRST_ENEMY_DELAY_S: number = 3;
   // top part of the enemy you can bounce on
   private readonly STOMP_TOLERANCE: number = 0.45;
@@ -172,6 +172,11 @@ export class EntityService {
       if (config.autoSpawn === false || this.spawnTimers[kind] > 0 || !this.isKindLoaded(kind)) {
         continue;
       }
+      // a shooter that fires until defeated stays on screen: never two of them at the same spot
+      if (config.shooter && config.shooter.shots === undefined && this.isKindActive(kind)) {
+        this.spawnTimers[kind] = this.MIN_ENEMY_GAP_S;
+        continue;
+      }
       // pending enemies go from most to least overdue (queue),
       // otherwise the first in the list would always take the slot and the last ones would almost never appear
       if (config.isEnemy) {
@@ -189,6 +194,10 @@ export class EntityService {
       this.lastEnemySpawn = elapsed;
       this.spawnTimers[dueEnemy] = randomBetween(ENTITY_CONFIGS[dueEnemy].spawnInterval) / difficulty;
     }
+  }
+
+  private isKindActive(kind: EntityKind): boolean {
+    return this.entities.some((entity: GameEntity) => entity.kind === kind && entity.state === 'active');
   }
 
   private isKindLoaded(kind: EntityKind): boolean {
@@ -226,7 +235,12 @@ export class EntityService {
       emerge: config.emergeFromGround ? 0 : 1,
       teleportTimer: config.teleport ? randomBetween(config.teleport.interval) : 0,
       teleportsLeft: config.teleport?.count ?? 0,
-      dropTargets: []
+      dropTargets: [],
+      shotsLeft: config.shooter ? config.shooter.shots ?? Infinity : 0,
+      shotsFired: 0,
+      shotTimer: 0,
+      cruiseVx: 0,
+      wanderTimer: config.wander ? randomBetween(config.wander.interval) : 0
     };
   }
 
@@ -238,13 +252,12 @@ export class EntityService {
     if (!config.trail || !template) {
       return null;
     }
-    const scale: number = height / this.templates[kind].getOriginelDimension().height;
-    const anchorX: number = config.trail.anchorX * scale;
+    const anchorX: number = config.trail.anchorX * width;
     const visibleWidth: number = Math.min(template.getWidth(), this.widthWindows);
     return {
       image: config.trail.src,
       x: config.flipX ? width - anchorX : anchorX - visibleWidth,
-      y: config.trail.anchorY * scale,
+      y: config.trail.anchorY * height,
       width: visibleWidth,
       height: template.getHeight(),
       imageWidth: template.getWidth()
@@ -299,6 +312,7 @@ export class EntityService {
     if (config.drops) {
       entity.dropTargets = this.pickDropTargets(entity, config, groundY);
     }
+    entity.cruiseVx = entity.vx;
     this.pendingEntities.push(entity);
   }
 
@@ -351,6 +365,62 @@ export class EntityService {
     dropped.vx = entity.vx * config.drops.inheritSpeed;
     dropped.falling = true;
     this.pendingEntities.push(dropped);
+  }
+
+  // Approaches until `stopAt`, stops, fires every `interval`, then leaves with the ground
+  private updateShooter(entity: GameEntity, config: EntityConfig, deltaTime: number, groundY: number): void {
+    if (!config.shooter) {
+      return;
+    }
+    if (entity.vx !== 0 && entity.x <= this.widthWindows * config.shooter.stopAt) {
+      entity.vx = 0;
+      entity.shotTimer = config.shooter.interval;
+    }
+    if (entity.vx !== 0) {
+      return;
+    }
+    entity.shotTimer -= deltaTime;
+    if (entity.shotTimer <= 0) {
+      this.shoot(entity, config, groundY);
+      entity.shotsFired++;
+      entity.shotsLeft--;
+      entity.shotTimer = config.shooter.interval;
+      if (entity.shotsLeft === 0) {
+        entity.vx = -this.plateformService.getGroundSpeed();
+      }
+    }
+  }
+
+  // Random forward / back moves once fully on screen; always forward while entering or at the left edge
+  private updateWander(entity: GameEntity, config: EntityConfig, deltaTime: number): void {
+    if (!config.wander) {
+      return;
+    }
+    if (entity.x < 0) {
+      entity.vx = entity.cruiseVx;
+      return;
+    }
+    entity.wanderTimer -= deltaTime;
+    if (entity.wanderTimer <= 0) {
+      entity.wanderTimer = randomBetween(config.wander.interval);
+      entity.vx = Math.random() < config.wander.backChance
+        ? -entity.cruiseVx * config.wander.backSpeed
+        : entity.cruiseVx;
+    }
+  }
+
+  private shoot(entity: GameEntity, config: EntityConfig, groundY: number): void {
+    if (!config.shooter) {
+      return;
+    }
+    const heights: number[] = config.shooter.heights;
+    const height: number = heights[entity.shotsFired % heights.length];
+    const anchorX: number = config.flipX ? 1 - config.shooter.anchorX : config.shooter.anchorX;
+    const bullet: GameEntity = this.createEntity(config.shooter.kind, 0, 0);
+    bullet.x = entity.x + entity.width * anchorX - bullet.width / 2;
+    bullet.y = groundY - height - bullet.height / 2;
+    bullet.vx = config.flipX ? -config.shooter.speed : config.shooter.speed;
+    this.pendingEntities.push(bullet);
   }
 
   // Replaces the entity by its explosion: on the ground if it has landed, centred on it otherwise
@@ -463,6 +533,14 @@ export class EntityService {
     if (config.explodeInto && !entity.falling) {
       this.explode(entity, config.explodeInto, groundY);
       return false;
+    }
+
+    if (config.shooter && entity.shotsLeft > 0) {
+      this.updateShooter(entity, config, deltaTime, groundY);
+    }
+
+    if (config.wander) {
+      this.updateWander(entity, config, deltaTime);
     }
 
     if (entity.dropTargets.length > 0) {

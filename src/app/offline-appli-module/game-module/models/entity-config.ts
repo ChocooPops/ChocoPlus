@@ -58,13 +58,24 @@ export interface EntityConfig {
     // swings from side to side while falling
     swingWhileFalling?: boolean,
     // drawn in front of the platform instead of behind the character
-    foreground?: boolean
+    foreground?: boolean,
+    // stops at `stopAt` (fraction of the screen width), fires entities of `kind` from the muzzle
+    // (anchorX: fraction of the unflipped image), cycling through `heights` (bullet centre above the ground);
+    // after `shots` shots it leaves with the ground (no `shots` = fires until defeated);
+    // flickers `warning` seconds before each shot
+    shooter?: {
+        kind: EntityKind, stopAt: number, shots?: number, interval: number, warning: number,
+        speed: number, anchorX: number, heights: number[]
+    },
+    // once fully on screen, randomly goes forward or back every `interval` seconds;
+    // backChance = probability of going back, backSpeed = fraction of its speed when going back
+    wander?: { interval: [number, number], backChance: number, backSpeed: number }
 }
 
 export interface TrailConfig {
     src: string,
     sourcePixelSize: number,
-    // attachment point in the sprite's source image (unflipped):
+    // attachment point as fractions of the sprite's image (unflipped), so it survives resizing the image:
     // rainbow's right edge in X, rainbow's top in Y
     anchorX: number,
     anchorY: number
@@ -76,6 +87,14 @@ export interface OverlayConfig {
 }
 
 export const GOLD_COLLECTED_SRC: string = 'game/gold-touch.gif';
+
+// bullet pointing left: red tip, brass case, black outline
+export const BULLET_SRC: string = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="4" shape-rendering="crispEdges">` +
+    `<rect x="1" y="0" width="7" height="4" fill="#000"/><rect x="0" y="1" width="1" height="2" fill="#000"/>` +
+    `<rect x="1" y="1" width="2" height="2" fill="#c0392b"/><rect x="3" y="1" width="4" height="2" fill="#f2c14e"/>` +
+    `<rect x="3" y="1" width="4" height="1" fill="#ffe08a"/></svg>`
+);
 
 export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
     gold: {
@@ -96,7 +115,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
     },
     devil: {
         src: 'game/devil.gif',
-        sourcePixelSize: 20,
+        sourcePixelSize: 5,
         speed: 200,
         groundRelative: true,
         flipX: true,
@@ -109,8 +128,9 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         trail: {
             src: 'game/rainbow-devil.gif',
             sourcePixelSize: 23 / 19,
-            anchorX: 204,
-            anchorY: 20
+            // same place as rainbow.gif on character.gif: 30 % into the body, 1 art pixel below the top
+            anchorX: 204 / 840,
+            anchorY: 20 / 560
         },
         overlay: null,
         isEnemy: true,
@@ -153,7 +173,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         stomp: { hitPoints: 2, points: 5, coins: 0 },
         emergeFromGround: true
     },
-    // hops with a variable height; drops coins when stomped
+    // hops with a variable height
     pumpkin: {
         src: 'game/pumpkin.gif',
         sourcePixelSize: 8,
@@ -169,7 +189,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         trail: null,
         overlay: null,
         isEnemy: true,
-        stomp: { hitPoints: 1, points: 3, coins: 3 },
+        stomp: { hitPoints: 1, points: 3, coins: 0 },
         hop: { velocity: [900, 1250], gravity: 2600 }
     },
     // glitched: falls from the sky then teleports ahead of the player
@@ -231,12 +251,70 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         trail: {
             src: 'game/rainbow-troll.gif',
             sourcePixelSize: 23 / 19,
-            anchorX: 0.3 * 194,
-            anchorY: 194 / 34
+            anchorX: 0.3,
+            anchorY: 1 / 21
         },
         overlay: null,
         isEnemy: true,
         stomp: { hitPoints: 3, points: 15, coins: 8, tolerance: 0.15 }
+    },
+    // comes from behind, slowly, hopping, randomly going forward and back; its sword (in front) hurts too
+    ninja: {
+        src: 'game/nyaninja.gif',
+        sourcePixelSize: 2,
+        speed: 180,
+        groundRelative: false,
+        flipX: false,
+        hitbox: { left: 0.08, right: 0.97, top: 0.05, bottom: 0.88 },
+        spawnInterval: [10, 16],
+        spawnHeight: [0, 0],
+        groundAnchor: 0.95,
+        offsetY: 0,
+        wave: null,
+        trail: null,
+        overlay: null,
+        isEnemy: true,
+        stomp: { hitPoints: 1, points: 6, coins: 0 },
+        hop: { velocity: [600, 900], gravity: 2600 },
+        fromBehind: true,
+        wander: { interval: [0.6, 1.4], backChance: 0.45, backSpeed: 0.6 }
+    },
+    // stops on the right of the screen and shoots low (jump) and high (stay down) bullets until defeated
+    cowboy: {
+        src: 'game/cowboy.gif',
+        sourcePixelSize: 5,
+        speed: 120,
+        groundRelative: true,
+        flipX: true,
+        hitbox: { left: 0.2, right: 0.9, top: 0.1, bottom: 0.9 },
+        spawnInterval: [9, 14],
+        spawnHeight: [0, 0],
+        groundAnchor: 0.95,
+        offsetY: 0,
+        wave: null,
+        trail: null,
+        overlay: null,
+        isEnemy: true,
+        stomp: { hitPoints: 1, points: 5, coins: 0 },
+        shooter: { kind: 'bullet', stopAt: 0.75, interval: 1.1, warning: 0.3, speed: 650, anchorX: 0.95, heights: [45, 150] }
+    },
+    // fired by cowboy: no image file, drawn here as pixel art (8 x 4 art pixels)
+    bullet: {
+        src: BULLET_SRC,
+        sourcePixelSize: 1,
+        speed: 0,
+        groundRelative: false,
+        flipX: false,
+        hitbox: { left: 0, right: 1, top: 0, bottom: 1 },
+        spawnInterval: [0, 0],
+        spawnHeight: [0, 0],
+        groundAnchor: null,
+        offsetY: 0,
+        wave: null,
+        trail: null,
+        overlay: null,
+        isEnemy: true,
+        autoSpawn: false
     },
     // flies in the sky and bombs the ground; harmless, reachable with a super bounce (off the troll on tall screens)
     usa: {
