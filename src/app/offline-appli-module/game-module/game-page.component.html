@@ -21,13 +21,32 @@
     <!-- mousedown preventDefault keeps focus off the buttons, so Space still jumps instead of clicking them -->
     <div class="top-buttons">
         <button class="game-button" tabindex="-1" (mousedown)="$event.preventDefault()"
-            (click)="onOpenSpriteSelection()" [attr.aria-label]="'OFFLINE.GAME_SPRITES' | translate"
-            [title]="('OFFLINE.GAME_SPRITES' | translate) + ' (O)'">
+            (click)="onOpenSpriteSelection()" [attr.aria-label]="'OFFLINE.GAME_OPTIONS' | translate"
+            [title]="('OFFLINE.GAME_OPTIONS' | translate) + ' (O)'">
             <svg viewBox="0 0 7 7" shape-rendering="crispEdges">
                 <rect x="0" y="0" width="3" height="3" />
                 <rect x="4" y="0" width="3" height="3" />
                 <rect x="0" y="4" width="3" height="3" />
                 <rect x="4" y="4" width="3" height="3" />
+            </svg>
+        </button>
+        <button class="game-button" tabindex="-1" (mousedown)="$event.preventDefault()" (click)="onToggleMusic()"
+            [attr.aria-label]="(musicMuted ? 'OFFLINE.GAME_MUSIC_UNMUTE' : 'OFFLINE.GAME_MUSIC_MUTE') | translate"
+            [title]="((musicMuted ? 'OFFLINE.GAME_MUSIC_UNMUTE' : 'OFFLINE.GAME_MUSIC_MUTE') | translate) + ' (M)'">
+            <svg viewBox="0 0 8 7" shape-rendering="crispEdges">
+                <rect x="0" y="2" width="2" height="3" />
+                <rect x="2" y="1" width="1" height="5" />
+                <rect x="3" y="0" width="1" height="7" />
+                @if(musicMuted) {
+                <rect x="5" y="2" width="1" height="1" />
+                <rect x="7" y="2" width="1" height="1" />
+                <rect x="6" y="3" width="1" height="1" />
+                <rect x="5" y="4" width="1" height="1" />
+                <rect x="7" y="4" width="1" height="1" />
+                } @else {
+                <rect x="5" y="2" width="1" height="3" />
+                <rect x="7" y="1" width="1" height="5" />
+                }
             </svg>
         </button>
         <button class="game-button" tabindex="-1" (mousedown)="$event.preventDefault()" (click)="onRestart()"

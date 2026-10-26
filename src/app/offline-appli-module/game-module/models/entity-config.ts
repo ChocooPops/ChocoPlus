@@ -298,7 +298,7 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         groundRelative: false,
         flipX: true,
         hitbox: { left: 0.05, right: 0.95, top: 0.1, bottom: 0.95 },
-        spawnInterval: [30, 40],
+        spawnInterval: [25, 40],
         spawnHeight: [130, 250],
         groundAnchor: null,
         offsetY: 0,

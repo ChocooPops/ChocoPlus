@@ -33,6 +33,50 @@ p {
     color: #FFFFFF;
 }
 
+.section-title {
+    margin: 10px 0;
+    font-size: 48px;
+}
+
+.music {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    color: #FFFFFF;
+    font-size: 36px;
+
+    button {
+        padding: 6px 20px;
+        border: 4px solid #FFDE36;
+        background-color: #FFDE36;
+        color: #141432;
+        font-size: 32px;
+    }
+
+    button.muted {
+        background-color: transparent;
+        color: #FFDE36;
+    }
+
+    input {
+        width: min(400px, 50vw);
+        accent-color: #FFDE36;
+        cursor: pointer;
+    }
+
+    input.muted {
+        filter: grayscale(1);
+        opacity: 0.5;
+    }
+
+    .value {
+        min-width: 90px;
+    }
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));

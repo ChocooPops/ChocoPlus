@@ -1,7 +1,18 @@
 <!-- mousedown preventDefault keeps focus off the buttons, so Space still jumps once the panel is closed -->
 <div class="container-selection" (mousedown)="$event.preventDefault()">
     <div class="panel">
-        <p class="title">{{ 'OFFLINE.GAME_SPRITES' | translate }}</p>
+        <p class="title">{{ 'OFFLINE.GAME_OPTIONS' | translate }}</p>
+        <p class="section-title">{{ 'OFFLINE.GAME_MUSIC' | translate }}</p>
+        <!-- stopPropagation: the panel's preventDefault would block dragging the volume slider -->
+        <div class="music" (mousedown)="$event.stopPropagation()">
+            <button tabindex="-1" [class.muted]="muted" (click)="onToggleMuted()">
+                {{ (muted ? 'OFFLINE.GAME_MUSIC_UNMUTE' : 'OFFLINE.GAME_MUSIC_MUTE') | translate }} (M)
+            </button>
+            <input type="range" min="0" max="100" step="1" [value]="volumePercent" [class.muted]="muted"
+                [attr.aria-label]="'OFFLINE.GAME_MUSIC' | translate" (input)="onVolume($event)">
+            <span class="value">{{ muted ? 0 : volumePercent }} %</span>
+        </div>
+        <p class="section-title">{{ 'OFFLINE.GAME_SPRITES' | translate }}</p>
         <p class="hint">{{ 'OFFLINE.GAME_SPRITES_HINT' | translate }}</p>
         <div class="grid">
             @for(kind of kinds; track kind) {

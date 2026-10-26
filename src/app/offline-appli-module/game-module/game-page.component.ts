@@ -12,6 +12,7 @@ import { ScoreComponent } from './components/score/score.component';
 import { LivesComponent } from './components/lives/lives.component';
 import { GameOverlayComponent } from './components/game-overlay/game-overlay.component';
 import { SpriteSelectionComponent } from './components/sprite-selection/sprite-selection.component';
+import { MusicService } from './services/music/music.service';
 import { PlateformService } from './services/plateform/plateform.service';
 import { CharacterService } from './services/character/character.service';
 import { EntityService } from './services/entity/entity.service';
@@ -33,6 +34,7 @@ export class GamePageComponent implements OnInit, OnDestroy {
   public status: GameStatus = 'playing';
   public spriteSelectionOpen: boolean = false;
   public trippy: boolean = false;
+  public musicMuted: boolean = false;
   // the game is resumed on closing only if the panel paused it
   private pausedBySpriteSelection: boolean = false;
 
@@ -43,7 +45,8 @@ export class GamePageComponent implements OnInit, OnDestroy {
     private readonly entityService: EntityService,
     private readonly gameLoopService: GameLoopService,
     private readonly gameStateService: GameStateService,
-    private readonly menuTabService: MenuTabService
+    private readonly menuTabService: MenuTabService,
+    private readonly musicService: MusicService
   ) {
     this.menuTabService.setActivateTransition(true);
   }
@@ -60,12 +63,20 @@ export class GamePageComponent implements OnInit, OnDestroy {
       })
     )
     this.gameLoopService.restart();
+    this.subscription.add(
+      this.musicService.getMuted().subscribe((muted: boolean) => {
+        this.musicMuted = muted;
+      })
+    )
     this.gameLoopService.start();
+    this.musicService.start();
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.gameLoopService.stop();
+    // the music only exists while the game page is open
+    this.musicService.stop();
     this.characterService.releaseKeys();
   }
 
@@ -84,6 +95,10 @@ export class GamePageComponent implements OnInit, OnDestroy {
 
   public onRestart(): void {
     this.gameLoopService.restart();
+  }
+
+  public onToggleMusic(): void {
+    this.musicService.toggleMuted();
   }
 
   public onOpenSpriteSelection(): void {
@@ -114,6 +129,11 @@ export class GamePageComponent implements OnInit, OnDestroy {
       return;
     }
     const key: string = event.key.toLowerCase();
+    // M = music on / off, everywhere in the game (also with the options panel open)
+    if (!event.repeat && !event.ctrlKey && !event.metaKey && key === 'm') {
+      this.onToggleMusic();
+      return;
+    }
     // the sprite panel takes the keyboard: only Escape or O (close) do something
     if (this.spriteSelectionOpen) {
       if (!event.repeat && (event.key === 'Escape' || key === 'o')) {
