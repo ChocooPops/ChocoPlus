@@ -8,19 +8,15 @@
 
 .hearts {
     display: flex;
-    gap: 12px;
+    align-items: flex-end;
+    gap: 8px;
 }
 
+/* heart.gif and death.gif are both 21 art pixels high: same height = same scale (3 px per art pixel) */
 .heart {
-    width: 56px;
-    height: 48px;
-    fill: #FF4D6D;
-    transition: fill 0.2s, opacity 0.2s;
-}
-
-.heart.empty {
-    fill: #FFFFFF;
-    opacity: 0.25;
+    height: 63px;
+    width: auto;
+    image-rendering: pixelated;
 }
 
 .lucky {

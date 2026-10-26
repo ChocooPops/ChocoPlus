@@ -93,6 +93,10 @@ export const GOLD_COLLECTED_SRC: string = 'game/gold-touch.gif';
 // shown on the left edge while an enemy is about to come from behind
 export const WARNING_SRC: string = 'game/warning.png';
 
+// lives in the HUD: remaining / lost
+export const HEART_SRC: string = 'game/heart.gif';
+export const DEATH_SRC: string = 'game/death.gif';
+
 // bullet pointing left: red tip, brass case, black outline
 export const BULLET_SRC: string = 'data:image/svg+xml;utf8,' + encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="4" shape-rendering="crispEdges">` +

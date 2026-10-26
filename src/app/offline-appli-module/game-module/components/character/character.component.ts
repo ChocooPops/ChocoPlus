@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SpriteModel } from '../../models/sprite.interface';
 import { CharacterService } from '../../services/character/character.service';
@@ -12,6 +12,9 @@ import { GameStateService } from '../../services/game-state/game-state.service';
   styleUrls: ['./character.component.css', '../../style/scroll.css']
 })
 export class CharacterComponent implements OnInit, OnDestroy {
+
+  // 'rainbow' = only the rainbow, drawn behind every other sprite; 'character' = the cat and its sparks
+  @Input() layer: 'rainbow' | 'character' = 'character';
 
   character!: SpriteModel;
   sparks !: SpriteModel;

@@ -6,7 +6,7 @@ import { PlateformService } from '../plateform/plateform.service';
 import { ScoreService } from '../score/score.service';
 import { GameStateService } from '../game-state/game-state.service';
 import { AttachedSpriteModel, EntityKind, GameEntity, RectModel, TrailModel } from '../../models/game-entity.interface';
-import { ENTITY_CONFIGS, EntityConfig, GOLD_COLLECTED_SRC, OverlayConfig, TrailConfig, WARNING_SRC } from '../../models/entity-config';
+import { ENTITY_CONFIGS, EntityConfig, DEATH_SRC, GOLD_COLLECTED_SRC, HEART_SRC, OverlayConfig, TrailConfig, WARNING_SRC } from '../../models/entity-config';
 import { getHitboxRect, intersects, randomBetween } from '../../models/collision';
 import { SkyService } from '../sky/sky.service';
 import { SpriteSelectionService } from '../sprite-selection/sprite-selection.service';
@@ -91,8 +91,9 @@ export class EntityService {
     private readonly skyService: SkyService,
     private readonly spriteSelectionService: SpriteSelectionService
   ) {
-    // shown when a coin is collected, the coming-from-behind warning and the previews of the sprite selection panel
-    const extraImages: string[] = [GOLD_COLLECTED_SRC, WARNING_SRC, ...this.KINDS
+    // shown when a coin is collected, the coming-from-behind warning, the lives
+    // and the previews of the sprite selection panel
+    const extraImages: string[] = [GOLD_COLLECTED_SRC, WARNING_SRC, HEART_SRC, DEATH_SRC, ...this.KINDS
       .map((kind: EntityKind) => ENTITY_CONFIGS[kind].previewSrc)
       .filter((src: string | undefined): src is string => !!src)];
     this.collectedImageLoad$ = from(this.imagePreloaderService.preloadImages(extraImages).then(() => true));

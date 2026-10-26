@@ -1,9 +1,10 @@
 <div class="character-group" [class.blink]="invincible">
+    @if(layer === 'rainbow') {
     <div class="container-sprite" [style.height.px]="rainbow.height" [style.width.px]="rainbow.width"
         [style.top.px]="rainbow.y" [style.left.px]="rainbow.x">
         <img [src]="rainbow.image" [style.height.px]="rainbow.height" [style.width.px]="rainbow.width">
     </div>
-
+    } @else {
     <div class="container-sprite" [style.height.px]="character.height" [style.top.px]="character.y"
         [style.width.px]="character.width" [style.left.px]="character.x">
         <img [src]="character.image" [style.height.px]="character.height" [style.width.px]="character.width">
@@ -13,4 +14,5 @@
         [style.top.px]="sparks.y" [style.left.px]="sparks.x">
         <img [src]="sparks.image" [style.height.px]="sparks.height" [style.width.px]="sparks.width">
     </div>
+    }
 </div>

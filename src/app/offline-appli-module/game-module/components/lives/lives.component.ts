@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { GameStateService } from '../../services/game-state/game-state.service';
-import { ENTITY_CONFIGS } from '../../models/entity-config';
+import { DEATH_SRC, ENTITY_CONFIGS, HEART_SRC } from '../../models/entity-config';
 
 @Component({
   selector: 'app-lives',
@@ -16,6 +16,8 @@ export class LivesComponent implements OnInit, OnDestroy {
   public slots: number[];
   public luckySeconds: number = 0;
   public readonly srcLucky: string = ENTITY_CONFIGS.paddy.src;
+  public readonly srcHeart: string = HEART_SRC;
+  public readonly srcDeath: string = DEATH_SRC;
 
   private subscription: Subscription = new Subscription();
 
