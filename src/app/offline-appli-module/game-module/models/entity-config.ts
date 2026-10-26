@@ -65,6 +65,8 @@ export interface EntityConfig {
     // (anchorX: fraction of the unflipped image), cycling through `heights` (bullet centre above the ground);
     // after `shots` shots it leaves with the ground (no `shots` = fires until defeated);
     // flickers `warning` seconds before each shot
+    // touching it does not hurt: it switches the whole screen to a hallucinogenic filter for this many seconds
+    trippy?: number,
     shooter?: {
         kind: EntityKind, stopAt: number, shots?: number, interval: number, warning: number,
         speed: number, anchorX: number, heights: number[]
@@ -287,6 +289,25 @@ export const ENTITY_CONFIGS: Record<EntityKind, EntityConfig> = {
         hop: { velocity: [600, 900], gravity: 2600 },
         fromBehind: true,
         wander: { interval: [0.6, 1.4], backChance: 0.45, backSpeed: 0.6 }
+    },
+    // floats lazily at the player's height: touching it (even from above) does not hurt but makes the whole screen trippy
+    snoop: {
+        src: 'game/nyansnoop.gif',
+        sourcePixelSize: 3,
+        speed: 150,
+        groundRelative: false,
+        flipX: true,
+        hitbox: { left: 0.05, right: 0.95, top: 0.1, bottom: 0.95 },
+        spawnInterval: [30, 40],
+        spawnHeight: [130, 250],
+        groundAnchor: null,
+        offsetY: 0,
+        wave: { amplitude: 40, frequency: 1.2 },
+        trail: null,
+        overlay: null,
+        isEnemy: true,
+        // no stomp: landing on it triggers the effect too
+        trippy: 10
     },
     // stops on the right of the screen and shoots low (jump) and high (stay down) bullets until defeated
     cowboy: {

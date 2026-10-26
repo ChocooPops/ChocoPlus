@@ -648,6 +648,9 @@ export class EntityService {
           this.explode(entity, config.explodeInto, groundY);
         } else if (config.stomp && this.isStomp(characterHitbox, entityHitbox, config.stomp.tolerance ?? this.STOMP_TOLERANCE)) {
           this.stompEnemy(entity, config);
+        } else if (config.trippy) {
+          this.gameStateService.startTrippy(config.trippy);
+          this.setCollected(entity);
         } else if (config.isEnemy) {
           this.gameStateService.hurt();
         }

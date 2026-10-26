@@ -32,6 +32,7 @@ export class GamePageComponent implements OnInit, OnDestroy {
   public readonly cloudIndexes: number[] = [0, 1, 2, 3, 4];
   public status: GameStatus = 'playing';
   public spriteSelectionOpen: boolean = false;
+  public trippy: boolean = false;
   // the game is resumed on closing only if the panel paused it
   private pausedBySpriteSelection: boolean = false;
 
@@ -51,6 +52,11 @@ export class GamePageComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.gameStateService.getStatus().subscribe((status: GameStatus) => {
         this.status = status;
+      })
+    )
+    this.subscription.add(
+      this.gameStateService.getIsTrippy().subscribe((trippy: boolean) => {
+        this.trippy = trippy;
       })
     )
     this.gameLoopService.restart();

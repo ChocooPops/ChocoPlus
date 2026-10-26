@@ -7,6 +7,81 @@
     overflow: hidden;
 }
 
+/* same box as .container-game, so nothing inside moves */
+.world {
+    position: absolute;
+    inset: 0;
+}
+
+/* nyansnoop: slow colour cycle and a rotating rainbow veil over the whole screen (no flashing),
+   and a bending perspective on the game world only (the HUD stays readable) */
+.container-game.trippy {
+    background-color: #1a0033;
+    will-change: filter;
+    animation: trippy-colors 2.5s linear infinite;
+}
+
+.container-game.trippy .world {
+    /* bottom left, where the character usually is: the zoom pushes the rest away instead of the character */
+    transform-origin: 20% 80%;
+    will-change: transform;
+    animation: trippy-perspective 5s ease-in-out infinite;
+}
+
+.container-game.trippy::after {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(#ff0040, #ffd000, #40ff00, #00e5ff, #4000ff, #ff00d0, #ff0040);
+    mix-blend-mode: soft-light;
+    opacity: 0.62;
+    pointer-events: none;
+    will-change: transform;
+    animation: trippy-veil 6.5s linear infinite;
+}
+
+.container-game.trippy.game-paused,
+.container-game.trippy.game-paused::after,
+.container-game.trippy.game-paused .world {
+    animation-play-state: paused;
+}
+
+@keyframes trippy-colors {
+    from {
+        filter: hue-rotate(0deg) saturate(2.7) contrast(1.15);
+    }
+
+    to {
+        filter: hue-rotate(360deg) saturate(2.7) contrast(1.15);
+    }
+}
+
+/* scaled up so the bent edges stay mostly off screen */
+@keyframes trippy-perspective {
+    0%,
+    100% {
+        transform: perspective(900px) rotateX(0deg) rotateY(0deg) skew(0deg, 0deg) scale(1.14);
+    }
+
+    25% {
+        transform: perspective(900px) rotateX(12deg) rotateY(-14deg) skew(6deg, 1.5deg) scale(1.22);
+    }
+
+    50% {
+        transform: perspective(900px) rotateX(-8deg) rotateY(12deg) skew(-4deg, -3deg) scale(1.18);
+    }
+
+    75% {
+        transform: perspective(900px) rotateX(9deg) rotateY(8deg) skew(3deg, 4deg) scale(1.25);
+    }
+}
+
+@keyframes trippy-veil {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* above the pause overlay so the buttons stay usable while paused */
 .top-buttons {
     position: absolute;

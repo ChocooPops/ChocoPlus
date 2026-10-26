@@ -68,6 +68,35 @@ img {
     animation-play-state: paused;
 }
 
+/* nyansnoop: every sprite gently breathes and sways. Uses the `scale` / `rotate` properties so the
+   position set through `transform` by the game loop is kept; hitboxes are not affected */
+.trippy app-entities .entity,
+.trippy app-character .container-sprite {
+    animation: trippy-breathe 1.2s ease-in-out infinite alternate;
+}
+
+.trippy app-entities .entity:nth-child(odd) {
+    animation-duration: 1.6s;
+    animation-direction: alternate-reverse;
+}
+
+.game-paused.trippy app-entities .entity,
+.game-paused.trippy app-character .container-sprite {
+    animation-play-state: paused;
+}
+
+@keyframes trippy-breathe {
+    from {
+        scale: 0.95 1.05;
+        rotate: -4deg;
+    }
+
+    to {
+        scale: 1.07 0.95;
+        rotate: 4deg;
+    }
+}
+
 :root {
     --grey: #808080;
     --grey-dark: #535353;

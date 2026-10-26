@@ -26,6 +26,11 @@ export class GameStateService {
   private luckySubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   private lucky$: Observable<number> = this.luckySubject.asObservable();
 
+  // hallucinogenic screen filter (nyansnoop)
+  private trippySubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private trippy$: Observable<boolean> = this.trippySubject.asObservable();
+  private trippyTimer: number = 0;
+
   private invincibilityTimer: number = 0;
   private luckyTimer: number = 0;
   private elapsedTime: number = 0;
@@ -52,6 +57,18 @@ export class GameStateService {
     return this.luckyTimer > 0;
   }
 
+  public getIsTrippy(): Observable<boolean> {
+    return this.trippy$;
+  }
+
+  // touching it again restarts the full duration
+  public startTrippy(duration: number): void {
+    this.trippyTimer = duration;
+    if (!this.trippySubject.value) {
+      this.trippySubject.next(true);
+    }
+  }
+
   public startLucky(): void {
     this.luckyTimer = this.LUCKY_DURATION_S;
     this.luckySubject.next(Math.ceil(this.luckyTimer));
@@ -76,6 +93,8 @@ export class GameStateService {
     this.invincibleSubject.next(false);
     this.luckyTimer = 0;
     this.luckySubject.next(0);
+    this.trippyTimer = 0;
+    this.trippySubject.next(false);
     this.elapsedTime = 0;
     // a game restarted before its end may still hold a new best score
     this.scoreService.saveBestScore();
@@ -89,6 +108,12 @@ export class GameStateService {
       this.invincibilityTimer -= deltaTime;
       if (this.invincibilityTimer <= 0) {
         this.invincibleSubject.next(false);
+      }
+    }
+    if (this.trippyTimer > 0) {
+      this.trippyTimer -= deltaTime;
+      if (this.trippyTimer <= 0) {
+        this.trippySubject.next(false);
       }
     }
     if (this.luckyTimer > 0) {

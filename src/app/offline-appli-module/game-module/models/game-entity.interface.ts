@@ -1,4 +1,4 @@
-export type EntityKind = 'gold' | 'devil' | 'melon' | 'zombie' | 'pumpkin' | 'wtf' | 'mexinyan' | 'troll' | 'ninja' | 'cowboy' | 'bullet' | 'usa' | 'bomb' | 'explosion' | 'angel' | 'powerup' | 'paddy';
+export type EntityKind = 'gold' | 'devil' | 'melon' | 'zombie' | 'pumpkin' | 'wtf' | 'mexinyan' | 'troll' | 'ninja' | 'cowboy' | 'bullet' | 'snoop' | 'usa' | 'bomb' | 'explosion' | 'angel' | 'powerup' | 'paddy';
 
 export type EntityState = 'active' | 'collected' | 'defeated' | 'removed';
 

@@ -1,17 +1,20 @@
-<div class="container-game" [class.game-paused]="status !== 'playing'">
-    <app-stars></app-stars>
-    <app-sky></app-sky>
-    @for(index of cloudIndexes; track index) {
-    <app-cloud [index]="index"></app-cloud>
-    }
-    <app-tree [type]="true"></app-tree>
-    <app-character layer="rainbow"></app-character>
-    <app-entities layer="world"></app-entities>
-    <app-character layer="character"></app-character>
-    <app-entities layer="effects"></app-entities>
-    <app-plateform></app-plateform>
-    <app-entities layer="foreground"></app-entities>
-    <app-tree [type]="false"></app-tree>
+<div class="container-game" [class.game-paused]="status !== 'playing'" [class.trippy]="trippy">
+    <!-- the game world (same box as the page): the only part bent by the trippy perspective, the HUD stays flat -->
+    <div class="world">
+        <app-stars></app-stars>
+        <app-sky></app-sky>
+        @for(index of cloudIndexes; track index) {
+        <app-cloud [index]="index"></app-cloud>
+        }
+        <app-tree [type]="true"></app-tree>
+        <app-character layer="rainbow"></app-character>
+        <app-entities layer="world"></app-entities>
+        <app-character layer="character"></app-character>
+        <app-entities layer="effects"></app-entities>
+        <app-plateform></app-plateform>
+        <app-entities layer="foreground"></app-entities>
+        <app-tree [type]="false"></app-tree>
+    </div>
     <app-lives></app-lives>
     <app-score></app-score>
     <app-game-overlay></app-game-overlay>
