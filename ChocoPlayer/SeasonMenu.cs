@@ -23,6 +23,8 @@ namespace ChocoPlayer
         private const int EPISODE_SPACING = 15;
         private const int SEASON_ITEM_HEIGHT = 55;
         private const int BORDER_WIDTH = 2;
+        private const int CURSOR_OFFSET_X = 10;
+        private const int CURSOR_OFFSET_Y = -10;
 
         private int _episodeHeight = 140;
         private int _sizeLevel = 3;
@@ -133,13 +135,41 @@ namespace ChocoPlayer
             }
         }
 
+        // Shows the menu at the cursor (form coordinates), flipped so it stays inside the window
+        public void ShowAt(Point cursor, int windowWidth, int windowHeight, int topReserved = 0)
+        {
+            var (menuW, menuH) = GetMenuSize(windowWidth);
+            menuW = Math.Min(menuW, windowWidth);
+            menuH = Math.Min(menuH, Math.Max(80, windowHeight - topReserved));
+
+            // Offset from the cursor so the next right click lands on the video, not on the menu
+            int x = cursor.X + CURSOR_OFFSET_X + menuW <= windowWidth  ? cursor.X + CURSOR_OFFSET_X : cursor.X - CURSOR_OFFSET_X - menuW;
+            int y = cursor.Y + CURSOR_OFFSET_Y + menuH <= windowHeight ? cursor.Y + CURSOR_OFFSET_Y : cursor.Y - CURSOR_OFFSET_Y - menuH;
+            x = Math.Clamp(x, 0, Math.Max(0, windowWidth - menuW));
+            y = Math.Clamp(y, topReserved, Math.Max(topReserved, windowHeight - menuH));
+
+            this.SetBounds(x, y, menuW, menuH);
+            CalculateMaxScroll();
+            CalculateMaxDropdownScroll();
+
+            this.Visible          = true;
+            _isDropdownOpen       = false;
+            _dropdownScrollOffset = 0;
+            this.BringToFront();
+            RefreshImmediate();
+        }
+
+        private (int Width, int Height) GetMenuSize(int windowWidth)
+        {
+            if (windowWidth >= 1400)      { _sizeLevel = 3; _episodeHeight = 140; return (MENU_WIDTH, MENU_HEIGHT); }
+            else if (windowWidth >= 1000) { _sizeLevel = 2; _episodeHeight = 120; return (680, 560); }
+            else if (windowWidth >= 500)  { _sizeLevel = 1; _episodeHeight = 100; return (520, 480); }
+            else                          { _sizeLevel = 0; _episodeHeight = 85;  return (400, 340); }
+        }
+
         public void SetPosition(int buttonX, int buttonY, bool isFullScreen, int windowWidth, int windowHeight, int topReserved = 0)
         {
-            int menuW, menuH;
-            if (windowWidth >= 1400)      { menuW = MENU_WIDTH; menuH = MENU_HEIGHT; _sizeLevel = 3; _episodeHeight = 140; }
-            else if (windowWidth >= 1000) { menuW = 680;        menuH = 560;         _sizeLevel = 2; _episodeHeight = 120; }
-            else if (windowWidth >= 500)  { menuW = 520;        menuH = 480;         _sizeLevel = 1; _episodeHeight = 100; }
-            else                          { menuW = 400;        menuH = 340;         _sizeLevel = 0; _episodeHeight = 85; }
+            var (menuW, menuH) = GetMenuSize(windowWidth);
 
             int gap = Math.Clamp((buttonY - topReserved) / 35, 4, 20);
             menuH = Math.Min(menuH, Math.Max(80, buttonY - topReserved - gap));

@@ -74,6 +74,7 @@ namespace ChocoPlayer
         private bool _wasMouseButtonDown = false;
         private bool _isDraggingOrResizingFromTitleBar = false;
         private bool _windowWasInactive = false;
+        private bool _lastRightClickMenuWasSeasons = false;
 
         // ── Mini mode ──────────────────────────────────────────────────────────
         private bool _isMiniMode = false;
@@ -732,7 +733,7 @@ namespace ChocoPlayer
         {
             if (e.Button == MouseButtons.Right)
             {
-                ShowTrackSettingsMenuAtCursor(e.Location);
+                ShowMenuAtCursor(e.Location);
                 return;
             }
 
@@ -788,16 +789,31 @@ namespace ChocoPlayer
             }
         }
 
-        private void ShowTrackSettingsMenuAtCursor(Point overlayLocation)
+        private void ShowMenuAtCursor(Point overlayLocation)
         {
             if (_trackSettingsMenu == null) return;
-
-            _seasonsMenu?.Hide();
 
             int   titleBarHeight = _isMiniMode ? _miniPlayerButton!.GetTitleBarHeight() : 0;
             Point formLocation   = this.PointToClient(_clickOverlay!.PointToScreen(overlayLocation));
 
-            _trackSettingsMenu.ShowAt(formLocation, this.ClientSize.Width, this.ClientSize.Height, titleBarHeight);
+            bool showSeasons;
+            if (_trackSettingsMenu.Visible)            showSeasons = true;
+            else if (_seasonsMenu?.Visible == true)    showSeasons = false;
+            else                                       showSeasons = _lastRightClickMenuWasSeasons;
+
+            if (showSeasons && _hasSeasons && _seasonsMenu != null)
+            {
+                _trackSettingsMenu.Hide();
+                _seasonsMenu.ShowAt(formLocation, this.ClientSize.Width, this.ClientSize.Height, titleBarHeight);
+                _lastRightClickMenuWasSeasons = true;
+            }
+            else
+            {
+                _seasonsMenu?.Hide();
+                _trackSettingsMenu.ShowAt(formLocation, this.ClientSize.Width, this.ClientSize.Height, titleBarHeight);
+                _lastRightClickMenuWasSeasons = false;
+            }
+
             ShowControls();
         }
 

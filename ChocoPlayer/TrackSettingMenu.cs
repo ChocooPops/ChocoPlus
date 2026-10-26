@@ -19,6 +19,8 @@ namespace ChocoPlayer
         private const int ITEM_HEIGHT   = 40;
         private const int ITEM_SPACING  = 8;
         private const int SCROLLBAR_W   = 5;
+        private const int CURSOR_OFFSET_X = 10;
+        private const int CURSOR_OFFSET_Y = -10;
 
         private ITrackSelectionListener? _listener;
         private Color _accentColor       = Color.FromArgb(255, 211, 1);
@@ -75,8 +77,9 @@ namespace ChocoPlayer
             menuW = Math.Min(menuW, windowWidth);
             menuH = Math.Min(menuH, Math.Max(80, windowHeight - topReserved));
 
-            int x = cursor.X + menuW <= windowWidth  ? cursor.X : cursor.X - menuW;
-            int y = cursor.Y + menuH <= windowHeight ? cursor.Y : cursor.Y - menuH;
+            // Offset from the cursor so the next right click lands on the video, not on the menu
+            int x = cursor.X + CURSOR_OFFSET_X + menuW <= windowWidth  ? cursor.X + CURSOR_OFFSET_X : cursor.X - CURSOR_OFFSET_X - menuW;
+            int y = cursor.Y + CURSOR_OFFSET_Y + menuH <= windowHeight ? cursor.Y + CURSOR_OFFSET_Y : cursor.Y - CURSOR_OFFSET_Y - menuH;
             x = Math.Clamp(x, 0, Math.Max(0, windowWidth - menuW));
             y = Math.Clamp(y, topReserved, Math.Max(topReserved, windowHeight - menuH));
 

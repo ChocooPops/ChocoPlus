@@ -59,9 +59,9 @@
         "GAME_BEST_SCORE": "Meilleur score :",
         "GAME_KILLS": "Ennemis elimines :",
         "GAME_SPRITES": "Sprites",
-        "GAME_SPRITES_HINT": "Clique sur un sprite pour l'activer ou le désactiver",
+        "GAME_SPRITES_HINT": "Clique sur un sprite pour l'activer ou le desactiver",
         "GAME_SPRITES_ALL": "Tout activer",
-        "GAME_SPRITES_NONE": "Tout désactiver",
+        "GAME_SPRITES_NONE": "Tout desactiver",
         "GAME_SPRITES_CLOSE": "Fermer",
         "GAME_RESTART_HINT": "Appuie sur Entree pour rejouer"
     },
