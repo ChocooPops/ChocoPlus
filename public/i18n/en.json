@@ -63,6 +63,7 @@
         "GAME_SPRITES_ALL": "Enable all",
         "GAME_SPRITES_NONE": "Disable all",
         "GAME_SPRITES_CLOSE": "Close",
+        "GAME_RESTART": "Restart",
         "GAME_RESTART_HINT": "Press Enter to play again"
     },
     "MENU": {

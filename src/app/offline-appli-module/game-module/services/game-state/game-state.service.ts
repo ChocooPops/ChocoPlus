@@ -77,6 +77,8 @@ export class GameStateService {
     this.luckyTimer = 0;
     this.luckySubject.next(0);
     this.elapsedTime = 0;
+    // a game restarted before its end may still hold a new best score
+    this.scoreService.saveBestScore();
     this.scoreService.reset();
     this.statusSubject.next('playing');
   }

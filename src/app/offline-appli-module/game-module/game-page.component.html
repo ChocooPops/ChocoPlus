@@ -18,12 +18,27 @@
     <div class="top-buttons">
         <button class="game-button" tabindex="-1" (mousedown)="$event.preventDefault()"
             (click)="onOpenSpriteSelection()" [attr.aria-label]="'OFFLINE.GAME_SPRITES' | translate"
-            [title]="'OFFLINE.GAME_SPRITES' | translate">
+            [title]="('OFFLINE.GAME_SPRITES' | translate) + ' (O)'">
             <svg viewBox="0 0 7 7" shape-rendering="crispEdges">
                 <rect x="0" y="0" width="3" height="3" />
                 <rect x="4" y="0" width="3" height="3" />
                 <rect x="0" y="4" width="3" height="3" />
                 <rect x="4" y="4" width="3" height="3" />
+            </svg>
+        </button>
+        <button class="game-button" tabindex="-1" (mousedown)="$event.preventDefault()" (click)="onRestart()"
+            [attr.aria-label]="'OFFLINE.GAME_RESTART' | translate" [title]="('OFFLINE.GAME_RESTART' | translate) + ' (R)'">
+            <svg viewBox="0 0 7 7" shape-rendering="crispEdges">
+                <rect x="2" y="0" width="3" height="1" />
+                <rect x="6" y="0" width="1" height="1" />
+                <rect x="1" y="1" width="1" height="1" />
+                <rect x="5" y="1" width="2" height="1" />
+                <rect x="0" y="2" width="1" height="3" />
+                <rect x="4" y="2" width="3" height="1" />
+                <rect x="6" y="4" width="1" height="1" />
+                <rect x="1" y="5" width="1" height="1" />
+                <rect x="5" y="5" width="1" height="1" />
+                <rect x="2" y="6" width="3" height="1" />
             </svg>
         </button>
         @if(status !== 'gameover') {

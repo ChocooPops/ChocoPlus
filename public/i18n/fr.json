@@ -63,6 +63,7 @@
         "GAME_SPRITES_ALL": "Tout activer",
         "GAME_SPRITES_NONE": "Tout desactiver",
         "GAME_SPRITES_CLOSE": "Fermer",
+        "GAME_RESTART": "Recommencer",
         "GAME_RESTART_HINT": "Appuie sur Entree pour rejouer"
     },
     "MENU": {

@@ -63,6 +63,7 @@
         "GAME_SPRITES_ALL": "すべてオン",
         "GAME_SPRITES_NONE": "すべてオフ",
         "GAME_SPRITES_CLOSE": "閉じる",
+        "GAME_RESTART": "リスタート",
         "GAME_RESTART_HINT": "Enterキーでもう一度プレイ"
     },
     "MENU": {

@@ -76,6 +76,10 @@ export class GamePageComponent implements OnInit, OnDestroy {
     this.gameStateService.togglePause();
   }
 
+  public onRestart(): void {
+    this.gameLoopService.restart();
+  }
+
   public onOpenSpriteSelection(): void {
     this.characterService.releaseKeys();
     this.pausedBySpriteSelection = this.gameStateService.isPlaying();
@@ -103,10 +107,20 @@ export class GamePageComponent implements OnInit, OnDestroy {
     if (event.altKey) {
       return;
     }
-    // the sprite panel takes the keyboard: only Escape (close) does something
+    const key: string = event.key.toLowerCase();
+    // the sprite panel takes the keyboard: only Escape or O (close) do something
     if (this.spriteSelectionOpen) {
-      if (event.key === 'Escape' && !event.repeat) {
+      if (!event.repeat && (event.key === 'Escape' || key === 'o')) {
         this.onCloseSpriteSelection();
+      }
+      return;
+    }
+    // shortcuts: R = restart, O = sprite options (Ctrl / Cmd combinations are left to the app)
+    if (!event.repeat && !event.ctrlKey && !event.metaKey && (key === 'r' || key === 'o')) {
+      if (key === 'r') {
+        this.onRestart();
+      } else {
+        this.onOpenSpriteSelection();
       }
       return;
     }
