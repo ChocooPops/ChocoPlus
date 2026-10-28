@@ -340,6 +340,22 @@ export class FiltersCatalogService {
   }
 
   public setFilterFromMediaPage(filtres: FILTERS[]): void {
+    this.decadeFilter.filters.forEach((el) => {
+      el.isSelected = 0;
+    });
+    this.categoryFilter.filters.forEach((el) => {
+      el.isSelected = 0;
+    });
+    this.onSelectedMediaTypeFilter({
+       id: 2,
+      typeData: FilterType.MEDIA,
+      operation: Operation.CONTAIN,
+      logic: LogicalOperator.AND,
+      value: [{
+        name: 'ALL',
+        value: MediaTypeModel.ALL
+      }]
+    });
     const filtresSubject: FILTERS[] = this.FILTERS_SUBJECT.value.slice(0, 1);
     filtres.forEach((filtre: FILTERS) => {
       filtre.id = this.getId();
