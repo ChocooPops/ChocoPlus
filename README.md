@@ -429,6 +429,11 @@ cd ..
 
 Cela créera l'exécutable (avec le runtime .NET, les DLL et le dossier `libvlc/`) dans : `resources/ChocoPlayer/ChocoPlayer.exe`
 
+Ce dossier est embarqué tel quel dans ChocoPlus : `ChocoPlayer.csproj` ne publie donc que ce qui sert au lecteur.
+- `libvlc/win-x64` uniquement (pas de `win-x86`), sans les bibliothèques d'import `.lib`, les scripts Lua ni les plugins VLC inutilisés (sortie de streaming/transcodage, visualisations, murs vidéo, découverte réseau, incrustations OSD)
+- les traductions de .NET en français seulement (l'anglais est intégré), et pas de `.pdb`
+- `libvlc/win-x64/plugins/plugins.dat` est généré à la fin de la publication : avec ce cache, VLC ne charge que les plugins nécessaires au lieu de toutes ses DLL à chaque lancement (premier démarrage beaucoup plus rapide). S'il manque, ChocoPlayer le recrée à son premier lancement.
+
 > Le dossier est vidé avant la publication pour ne pas garder d'anciens fichiers d'un build précédent.
 >
 > Ne pas activer `PublishTrimmed` (non supporté par WinForms) ni `PublishSingleFile` (LibVLC charge ses plugins depuis le dossier `libvlc/` sur le disque).

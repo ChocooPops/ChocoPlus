@@ -7,6 +7,12 @@ static class Program
     [STAThread]
     static void Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == VlcPluginsCache.GENERATE_ARG)
+        {
+            Environment.ExitCode = VlcPluginsCache.Generate() ? 0 : 1;
+            return;
+        }
+
         ApplicationConfiguration.Initialize();
 
         string? json = args.Length > 0 ? args[0] : null;

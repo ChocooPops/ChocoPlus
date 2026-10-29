@@ -181,7 +181,6 @@ namespace ChocoPlayer
                 "--avcodec-skip-idct=0",
 
                 // Misc optimisations
-                "--no-plugins-cache",
                 "--no-stats",
                 "--no-sub-autodetect-file",
                 "--drop-late-frames",           // only when the machine can't keep up: keeps A/V in sync
@@ -189,7 +188,7 @@ namespace ChocoPlayer
                 "--quiet",
             };
 
-            _libVLC = new LibVLC(vlcArgs);
+            _libVLC = new LibVLC([.. vlcArgs, .. VlcPluginsCache.GetLibVLCArgs()]);
             _mediaPlayer = new MediaPlayer(_libVLC)
             {
                 Volume = 50,

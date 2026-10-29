@@ -9,11 +9,27 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <!-- The publish folder is embedded as is in ChocoPlus by electron-builder: only publish what the player uses -->
+  <PropertyGroup>
+    <!-- .NET's own messages: English is built in, French is the only other language of the app -->
+    <SatelliteResourceLanguages>fr</SatelliteResourceLanguages>
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    <!-- The player is published for win-x64 only -->
+    <VlcWindowsX86Enabled>false</VlcWindowsX86Enabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- libvlc parts never used by the player: C import libraries, Lua scripts (website parsers, VLC interfaces),
+         streaming / transcoding output, audio visualizations, video walls, network discovery, OSD overlays -->
+    <VlcWindowsX64ExcludeFiles Include="libvlc.lib;libvlccore.lib;lua\%2A%2A;plugins\lua\%2A" />
+    <VlcWindowsX64ExcludeFiles Include="plugins\stream_out\%2A;plugins\access_output\%2A;plugins\mux\%2A" />
+    <VlcWindowsX64ExcludeFiles Include="plugins\visualization\%2A;plugins\video_splitter\%2A;plugins\services_discovery\%2A;plugins\spu\%2A" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="LibVLCSharp" Version="3.9.5" />
     <PackageReference Include="LibVLCSharp.WinForms" Version="3.9.5" />
     <PackageReference Include="SkiaSharp" Version="3.119.1" />
-    <PackageReference Include="Svg" Version="3.4.7" />
     <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
   </ItemGroup>
 
@@ -25,5 +41,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <!-- Ships libvlc's plugins cache (libvlc\win-x64\plugins\plugins.dat) with the published player,
+       so even the very first launch doesn't load every plugin DLL (see VlcPluginsCache.cs) -->
+  <Target Name="GenerateVlcPluginsCache" AfterTargets="Publish">
+    <Exec Command="&quot;$(PublishDir)$(AssemblyName).exe&quot; --generate-vlc-plugins-cache" ContinueOnError="WarnAndContinue" />
+  </Target>
 
 </Project>
