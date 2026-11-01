@@ -31,6 +31,8 @@ export class SimilarPosterHorizontalComponent {
   srcPoster: string | undefined = undefined;
   srcLogo: string | undefined = undefined;
   showLogo: boolean = true;
+  imageLoaded: boolean = false;
+  logoLoaded: boolean = false;
   MediaType = MediaTypeModel;
   nbSeason !: number;
 
@@ -53,12 +55,22 @@ export class SimilarPosterHorizontalComponent {
     }
   }
 
+  onImageLoad(): void {
+    this.imageLoaded = true;
+  }
+
   onErrorImage(): void {
     this.srcPoster = undefined;
+    this.imageLoaded = false;
+  }
+
+  onLogoLoad(): void {
+    this.logoLoaded = true;
   }
 
   onErrorLogo(): void {
     this.srcLogo = undefined;
+    this.logoLoaded = false;
   }
 
   onClickMovie(): void {

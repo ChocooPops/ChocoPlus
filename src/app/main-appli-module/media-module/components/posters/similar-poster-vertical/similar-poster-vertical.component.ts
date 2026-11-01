@@ -28,6 +28,7 @@ export class SimilarPosterVerticalComponent {
   width!: number;
   gap!: number;
   srcPoster: (string | undefined)[] = [];
+  imageLoaded: boolean[] = [];
   srcIconInfo: string = 'icon/info.svg';
 
   constructor(private readonly paginationPosterService: PaginationPosterService,
@@ -63,8 +64,13 @@ export class SimilarPosterVerticalComponent {
     event.stopPropagation();
   }
 
+  onImageLoad(index: number): void {
+    this.imageLoaded[index] = true;
+  }
+
   onErrorImage(index: number): void {
     this.srcPoster[index] = undefined;
+    this.imageLoaded[index] = false;
   }
 
 }

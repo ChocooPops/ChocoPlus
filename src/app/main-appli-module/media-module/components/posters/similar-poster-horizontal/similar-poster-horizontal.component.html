@@ -4,12 +4,15 @@
         <app-news-alert [visibility]="true" [isRecent]="media.isRecent" [mediaType]="media.mediaType"></app-news-alert>
 
         @if(srcPoster != undefined) {
-        <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()" class="img-poster">
+        <img [src]="srcPoster" loading="lazy" (error)="onErrorImage()" (load)="onImageLoad()" class="img-poster"
+            [style.opacity]="imageLoaded ? '1' : '0'">
         }
         <div class="container-logo">
             @if(showLogo && srcLogo != undefined) {
-            <img [src]="srcLogo" (error)="onErrorLogo()" class="img-logo">
-            }@else {
+            <img [src]="srcLogo" (error)="onErrorLogo()" (load)="onLogoLoad()" class="img-logo"
+                [style.opacity]="logoLoaded && imageLoaded ? '1' : '0'">
+            }
+            @if(!showLogo || srcLogo == undefined || !logoLoaded || !imageLoaded) {
             <p> {{ media.title }}</p>
             }
         </div>

@@ -88,6 +88,7 @@
 
 .img-poster {
     height: 100%;
+    transition: opacity 0.3s;
 }
 
 .img-logo {
@@ -112,6 +113,7 @@
         width: auto;
         bottom: 0;
         left: 0;
+        transition: opacity 0.3s;
     }
 }
 
