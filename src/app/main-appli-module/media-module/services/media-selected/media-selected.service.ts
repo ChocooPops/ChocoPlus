@@ -103,6 +103,7 @@ export class MediaSelectedService {
       srcLogo: media.srcLogo,
       srcBackgroundImage: media.srcBackgroundImage,
       mediaType: media.mediaType,
+      bytes: media.mediaType === MediaTypeModel.MOVIE ? (media as MovieModel).bytes ?? 0 : 0,
       seasons: media.mediaType === MediaTypeModel.SERIES
         ? (media as SeriesModel).seasons.map((season: SeasonModel): SeasonHistoryModel => ({
           id: season.id,
@@ -160,7 +161,8 @@ export class MediaSelectedService {
       duration: entry.duration ?? 0,
       resolution: entry.resolution ?? '',
       watchProgress: 0,
-      stateProgress: ProgressStateMedia.NOT_WATCHED
+      stateProgress: ProgressStateMedia.NOT_WATCHED,
+      bytes: entry.bytes
     };
     return movie;
   }

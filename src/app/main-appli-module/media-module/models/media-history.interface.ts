@@ -20,6 +20,7 @@ export interface MediaHistoryModel {
     srcLogo?: string | undefined,
     srcBackgroundImage?: string | undefined,
     mediaType: MediaTypeModel,
+    bytes?: number,
     seasons?: SeasonHistoryModel[],
     duration?: number,
     resolution?: string
