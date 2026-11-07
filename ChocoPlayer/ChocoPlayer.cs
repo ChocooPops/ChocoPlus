@@ -441,6 +441,7 @@ namespace ChocoPlayer
             if (totalTime > 0)
             {
                 long targetTime   = (long)((_watchProgress / 100f) * totalTime);
+                if (totalTime - targetTime < 10_000) return;
                 //long adjustedTime = Math.Max(targetTime - 60_000, 0);
                 _mediaPlayer.Time = targetTime;
             }

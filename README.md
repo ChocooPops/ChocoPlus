@@ -760,4 +760,4 @@ Projet Open source - Aucun droit réservé
 
 **Développé avec ❤️ et 🍫 par l'équipe ChocoPlus**
 
-*Version 3.0.0 - Octobre 2026*
+*Version 3.0.1 - Novembre 2026*
