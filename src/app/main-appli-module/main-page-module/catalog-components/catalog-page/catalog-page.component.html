@@ -2,20 +2,8 @@
     <app-menu-tmp></app-menu-tmp>
     <div class="container-list">
         <div class="container-title" [style.margin-left.vw]="marginLeft" [style.width]="width">
-            <div class="align-title-total">
-                <p class="title"> {{ 'MENU.MAIN.CATALOG' | translate }} </p>
-                @if (total != undefined) {
-                    @if (total > 1) {
-                        <p class="total"> {{ total }} {{ 'SEARCH_PAGE.RESULTS' | translate | lowercase }} </p>
-                    }@else {
-                         <p class="total"> {{ total }} {{ 'SEARCH_PAGE.RESULT' | translate | lowercase }} </p>
-                    }
-                } @else {
-                    <div class="total-loading container-animation-gradient-normal">
-                        <p> 1500 results </p>
-                    </div>
-                }
-            </div>
+            <app-title-grid [title]="title" [total]="total"
+            [displayNbResults]="true"></app-title-grid>
             <div class="container-options">
                 <app-other-filters (onFilterCreated)="onFilterCreated($event)"></app-other-filters>
                 <app-filter [filter]="decadeFilter" (onClicked)="onSelectedDecadeFilter($event)"></app-filter>
@@ -57,6 +45,7 @@
         }
         </div>
         <div style="margin-bottom: -70px;"></div>
-        <app-grid-list [mediaList]="medias" [title]="title" [format]="format" [isLoadingCatalog]="isLoading"></app-grid-list>
+        <app-grid-list [mediaList]="medias" [title]="''" [format]="format" [isLoadingCatalog]="isLoading"
+        [displayNbResults]="false"></app-grid-list>
     </div>
 </div>

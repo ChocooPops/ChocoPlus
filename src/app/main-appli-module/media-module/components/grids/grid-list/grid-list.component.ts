@@ -16,6 +16,9 @@ export class GridListComponent {
 
   @Input() mediaList: MediaModel[] | undefined = undefined;
   @Input() title: string = '';
+  @Input({ required: true }) displayNbResults!: boolean;
+  @Input() total: number | undefined = undefined;
+  
   @Input() format: FormatPosterModel = FormatPosterModel.VERTICAL;
   @Input() isLoadingCatalog!: boolean;
   @Input() isOnLine: boolean = true;

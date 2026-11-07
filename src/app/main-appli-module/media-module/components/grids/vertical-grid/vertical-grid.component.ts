@@ -4,12 +4,12 @@ import { VerticalPosterComponent } from '../../posters/vertical-poster/vertical-
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { PosterLoadingComponent } from '../../posters/poster-loading/poster-loading.component';
 import { SettingNotFoundComponent } from '../../../../../common-module/components/setting-not-found/setting-not-found.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TitleGridComponent } from '../title-grid/title-grid.component';
 
 @Component({
   selector: 'app-vertical-grid',
   standalone: true,
-  imports: [VerticalPosterComponent, PosterLoadingComponent, SettingNotFoundComponent, TranslatePipe],
+  imports: [TitleGridComponent, VerticalPosterComponent, PosterLoadingComponent, SettingNotFoundComponent],
   templateUrl: './vertical-grid.component.html',
   styleUrls: ['./vertical-grid.component.css', '../grid-poster.style.css']
 })

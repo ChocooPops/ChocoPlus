@@ -1,0 +1,11 @@
+@if (total != undefined) {
+    @if (total > 1) {
+        <p class="total"> {{ total }} {{ 'SEARCH_PAGE.RESULTS' | translate | lowercase }} </p>
+    }@else {
+        <p class="total"> {{ total }} {{ 'SEARCH_PAGE.RESULT' | translate | lowercase }} </p>
+    }
+} @else {
+    <div class="total-loading container-animation-gradient-normal">
+        <p> 1500 results </p>
+    </div>
+}

@@ -8,8 +8,11 @@ import { PaginationPosterService } from "../../services/pagination-poster/pagina
 @Directive({})
 export abstract class GridAbstraction {
 
-    @Input() mediaList: MediaModel[] | undefined = undefined;
-    @Input() title: string = '';
+    @Input({ required: true }) mediaList: MediaModel[] | undefined = undefined;
+    @Input({ required: true }) title: string = '';
+    @Input({ required: true }) displayNbResults!: boolean;
+    @Input() total: number | undefined = undefined;
+
     @Input() isLoadingCatalog!: boolean;
     @Input() isOnLine: boolean = true;
     
@@ -26,8 +29,8 @@ export abstract class GridAbstraction {
 
     protected verifTypeY: boolean = false;
 
-    constructor(protected paginationPosterService: PaginationPosterService,
-        protected imagePreloaderService: ImagePreloaderService
+    constructor(protected readonly paginationPosterService: PaginationPosterService,
+        protected readonly imagePreloaderService: ImagePreloaderService
     ) { }
 
     ngOnInit(): void {

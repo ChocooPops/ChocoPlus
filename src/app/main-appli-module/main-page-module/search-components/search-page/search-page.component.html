@@ -10,6 +10,7 @@
     @if(!displayMediaWanted) {
     <app-search-license-list></app-search-license-list>
     }@else {
-    <app-grid-list [title]="title" [mediaList]="mediaWanted" [format]="format"></app-grid-list>
+    <app-grid-list [title]="title" [mediaList]="mediaWanted" [format]="format"
+    [displayNbResults]="true" [total]="total"></app-grid-list>
     }
 </div>

@@ -1,0 +1,6 @@
+<div class="align-title-total">
+    <p class="title"> {{ title | translate }} </p>
+    @if (displayNbResults) {
+        <app-nb-results [total]="total"></app-nb-results>
+    }
+</div>

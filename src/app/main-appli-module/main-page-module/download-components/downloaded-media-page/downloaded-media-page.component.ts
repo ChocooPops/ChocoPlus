@@ -8,15 +8,15 @@ import { FormatPosterService } from '../../../common-module/services/format-post
 import { MenuTabService } from '../../../menu-module/service/menu-tab/menu-tab.service';
 import { MediaSelectedService } from '../../../media-module/services/media-selected/media-selected.service';
 import { DownloadService } from '../../../media-module/services/download/download.service';
-import { TranslatePipe } from '@ngx-translate/core';
 import { StorageRepartitionComponent } from '../storage-repartition/storage-repartition.component';
 import { PaginationPosterService } from '../../../media-module/services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../media-module/models/geometric-dimension-selection.interface';
+import { TitleGridComponent } from '../../../media-module/components/grids/title-grid/title-grid.component';
 
 @Component({
   selector: 'app-downloaded-media-page',
   standalone: true,
-  imports: [MenuTmpComponent, GridListComponent, TranslatePipe, StorageRepartitionComponent],
+  imports: [TitleGridComponent, MenuTmpComponent, GridListComponent, StorageRepartitionComponent],
   templateUrl: './downloaded-media-page.component.html',
   styleUrls: ['./downloaded-media-page.component.css', '../../../media-module/components/grids/grid-poster.style.css']
 })
@@ -26,6 +26,7 @@ export class DownloadedMediaPageComponent {
   marginLeft!: number;
 
   medias: MediaModel[] | undefined = undefined;
+  total: number | undefined = undefined;
   format !: FormatPosterModel;
   subscription: Subscription = new Subscription();
 
@@ -57,9 +58,10 @@ export class DownloadedMediaPageComponent {
 
     this.subscription.add(
       this.downloadService.getMediaList().subscribe((data: MediaModel[] | undefined) => {
-        this.medias = data
+        this.medias = data;
+        this.total = this.medias?.length;
       })
-    )
+    );
   }
 
   ngOnDestroy(): void {

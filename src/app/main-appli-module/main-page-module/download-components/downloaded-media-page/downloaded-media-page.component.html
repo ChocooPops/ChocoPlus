@@ -3,10 +3,11 @@
     <div class="space"></div>
     <div class="container-list">
         <div class="page-header" [style.margin-inline.vw]="marginLeft" >
-            <p> {{ title | translate }} </p>
+            <app-title-grid [title]="title" [displayNbResults]="true" [total]="total"></app-title-grid>
             <app-storage-repartition></app-storage-repartition>
         </div>
         <div style="margin-bottom: -80px;"></div>
-        <app-grid-list [mediaList]="medias" [title]="''" [format]="format" [isOnLine]="false"></app-grid-list>
+        <app-grid-list [mediaList]="medias" [title]="''" [format]="format" [isOnLine]="false"
+        [displayNbResults]="false"></app-grid-list>
     </div>
 </div>

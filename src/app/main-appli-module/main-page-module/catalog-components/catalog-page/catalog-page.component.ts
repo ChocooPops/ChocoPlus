@@ -1,4 +1,4 @@
-import { Component, NgZone, Renderer2 } from '@angular/core';
+import { Component, Input, NgZone, Renderer2 } from '@angular/core';
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { combineLatest, Subscription, switchMap, take } from 'rxjs';
 import { MenuTmpComponent } from '../../../menu-module/components/menu-tmp/menu-tmp.component';
@@ -25,17 +25,20 @@ import { OtherFiltersComponent } from '../other-filters/other-filters.component'
 import { FilterType } from '../../../media-module/models/catalog/filter-type.enum';
 import { TranslatePipe } from '@ngx-translate/core';
 import { OperatorPipe } from '../../../../common-module/pipe/operator.pipe';
-import { UpperCasePipe, LowerCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { ResultCatalog } from '../../../media-module/models/catalog/result-catalog.interface';
+import { TitleGridComponent } from '../../../media-module/components/grids/title-grid/title-grid.component';
 
 @Component({
   selector: 'app-catalog-page',
   standalone: true,
-  imports: [OperatorPipe, LowerCasePipe, UpperCasePipe, OtherFiltersComponent, TranslatePipe, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
+  imports: [TitleGridComponent, OperatorPipe, UpperCasePipe, OtherFiltersComponent, TranslatePipe, GridListComponent, MenuTmpComponent, FilterComponent, SortComponent],
   templateUrl: './catalog-page.component.html',
-  styleUrls: ['./catalog-page.component.css', '../../../common-module/styles/animation.css']
+  styleUrls: ['./catalog-page.component.css']
 })
 export class CatalogPageComponent {
+
+  public readonly title: string = 'MENU.MAIN.CATALOG';
 
   medias: MediaModel[] | undefined = undefined;
   total: number | undefined = undefined;
@@ -47,7 +50,6 @@ export class CatalogPageComponent {
   private errorTimeoutId?: ReturnType<typeof setTimeout>;
   private fillScreenTimeoutId?: ReturnType<typeof setTimeout>;
 
-  title: string = '';
   format: FormatPosterModel = FormatPosterModel.VERTICAL;
 
   marginLeft!: number;

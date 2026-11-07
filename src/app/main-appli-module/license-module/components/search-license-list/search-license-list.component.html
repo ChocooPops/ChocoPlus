@@ -1,4 +1,5 @@
-<p class="parcourir" [style.margin-left.vw]="marginLeft"> {{ 'BUTTON.BROWSE' | translate}} </p>
+<app-title-grid class="title" [style.margin-left.vw]="marginLeft" [title]="title" [displayNbResults]="false" />
+
 <div class="container-list-license" [style.gap.vw]="gap" [style.padding-left.vw]="marginLeft">
     @if(licenseSearchList) {
     @for(licenseSearch of licenseSearchList; track licenseSearch.id) {

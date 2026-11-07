@@ -23,6 +23,8 @@ export class MyListPageComponent {
   title = 'MYLIST_PAGE';
 
   medias: MediaModel[] | undefined = undefined;
+  total: number | undefined = undefined;
+
   format !: FormatPosterModel;
   subscription: Subscription = new Subscription();
   gap !: number;
@@ -47,6 +49,7 @@ export class MyListPageComponent {
     this.subscription.add(
       this.userService.getMyList().subscribe((medias: MediaModel[]) => {
         this.medias = medias;
+        this.total = this.medias.length;
       })
     );
     this.subscription.add(

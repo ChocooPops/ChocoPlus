@@ -8,18 +8,20 @@ import { DimensionModel } from '../../../../common-module/models/dimension.inter
 import { LicenseService } from '../../service/license/licence.service';
 import { PaginationLicenseService } from '../../service/pagination-license/pagination-license.service';
 import { SearchLicenseLoadingComponent } from '../../../main-page-module/search-components/search-license-loading/search-license-loading.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TitleGridComponent } from '../../../media-module/components/grids/title-grid/title-grid.component';
 
 @Component({
   selector: 'app-search-license-list',
   standalone: true,
-  imports: [SearchLicenseComponent, SearchLicenseLoadingComponent, TranslatePipe],
+  imports: [TitleGridComponent, SearchLicenseComponent, SearchLicenseLoadingComponent],
   templateUrl: './search-license-list.component.html',
   styleUrl: './search-license-list.component.css'
 })
 export class SearchLicenseListComponent {
 
   //private abortController = new AbortController();
+  public readonly title: string = 'BUTTON.BROWSE';
+
   licenseSearchList: LicenseModel[] | undefined = undefined;
   licenseLoadingList: number[] = [];
   gap !: number;

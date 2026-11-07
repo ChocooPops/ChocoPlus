@@ -38,6 +38,7 @@ export class SearchPageComponent {
   format!: FormatPosterModel;
   srcImageResearch: string = 'icon/research.svg';
   mediaWanted: MediaModel[] | undefined = undefined;
+  total: number | undefined = undefined;
   displayMediaWanted: boolean = false;
 
   private get inputControl(): FormControl<string | null> {
@@ -76,6 +77,7 @@ export class SearchPageComponent {
           this.syncInput(keyword);
           this.displayMediaWanted = keyword !== '';
           this.mediaWanted = undefined;
+          this.total = undefined;
 
           if (!keyword) return of(null);
           return this.mediaService.fetchResearchMediaByKeyword(keyword).pipe(
@@ -85,6 +87,7 @@ export class SearchPageComponent {
       ).subscribe((data: MediaModel[] | null) => {
         if (data) {
           this.mediaWanted = data;
+          this.total = this.mediaWanted.length;
         }
       })
     );
