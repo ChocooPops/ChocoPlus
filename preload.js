@@ -37,6 +37,46 @@ contextBridge.exposeInMainWorld('electron', {
   getLastWatchedEpisode: (seriesId) => ipcRenderer.invoke('get-last-watched-episode', seriesId),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
 
+  // Internal video player (see media-player.js). The on* methods return a function that removes the listener.
+  player: {
+    prepare: (request) => ipcRenderer.invoke('player:prepare', request),
+    release: (sourceId) => ipcRenderer.invoke('player:release', sourceId),
+    saveProgress: (data) => ipcRenderer.invoke('player:save-progress', data),
+    // The window is about to close: callback saves the progress (returns a promise), then the main process is told
+    onFlushProgress: (callback) => {
+      const listener = async (_event, flushId) => {
+        try {
+          await callback();
+        } finally {
+          ipcRenderer.send('player:progress-flushed', flushId);
+        }
+      };
+      ipcRenderer.on('player:flush-progress', listener);
+      return () => ipcRenderer.removeListener('player:flush-progress', listener);
+    },
+    onSubtitleCues: (callback) => {
+      const listener = (_event, data) => callback(data);
+      ipcRenderer.on('player:subtitle-cues', listener);
+      return () => ipcRenderer.removeListener('player:subtitle-cues', listener);
+    },
+    onPgsDisplaySets: (callback) => {
+      const listener = (_event, data) => callback(data);
+      ipcRenderer.on('player:pgs-display-sets', listener);
+      return () => ipcRenderer.removeListener('player:pgs-display-sets', listener);
+    },
+    // ChocoPlayer was launched: the internal player has been stopped (only one video at a time)
+    onClosedByChocoPlayer: (callback) => {
+      const listener = () => callback();
+      ipcRenderer.on('player:closed-by-choco-player', listener);
+      return () => ipcRenderer.removeListener('player:closed-by-choco-player', listener);
+    },
+    onStreamError: (callback) => {
+      const listener = (_event, data) => callback(data);
+      ipcRenderer.on('player:stream-error', listener);
+      return () => ipcRenderer.removeListener('player:stream-error', listener);
+    }
+  },
+
   apiUrl: apiUrl,
   headerSecret: headerSecret,
   headerName: headerName

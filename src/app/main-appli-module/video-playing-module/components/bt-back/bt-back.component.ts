@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SavePathService } from '../../../common-module/services/save-path/save-path.service';
 import { BtClassicComponent } from '../bt-classic/bt-classic.component';
+import { PlayerSessionService } from '../../services/player-session/player-session.service';
 
 @Component({
   selector: 'app-bt-back',
@@ -14,10 +14,11 @@ export class BtBackComponent {
   folder: string = "icon/controls/";
   srcBackArrow: string = this.folder + "back-arrow.svg";
 
-  constructor(private savePathService: SavePathService) { }
+  constructor(private playerSessionService: PlayerSessionService) { }
 
+  // The player is shown over the page it was launched from: closing it is going back
   onClickBack() {
-    this.savePathService.navigateToOldPath();
+    this.playerSessionService.close();
   }
 
 }

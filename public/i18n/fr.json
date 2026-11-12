@@ -279,7 +279,11 @@
             "SHOW_TITLE": "Titre",
             "SOUND_VIDEO": "Activer le son de la vidéo de présentation",
             "FORCE_STOP_PLAYER": "Forcer l'arrêt du lecteur vidéo",
-            "FORCE_STOP_PLAYER_DESCRIPTION": "Activé : le lecteur se ferme immédiatement, mais la progression de lecture n'est ni sauvegardée ni envoyée.\nDésactivé : la progression est sauvegardée et envoyée avant la fermeture, mais l'arrêt peut prendre plus de temps."
+            "FORCE_STOP_PLAYER_DESCRIPTION": "Activé : le lecteur se ferme immédiatement, mais la progression de lecture n'est ni sauvegardée ni envoyée.\nDésactivé : la progression est sauvegardée et envoyée avant la fermeture, mais l'arrêt peut prendre plus de temps.",
+            "VIDEO_PLAYER": "Lecteur vidéo",
+            "VIDEO_PLAYER_DESCRIPTION": "Dans l'application : la vidéo se lit directement dans ChocoPlus, avec le choix des pistes audio et des sous-titres et l'épisode suivant automatique.\nChocoPlayer : la vidéo s'ouvre dans le lecteur externe. L'option « Forcer l'arrêt du lecteur vidéo » ne concerne que ChocoPlayer.",
+            "INTERNAL_PLAYER": "Dans l'application",
+            "CHOCO_PLAYER": "ChocoPlayer"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "La visualisation de la base de donnée peut consommer énormément de ressource pour les ordinateurs les moins performant",
@@ -749,5 +753,25 @@
         "CANCEL_ISOLATE_GRAPH": "Annuler l'isolation du graphe",
         "ASCENDING_SORT": "Trie par ordre croissant",
         "DESCENDING_SORT": "Trie par ordre décroissant"
+    },
+    "PLAYER": {
+        "AUDIO": "Audio",
+        "SUBTITLES": "Sous-titres",
+        "DISABLE": "Désactiver",
+        "TRACK": "Piste",
+        "FORCED": "Forcés",
+        "HEARING_IMPAIRED": "SDH",
+        "UNSUPPORTED_SUBTITLE": "Non supporté",
+        "NEXT_EPISODE": "Épisode suivant",
+        "PLAY": "Lire",
+        "NEXT_IN": "Lecture dans {{seconds}} s",
+        "CANCEL": "Annuler",
+        "SEASON_EPISODE": "S{{season}} · É{{episode}}",
+        "EPISODE_NUMBER": "Épisode {{episode}}",
+        "EPISODES": "Épisodes",
+        "EPISODES": "Épisodes",
+        "NOW_PLAYING": "En cours",
+        "NO_EPISODE": "Aucun épisode disponible",
+        "UNAVAILABLE_SEASON": "Non téléchargée"
     }
 }

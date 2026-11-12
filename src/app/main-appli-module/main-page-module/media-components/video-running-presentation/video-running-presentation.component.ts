@@ -15,7 +15,13 @@ import { StreamService } from '../../../video-playing-module/services/stream/str
 import { SeasonModel } from '../../../media-module/models/series/season.interface';
 import { SeriesModel } from '../../../media-module/models/series/series.interface';
 import { DetailButtonComponent } from '../../../media-module/components/button/detail-button/detail-button.component';
+import { MediaFocusService } from '../../../../common-module/services/media-focus/media-focus.service';
+import { Subscription } from 'rxjs';
 
+// Trailer of the movie / series pages. It doesn't disturb a video being watched (MediaFocusService):
+// paused while a player is open, it goes on when the player closes; its autoplay waits for the player to close.
+// Started by the user with the button, it takes the focus: the video of the player pauses. When that video
+// plays again (or another one starts), the trailer is cut (stopStreamingVideo), not just paused.
 @Component({
   selector: 'app-video-running-presentation',
   standalone: true,
@@ -44,11 +50,23 @@ export class VideoRunningPresentationComponent {
   private observer?: IntersectionObserver;
   private isVisible: boolean = true;
 
+  private readonly focusOwner: symbol = Symbol('trailer');
+  private focusSubscription?: Subscription;
+  // Stream started (loading or loaded) and not stopped
+  private isStreaming: boolean = false;
+  // Paused because another media has the focus: goes on when it comes back
+  private pausedByFocus: boolean = false;
+  // Autoplay held back by a player: starts when the player closes
+  private autoStartPending: boolean = false;
+  // Started with the restream button (holds the focus): cut when a video takes the focus back
+  private startedByUser: boolean = false;
+
   constructor(private readonly compressedPosterService: CompressedPosterService,
     private readonly streamService: StreamService,
     private readonly autoPlayVideoService: AutoPlayVideoService,
     private readonly mediaLogoDisplayService: MediaLogoDisplayService,
-    private readonly soundVideoService: SoundVideoService
+    private readonly soundVideoService: SoundVideoService,
+    private readonly mediaFocusService: MediaFocusService
   ) { }
 
   ngOnInit(): void {
@@ -63,6 +81,11 @@ export class VideoRunningPresentationComponent {
     }
 
     this.activateReStream = !this.autoPlayVideoService.getAutoPlayVideo();
+    // A video is being watched: no autoplay behind it (the button can still start the trailer)
+    if (!this.activateReStream && !this.mediaFocusService.isFreeFor(this.focusOwner)) {
+      this.autoStartPending = true;
+      this.activateReStream = true;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -79,17 +102,47 @@ export class VideoRunningPresentationComponent {
     if (!this.activateReStream) {
       this.startStreamingVideo();
     }
+    this.focusSubscription = this.mediaFocusService.owner$.subscribe(() => this.onFocusChange());
   }
 
   ngOnDestroy(): void {
+    this.focusSubscription?.unsubscribe();
     this.observer?.disconnect();
     this.stopStreamingVideo();
+  }
+
+  private get hasFocus(): boolean {
+    return this.mediaFocusService.isFreeFor(this.focusOwner);
+  }
+
+  private onFocusChange(): void {
+    const video = this.videoRef?.nativeElement;
+    if (!this.hasFocus) {
+      // The user went back to the video: the trailer they had started is cut
+      if (this.startedByUser && this.isStreaming) {
+        this.stopStreamingVideo();
+        return;
+      }
+      // Also cancels the autoplay of a trailer still loading
+      if (video && this.isStreaming) {
+        video.pause();
+        this.pausedByFocus = true;
+      }
+      return;
+    }
+    if (this.autoStartPending) {
+      this.autoStartPending = false;
+      this.restartStream();
+    } else if (this.pausedByFocus) {
+      this.pausedByFocus = false;
+      this.applyVisibility();
+    }
   }
 
   private applyVisibility(): void {
     const video = this.videoRef?.nativeElement;
     if (!video || !this.isVideoLoaded) return;
-    if (this.isVisible) {
+    if (this.isVisible && this.hasFocus) {
       video.play().catch((error: DOMException) => {
         if (error.name === 'NotAllowedError' && video.volume > 0) {
           video.volume = 0;
@@ -106,7 +159,7 @@ export class VideoRunningPresentationComponent {
     if (!video) return;
     video.removeEventListener('loadedmetadata', this.onLoadedMetadata);
     video.addEventListener('canplay', this.onCanPlay);
-    if (!this.isVisible) video.pause();
+    if (!this.isVisible || !this.hasFocus) video.pause();
   };
 
   onCanPlay = (): void => {
@@ -131,6 +184,7 @@ export class VideoRunningPresentationComponent {
     video.addEventListener('loadedmetadata', this.onLoadedMetadata);
     video.addEventListener('volumechange', this.volumeUpdate);
     video.addEventListener('ended', this.onVideoEnded);
+    this.isStreaming = true;
     video.src = this.streamService.getUrlStreamNews(this.newsMedia.id);
   }
 
@@ -148,10 +202,22 @@ export class VideoRunningPresentationComponent {
     this.isVideoLoaded = false;
     this.activateTransition = true;
     this.activateReStream = true;
+    this.isStreaming = false;
+    this.pausedByFocus = false;
+    this.startedByUser = false;
+    this.mediaFocusService.release(this.focusOwner);
   }
 
+  // Restream button: the user wants to watch the trailer, the video of the player pauses
   setNewStream(): void {
     if (!this.activateReStream) return;
+    this.autoStartPending = false;
+    this.mediaFocusService.claim(this.focusOwner);
+    this.startedByUser = true;
+    this.restartStream();
+  }
+
+  private restartStream(): void {
     this.activateTransition = true;
     this.activateReStream = false;
     this.startStreamingVideo();

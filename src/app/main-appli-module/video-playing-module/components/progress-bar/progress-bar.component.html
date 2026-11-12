@@ -1,11 +1,21 @@
 <div class="container-timer">
     <div #progressRef class="container-progress-bar" (click)="updateProgressBar($event)"
-        (mousedown)="startDragProgressBar($event)" (mouseup)="endDragProgressBar($event)">
+        (mousedown)="startDragProgressBar($event)" (mouseup)="endDragProgressBar($event)"
+        (mousemove)="onHoverProgressBar($event)" (mouseleave)="onLeaveProgressBar()">
         <div class="container-progress-bar-info">
+            @if (previewPercent !== null) {
+            <div class="hover-fill" [style.width.%]="previewPercent"></div>
+            }
             <div class="progress-bar" [style.width.%]="progress">
                 <div class="pointer"></div>
             </div>
         </div>
+        @if (previewPercent !== null) {
+        <!-- Kept inside the bar's width at both ends -->
+        <div class="time-preview" [style.left]="'clamp(40px, ' + previewPercent + '%, calc(100% - 40px))'">
+            {{ previewTime }}
+        </div>
+        }
     </div>
     <p> {{ currentTimeTravelled }} / {{ totalDurationMovie }} </p>
 </div>

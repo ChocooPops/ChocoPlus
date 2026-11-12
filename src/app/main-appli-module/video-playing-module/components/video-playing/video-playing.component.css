@@ -1,5 +1,46 @@
+/* The player is shown over the app's pages: the whole window, or a mini player in a corner.
+   Above the pages, the media page (9999) and the modals, below the window's title bar. */
+:host {
+    display: block;
+    position: fixed;
+    z-index: 100000;
+}
+
+:host(.player-full) {
+    inset: 0;
+}
+
+/* Default place and size: replaced by the ones the user chose (set on the element, mini-player-geometry.ts) */
+:host(.player-mini) {
+    right: 24px;
+    bottom: 24px;
+    width: 400px;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.6);
+    animation: mini-player-appears 0.25s ease-out;
+    /* Subtitles sized from the player's width (cqw) */
+    container-type: inline-size;
+    user-select: none;
+    touch-action: none;
+}
+
+/* No scale: PGS subtitles are placed from the on-screen sizes, a scaled frame would offset them */
+@keyframes mini-player-appears {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .container {
-    height: 100vh;
+    height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -122,6 +163,326 @@ app-action-key {
     to {
         opacity: 0;
         transform: translateY(30px);
+    }
+}
+
+/* Subtitles of the internal player: above the video, below the controls */
+.subtitles {
+    position: absolute;
+    left: 50%;
+    bottom: 7%;
+    transform: translateX(-50%);
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15em;
+    z-index: 5;
+    pointer-events: none;
+    font-size: clamp(18px, 2.4vw, 52px);
+    transition: bottom 0.3s ease-out;
+
+    p.subtitle-line {
+        margin: 0;
+        font-size: inherit;
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+        white-space: pre-wrap;
+        color: white;
+        text-shadow:
+            0 0 0.12em black, 0 0 0.12em black,
+            0.06em 0.06em 0.08em black, -0.06em -0.06em 0.08em black,
+            0.06em -0.06em 0.08em black, -0.06em 0.06em 0.08em black;
+    }
+
+    .italic {
+        font-style: italic;
+    }
+
+    .bold {
+        font-weight: 800;
+    }
+
+    .underline {
+        text-decoration: underline;
+    }
+}
+
+.subtitles-raised {
+    bottom: calc(7% + 110px);
+}
+
+/* PGS subtitles: images drawn over the video picture */
+.pgs-subtitles {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.next-episode {
+    position: absolute;
+    right: 3%;
+    bottom: 40px;
+    z-index: 15;
+    transition: bottom 0.3s ease-out;
+}
+
+.next-episode-raised {
+    bottom: 140px;
+}
+
+.buffering {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+    border-radius: 50%;
+    /* The app's yellow (progress bars, selected items) */
+    border: 4px solid rgba(255, 211, 1, 0.2);
+    border-top-color: #FFD301;
+    z-index: 5;
+    pointer-events: none;
+    animation: buffering-spin 0.9s linear infinite;
+}
+
+@keyframes buffering-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Mini player ── */
+
+:host(.player-mini) {
+    video {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: auto;
+    }
+
+    /* Dragged to move it, clicked to bring it back to full screen */
+    .container {
+        cursor: grab;
+    }
+
+    .subtitles {
+        bottom: 9%;
+        width: 92%;
+        /* 13px at the default width (400px) */
+        font-size: clamp(11px, 3.3cqw, 34px);
+    }
+
+    .buffering {
+        width: 32px;
+        height: 32px;
+        margin: -16px 0 0 -16px;
+        border-width: 3px;
+    }
+}
+
+.mini-controls {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, transparent 35%, transparent 70%, rgba(0, 0, 0, 0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+:host(.player-mini:hover) .mini-controls,
+:host(.mini-moving) .mini-controls,
+:host(.mini-resizing) .mini-controls {
+    opacity: 1;
+}
+
+:host(.mini-moving) .container {
+    cursor: grabbing;
+}
+
+/* Thin zones on the edges, squares in the corners. Not on the bottom edge: the progress bar is there. */
+.mini-resize {
+    position: absolute;
+    z-index: 8;
+}
+
+.mini-resize-top {
+    top: 0;
+    left: 14px;
+    right: 14px;
+    height: 6px;
+    cursor: ns-resize;
+}
+
+.mini-resize-left,
+.mini-resize-right {
+    top: 14px;
+    bottom: 14px;
+    width: 6px;
+    cursor: ew-resize;
+}
+
+.mini-resize-left {
+    left: 0;
+}
+
+.mini-resize-right {
+    right: 0;
+}
+
+.mini-resize-top-left,
+.mini-resize-top-right,
+.mini-resize-bottom-left,
+.mini-resize-bottom-right {
+    width: 14px;
+    height: 14px;
+}
+
+.mini-resize-top-left {
+    top: 0;
+    left: 0;
+    cursor: nwse-resize;
+}
+
+.mini-resize-top-right {
+    top: 0;
+    right: 0;
+    cursor: nesw-resize;
+}
+
+.mini-resize-bottom-left {
+    bottom: 0;
+    left: 0;
+    cursor: nesw-resize;
+}
+
+.mini-resize-bottom-right {
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+}
+
+.mini-top {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mini-title {
+    flex: 1;
+    margin: 0;
+    font-size: 13px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 5px;
+    padding-top: 2px;
+}
+
+.mini-button {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    img {
+        width: 13px;
+        height: 13px;
+    }
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.mini-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    margin: -24px 0 0 -24px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    img {
+        width: 22px;
+        height: 22px;
+    }
+
+    &:hover {
+        transform: scale(1.1);
+    }
+}
+
+/* Same yellow bar as the full player and the series pages */
+.mini-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 12px;
+    display: flex;
+    align-items: flex-end;
+    cursor: pointer;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4px;
+        background-color: rgba(230, 230, 230, 0.35);
+    }
+}
+
+.mini-progress-fill {
+    position: relative;
+    height: 4px;
+    background-color: #FFD301;
+}
+
+.mini-next-episode {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 14px;
+    z-index: 7;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 4px 4px 12px;
+    border-radius: 5px;
+    background-color: rgba(20, 20, 20, 0.92);
+    cursor: default;
+
+    p {
+        flex: 1;
+        margin: 0;
+        font-size: 12px !important;
     }
 }
 

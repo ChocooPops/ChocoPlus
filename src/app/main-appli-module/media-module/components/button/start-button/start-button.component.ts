@@ -91,7 +91,7 @@ export class StartButtonComponent {
       }
     }
     
-    await this.streamService.launchJavaAppToMovie(chocoPlayer);
+    await this.streamService.launchPlayer(chocoPlayer, this.media);
 
     // if (this.media.mediaType === MediaTypeModel.MOVIE) {
     //   this.router.navigate(['/main-app/read-video', this.media.mediaType, this.media.id]);

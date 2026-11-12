@@ -15,6 +15,8 @@ import { AutoPlayVideoService } from '../../../common-module/services/auto-play-
 import { MediaLogoDisplayService } from '../../../common-module/services/media-logo-display/media-logo-display.service';
 import { SoundVideoService } from '../../../common-module/services/sound-video/sound-video.service';
 import { ForceStopPlayerService } from '../../../common-module/services/force-stop-player/force-stop-player.service';
+import { VideoPlayerService } from '../../../common-module/services/video-player/video-player.service';
+import { VideoPlayerModel } from '../../../common-module/models/video-player.enum';
 import { take } from 'rxjs';
 
 @Injectable({
@@ -30,7 +32,8 @@ export class ParameterAppliService {
     private readonly autoPlayVideoService: AutoPlayVideoService,
     private readonly mediaLogoDisplayService: MediaLogoDisplayService,
     private readonly soundVideoService: SoundVideoService,
-    private readonly forceStopPlayerService: ForceStopPlayerService
+    private readonly forceStopPlayerService: ForceStopPlayerService,
+    private readonly videoPlayerService: VideoPlayerService
   ) { }
 
   private id: number = 0;
@@ -333,6 +336,26 @@ export class ParameterAppliService {
         }
       ],
       call: null
+    },
+    {
+      id: this.getId(),
+      name: "USER.APP_SETTINGS.VIDEO_PLAYER",
+      description: "USER.APP_SETTINGS.VIDEO_PLAYER_DESCRIPTION",
+      radioButton: [
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.INTERNAL_PLAYER",
+          value: VideoPlayerModel.INTERNAL,
+          state: false
+        },
+        {
+          id: this.getId(),
+          name: "USER.APP_SETTINGS.CHOCO_PLAYER",
+          value: VideoPlayerModel.CHOCO_PLAYER,
+          state: false
+        }
+      ],
+      call: null
     }
   ]
 
@@ -490,6 +513,14 @@ export class ParameterAppliService {
         this.radioButtonOtherOption[4].radioButton[i].state = this.radioButtonOtherOption[4].radioButton[i].value === currentForceStopPlayer;
       }
     });
+
+    //INIT VIDEO PLAYER BUTTON (in the app or ChocoPlayer);
+    const callBackVideoPlayer: any = (player: VideoPlayerModel) => this.videoPlayerService.setVideoPlayer(player);
+    this.radioButtonOtherOption[5].call = callBackVideoPlayer;
+    const currentVideoPlayer: VideoPlayerModel = this.videoPlayerService.getVideoPlayer();
+    for (let i: number = 0; i < this.radioButtonOtherOption[5].radioButton.length; i++) {
+      this.radioButtonOtherOption[5].radioButton[i].state = this.radioButtonOtherOption[5].radioButton[i].value === currentVideoPlayer;
+    }
 
     //INIT LICENSE LIST FOR SELECT;
     this.availableLicenses = [];

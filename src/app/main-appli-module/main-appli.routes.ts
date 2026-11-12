@@ -46,14 +46,6 @@ export const mainAppliRoutes: Routes = [
         loadChildren: () => import('./user-module/user.route').then(m => m.userRoutes)
     },
     {
-        path: 'read-video/:mediaType/:id',
-        loadComponent: () => import('./video-playing-module/components/video-playing/video-playing.component').then(m => m.VideoPlayingComponent)
-    },
-    {
-        path: 'read-video/:mediaType/:idSeries/:idSeason/:idEpisode',
-        loadComponent: () => import('./video-playing-module/components/video-playing/video-playing.component').then(m => m.VideoPlayingComponent)
-    },
-    {
         path: 'unauthorized',
         loadComponent: () => import('../common-module/components/unauthorized-page/unauthorized-page.component').then(m => m.UnauthorizedPageComponent)
     },

@@ -3,15 +3,17 @@
 [![Electron](https://img.shields.io/badge/Electron-33.4.11-blue.svg)](https://www.electronjs.org/)
 [![Angular](https://img.shields.io/badge/Angular-18.2.0-red.svg)](https://angular.io/)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
+[![FFmpeg](https://img.shields.io/badge/FFmpeg-6.1+-green.svg)](https://ffmpeg.org/)
 [![License](https://img.shields.io/badge/License-Open_Source-yellow.svg)]()
 
-**ChocoPlus** est une application desktop multimédia sophistiquée pour cinéphiles, développée avec Electron, Angular et C#. Elle offre une expérience de navigation et de visionnage de films et séries avec un lecteur vidéo intégré basé sur VLC.
+**ChocoPlus** est une application desktop multimédia sophistiquée pour cinéphiles, développée avec Electron, Angular et C#. Elle offre une expérience de navigation et de visionnage de films et séries, avec deux lecteurs vidéo au choix : un lecteur intégré directement à l'application (MKV, H.265, pistes audio et sous-titres, grâce à ffmpeg) et **ChocoPlayer**, un lecteur natif externe basé sur VLC.
 
 ## 📋 Table des matières
 
 - [Vue d'ensemble](#-vue-densemble)
 - [Fonctionnalités principales](#-fonctionnalités-principales)
 - [Téléchargements et mode hors ligne](#-téléchargements-et-mode-hors-ligne)
+- [Lecteur vidéo intégré](#-lecteur-vidéo-intégré)
 - [Architecture](#-architecture)
 - [Modèle de données](#-modèle-de-données)
 - [Internationalisation](#-internationalisation-i18n)
@@ -28,12 +30,14 @@
 ChocoPlus est une plateforme complète de gestion et de visionnage de contenu multimédia qui combine :
 - Une interface moderne développée avec **Angular 18** et **Material Design**
 - Un système de backend sécurisé avec authentification par tokens JWT
-- Un lecteur vidéo natif haute performance développé en **C# .NET 9** utilisant **LibVLC**
+- Un lecteur vidéo intégré à l'interface : **ffmpeg** convertit les vidéos à la volée pour **Media Source Extensions** (Chromium)
+- Un lecteur vidéo natif haute performance développé en **C# .NET 9** utilisant **LibVLC** (ChocoPlayer)
 - Une base de données relationnelle avec système de licences, sélections et categories
 
 ### Caractéristiques distinctives
 
-- **Architecture hybride** : Interface Electron/Angular + Lecteur natif C#/WinForms
+- **Architecture hybride** : Interface Electron/Angular avec son lecteur intégré + Lecteur natif C#/WinForms, au choix dans les paramètres
+- **Lecture des MKV H.265** dans l'application : vidéo décodée par le GPU, pistes audio AC3/EAC3/DTS converties, sous-titres texte et PGS
 - **Sélections dynamiques** : Création de sélections thématiques de films/séries par type de page
 - **Streaming HLS** : Support du streaming adaptatif avec hls.js (Fonctionnalité obsolète)
 - **Téléchargement et mode hors ligne** : Films et épisodes téléchargés sur le disque, consultables et lisibles sans connexion
@@ -67,13 +71,28 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 - **News** : Actualité en vedette sur la page d'accueil avec média associé
 - **NewsVideoRunning** : Vidéo tournante sur les pages Films et Séries
 
-### Lecteur vidéo (ChocoPlayer)
+### Lecteurs vidéo
+
+Le lecteur se choisit dans **Paramètres → Autres options → Lecteur vidéo** : **Dans l'application** (par défaut) ou **ChocoPlayer**. Une seule vidéo est lue à la fois, quel que soit le lecteur.
+
+**Lecteur intégré** (voir [Lecteur vidéo intégré](#-lecteur-vidéo-intégré)) :
+- **MKV, H.265, AV1, VP9, H.264** lus directement dans la fenêtre de ChocoPlus
+- **Pistes audio** : changement en cours de lecture, AC3/EAC3/DTS/TrueHD convertis en AAC
+- **Sous-titres** : texte (SRT, ASS, WebVTT) et images Blu-ray (PGS)
+- **Séries** : menu des épisodes par saison et épisode suivant automatique
+- **Mini-lecteur** : la vidéo continue dans un petit lecteur, déplaçable et redimensionnable, pendant la navigation
+- **Reprise de lecture** et choix des pistes mémorisé d'un média à l'autre
+
+**ChocoPlayer** :
 - **Lecteur natif C#** : Performance optimale avec LibVLCSharp
 - **Sous-titres** : Support multi-langues synchronisé
-- **Reprises de lecture** : Système de statistiques pour continuer où vous vous êtes arrêté
-- **Lecture locale prioritaire** : Un film ou un épisode téléchargé est lu depuis le disque plutôt qu'en streaming
 - **Contrôles personnalisés** : Interface overlay avec gestion plein écran
 - **Communication IPC** : Coordination avec l'interface Electron
+
+**Communs aux deux** :
+- **Reprises de lecture** : Système de statistiques pour continuer où vous vous êtes arrêté
+- **Lecture locale prioritaire** : Un film ou un épisode téléchargé est lu depuis le disque plutôt qu'en streaming
+- **Rien ne joue en fond** : pendant une vidéo, la bande-annonce des pages Films et Séries et la musique du jeu se mettent en pause
 
 ### Statistiques et graphiques
 - **Graphiques dynamiques** : Visualisation avec D3.js
@@ -155,11 +174,13 @@ Les suppressions ne sont jamais interrompues, pour ne pas laisser un dossier à 
 
 ### Progression hors ligne
 
-Quand ChocoPlayer signale une progression (`UPDATE_PROGRESS`), elle est aussi écrite dans le `metadata.json` du film ou de l'épisode téléchargé (`watchProgress`, `stateProgress`, `updatedAt`). Un média est considéré comme terminé à partir de 93 % de visionnage. `get-last-watched-episode` utilise ces dates pour retrouver le dernier épisode regardé d'une série.
+Quand un lecteur signale une progression (`UPDATE_PROGRESS` pour ChocoPlayer, `player:save-progress` pour le lecteur intégré), elle est aussi écrite dans le `metadata.json` du film ou de l'épisode téléchargé (`watchProgress`, `stateProgress`, `updatedAt`). Un média est considéré comme terminé à partir de 93 % de visionnage. `get-last-watched-episode` utilise ces dates pour retrouver le dernier épisode regardé d'une série.
 
 ### Fermeture et rechargement
 
-À la fermeture de l'application ou lors d'un `reload-app`, les téléchargements en cours sont annulés (fichiers partiels supprimés) et les suppressions en cours sont attendues avant de continuer.
+À la fermeture de l'application ou lors d'un `reload-app` :
+- si une vidéo est lue dans le lecteur intégré, sa progression est d'abord enregistrée (sur le disque et sur le serveur, voir [Progression de lecture](#progression-de-lecture)) ;
+- les téléchargements en cours sont annulés (fichiers partiels supprimés) et les suppressions en cours sont attendues avant de continuer.
 
 ### IPC disponibles
 
@@ -178,59 +199,192 @@ Quand ChocoPlayer signale une progression (`UPDATE_PROGRESS`), elle est aussi é
 | `get-last-watched-episode` | Renvoie le dernier épisode regardé d'une série téléchargée |
 | `get-storage-info` | Renvoie l'espace disque total et libre, la taille des téléchargements et celle du cache |
 
+## 📺 Lecteur vidéo intégré
+
+Le lecteur intégré lit les films et les épisodes directement dans la fenêtre de ChocoPlus, sans lancer ChocoPlayer, en ligne comme hors ligne.
+
+Ce n'est pas une page : le composant `VideoPlayingComponent` est affiché **par-dessus** les pages par les deux cadres de l'application (`MainAppliComponent` et `OfflineAppliComponent`) tant que `PlayerSessionService` a un média ouvert. Ouvrir une vidéo ne change donc pas de page, et la page d'origine est toujours là en dessous.
+
+### Choix du lecteur
+
+Dans **Paramètres → Autres options → Lecteur vidéo** :
+
+| Option | Effet |
+|--------|-------|
+| **Dans l'application** (par défaut) | La vidéo se lit dans ChocoPlus avec le lecteur intégré |
+| **ChocoPlayer** | La vidéo s'ouvre dans le lecteur externe C# |
+
+Le choix est enregistré dans le `localStorage` (clé `VIDEO_PLAYER`, `VideoPlayerService`). Tous les boutons de lecture passent par `StreamService.launchPlayer`, qui lance le lecteur choisi. L'option **Forcer l'arrêt du lecteur vidéo** ne concerne que ChocoPlayer.
+
+### Pourquoi ffmpeg
+
+Chromium (le moteur d'Electron) décode le **H.265** en matériel, mais il ne sait pas lire l'audio **AC3 / EAC3 / DTS**, très courant dans les MKV, et n'expose jamais les sous-titres intégrés à un MKV. Le lecteur intégré passe donc par **ffmpeg**, dans le Main Process (`media-player.js`) :
+
+```
+Fichier téléchargé ou flux du serveur (MKV...)
+        │
+        ▼
+ffprobe : liste des pistes (vidéo, audio, sous-titres) et durée
+        │
+        ▼
+ffmpeg : remux à la volée en MP4 fragmenté ──► protocole chocostream:// ──► Media Source Extensions (<video>)
+   ├── vidéo copiée telle quelle (aucun réencodage)
+   ├── audio copié s'il est en AAC, sinon converti en AAC (jusqu'en 5.1)
+   ├── sous-titres texte convertis en WebVTT ──► IPC player:subtitle-cues
+   └── sous-titres PGS copiés (SUP) ──────────► IPC player:pgs-display-sets
+```
+
+- **Vidéo** : copiée quand Chromium sait la décoder (H.265 avec un décodeur matériel, H.264, AV1, VP9). Sinon (pas de décodeur H.265, H.264 10 bits, MPEG-2…), elle est convertie en H.264 1080p, ce qui sollicite le processeur.
+- **Timestamps absolus** (`-copyts`, `frag_discont`) : le flux garde la timeline du film. Après un saut, le flux démarre à l'image clé précédente et le navigateur place la lecture exactement au temps demandé ; les sous-titres n'ont besoin d'aucun décalage.
+- **Flux du serveur** : ChocoServ répond aux requêtes `Range` par morceaux de 10 Mo. ffmpeg est lancé avec `-reconnect` pour enchaîner ces réponses.
+
+### Lecture
+
+- **Sauts précis** : dans les données déjà reçues, le saut est immédiat ; plus loin, ffmpeg est relancé à la nouvelle position (quelques centaines de millisecondes).
+- **Time code sur la barre de progression** : au survol, le temps sous la souris s'affiche au-dessus de la barre. Pendant un glisser, il suit la position visée, même hors de la barre, et reste bloqué aux extrémités. Lâcher la barre au-dessus de la vidéo ne la met pas en pause.
+- **Tampon limité** : le flux n'est lu que s'il reste moins de ~2 min d'avance (moins pour les vidéos à fort débit, pour rester sous le quota MSE de Chromium). En pause, ffmpeg et le serveur attendent.
+- **Coupure réseau** : un flux qui s'arrête en erreur reprend à la position courante ; après deux échecs sans progrès, une erreur s'affiche.
+- **Reprise** : la lecture reprend où le média a été laissé, sauf s'il restait moins de 10 secondes.
+- **Indicateur de chargement** : affiché seulement quand la vidéo manque de données (lecture, saut ou démarrage).
+
+### Pistes audio et sous-titres
+
+- Le menu des pistes affiche la langue de chaque piste et ce qui la distingue (titre, codec, canaux, « Forcés », « SDH », « PGS »).
+- **Ouverture des menus** (pistes et épisodes, `components/player-panel`) :
+  - un menu s'ouvre après un court survol du bouton (150 ms), ou tout de suite au clic ;
+  - il se ferme 350 ms après que la souris a quitté le bouton et le menu, et revenir pendant ce délai le garde ouvert ;
+  - un seul menu est ouvert à la fois : passer d'un bouton à l'autre bascule directement ;
+  - un menu fermé ne réagit plus à la souris.
+- Changer de piste audio ou de piste PGS relance le flux à la position courante, sans interruption visible.
+- **Sous-titres texte** (SRT, ASS, SSA, WebVTT) : toutes les pistes sont extraites pendant la lecture et affichées par-dessus la vidéo. Les styles ASS sont simplifiés (italique, gras, souligné).
+- **Sous-titres PGS** (Blu-ray) : seule la piste affichée est extraite. Ses images sont décodées (`pgs-subtitles.ts`) et dessinées sur un canvas aligné sur l'image.
+- **VobSub (DVD) et DVB** : listés mais non supportés.
+- Le dernier choix (langue, titre de la piste, sous-titres désactivés) est mémorisé dans le `localStorage` (`chocoplus.player.tracks`) et réappliqué au média suivant.
+
+### Mini-lecteur
+
+Le bouton **mini-lecteur** (dans les contrôles, à côté du plein écran) détache la vidéo : elle continue dans un petit lecteur (en bas à droite la première fois), et l'application reste utilisable.
+
+- La vidéo n'est ni rechargée ni interrompue : c'est le même lecteur (flux, sous-titres texte et PGS, piste choisie) qui change de taille.
+- Au survol : titre, **agrandir**, **fermer**, lecture/pause et barre de progression (cliquable). Un clic sur la vidéo (sans la déplacer) la remet en grand.
+- **Déplacer** : glisser la vidéo. **Redimensionner** : tirer un coin ou le bord haut, gauche ou droit (le bord bas porte la barre de progression). Le format 16:9 est conservé, avec 280 px de large au minimum. Le mini-lecteur reste toujours dans la fenêtre, sous la barre de titre.
+- Sa place et sa taille sont mémorisées (`chocoplus.player.mini` dans le `localStorage`) par rapport au coin de la fenêtre le plus proche : il garde sa place d'une vidéo à l'autre, d'une session à l'autre et quand la fenêtre change de taille (`mini-player-geometry.ts`).
+- Les sous-titres texte suivent la taille du mini-lecteur.
+- Naviguer vers une autre page pendant la lecture en grand (menu, Alt+←) passe automatiquement en mini-lecteur.
+- Les raccourcis clavier du lecteur ne sont actifs qu'en grand, pour ne pas gêner la page.
+- L'épisode suivant s'enchaîne aussi dans le mini-lecteur (compte à rebours compact avec « Lire » / « Annuler »).
+- Lancer un autre média depuis une page le rouvre en grand. En cas d'erreur, le lecteur repasse en grand pour afficher le message.
+- Le bouton **retour** du lecteur ferme la vidéo et laisse revenir la page d'origine.
+
+### Séries
+
+- **Menu des épisodes** : épisodes de chaque saison avec miniature, progression, titre et durée ; l'épisode en cours est mis en évidence. En ligne, les épisodes viennent du serveur ; hors ligne, ce sont les épisodes téléchargés (les saisons sans épisode téléchargé sont grisées).
+- **Épisode suivant** : une carte apparaît pendant les 30 dernières secondes ; à la fin de l'épisode, un compte à rebours de 10 secondes lance le suivant (« Lire » / « Annuler »). Après le dernier épisode d'une saison, la lecture passe à la saison suivante. Un épisode déjà vu en entier repart du début.
+
+### Progression de lecture
+
+La progression est enregistrée toutes les 60 secondes, à la pause, en quittant le lecteur, à la fin du média et **à la fermeture de l'application** :
+- dans le `metadata.json` si le média est téléchargé ;
+- dans l'historique local et sur le serveur (`stat-user/save-watching-progress-movie|episode`). Une valeur déjà acceptée par le serveur n'est pas renvoyée.
+
+À la fermeture de la fenêtre (ou au rechargement, ou à l'arrêt de l'application), le Main Process retient la fermeture et envoie `player:flush-progress` à l'interface. `StreamService` enregistre la position de la vidéo en cours, puis répond `player:progress-flushed`. Sans réponse au bout de 4 secondes, la fenêtre se ferme quand même.
+
+### Une seule vidéo à la fois
+
+- Démarrer le lecteur intégré arrête d'abord ChocoPlayer s'il est ouvert (même règle que lorsque ChocoPlayer change de média : sa progression est sauvegardée, sauf si « Forcer l'arrêt » est activé).
+- Lancer ChocoPlayer pendant une lecture dans le lecteur intégré (en grand ou en mini-lecteur) enregistre sa progression, l'arrête et ferme le lecteur intégré.
+- Les deux démarrages passent par la même file d'attente (`launchQueue`), pour que deux clics rapprochés ne se croisent pas.
+
+### Médias en arrière-plan
+
+Tant qu'une vidéo est ouverte (lecteur intégré en grand ou en mini-lecteur, ou ChocoPlayer), rien d'autre ne se fait entendre :
+- **Bande-annonce des pages Films et Séries** : elle se met en pause dès le lancement du lecteur et reprend quand il se ferme. Ouverte pendant une lecture, la page ne lance pas la bande-annonce ; elle démarre à la fermeture du lecteur.
+- Le bouton **relancer** de la bande-annonce reste utilisable : la vidéo du lecteur se met alors en pause. Remettre la vidéo en lecture (ou en lancer une autre) **coupe** la bande-annonce (`stopStreamingVideo()`) : la page revient à l'image et au bouton relancer.
+- **Jeu hors ligne** : la musique se tait pendant la vidéo et reprend après. Quand le lecteur repasse en grand par-dessus le jeu, la partie se met en pause (Entrée pour reprendre) et le clavier revient au lecteur.
+
+`MediaFocusService` (`src/app/common-module/services/media-focus/`) décide quel média peut jouer. Le lecteur intégré prend la main à l'ouverture et à chaque lecture, ChocoPlayer tant que son statut n'est pas `CLOSED`, une bande-annonce quand l'utilisateur la relance. Les autres médias attendent que la main leur revienne.
+
+### Lecture locale prioritaire
+
+Comme pour ChocoPlayer, `resolvePlayerSource` (`app.js`) lit d'abord le fichier téléchargé (`videoPath` du `metadata.json`). Si le média n'est pas téléchargé, ou si son fichier a été supprimé, le flux du serveur est utilisé. Seules les URL de flux du serveur configuré sont acceptées.
+
+### IPC et protocole
+
+| Canal | Rôle |
+|-------|------|
+| `player:prepare` | Arrête ChocoPlayer s'il tourne, choisit la source (fichier téléchargé ou serveur), lance `ffprobe` et renvoie les pistes et la durée avec un `sourceId` |
+| `player:release` | Arrête les ffmpeg d'une source quand le lecteur est quitté |
+| `player:save-progress` | Écrit la progression dans le `metadata.json` d'un média téléchargé |
+| `player:subtitle-cues` | Événement : sous-titres texte extraits pendant la lecture |
+| `player:pgs-display-sets` | Événement : sous-titres PGS extraits pendant la lecture |
+| `player:stream-error` | Événement : un flux ffmpeg s'est arrêté en erreur |
+| `player:flush-progress` / `player:progress-flushed` | Enregistrement de la progression avant la fermeture |
+| `player:closed-by-choco-player` | Événement : ChocoPlayer a été lancé, le lecteur intégré a été arrêté |
+
+Le flux vidéo est servi par le protocole `chocostream://media/<sourceId>?start=<s>&audio=<piste>&video=copy|h264&subs=<pistes texte>&pgs=<piste PGS>&session=<n>`. Chaque requête lance un ffmpeg, arrêté dès que l'interface cesse de lire (saut, changement de piste, lecteur quitté).
+
+### Limites connues
+
+- Sous-titres VobSub et DVB non supportés ; le positionnement et les couleurs des sous-titres ASS ne sont pas conservés.
+- Dolby Vision profil 5 : couleurs incorrectes (Chromium ne gère pas ce format).
+- Conversion H.264 de secours : gourmande en processeur, sans conversion des couleurs HDR.
+- Le token de l'URL de flux n'est pas rafraîchi pendant la lecture (même comportement que ChocoPlayer).
+
 ## 🏗️ Architecture
 
 ChocoPlus utilise une architecture hybride particulière :
 
 ```
-┌─────────────────────────────────────────────┐
-│           Electron Container                │
-│  ┌────────────────────────────────────────┐ │
-│  │      Angular 18 Application            │ │
-│  │  (Interface utilisateur principale)    │ │
-│  │                                     |──────────────
-│  │  - Routing & Navigation                │ │        │
-│  │  - Material Design Components          │ │        │
-│  │  - Services & Module Management        │ │        │
-│  │  - API Communication (HTTP/JWT)        │ │        │
-│  └────────────────────────────────────────┘ │        │
-│                     │                       │        │
-│                     │ IPC Communication     │        │
-│                     ▼                       │        │
-│  ┌────────────────────────────────────────┐ │        │
-│  │         Main Process (Node.js)         │ │        │
-│  │  - Window Management                   │ │        │
-│  │  - Secure Token Storage (Keytar)       │ │        │
-│  │  - File System Operations              │ │        │
-│  │  - Downloads & Offline Storage         │ │        │
-│  │  - Process Spawning                    │ │        │
-│  └────────────────────────────────────────┘ │        │
-└─────────────────────────────────────────────┘        │
-                     │                                 │
-                     │ Spawns                          │
-                     ▼                                 │
-        ┌──────────────────────────┐                   │
-        │   ChocoPlayer (C#/.NET)  │                   │
-        │                          │                   │
-        │  - LibVLCSharp           │                   │
-        │  - WinForms UI           │                   │
-        │  - Video Playback        │                   │
-        │  - Subtitle Rendering    │                   │
-        │  - Controls Overlay      │                   │
-        └──────────────────────────┘                   │
-                     │ ────────────────────────────────│
-                     │
-                     ▼
-              ┌────────────┐
-              │  API REST  │
-              │  (Backend) │
-              └────────────┘
-                     │
-                     ▼
-           ┌───────────────────┐
-           │      MariaDB      │
-           └───────────────────┘
+┌──────────────────────────────────────────────┐
+│              Electron Container              │
+│  ┌────────────────────────────────────────┐  │
+│  │       Angular 18 Application           │  │
+│  │   (Interface utilisateur principale)   │───────────────────┐
+│  │                                        │  │                │
+│  │  - Routing & Navigation                │  │                │
+│  │  - Material Design Components          │  │                │
+│  │  - Services & Module Management        │  │                │
+│  │  - API Communication (HTTP/JWT)        │  │                │
+│  │  - Lecteur intégré (Media Source Ext.) │  │                │
+│  └────────────────────────────────────────┘  │                │
+│        │ IPC              ▲ chocostream://   │                │
+│        ▼                  │ (MP4 fragmenté)  │                │
+│  ┌────────────────────────────────────────┐  │                │
+│  │         Main Process (Node.js)         │  │                │
+│  │  - Window Management                   │  │                │
+│  │  - Secure Token Storage (Keytar)       │  │                │
+│  │  - File System Operations              │  │                │
+│  │  - Downloads & Offline Storage         │  │                │
+│  │  - Lecteur intégré (media-player.js)   │  │                │
+│  │  - Process Spawning                    │  │                │
+│  └────────────────────────────────────────┘  │                │
+└──────────────────────────────────────────────┘                │
+             │ Spawns              │ Spawns                     │
+             ▼                     ▼                            │
+┌──────────────────────────┐ ┌──────────────────────────┐       │
+│  ChocoPlayer (C#/.NET)   │ │     ffmpeg / ffprobe     │       │
+│                          │ │                          │       │
+│  - LibVLCSharp           │ │  - Remux MKV → MP4 frag. │       │
+│  - WinForms UI           │ │  - Audio → AAC           │       │
+│  - Video Playback        │ │  - Sous-titres WebVTT    │       │
+│  - Subtitle Rendering    │ │    et PGS                │       │
+│  - Controls Overlay      │ │                          │       │
+└──────────────────────────┘ └──────────────────────────┘       │
+             │                     │                            │
+             └──────────┬──────────┴────────────────────────────┘
+                        ▼
+                 ┌────────────┐
+                 │  API REST  │
+                 │  (Backend) │
+                 └────────────┘
+                        │
+                        ▼
+              ┌───────────────────┐
+              │      MariaDB      │
+              └───────────────────┘
 ```
+
+Selon le réglage **Lecteur vidéo**, le Main Process lance soit ChocoPlayer, soit ffmpeg pour le lecteur intégré (voir [Lecteur vidéo intégré](#-lecteur-vidéo-intégré)).
 
 ## 📊 Modèle de données
 
@@ -277,7 +431,9 @@ News_Video_Running (Vidéos tournantes Films/Séries)
 - **Selection** : Collection ordonnée de médias affichée dans les différentes pages
 - **Poster** : Entité réutilisable pour tous les visuels (logos, fonds, affiches)
 - **Episode/Season** : Organisation hiérarchique des séries
-- **ChocoPlayerModel** : Url vers les flux vidéo et sous-titres + token d'accès
+- **ChocoPlayerModel** : Url vers les flux vidéo et sous-titres + token d'accès (construit par les boutons de lecture, pour les deux lecteurs)
+- **PlayerLaunchRequest** : Média à lire dans le lecteur intégré (film ou épisode, URL du flux, progression, série pour le menu des épisodes)
+- **PlayerMediaInfo** : Pistes du média (vidéo, audio, sous-titres) et durée, renvoyées par `ffprobe`
 
 ### Flux de données pour l'affichage
 
@@ -394,12 +550,14 @@ readonly availableLangs: LangOption[] = [
 - **Node.js** : 18.x ou supérieur
 - **npm** : 9.x ou supérieur
 - **.NET SDK** : 9.0 ou supérieur (uniquement pour compiler ChocoPlayer : l'application publiée n'a pas besoin de .NET)
+- **ffmpeg et ffprobe** : 6.1 ou supérieur, avec le support https (pour le lecteur intégré, voir [4. Ajouter ffmpeg](#4-ajouter-ffmpeg-lecteur-intégré))
 - **Angular** : 18.0 ou supérieur
 - **Visual Studio 2022** ou **VS Code** avec extension C#
 
 ### Système d'exploitation
 
 - **Windows 10/11** (requis pour ChocoPlayer en .NET Windows Forms)
+- Pour lire le H.265 sans conversion, le lecteur intégré a besoin d'un GPU avec décodage H.265 matériel (la plupart des GPU depuis 2016). Sinon, la vidéo est convertie en H.264 par le processeur.
 
 ## 📥 Installation
 
@@ -440,6 +598,20 @@ Ce dossier est embarqué tel quel dans ChocoPlus : `ChocoPlayer.csproj` ne publi
 
 Cette commande est à relancer après chaque modification du code C#, car Electron lance l'exécutable de `resources/ChocoPlayer`, en développement comme en production.
 
+### 4. Ajouter ffmpeg (lecteur intégré)
+
+Le lecteur intégré utilise `ffmpeg.exe` et `ffprobe.exe`. Copier ces deux exécutables (Windows x64, ffmpeg 6.1 ou supérieur, avec le support https) dans `resources/ffmpeg/`, par exemple depuis la build « essentials » de [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) (`bin/ffmpeg.exe` et `bin/ffprobe.exe`).
+
+```
+resources/ffmpeg/
+├── ffmpeg.exe
+├── ffprobe.exe
+└── README.md
+```
+
+- En développement, si le dossier ne contient pas les exécutables, ce sont `ffmpeg` et `ffprobe` installés sur le `PATH` qui sont utilisés.
+- Les exécutables ne sont pas versionnés (`.gitignore`), seul `resources/ffmpeg/README.md` l'est.
+
 ## ⚙️ Configuration
 
 ### Paramètres du serveur
@@ -478,7 +650,7 @@ const headerSecret: string = window.electron?.headerSecret || '';
 const headerName: string = window.electron?.headerName || '';
 ```
 
-Les mêmes valeurs sont utilisées par le processus principal pour les téléchargements et transmises à **ChocoPlayer** (`BaseUrl`, `HEADER_NAME`, `HEADER_SECRET`).
+Les mêmes valeurs sont utilisées par le processus principal pour les téléchargements et transmises à **ChocoPlayer** (`BaseUrl`, `HEADER_NAME`, `HEADER_SECRET`). Le lecteur intégré n'accepte que les URL de flux commençant par `MAIN_URL/stream/`.
 
 #### Sécurité
 
@@ -571,7 +743,11 @@ Pour que ChocoPlus utilise les modifications, republier ChocoPlayer avec la comm
 
 Publier ChocoPlayer avec la commande de l'étape [3. Publier le projet ChocoPlayer](#3-publier-le-projet-chocoplayer-c). Electron Builder inclura automatiquement le dossier `resources/ChocoPlayer` dans l'application packagée via la configuration `extraResources` du `package.json`.
 
-#### 2. Créer l'exécutable Electron
+#### 2. Ajouter ffmpeg
+
+Vérifier que `resources/ffmpeg/` contient `ffmpeg.exe` et `ffprobe.exe` (étape [4. Ajouter ffmpeg](#4-ajouter-ffmpeg-lecteur-intégré)). Ils sont copiés dans l'application packagée par `extraResources`. Sans eux, le lecteur intégré ne peut rien lire sur une machine où ffmpeg n'est pas installé.
+
+#### 3. Créer l'exécutable Electron
 
 ```bash
 npx electron-builder --win
@@ -590,6 +766,7 @@ Le fichier `package.json` contient la configuration complète :
   "files": [
     "dist/**/*",
     "app.js",
+    "media-player.js",
     "preload.js",
     "package.json"
   ],
@@ -598,6 +775,11 @@ Le fichier `package.json` contient la configuration complète :
       "from": "resources/ChocoPlayer",
       "to": "ChocoPlayer",
       "filter": ["**/*"]
+    },
+    {
+      "from": "resources/ffmpeg",
+      "to": "ffmpeg",
+      "filter": ["ffmpeg.exe", "ffprobe.exe"]
     }
   ],
   "win": {
@@ -609,8 +791,10 @@ Le fichier `package.json` contient la configuration complète :
 
 ### Chemins d'exécution
 
-- **Développement** : `__dirname/resources/ChocoPlayer/ChocoPlayer.exe`
-- **Production** : `process.resourcesPath/ChocoPlayer/ChocoPlayer.exe`
+| | ChocoPlayer | ffmpeg / ffprobe (lecteur intégré) |
+|---|---|---|
+| **Développement** | `__dirname/resources/ChocoPlayer/ChocoPlayer.exe` | `__dirname/resources/ffmpeg/ffmpeg.exe`, sinon celui du `PATH` |
+| **Production** | `process.resourcesPath/ChocoPlayer/ChocoPlayer.exe` | `process.resourcesPath/ffmpeg/ffmpeg.exe`, sinon celui du `PATH` |
 
 ## 📁 Structure du projet
 
@@ -628,6 +812,14 @@ ChocoPlus/
 │   │       ├── series/          # Page séries
 │   │       ├── search/          # Page recherche
 │   │       └── edit/            # Page édition (admin)
+│   ├── app/main-appli-module/video-playing-module/   # Lecteur intégré
+│   │   ├── components/          # Lecteur, menus pistes/épisodes, épisode suivant
+│   │   ├── services/
+│   │   │   ├── player-engine/   # Moteur MSE, sous-titres (texte, PGS), choix des pistes
+│   │   │   ├── next-episode/    # Recherche de l'épisode suivant
+│   │   │   ├── player-session/  # Lecteur ouvert, en grand ou en mini-lecteur (place et taille)
+│   │   │   └── stream/          # StreamService : lancement, progression
+│   │   └── styles/              # Style commun des menus du lecteur
 │   └── environments/            # Configuration environnement
 │
 ├── public/                      # Ressources publiques
@@ -646,12 +838,14 @@ ChocoPlus/
 │   └── Program.cs
 │
 ├── resources/                   # Ressources pour le build
-│   └── ChocoPlayer/             # ⚠️ Généré par dotnet publish (self-contained)
+│   ├── ChocoPlayer/             # ⚠️ Généré par dotnet publish (self-contained)
+│   └── ffmpeg/                  # ⚠️ ffmpeg.exe et ffprobe.exe à ajouter (non versionnés)
 │
 ├── dist/                        # Build Angular (généré)
 ├── node_modules/                # Dépendances Node.js
 │
 ├── app.js                       # Main process Electron
+├── media-player.js              # Main process : ffmpeg et protocole chocostream:// du lecteur intégré
 ├── preload.js                   # Preload script
 ├── package.json                 # Configuration npm/Electron
 ├── tsconfig.json                # Configuration TypeScript
@@ -683,7 +877,15 @@ ChocoPlus/
 | keytar | 7.9.0 | Stockage sécurisé des credentials |
 | electron-store | 10.1.0 | Stockage local persistant |
 
-### Lecteur vidéo (C#/.NET)
+### Lecteur vidéo intégré
+
+| Technologie | Version | Usage |
+|------------|---------|-------|
+| ffmpeg / ffprobe | 6.1+ | Analyse des pistes, remux en MP4 fragmenté, conversion audio, extraction des sous-titres |
+| Media Source Extensions | Chromium (Electron 33) | Lecture du flux dans la balise `<video>`, décodage H.265 matériel |
+| Protocole `chocostream://` | — | Flux ffmpeg servi à l'interface par le Main Process (`protocol.handle`) |
+
+### Lecteur vidéo ChocoPlayer (C#/.NET)
 
 | Technologie | Version | Usage |
 |------------|---------|-------|
@@ -739,13 +941,16 @@ La progression est relayée à l'interface (`WatchProgress`, `StateProgress`) et
 - ChocoPlayer est un processus enfant spawné par Electron, et un seul lecteur tourne à la fois
 - Les lancements sont mis en file d'attente : relancer le même média ne fait rien, lancer un autre média ferme d'abord le lecteur en cours
 - ChocoPlayer est d'abord fermé proprement (`taskkill` sans `/F`), puis de force après 3 secondes s'il ne s'est pas arrêté
-- À la fermeture de la fenêtre, Electron attend la fin de ChocoPlayer ; à la fermeture de l'app ou lors d'un rechargement, il attend aussi l'annulation des téléchargements et la fin des suppressions en cours
+- Le lecteur intégré et ChocoPlayer ne lisent jamais en même temps : démarrer l'un arrête l'autre (voir [Une seule vidéo à la fois](#une-seule-vidéo-à-la-fois))
+- Le lecteur intégré lance un `ffprobe` à l'ouverture d'un média, puis un `ffmpeg` par flux (un nouveau à chaque saut hors des données reçues ou changement de piste) ; l'ancien est arrêté dès que l'interface cesse de le lire, et tous le sont en quittant le lecteur
+- À la fermeture de la fenêtre, Electron enregistre la progression du lecteur intégré et attend la fin de ChocoPlayer ; à la fermeture de l'app ou lors d'un rechargement, il attend aussi l'annulation des téléchargements et la fin des suppressions en cours
 
 ### Streaming vidéo
 
 Les vidéos sont servies via :
-- **Chemins locaux/réseau** pour le lecteur natif (VLC)
-- Support des sous-titres multi-langues (SRT, VTT)
+- **Chemins locaux** pour les médias téléchargés, lus en priorité par les deux lecteurs
+- **Flux du serveur** (`stream/stream-movie/<id>`, `stream/stream-episode/<seasonId>/<episodeId>`, requêtes `Range` par morceaux de 10 Mo), lu par VLC dans ChocoPlayer ou par ffmpeg dans le lecteur intégré
+- Support des sous-titres multi-langues : SRT, VTT, ASS et PGS dans le lecteur intégré
 - La langue de l'audio et des sous-titres choisis sont sauvegardés pour une meilleure expérience utilisateur
 
 ## 🤝 Contribution
@@ -760,4 +965,4 @@ Projet Open source - Aucun droit réservé
 
 **Développé avec ❤️ et 🍫 par l'équipe ChocoPlus**
 
-*Version 3.0.1 - Novembre 2026*
+*Version 3.1.0 - Novembre 2026*

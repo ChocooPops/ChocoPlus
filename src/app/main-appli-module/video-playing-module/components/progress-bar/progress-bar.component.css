@@ -37,6 +37,33 @@ p {
     position: relative;
 }
 
+/* Up to the mouse: lighter than the bar, under the yellow part */
+.hover-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+}
+
+/* Time code above the mouse (hover) or the dragged position */
+.time-preview {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: rgba(20, 20, 20, 0.92);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
 .pointer {
     height: 20px;
     width: 20px;

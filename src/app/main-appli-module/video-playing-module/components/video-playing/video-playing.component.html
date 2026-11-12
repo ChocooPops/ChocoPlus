@@ -1,11 +1,13 @@
-<div class="container" (click)="onClickVideo()" (mouseleave)="onMouseLeaveFromWindow()"
-    (mousemove)="onMouseMovieIntoAllInterface($event)" (mouseup)="onMouseUpIntoInterface($event)"
-    [ngClass]="{'hidden-cursor' : !displayControls}">
+<div class="container" (click)="onClickVideo()" (pointerdown)="onMiniPointerDown($event)"
+    (mouseleave)="onMouseLeaveFromWindow()" (mousemove)="onMouseMovieIntoAllInterface($event)"
+    (mouseup)="onMouseUpIntoInterface($event)"
+    [ngClass]="{'hidden-cursor' : mode === 'full' && !displayControls}">
 
     @if(displayError) {
     <app-error-video></app-error-video>
     }
 
+    @if(mode === 'full') {
     <div class="container-interface-controls"
         [ngClass]="{'controls-displayed' : displayControls, 'controls-hidden' : !displayControls}">
         <app-bt-back (click)="onClickControllers($event)"></app-bt-back>
@@ -30,15 +32,18 @@
                     <p> {{ title }} </p>
                 </div>
                 <div class="container-group-button" [ngClass]="'position-right'">
-                    @if(media && media.mediaType === MediaType.SERIES) {
-                    <app-bt-series (setDisplayControls)="setDisplayControlsWhenActivated($event)" [series]="media"
-                        [idx]="beginIdx"></app-bt-series>
+                    @if(canDisplayEpisodes) {
+                    <app-bt-series (setDisplayControls)="setDisplayControlsWhenActivated($event)" [series]="$any(media)"
+                        [seasonIndex]="beginIdx" [currentEpisodeId]="currentEpisodeId" [isConnected]="isConnected"
+                        (selectEpisode)="onSelectEpisode($event)"></app-bt-series>
                     }
-                    <app-bt-quality (setDisplayControls)="setDisplayControlsWhenActivated($event)"></app-bt-quality>
                     <app-bt-subtitle [currentAudio]="currentAudioIndex" [currentSubtitle]="currentSubtitleIndex"
                         [audios]="audios" [subtitles]="subtitles" (changeAudio)="onChangeAudio($event)"
                         (changeSubtitle)="onChangeSubtitles($event)"
                         (setDisplayControls)="setDisplayControlsWhenActivated($event)"></app-bt-subtitle>
+                    <!-- Detaches the video: it goes on in a corner while browsing the app -->
+                    <app-bt-classic (hasBeenClicked)="onMinimize()" [srcFirstImage]="srcImageMiniPlayer"
+                        [srcSecondImage]="srcImageMiniPlayer" [state]="true"></app-bt-classic>
                     <app-bt-fullscreen></app-bt-fullscreen>
                 </div>
             </div>
@@ -49,9 +54,63 @@
     <app-action-key [keyIsPressed]="keyUpDownPressed" [srcImage]="keySound" [position]="'center'"></app-action-key>
     <app-action-key [keyIsPressed]="keyRightPressed" [srcImage]="keyForward" [position]="'right'"></app-action-key>
     <app-action-key [keyIsPressed]="keyLeftPressed" [srcImage]="keyBacktracking" [position]="'left'"></app-action-key>
+    }
+
+    @if(isBuffering && !displayError) {
+    <div class="buffering"></div>
+    }
+
+    <canvas #pgsCanvas class="pgs-subtitles"></canvas>
+
+    @if(mode === 'full' && displayNextEpisode && nextEpisode) {
+    <app-next-episode-card class="next-episode" [ngClass]="{'next-episode-raised' : displayControls}"
+        [label]="nextEpisodeLabel" [name]="nextEpisode.episode.name" [poster]="nextEpisode.episode.srcPoster"
+        [countdown]="nextEpisodeCountdown" (play)="playNextEpisode()" (cancel)="cancelNextEpisode()"></app-next-episode-card>
+    }
+
+    @if(subtitleLines.length > 0) {
+    <div class="subtitles" [ngClass]="{'subtitles-raised' : mode === 'full' && displayControls}">
+        @for (line of subtitleLines; track $index) {
+        <p class="subtitle-line">
+            @for (segment of line; track $index) {
+            <span [class.italic]="segment.italic" [class.bold]="segment.bold"
+                [class.underline]="segment.underline">{{ segment.text }}</span>
+            }
+        </p>
+        }
+    </div>
+    }
+
+    @if(mode === 'mini') {
+    <!-- Mini player: shown on hover. Dragging the video moves it, a click brings it back to full screen. -->
+    <div class="mini-controls">
+        <div class="mini-top">
+            <p class="mini-title">{{ title }}</p>
+            <button class="mini-button" (click)="onExpand($event)"><img [src]="srcImageExpand" alt=""></button>
+            <button class="mini-button" (click)="onClosePlayer($event)"><img [src]="srcImageClose" alt=""></button>
+        </div>
+        <button class="mini-play" (click)="onMiniPlayPause($event)">
+            <img [src]="isReading ? srcImagePlay : srcImagePause" alt="">
+        </button>
+        <div class="mini-progress" (click)="onMiniSeek($event)">
+            <div class="mini-progress-fill" [style.width.%]="progressPercent"></div>
+        </div>
+    </div>
+    @if(nextEpisodeCountdown !== null) {
+    <div class="mini-next-episode" (click)="$event.stopPropagation()">
+        <p>{{ 'PLAYER.NEXT_IN' | translate: { seconds: nextEpisodeCountdown } }}</p>
+        <button class="mini-button" (click)="playNextEpisode()"><img [src]="srcImagePlay" alt=""></button>
+        <button class="mini-button" (click)="cancelNextEpisode()"><img [src]="srcImageClose" alt=""></button>
+    </div>
+    }
+    <!-- Edges and corners resizing the mini player (16:9 kept) -->
+    @for (handle of miniResizeHandles; track handle) {
+    <div class="mini-resize" [ngClass]="'mini-resize-' + handle" (pointerdown)="onMiniResizeStart($event, handle)"
+        (click)="$event.stopPropagation()"></div>
+    }
+    }
 
     <video [poster]="srcPoster" #videoRef autoplay [ngClass]="{'height' : whatDimension, 'width' : !whatDimension}">
-        <track #trackRef kind="subtitles" default>
     </video>
 
 </div>

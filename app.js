@@ -6,6 +6,10 @@ const { exec, spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const mediaPlayer = require('./media-player');
+
+// The internal player's stream protocol must be declared before the app is ready.
+mediaPlayer.registerScheme();
 
 const ProcessStatus = Object.freeze({
   LAUNCHING: "LAUNCHING",
@@ -188,13 +192,19 @@ function createWindow() {
 
     saveWindowState();
 
-    if (!isCSharpRunning()) return;
+    const playerActive = mediaPlayer.hasActiveSources();
+    if (!isCSharpRunning() && !playerActive) return;
 
     event.preventDefault();
     isClosingWindow = true;
     //mainWindow.hide(); // optional: the user sees the window close immediately
 
-    stopCSharpProcess().finally(() => {
+    // The internal player saves where the video was left (the component is not destroyed when the window closes)
+    Promise.allSettled([
+      playerActive ? flushPlayerProgress() : Promise.resolve(),
+      isCSharpRunning() ? stopCSharpProcess() : Promise.resolve()
+    ]).finally(() => {
+      mediaPlayer.stopAll();
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.close();
       }
@@ -202,6 +212,7 @@ function createWindow() {
   });
 
   mainWindow.on('closed', () => {
+    mediaPlayer.stopAll();
     mainWindow = null;
   });
 }
@@ -1263,6 +1274,19 @@ ipcMain.handle('launch-choco-player', (event, dataObject) => {
   return run;
 });
 
+// Only one video plays at a time: the internal player stops ChocoPlayer before starting (same rule as
+// ChocoPlayer replacing its own media, so its progress is saved unless "force stop" is set). Queued with the
+// ChocoPlayer launches so a launch in progress can't slip in between.
+function stopChocoPlayerForInternalPlayer() {
+  const run = launchQueue.then(async () => {
+    if (isCSharpRunning()) {
+      await stopCSharpProcess();
+    }
+  });
+  launchQueue = run.catch(() => {});
+  return run;
+}
+
 async function launchChocoPlayer(dataObject) {
   try {
     // Same media already playing: nothing to do.
@@ -1283,6 +1307,16 @@ async function launchChocoPlayer(dataObject) {
         } else if (previous.type === MediaType.SERIES) {
           mainWindow.webContents.send('choco-player-status', { EpisodeId: previous.id });
         }
+      }
+    }
+
+    // A video is playing in the internal player: its progress is saved, then it is stopped
+    // and the app leaves the player page (only one video plays at a time)
+    if (mediaPlayer.hasActiveSources()) {
+      await flushPlayerProgress();
+      mediaPlayer.stopAll();
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('player:closed-by-choco-player');
       }
     }
 
@@ -1430,6 +1464,74 @@ async function launchChocoPlayer(dataObject) {
   }
 }
 
+//=========================================================================================//
+//=========================================================================================//
+//==================================== INTERNAL PLAYER ====================================//
+//=========================================================================================//
+//=========================================================================================//
+
+// What the internal player reads for a request: the downloaded file when there is one (same rule as
+// ChocoPlayer), otherwise the server stream. Only stream URLs of the configured server are accepted.
+function resolvePlayerSource(request) {
+  const { mediaType, mediaId, seasonId, episodeId, url } = request || {};
+
+  let metadata = null;
+  if (mediaType === MediaType.MOVIE && isDownloadId(mediaId)) {
+    metadata = getMetadataByMediaId(mediaId);
+  } else if (mediaType === MediaType.SERIES && isDownloadId(mediaId) && isDownloadId(seasonId) && isDownloadId(episodeId)) {
+    metadata = getMetadataByEpisodeId(mediaId, seasonId, episodeId);
+  }
+  if (metadata && metadata.videoPath && fs.existsSync(metadata.videoPath)) {
+    return { input: metadata.videoPath, isRemote: false };
+  }
+
+  const streamRoot = serverSettings.MAIN_URL ? `${serverSettings.MAIN_URL}/stream/` : null;
+  if (typeof url === 'string' && streamRoot && url.startsWith(streamRoot)) {
+    return { input: url, isRemote: true };
+  }
+  throw new Error('This media is neither downloaded nor reachable on the server');
+}
+
+// Before the window closes (or the app reloads / quits) while a media is playing in the internal player:
+// asks the renderer to save where it was (downloaded metadata + server history, see StreamService)
+// and waits for it, at most PLAYER_FLUSH_TIMEOUT_MS so a frozen renderer can't block the closing.
+const PLAYER_FLUSH_TIMEOUT_MS = 4000;
+let playerFlushCounter = 0;
+
+function flushPlayerProgress() {
+  if (!mainWindow || mainWindow.isDestroyed() || !mediaPlayer.hasActiveSources()) {
+    return Promise.resolve();
+  }
+  const flushId = ++playerFlushCounter;
+  return new Promise((resolve) => {
+    const onFlushed = (_event, id) => {
+      if (id !== flushId) return;
+      finish();
+    };
+    const timer = setTimeout(() => finish(), PLAYER_FLUSH_TIMEOUT_MS);
+    function finish() {
+      clearTimeout(timer);
+      ipcMain.removeListener('player:progress-flushed', onFlushed);
+      resolve();
+    }
+    ipcMain.on('player:progress-flushed', onFlushed);
+    mainWindow.webContents.send('player:flush-progress', flushId);
+  });
+}
+
+// Progress of a downloaded media, kept in its metadata.json (the renderer handles the online history).
+ipcMain.handle('player:save-progress', (event, data) => {
+  const { mediaType, mediaId, seasonId, episodeId, progress } = data || {};
+  const watchProgress = Number(progress);
+  if (!Number.isFinite(watchProgress) || watchProgress < 0 || watchProgress > 100) return;
+
+  if (mediaType === MediaType.MOVIE && isDownloadId(mediaId)) {
+    updateProgressMovieById(mediaId, watchProgress);
+  } else if (mediaType === MediaType.SERIES && isDownloadId(mediaId) && isDownloadId(seasonId) && isDownloadId(episodeId)) {
+    updateProgressEpisodeById(mediaId, seasonId, episodeId, watchProgress);
+  }
+});
+
 //=========================================================================================//*
 //=========================================================================================//*
 //=================================== MAIN APPLICATION ===================================//*
@@ -1438,6 +1540,11 @@ async function launchChocoPlayer(dataObject) {
 app.on('ready', async () => {
   await loadServerSettings();
   await loadForceStopPlayer();
+  mediaPlayer.init({
+    getWindow: () => mainWindow,
+    resolveSource: resolvePlayerSource,
+    beforePlay: stopChocoPlayerForInternalPlayer
+  });
   createWindow();
 });
 
@@ -1523,6 +1630,8 @@ ipcMain.handle('delete-cache', async () => {
 
 ipcMain.handle('reload-app', async () => {
   await loadServerSettings();
+  await flushPlayerProgress();
+  mediaPlayer.stopAll();
   if (isCSharpRunning()) {
     await stopCSharpProcess();
   }
@@ -1561,7 +1670,7 @@ ipcMain.handle('window-close', () => {
 let isQuitting = false;
 app.on('before-quit', async (event) => {
   if (isQuitting) return;
-  const needsCleanup = (isCSharpRunning()) || hasActiveDownloads() || hasActiveDeletions();
+  const needsCleanup = (isCSharpRunning()) || hasActiveDownloads() || hasActiveDeletions() || mediaPlayer.hasActiveSources();
 
   if (!needsCleanup) return;
 
@@ -1569,6 +1678,12 @@ app.on('before-quit', async (event) => {
   isQuitting = true;
 
   try {
+    // Quitting without closing the window first (system shutdown...): the player's progress is saved
+    // before its ffmpeg are stopped, the window's own close handler then has nothing left to do
+    if (mediaPlayer.hasActiveSources()) {
+      await flushPlayerProgress();
+      mediaPlayer.stopAll();
+    }
     if (isCSharpRunning()) {
       await stopCSharpProcess();
     }

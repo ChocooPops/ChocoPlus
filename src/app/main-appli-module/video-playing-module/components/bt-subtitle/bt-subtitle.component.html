@@ -1,30 +1,61 @@
-<div class="container-subtitle" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeaving()">
+<div class="panel-anchor" (mouseenter)="onPointerEnter()" (mouseleave)="onPointerLeave()">
 
-    <div class="container-overview"
-        [ngClass]="{'display-seasons-choice' : isHovering, 'hidden-seasons-choice': !isHovering}">
-        <div class="container-info">
-            <div class="container-audios-subtitles">
-                <p class="container-title "> Audio</p>
-                @for (audio of audios; track audio; let idx = $index) {
-                <p class="container-index" [ngClass]="{'current' : audio.index === currentAudio}"
-                    (click)="onChangeAudio(audio.index)"> {{ audio.name | titlecase }} </p>
-                }
+    <div class="panel" [ngClass]="{'panel-open' : isOpen}">
+        <div class="panel-content tracks">
+
+            <div class="tracks-column">
+                <p class="panel-section-title">{{ 'PLAYER.AUDIO' | translate }}</p>
+                <div class="panel-list">
+                    @for (audio of audios; track audio.index) {
+                    <ng-container *ngTemplateOutlet="option; context: { $implicit: audio, current: audio.index === currentAudio, audio: true }"></ng-container>
+                    } @empty {
+                    <p class="panel-empty">–</p>
+                    }
+                </div>
             </div>
-            <div class="container-sepration"></div>
-            <div class="container-audios-subtitles">
-                <p class="container-title"> Sous-titres </p>
-                <p class="container-index" [ngClass]="{'current' : currentSubtitle <= -1}"
-                    (click)="onChangeSubtitle(-1)"> Désactiver
-                </p>
-                @for (subtitle of subtitles; track subtitle) {
-                <p class="container-index" [ngClass]="{'current' : subtitle.index === currentSubtitle}"
-                    (click)="onChangeSubtitle(subtitle.index)"> {{ subtitle.name | titlecase }}
-                </p>
-                }
+
+            <div class="tracks-separator"></div>
+
+            <div class="tracks-column">
+                <p class="panel-section-title">{{ 'PLAYER.SUBTITLES' | translate }}</p>
+                <div class="panel-list">
+                    <div class="panel-option" [ngClass]="{'panel-option-current' : currentSubtitle < 0}"
+                        (click)="onChangeSubtitle(subtitlesOff)">
+                        <span class="panel-check">
+                            @if (currentSubtitle < 0) {
+                            <img [src]="srcCheck" alt="">
+                            }
+                        </span>
+                        <div class="panel-option-text">
+                            <p class="panel-option-name">{{ 'PLAYER.DISABLE' | translate }}</p>
+                        </div>
+                    </div>
+                    @for (subtitle of subtitles; track subtitle.index) {
+                    <ng-container *ngTemplateOutlet="option; context: { $implicit: subtitle, current: subtitle.index === currentSubtitle, audio: false }"></ng-container>
+                    }
+                </div>
             </div>
+
         </div>
     </div>
 
-    <app-bt-classic class="app-bt-classic" (hasBeenClicked)="onClick()" [srcFirstImage]="srcImageSubtitles"
-        [srcSecondImage]="srcImageSubtitles" [state]="state"></app-bt-classic>
+    <app-bt-classic class="app-bt-classic" (hasBeenClicked)="open()" [srcFirstImage]="srcImageSubtitles"
+        [srcSecondImage]="srcImageSubtitles" [state]="true"></app-bt-classic>
 </div>
+
+<ng-template #option let-track let-current="current" let-audio="audio">
+    <div class="panel-option" [ngClass]="{'panel-option-current' : current, 'panel-option-disabled' : track.disabled}"
+        (click)="audio ? onChangeAudio(track) : onChangeSubtitle(track)">
+        <span class="panel-check">
+            @if (current) {
+            <img [src]="srcCheck" alt="">
+            }
+        </span>
+        <div class="panel-option-text">
+            <p class="panel-option-name">{{ track.name }}</p>
+            @if (track.detail) {
+            <p class="panel-option-detail">{{ track.detail }}</p>
+            }
+        </div>
+    </div>
+</ng-template>

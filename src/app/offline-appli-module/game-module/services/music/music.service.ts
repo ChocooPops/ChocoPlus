@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { MediaFocusService } from '../../../../common-module/services/media-focus/media-focus.service';
 
-// Game music: only exists while the game page is open (start / stop), settings saved between games
+// Game music: only exists while the game page is open (start / stop), settings saved between games.
+// Silent while a video plays (internal player, ChocoPlayer, trailer): it goes on when the video closes.
 @Injectable({
   providedIn: 'root'
 })
@@ -22,11 +24,26 @@ export class MusicService {
   private mutedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem(this.mutedKey) === 'true');
   private muted$: Observable<boolean> = this.mutedSubject.asObservable();
 
+  // a video has the focus (MediaFocusService)
+  private blocked: boolean = false;
+
   // if the browser blocked autoplay, the music starts on the first key press or click
   private readonly unlock = (): void => {
     this.removeUnlock();
-    this.audio?.play().catch(() => undefined);
+    this.play();
   };
+
+  constructor(private readonly mediaFocusService: MediaFocusService) {
+    // never unsubscribed: root service, lives as long as the app
+    this.mediaFocusService.owner$.subscribe((owner: symbol | null) => {
+      this.blocked = owner !== null;
+      if (this.blocked) {
+        this.audio?.pause();
+      } else {
+        this.play();
+      }
+    });
+  }
 
   public getVolume(): Observable<number> {
     return this.volume$;
@@ -41,7 +58,13 @@ export class MusicService {
     this.audio = new Audio(this.src);
     this.audio.loop = true;
     this.applySettings();
+    this.play();
+  }
+
+  private play(): void {
+    if (!this.audio || this.blocked) return;
     this.audio.play().catch(() => {
+      this.removeUnlock();
       this.unlockEvents.forEach((event: string) => window.addEventListener(event, this.unlock, { once: true }));
     });
   }

@@ -22,6 +22,11 @@ export class ProgressBarComponent {
   currentTimeTravelled !: string;
   totalDurationMovie !: string;
 
+  // Time code under the mouse: position on the bar (0 - 100), null when not shown
+  previewPercent: number | null = null;
+  previewTime: string = '';
+  private isHovering: boolean = false;
+
   constructor(private globalFormattingService: GlobalFormattingService) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -34,15 +39,42 @@ export class ProgressBarComponent {
     }
   }
 
-  updateProgressBar(event: MouseEvent): void {
+  // Position of the mouse along the bar, 0 - 1 (held at the ends when dragging beyond them)
+  private getPointerRatio(event: MouseEvent): number {
     const rect = this.progressRef.nativeElement.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    let newTime = Math.floor((clickX / rect.width) * this.totalDurationMovieInSecond);
+    if (rect.width <= 0) return 0;
+    return Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+  }
 
-    if (newTime <= this.totalDurationMovieInSecond && newTime >= 0) {
-      this.progress = (newTime / this.totalDurationMovieInSecond) * 100;
-      this.changeCurrentTime.emit(newTime);
+  // Time code shown above the bar, where the mouse is (hover) or where the bar is dragged to
+  private showPreview(ratio: number): void {
+    if (!(this.totalDurationMovieInSecond > 0)) {
+      this.previewPercent = null;
+      return;
     }
+    this.previewPercent = ratio * 100;
+    this.previewTime = this.globalFormattingService.converSecondInFormatToStream(ratio * this.totalDurationMovieInSecond);
+  }
+
+  onHoverProgressBar(event: MouseEvent): void {
+    this.isHovering = true;
+    this.showPreview(this.getPointerRatio(event));
+  }
+
+  onLeaveProgressBar(): void {
+    this.isHovering = false;
+    // While dragging, the time code follows the mouse even outside the bar
+    if (!this.isDraggingProgressBar) {
+      this.previewPercent = null;
+    }
+  }
+
+  updateProgressBar(event: MouseEvent): void {
+    if (!(this.totalDurationMovieInSecond > 0)) return;
+    const ratio = this.getPointerRatio(event);
+    this.progress = ratio * 100;
+    this.showPreview(ratio);
+    this.changeCurrentTime.emit(Math.floor(ratio * this.totalDurationMovieInSecond));
   }
 
   startDragProgressBar(event: MouseEvent): void {
@@ -55,10 +87,14 @@ export class ProgressBarComponent {
       this.updateProgressBar(event);
     }
   }
+
   endDragProgressBar(event: MouseEvent): void {
     if (this.isDraggingProgressBar) {
       this.isDraggingProgressBar = false;
       this.updateProgressBar(event);
+      if (!this.isHovering) {
+        this.previewPercent = null;
+      }
     }
   }
 

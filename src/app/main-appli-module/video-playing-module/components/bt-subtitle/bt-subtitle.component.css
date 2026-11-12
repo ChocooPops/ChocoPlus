@@ -1,116 +1,39 @@
-.container-subtitle {
-    position: relative;
-}
+/* Layout of the audio / subtitles panel (look shared with the other panels: styles/player-panel.css) */
 
-.container-overview {
-    position: absolute;
-    width: 650px;
-    height: 600px;
-    bottom: 0;
-    right: 0;
-    visibility: hidden;
-    z-index: 10;
-    box-sizing: border-box;
-}
-
-.container-info {
-    position: absolute;
-    height: 515px;
-    width: 100%;
-    background-color: #141414;
-    border-radius: 5px;
-    top: 0;
-    right: 0;
+/* Not shorter than min-height even with few tracks, never taller than the window allows */
+.tracks {
+    width: 620px;
+    min-height: min(400px, var(--panel-max-height));
+    max-height: min(640px, var(--panel-max-height));
     display: grid;
-    grid-template: 100% / 1fr 2px 1fr;
-    gap: 20px;
-    padding-block: 20px;
-    padding-inline: 25px;
-    box-sizing: border-box;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr) 1px minmax(0, 1fr);
 }
 
-.container-sepration {
-    width: 1px;
-    height: 100%;
-    background-color: rgb(241, 241, 241);
-    border-radius: 5px;
-}
-
-.container-title {
-    font-size: 21px;
-    padding-block: 15px;
-}
-
-.container-index {
-    font-size: 18px;
-    padding-block: 10px;
-    transition: background-color 0.3s;
-    cursor: pointer;
-    padding-left: 15px;
-    box-sizing: border-box;
-
-    &:hover {
-        background-color: #232323;
-    }
-}
-
-.current {
-    background-color: #232323;
-}
-
-.container-audios-subtitles {
+.tracks-column {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    min-height: 0;
 }
 
-.container-audios-subtitles::-webkit-scrollbar {
-    height: 2px;
-    width: 2px;
+.tracks-separator {
+    margin-block: 18px;
+    background-color: #2a2a2a;
+}
+
+.app-bt-classic {
+    position: relative;
+    z-index: 35;
 }
 
 @media (max-width: 1920px) {
 
-    .container-overview {
+    .tracks {
         width: 500px;
-        height: 485px;
+        min-height: min(320px, var(--panel-max-height));
+        max-height: min(520px, var(--panel-max-height));
     }
 
-    .container-info {
-        height: 400px;
+    .tracks-separator {
+        margin-block: 14px;
     }
-
-    .container-info {
-        gap: 10px;
-    }
-
-    .container-title {
-        font-size: 18px;
-        padding-block: 10px;
-    }
-
-    .container-index {
-        font-size: 15px;
-        padding-block: 8px;
-    }
-}
-
-.hidden-seasons-choice {
-    visibility: hidden;
-}
-
-.display-seasons-choice {
-    visibility: visible;
-}
-
-.app-bt-classic {
-    z-index: 15;
-    position: relative;
-}
-
-p {
-    margin: 0;
-    font-weight: bold;
 }

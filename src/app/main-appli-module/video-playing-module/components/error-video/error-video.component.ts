@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { SavePathService } from '../../../common-module/services/save-path/save-path.service';
+import { PlayerSessionService } from '../../services/player-session/player-session.service';
 
 @Component({
   selector: 'app-error-video',
@@ -14,14 +14,15 @@ export class ErrorVideoComponent {
   srcWarning: string = "icon/warning.svg"
   displayError: boolean = true;
 
-  constructor(private savePathService: SavePathService) { }
+  constructor(private playerSessionService: PlayerSessionService) { }
 
   onClickCancel(): void {
     this.displayError = false;
   }
 
+  // The player is shown over the page it was launched from: closing it is going back
   onClickBack(): void {
-    this.savePathService.navigateToOldPath();
+    this.playerSessionService.close();
   }
 
 }

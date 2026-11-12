@@ -1,0 +1,19 @@
+<div class="card" (click)="$event.stopPropagation()">
+    @if (poster && !posterFailed) {
+    <img class="poster" [src]="poster" alt="" (error)="posterFailed = true">
+    }
+    <div class="info">
+        <p class="title">{{ 'PLAYER.NEXT_EPISODE' | translate }}</p>
+        <p class="episode">{{ label }}@if (name) { – {{ name }}}</p>
+        <div class="actions">
+            <button class="play" (click)="onPlay($event)">
+                @if (countdown !== null) {
+                {{ 'PLAYER.NEXT_IN' | translate: { seconds: countdown } }}
+                } @else {
+                {{ 'PLAYER.PLAY' | translate }}
+                }
+            </button>
+            <button class="cancel" (click)="onCancel($event)">{{ 'PLAYER.CANCEL' | translate }}</button>
+        </div>
+    </div>
+</div>

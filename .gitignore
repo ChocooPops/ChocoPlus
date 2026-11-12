@@ -51,3 +51,5 @@ ChocoPlayer/[Oo]bj/
 
 #resources
 resources/ChocoPlayer
+resources/ffmpeg/*
+!resources/ffmpeg/README.md

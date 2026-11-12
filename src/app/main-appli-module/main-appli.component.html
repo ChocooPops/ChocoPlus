@@ -13,6 +13,11 @@
         @if(!componentMustBeHidden) {
             <app-footer></app-footer>
         }
-        
+
     </div>
 </div>
+
+<!-- Internal video player, over the pages (full screen or mini player): playback goes on while browsing -->
+@if(isPlayerOpen) {
+<app-video-playing></app-video-playing>
+}

@@ -279,7 +279,11 @@
             "SHOW_TITLE": "タイトル",
             "SOUND_VIDEO": "紹介動画の音声を有効にする",
             "FORCE_STOP_PLAYER": "動画プレーヤーを強制終了する",
-            "FORCE_STOP_PLAYER_DESCRIPTION": "有効：プレーヤーはすぐに終了しますが、再生の進行状況は保存も送信もされません。\n無効：終了前に再生の進行状況が保存・送信されますが、終了に時間がかかる場合があります。"
+            "FORCE_STOP_PLAYER_DESCRIPTION": "有効：プレーヤーはすぐに終了しますが、再生の進行状況は保存も送信もされません。\n無効：終了前に再生の進行状況が保存・送信されますが、終了に時間がかかる場合があります。",
+            "VIDEO_PLAYER": "動画プレーヤー",
+            "VIDEO_PLAYER_DESCRIPTION": "アプリ内：動画は ChocoPlus 内で直接再生され、音声トラックと字幕の選択、次のエピソードの自動再生ができます。\nChocoPlayer：動画は外部プレーヤーで開きます。「動画プレーヤーの強制終了」オプションは ChocoPlayer にのみ適用されます。",
+            "INTERNAL_PLAYER": "アプリ内",
+            "CHOCO_PLAYER": "ChocoPlayer"
         },
         "VIEW_METADATA": {
             "WARNING_MESSAGE": "データベースの表示は、性能の低いコンピューターで大量のリソースを消費する可能性があります",
@@ -749,5 +753,25 @@
         "CANCEL_ISOLATE_GRAPH": "グラフの隔離を解除する",
         "ASCENDING_SORT": "昇順に並べ替え",
         "DESCENDING_SORT": "降順に並べ替え"
+    },
+    "PLAYER": {
+        "AUDIO": "音声",
+        "SUBTITLES": "字幕",
+        "DISABLE": "オフ",
+        "TRACK": "トラック",
+        "FORCED": "強制",
+        "HEARING_IMPAIRED": "SDH",
+        "UNSUPPORTED_SUBTITLE": "非対応",
+        "NEXT_EPISODE": "次のエピソード",
+        "PLAY": "再生",
+        "NEXT_IN": "{{seconds}}秒後に再生",
+        "CANCEL": "キャンセル",
+        "SEASON_EPISODE": "シーズン{{season}} · 第{{episode}}話",
+        "EPISODE_NUMBER": "第{{episode}}話",
+        "EPISODES": "エピソード",
+        "EPISODES": "エピソード",
+        "NOW_PLAYING": "再生中",
+        "NO_EPISODE": "エピソードがありません",
+        "UNAVAILABLE_SEASON": "未ダウンロード"
     }
 }

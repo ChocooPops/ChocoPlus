@@ -20,6 +20,7 @@ import { GameLoopService } from './services/game-loop/game-loop.service';
 import { GameStateService } from './services/game-state/game-state.service';
 import { GameStatus } from './models/game-entity.interface';
 import { MenuTabService } from '../../main-appli-module/menu-module/service/menu-tab/menu-tab.service';
+import { PlayerSessionService } from '../../main-appli-module/video-playing-module/services/player-session/player-session.service';
 
 @Component({
   selector: 'app-game-page',
@@ -46,7 +47,8 @@ export class GamePageComponent implements OnInit, OnDestroy {
     private readonly gameLoopService: GameLoopService,
     private readonly gameStateService: GameStateService,
     private readonly menuTabService: MenuTabService,
-    private readonly musicService: MusicService
+    private readonly musicService: MusicService,
+    private readonly playerSessionService: PlayerSessionService
   ) {
     this.menuTabService.setActivateTransition(true);
   }
@@ -70,6 +72,15 @@ export class GamePageComponent implements OnInit, OnDestroy {
     )
     this.gameLoopService.start();
     this.musicService.start();
+    // the video player covers the game: the game pauses (Enter resumes it), like when the window loses the focus
+    this.subscription.add(
+      this.playerSessionService.state$.subscribe((state) => {
+        if (state.mode === 'full') {
+          this.characterService.releaseKeys();
+          this.gameStateService.pause();
+        }
+      })
+    )
   }
 
   ngOnDestroy(): void {
@@ -124,8 +135,8 @@ export class GamePageComponent implements OnInit, OnDestroy {
 
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent): void {
-    // Alt + arrows is reserved for the app navigation
-    if (event.altKey) {
+    // Alt + arrows is reserved for the app navigation, the keys belong to the video player when it covers the game
+    if (event.altKey || this.playerSessionService.mode === 'full') {
       return;
     }
     const key: string = event.key.toLowerCase();

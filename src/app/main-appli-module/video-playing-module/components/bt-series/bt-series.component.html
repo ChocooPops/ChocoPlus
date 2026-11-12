@@ -1,37 +1,99 @@
-<div class="container-series" (click)="onClickContainer($event)" (mouseenter)="onMouseEnter()"
-    (mouseleave)="onMouseLeaving()">
+<div class="panel-anchor" (mouseenter)="onPointerEnter()" (mouseleave)="onPointerLeave()">
 
-    <div class="container-overview"
-        [ngClass]="{'display-seasons-choice' : isHovering, 'hidden-seasons-choice': !isHovering}">
-        <div class="container-seasons">
-            <div class="container-seasons-option">
-                <img [src]="srcArrow" class="arrow">
-                <div class="container-season-selected" (click)="onClickDisplay()" #select>
-                    <p> {{ series.seasons[currentIndexSeasons].name}} </p>
-                </div>
-                @if (displaySelect) {
-                <div class="black"></div>
-                <div class="container-option">
-                    @for (season of series.seasons; track season.id; let idx = $index) {
-                    <div class="option" (click)="onClickSeason(idx)">
-                        <p> {{season.name }} </p>
+    <div class="panel" [ngClass]="{'panel-open' : isOpen}" (click)="onClickPanel($event)">
+        <div class="panel-content episodes-panel">
+
+            <div class="episodes-header">
+                <p class="panel-section-title">{{ 'PLAYER.EPISODES' | translate }}</p>
+
+                @if (seasons.length > 1) {
+                <div class="season-select" #seasonSelect>
+                    <div class="season-selected" (click)="toggleSeasonList()">
+                        <p>{{ displayedSeason?.name }}</p>
+                        <img class="season-arrow" [ngClass]="{'season-arrow-open' : isSeasonListOpen}" [src]="srcArrow" alt="">
+                    </div>
+                    @if (isSeasonListOpen) {
+                    <div class="season-options panel-list">
+                        @for (season of seasons; track season.id; let idx = $index) {
+                        <div class="panel-option"
+                            [ngClass]="{'panel-option-current' : idx === displayedSeasonIndex, 'panel-option-disabled' : !isSeasonAvailable(season)}"
+                            (click)="onSelectSeason(idx)">
+                            <span class="panel-check">
+                                @if (idx === displayedSeasonIndex) {
+                                <img [src]="srcCheck" alt="">
+                                }
+                            </span>
+                            <div class="panel-option-text">
+                                <p class="panel-option-name">{{ season.name }}</p>
+                                @if (!isSeasonAvailable(season)) {
+                                <p class="panel-option-detail">{{ 'PLAYER.UNAVAILABLE_SEASON' | translate }}</p>
+                                }
+                            </div>
+                        </div>
+                        }
                     </div>
                     }
                 </div>
+                } @else if (displayedSeason) {
+                <p class="season-single">{{ displayedSeason.name }}</p>
                 }
             </div>
-            <div class="container-episodes">
-                @if(episodes) {
-                <app-episode-poster-vertical-view class="animation" [episodes]="episodes" [series]="series"
-                    [notRunning]="false"></app-episode-poster-vertical-view>
-                }@else {
-                <app-episode-poster-vertical-view-loading [notRunning]="false"></app-episode-poster-vertical-view-loading>
+
+            <div class="episode-list" #episodeList>
+                @if (episodes) {
+                @for (item of episodes; track item.episode.id) {
+                <div class="episode animationPosterAndLicense"
+                    [ngClass]="{'episode-current' : item.episode.id === currentEpisodeId}" (click)="onSelectEpisode(item)">
+
+                    <p class="episode-number">{{ item.episode.episodeNumber }}</p>
+
+                    <div class="episode-thumbnail">
+                        <img class="episode-poster" [src]="item.poster" alt="" loading="lazy" decoding="async"
+                            (error)="onPosterError(item)">
+                        @if (item.episode.id === currentEpisodeId) {
+                        <div class="episode-now-playing">{{ 'PLAYER.NOW_PLAYING' | translate }}</div>
+                        } @else {
+                        <div class="episode-hover">
+                            <div class="episode-play"><img [src]="srcPlay" alt=""></div>
+                        </div>
+                        }
+                        @if (item.progress > 0) {
+                        <div class="episode-progress">
+                            <div class="episode-progress-fill" [style.width.%]="item.finished ? 100 : item.progress"></div>
+                        </div>
+                        }
+                    </div>
+
+                    <div class="episode-info">
+                        <div class="episode-title-row">
+                            <p class="episode-title">{{ item.episode.name }}</p>
+                            @if (item.finished) {
+                            <div class="episode-finished"><img [src]="srcCheck" alt=""></div>
+                            }
+                        </div>
+                        <p class="episode-duration">{{ item.duration }}</p>
+                    </div>
+                </div>
+                } @empty {
+                <p class="panel-empty">{{ 'PLAYER.NO_EPISODE' | translate }}</p>
                 }
-                <div class="height-tmp"></div>
+                } @else {
+                @for (row of loadingRows; track row) {
+                <div class="episode episode-loading">
+                    <p class="episode-number"></p>
+                    <div class="episode-thumbnail container-animation-gradient-normal"></div>
+                    <div class="episode-info">
+                        <div class="loading-line container-animation-gradient-normal"></div>
+                        <div class="loading-line loading-line-short container-animation-gradient-normal"></div>
+                    </div>
+                </div>
+                }
+                }
             </div>
+
         </div>
     </div>
 
-    <app-bt-classic class="app-bt-classic" (hasBeenClicked)="onClick()" [srcFirstImage]="srcImage"
-        [srcSecondImage]="srcImage" [state]="state"></app-bt-classic>
+    <app-bt-classic class="app-bt-classic" (hasBeenClicked)="open()" [srcFirstImage]="srcImage"
+        [srcSecondImage]="srcImage" [state]="true"></app-bt-classic>
 </div>

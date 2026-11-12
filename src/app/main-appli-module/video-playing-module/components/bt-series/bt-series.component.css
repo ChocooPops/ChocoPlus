@@ -1,183 +1,329 @@
-.container-series {
-    position: relative;
+/* Layout of the episodes panel (look shared with the other panels: styles/player-panel.css).
+   Episode rows follow the series page: number, 16:9 poster with the yellow progress bar, title, details. */
+
+/* As tall as possible up to its size, never taller than the window allows */
+.episodes-panel {
+    width: 600px;
+    height: min(720px, var(--panel-max-height));
 }
 
-.container-overview {
-    position: absolute;
-    width: 650px;
-    height: 635px;
-    bottom: 0;
-    right: 0;
-    visibility: hidden;
-    z-index: 30;
-}
-
-.container-seasons {
-    position: absolute;
-    height: 550px;
-    width: 100%;
-    background-color: #141414;
-    border-radius: 5px;
-    top: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.hidden-seasons-choice {
-    visibility: hidden;
-}
-
-.display-seasons-choice {
-    visibility: visible;
-}
-
-.container-seasons-option {
-    height: 60px;
-    font-size: 20px;
-    width: 100%;
-    background-color: #232323;
-    position: relative;
-    cursor: pointer;
-}
-
-.container-episodes {
-    width: 100%;
-    flex: 1;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-top: 25px;
-    padding-left: 15px;
-    box-sizing: border-box;
-}
-
-.container-episodes::-webkit-scrollbar {
-    height: 2px;
-    width: 2px;
-}
-
-.container-season-selected {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-}
-
-.container-option {
-    position: absolute;
-    top: 65px;
-    width: 100%;
-    max-height: calc(55px * 7);
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    animation: 0.3s enter;
-    z-index: 999;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.container-option>* {
+.episodes-header {
     flex-shrink: 0;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 14px;
 }
 
-.container-option::-webkit-scrollbar {
-    height: 4px;
-    width: 4px;
-    background-color: #303030;
+/* ── Season choice ── */
+
+.season-select {
+    position: relative;
+    margin-inline: 22px;
 }
 
-.black {
-    width: 100%;
-    height: 5px;
-    background-color: #141414;
-    position: absolute;
-    z-index: 999;
-    bottom: -5px;
-    animation: 0.3s enter;
-}
-
-.option {
-    height: 55px;
-    width: 100%;
+.season-selected {
+    height: 44px;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: space-between;
+    gap: 10px;
+    padding-inline: 16px;
+    border-radius: 5px;
     background-color: #232323;
-    transition: background-color 0.3s;
+    cursor: pointer;
+    transition: background-color 0.15s;
 
     &:hover {
         background-color: #303030;
     }
-}
 
-p {
-    margin: 0;
-    font-weight: bold;
-    margin-left: 30px;
-}
-
-@keyframes enter {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
+    p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
-.arrow {
+.season-arrow {
+    height: 12px;
+    width: 12px;
+    flex-shrink: 0;
+    transform: rotate(-90deg);
+    transition: transform 0.3s;
+}
+
+.season-arrow-open {
+    transform: rotate(90deg);
+}
+
+.season-options {
     position: absolute;
-    top: 40%;
-    right: 15px;
-    height: 15px;
-    width: 15px;
-    transform: rotate(-90deg) translateY(-40%);
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    max-height: 320px;
+    padding-block: 6px;
+    border-radius: 5px;
+    background-color: #232323;
+    box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+    animation: enterPoster 0.2s ease-out;
+
+    .panel-option:hover {
+        background-color: #303030;
+    }
 }
 
-.height-tmp {
-    height: 30px;
+.season-single {
+    margin: 0;
+    padding-inline: 22px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ── Episodes ── */
+
+.episode-list {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-block: 10px;
+}
+
+.episode-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.episode {
+    display: grid;
+    grid-template: auto / 30px 168px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    padding: 12px 22px 12px 10px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    &:hover {
+        background-color: #232323;
+
+        .episode-hover {
+            opacity: 1;
+        }
+    }
+}
+
+.episode-current {
+    background-color: #232323;
+    box-shadow: inset 3px 0 0 #FFD301;
+    cursor: default;
+}
+
+.episode-number {
+    margin: 0;
+    align-self: center;
+    text-align: right;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--white-dark);
+}
+
+.episode-thumbnail {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #0e0e0e;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.episode-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.episode-hover {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(14, 14, 14, 0.6);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.episode-play {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 13px;
+        margin-left: 2px;
+    }
+}
+
+.episode-now-playing {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    background-color: #FFD301;
+    color: black;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Same progress bar as the series page */
+.episode-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background-color: rgba(230, 230, 230, 0.35);
+}
+
+.episode-progress-fill {
+    height: 100%;
+    background-color: #FFD301;
+}
+
+.episode-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.episode-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.episode-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.episode-finished {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: #141414;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 55%;
+    }
+}
+
+.episode-duration {
+    margin: 0;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--grey);
+}
+
+/* ── Loading ── */
+
+.episode-loading {
+    cursor: default;
+
+    &:hover {
+        background-color: transparent;
+    }
+}
+
+.loading-line {
+    height: 14px;
+    width: 80%;
+    border-radius: 3px;
+}
+
+.loading-line-short {
+    width: 35%;
+}
+
+.app-bt-classic {
+    position: relative;
+    z-index: 35;
 }
 
 @media (max-width: 1920px) {
 
-    .container-overview {
-        width: 500px;
-        height: 485px;
+    .episodes-panel {
+        width: 480px;
+        height: min(580px, var(--panel-max-height));
     }
 
-    .container-seasons {
-        height: 400px;
+    .season-select {
+        margin-inline: 18px;
     }
 
-    .container-seasons-option {
-        height: 50px;
-        font-size: 15px;
+    .season-selected {
+        height: 38px;
+
+        p {
+            font-size: 14px;
+        }
     }
 
-    .container-option {
-        top: 55px;
-        max-height: calc(45px * 7);
+    .season-single {
+        padding-inline: 18px;
+        font-size: 14px;
     }
 
-    .option {
-        height: 45px;
+    .episode {
+        grid-template: auto / 24px 132px minmax(0, 1fr);
+        gap: 12px;
+        padding: 10px 18px 10px 8px;
     }
 
-    p {
-        margin-left: 15px;
+    .episode-number {
+        font-size: 16px;
     }
-}
 
-.animation {
-    animation: enter 0.3s;
-}
+    .episode-title {
+        font-size: 14px;
+    }
 
-.app-bt-classic {
-    z-index: 35;
-    position: relative;
+    .episode-duration {
+        font-size: 11px;
+    }
+
+    .episode-play {
+        width: 28px;
+        height: 28px;
+
+        img {
+            width: 11px;
+        }
+    }
+
+    .episode-now-playing {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
 }

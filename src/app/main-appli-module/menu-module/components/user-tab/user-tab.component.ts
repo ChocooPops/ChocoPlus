@@ -126,7 +126,7 @@ export class UserTabComponent {
       SeasonMenu: []
     };
 
-    await this.streamService.launchJavaAppToMovie(chocoPlayer);
+    await this.streamService.launchPlayer(chocoPlayer, movie);
     //this.router.navigate(['/main-app/read-video', movie.mediaType, movie.id]);
   }
 
@@ -163,7 +163,7 @@ export class UserTabComponent {
         : []
     };
 
-    await this.streamService.launchJavaAppToMovie(chocoPlayer);
+    await this.streamService.launchPlayer(chocoPlayer, series);
     //this.router.navigate(['/main-app/read-video', series.mediaType, series.id, -1, -1]);
   }
 
