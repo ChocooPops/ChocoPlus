@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ElectronService } from '../../../common-module/services/electron/electron.service';
 
@@ -14,12 +14,14 @@ import { ElectronService } from '../../../common-module/services/electron/electr
 export class UserTabComponent {
 
   public readonly srcDefaultPp: string = 'pp/pp.jpg';
+  public readonly srcAppliParam: string = 'icon/parameter.svg'
   public readonly srcConnection: string = 'icon/connection.svg';
   class: string = 'not-visible-under-menu';
   classArrow: string = 'arrow-not-clicked';
   srcReset: string = 'icon/modify.svg';
 
   constructor(private readonly router: Router,
+    private readonly route: ActivatedRoute,
     private readonly electronService: ElectronService
   ) { }
 
@@ -35,6 +37,10 @@ export class UserTabComponent {
 
   onClickConnection(): void {
     this.router.navigate(['']);
+  }
+
+  onClickAppliParam(): void {
+    this.router.navigate(['parameter-appli'], { relativeTo: this.route });
   }
 
   async onClickReset(): Promise<void> {

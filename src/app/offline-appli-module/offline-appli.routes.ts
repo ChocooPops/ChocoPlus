@@ -9,6 +9,12 @@ export const offlineAppliRoutes: Routes = [
       ),
   },
   {
+    path : 'parameter-appli',
+    loadComponent: () => 
+      import('./parameter-appli-offline/parameter-appli-offline.component').then(
+        (m) => m.ParameterAppliOfflineComponent)
+  },
+  {
     path: 'downloads',
     loadComponent: () =>
       import('./../main-appli-module/main-page-module/download-components/downloaded-media-page/downloaded-media-page.component').then(

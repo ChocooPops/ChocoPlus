@@ -11,6 +11,10 @@
             <img [src]="srcReset">
             <p>{{ 'MENU.OTHER.RESET' | translate }}</p>
         </div>
+        <div class="container-option" (click)="onClickAppliParam()">
+            <img [src]="srcAppliParam">
+            <p>{{ 'MENU.USER.APP_SETTINGS' | translate }}</p>
+        </div>
         <div class="container-option" (click)="onClickConnection()">
             <img [src]="srcConnection">
             <p> {{ 'OFFLINE.LOGIN' | translate }} </p>
