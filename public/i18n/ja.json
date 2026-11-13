@@ -733,6 +733,8 @@
         "EDIT_METADATA": "メタデータを編集",
         "SWITCH_LANDSCAPE_MODE": "横向き表示に切り替え",
         "SWITCH_PORTRAIT_MODE": "縦向き表示に切り替え",
+        "VIDEO_PLAYER_INTERNAL": "アプリ内で再生 · クリックで ChocoPlayer に切り替え",
+        "VIDEO_PLAYER_CHOCO": "ChocoPlayer で再生 · クリックでアプリ内再生に切り替え",
         "MORE_INFORMATION": "詳細を表示",
         "PAUSE": "一時停止",
         "RESUME": "再生を再開",

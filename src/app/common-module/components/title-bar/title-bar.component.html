@@ -1,5 +1,6 @@
 <div class="container-title-bar">
     <div class="container-drag-region"></div>
+    <div class="container-window">
     <div class="container-option">
         <div class="container-button" (click)="onClickMinimize()">
             <img [src]="srcReduce">
@@ -14,5 +15,12 @@
         <div class="container-button" [ngClass]="{'cross' : true}" (click)="onClickClose()">
             <img [src]="srcClose">
         </div>
+    </div>
+    <!-- Player of the next videos (in the app / ChocoPlayer), under the window buttons -->
+    @if(displayPlayerSwitch) {
+        <div class="container-video-player-switch">
+            <app-video-player-switch></app-video-player-switch>
+        </div>
+    }
     </div>
 </div>

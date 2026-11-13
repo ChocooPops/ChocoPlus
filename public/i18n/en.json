@@ -733,6 +733,8 @@
         "EDIT_METADATA": "Edit metadata",
         "SWITCH_LANDSCAPE_MODE": "Switch to landscape mode",
         "SWITCH_PORTRAIT_MODE": "Switch to portrait mode",
+        "VIDEO_PLAYER_INTERNAL": "Playing in the app · click to play with ChocoPlayer",
+        "VIDEO_PLAYER_CHOCO": "Playing with ChocoPlayer · click to play in the app",
         "MORE_INFORMATION": "Show more details",
         "PAUSE": "Pause playback",
         "RESUME": "Resume playback",

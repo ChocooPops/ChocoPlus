@@ -34,7 +34,10 @@ export class ParameterAppliService {
     private readonly soundVideoService: SoundVideoService,
     private readonly forceStopPlayerService: ForceStopPlayerService,
     private readonly videoPlayerService: VideoPlayerService
-  ) { }
+  ) {
+    // The menu bar's switch changes the player too: the radio buttons follow it, even with the settings page open
+    this.videoPlayerService.videoPlayer$.subscribe((player: VideoPlayerModel) => this.setVideoPlayerRadioButtons(player));
+  }
 
   private id: number = 0;
   private availableLicenses: { id: number; name: string }[] = [];
@@ -517,10 +520,7 @@ export class ParameterAppliService {
     //INIT VIDEO PLAYER BUTTON (in the app or ChocoPlayer);
     const callBackVideoPlayer: any = (player: VideoPlayerModel) => this.videoPlayerService.setVideoPlayer(player);
     this.radioButtonOtherOption[5].call = callBackVideoPlayer;
-    const currentVideoPlayer: VideoPlayerModel = this.videoPlayerService.getVideoPlayer();
-    for (let i: number = 0; i < this.radioButtonOtherOption[5].radioButton.length; i++) {
-      this.radioButtonOtherOption[5].radioButton[i].state = this.radioButtonOtherOption[5].radioButton[i].value === currentVideoPlayer;
-    }
+    this.setVideoPlayerRadioButtons(this.videoPlayerService.getVideoPlayer());
 
     //INIT LICENSE LIST FOR SELECT;
     this.availableLicenses = [];
@@ -562,6 +562,12 @@ export class ParameterAppliService {
 
   public getRadioButtonOtherOption(): ParamaterAppliModel[] {
     return this.radioButtonOtherOption;
+  }
+
+  private setVideoPlayerRadioButtons(player: VideoPlayerModel): void {
+    for (const radioButton of this.radioButtonOtherOption[5].radioButton) {
+      radioButton.state = radioButton.value === player;
+    }
   }
 
   private getId(): number {

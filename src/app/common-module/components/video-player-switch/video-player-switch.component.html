@@ -1,0 +1,12 @@
+<div class="container-switch" (click)="onToggle()" role="switch" [attr.aria-checked]="isChocoPlayer"
+    [title]="(isChocoPlayer ? 'TUTO.VIDEO_PLAYER_CHOCO' : 'TUTO.VIDEO_PLAYER_INTERNAL') | translate">
+    <div class="switch" [ngClass]="{'switch-choco' : isChocoPlayer}">
+        <span class="switch-thumb"></span>
+        <span class="switch-option" [ngClass]="{'switch-option-active' : !isChocoPlayer}">
+            <img [src]="srcInternal" alt="">
+        </span>
+        <span class="switch-option" [ngClass]="{'switch-option-active' : isChocoPlayer}">
+            <img [src]="srcChocoPlayer" alt="">
+        </span>
+    </div>
+</div>

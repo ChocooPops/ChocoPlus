@@ -733,6 +733,8 @@
         "EDIT_METADATA": "Modifier les métadonnées",
         "SWITCH_LANDSCAPE_MODE": "Basculer au format horizontal",
         "SWITCH_PORTRAIT_MODE": "Basculer au format vertical",
+        "VIDEO_PLAYER_INTERNAL": "Lecture dans l'application · cliquer pour lire avec ChocoPlayer",
+        "VIDEO_PLAYER_CHOCO": "Lecture avec ChocoPlayer · cliquer pour lire dans l'application",
         "MORE_INFORMATION": "Afficher plus de détails",
         "PAUSE": "Couper la lecture",
         "RESUME": "Relancer la lecture",

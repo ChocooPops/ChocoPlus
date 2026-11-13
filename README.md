@@ -73,7 +73,7 @@ ChocoPlus est une plateforme complète de gestion et de visionnage de contenu mu
 
 ### Lecteurs vidéo
 
-Le lecteur se choisit dans **Paramètres → Autres options → Lecteur vidéo** : **Dans l'application** (par défaut) ou **ChocoPlayer**. Une seule vidéo est lue à la fois, quel que soit le lecteur.
+Le lecteur se choisit dans **Paramètres → Autres options → Lecteur vidéo**, ou directement avec le mini interrupteur placé sous les boutons de la fenêtre : **Dans l'application** (par défaut) ou **ChocoPlayer**. Une seule vidéo est lue à la fois, quel que soit le lecteur.
 
 **Lecteur intégré** (voir [Lecteur vidéo intégré](#-lecteur-vidéo-intégré)) :
 - **MKV, H.265, AV1, VP9, H.264** lus directement dans la fenêtre de ChocoPlus
@@ -214,7 +214,9 @@ Dans **Paramètres → Autres options → Lecteur vidéo** :
 | **Dans l'application** (par défaut) | La vidéo se lit dans ChocoPlus avec le lecteur intégré |
 | **ChocoPlayer** | La vidéo s'ouvre dans le lecteur externe C# |
 
-Le choix est enregistré dans le `localStorage` (clé `VIDEO_PLAYER`, `VideoPlayerService`). Tous les boutons de lecture passent par `StreamService.launchPlayer`, qui lance le lecteur choisi. L'option **Forcer l'arrêt du lecteur vidéo** ne concerne que ChocoPlayer.
+Le même choix se fait avec un **mini interrupteur placé sous les boutons de la fenêtre** (réduire, agrandir, fermer), dans la barre de titre (`VideoPlayerSwitchComponent`, dans `src/app/common-module/components`). Il a deux positions : **▶** à gauche (dans l'application) et **↗** à droite (ChocoPlayer). Un clic change de lecteur, et l'infobulle indique le lecteur en cours. Il n'apparaît que dans l'application (en ligne et hors ligne), pas sur les écrans de connexion. Il est aussi masqué quand le lecteur intégré couvre la fenêtre, pour ne pas se superposer à la vidéo ; il reste visible avec le mini-lecteur. L'interrupteur et la page Paramètres restent synchronisés, même quand la page est ouverte. Le changement vaut pour les prochaines lectures : une vidéo déjà en cours n'est pas touchée.
+
+Le choix est enregistré dans le `localStorage` (clé `VIDEO_PLAYER`, `VideoPlayerService`, qui le diffuse via `videoPlayer$`). Tous les boutons de lecture passent par `StreamService.launchPlayer`, qui lance le lecteur choisi. L'option **Forcer l'arrêt du lecteur vidéo** ne concerne que ChocoPlayer.
 
 ### Pourquoi ffmpeg
 

@@ -3,6 +3,7 @@
     width: 100%;
     position: fixed;
     display: flex;
+    align-items: flex-start;
     z-index: 9999999999;
     margin: 0;
     padding: 0;
@@ -12,6 +13,13 @@
     height: 30px;
     flex: 1;
     -webkit-app-region: drag;
+}
+
+/* Window buttons, and under them on the left the video player switch (outside the drag region: it stays clickable) */
+.container-window {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .container-option {
@@ -40,4 +48,8 @@
 
 .cross:hover {
     background-color: #D0011B;
+}
+
+.container-video-player-switch {
+    margin-left: 12px;
 }
