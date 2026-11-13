@@ -110,7 +110,14 @@
     }
     }
 
-    <video [poster]="srcPoster" #videoRef autoplay [ngClass]="{'height' : whatDimension, 'width' : !whatDimension}">
+    <video #videoRef autoplay [ngClass]="{'height' : whatDimension, 'width' : !whatDimension}">
     </video>
+
+    <!-- Background of the media while the video loads (the poster attribute disappears as soon as the
+         video seeks to where it resumes, before any frame) -->
+    @if(srcBackground) {
+    <img class="video-background" [ngClass]="{'video-background-hidden' : isVideoStarted}" [src]="srcBackground"
+        alt="" (error)="onBackgroundError()">
+    }
 
 </div>

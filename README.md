@@ -248,6 +248,8 @@ ffmpeg : remux à la volée en MP4 fragmenté ──► protocole chocostream://
 - **Coupure réseau** : un flux qui s'arrête en erreur reprend à la position courante ; après deux échecs sans progrès, une erreur s'affiche.
 - **Reprise** : la lecture reprend où le média a été laissé, sauf s'il restait moins de 10 secondes.
 - **Indicateur de chargement** : affiché seulement quand la vidéo manque de données (lecture, saut ou démarrage).
+- **Image de fond au chargement** : dès l'ouverture du lecteur, l'image de fond du média s'affiche (la même version que sur la page du média, donc déjà en cache ; hors ligne, le fichier téléchargé). Elle s'efface en fondu au démarrage de la lecture, y compris quand la vidéo reprend en cours de route. L'attribut `poster` de la balise vidéo disparaissait dès le positionnement au point de reprise et laissait un écran noir.
+- **Icônes préchargées** : au lancement de la première vidéo, toutes les icônes du lecteur sont chargées et décodées d'un coup (`VideoPlayingComponent` → `ImagePreloaderService.preloadPlayerIcons`). Ça inclut les contrôles, les retours clavier, les menus, le mini-lecteur et l'erreur. Elles restent ensuite en mémoire pour la session : les icônes qui apparaissent plus tard s'affichent tout de suite. Rien n'est chargé tant qu'aucune vidéo n'est lancée. La liste est dans `video-playing-module/models/player-icons.ts` : une nouvelle icône du lecteur doit y être ajoutée.
 
 ### Pistes audio et sous-titres
 

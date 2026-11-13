@@ -213,6 +213,23 @@ app-action-key {
     bottom: calc(7% + 110px);
 }
 
+/* Background of the media while the video loads: over the video, under the spinner, subtitles and controls.
+   Shown at once (no transition), fades out when the video plays. */
+.video-background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.video-background-hidden {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
 /* PGS subtitles: images drawn over the video picture */
 .pgs-subtitles {
     position: absolute;

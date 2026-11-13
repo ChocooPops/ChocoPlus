@@ -28,6 +28,7 @@ import { NextEpisodeResult, NextEpisodeService } from '../../services/next-episo
 import { NextEpisodeCardComponent } from '../next-episode-card/next-episode-card.component';
 import { PlayerMode, PlayerSessionService } from '../../services/player-session/player-session.service';
 import { FullscreenService } from '../../../../common-module/services/fullscreen/fullscreen.service';
+import { CompressedPosterService } from '../../../common-module/services/compressed-poster/compressed-poster.service';
 import {
   TrackLabels, describeAudioTrack, describeSubtitleTrack, loadTrackPreferences, pickAudioTrack, pickSubtitleTrack,
   saveTrackPreferences, toAudioPreference, toSubtitlePreference
@@ -122,7 +123,9 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   currentAudioIndex: number = -1;
   currentSubtitleIndex: number = -1;
   subtitleLines: SubtitleLine[] = [];
-  srcPoster: string = '';
+  // Background of the media, shown while the video is loading
+  srcBackground: string | undefined = undefined;
+  isVideoStarted: boolean = false;
 
   private request: PlayerLaunchRequest | null = null;
   private info: PlayerMediaInfo | null = null;
@@ -181,6 +184,7 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     private fullscreenService: FullscreenService,
     private translationLanguageService: TranslationLanguageService,
     private translateService: TranslateService,
+    private compressedPosterService: CompressedPosterService,
     private nextEpisodeService: NextEpisodeService,
     private mediaFocusService: MediaFocusService,
     private hostRef: ElementRef<HTMLElement>,
@@ -188,7 +192,9 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.imagePreloaderService.preloadControllersStreamVideo();
+    // Video launched: all the player's icons are loaded now, including those shown later (menus, mini player,
+    // keyboard feedback, error), so they appear at once. Only the first video of the session loads them.
+    this.imagePreloaderService.preloadPlayerIcons();
     this.attachVideoListeners();
     this.removeCueListener = this.streamService.onPlayerSubtitleCues((event) => {
       if (this.info && event.sourceId === this.info.sourceId) {
@@ -418,7 +424,10 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     this.title = request.title;
     this.media = request.media;
     this.beginIdx = request.seasonIndex;
-    this.srcPoster = request.media?.srcBackgroundImage || '';
+    // The media's background is shown at once, until the video really plays. Same image as the media page
+    // (already in the cache); offline, the downloaded file.
+    this.srcBackground = request.media ? this.compressedPosterService.getBackgroundForMediaPresentation(request.media) : undefined;
+    this.isVideoStarted = false;
     this.displayError = false;
     this.isBuffering = true;
     this.currentTimeTravelled = 0;
@@ -807,7 +816,13 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
       this.hasPlayed = true;
       this.lastProgressSave = Date.now();
     }
+    // First frames on screen: the background fades out
+    this.isVideoStarted = true;
     this.updateBuffering();
+  }
+
+  onBackgroundError(): void {
+    this.srcBackground = undefined;
   }
 
   private onEnded = () => {

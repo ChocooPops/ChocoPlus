@@ -10,6 +10,7 @@ import { SeasonModel } from '../../../main-appli-module/media-module/models/seri
 import { EpisodeModel } from '../../../main-appli-module/media-module/models/series/episode.interface';
 import { NewsVideoRunningModel } from '../../../main-appli-module/news-module/models/news-video-running.interface';
 import { MediaCreditModel } from '../../../main-appli-module/media-module/models/media-credit.interface';
+import { PLAYER_ICONS } from '../../../main-appli-module/video-playing-module/models/player-icons';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,8 @@ export class ImagePreloaderService {
 
   private preloadedImageUrls = new Set<string>();
   private controllers = new Map<string, AbortController>();
+  // Player icons kept loaded and decoded for the whole session (a dropped Image could leave the memory cache)
+  private playerIcons: HTMLImageElement[] = [];
 
   constructor(private readonly compressedPosterService: CompressedPosterService) { }
 
@@ -205,32 +208,18 @@ export class ImagePreloaderService {
     return img;
   }
 
-  public async preloadControllersStreamVideo(): Promise<void> {
-    const foler: string = 'icon/controls';
-    const img: string[] = [
-      `${foler}/back-arrow.svg`,
-      `${foler}/backtrackingSpeed.svg`,
-      `${foler}/fast-backtracking.svg`,
-      `${foler}/fast-forward.svg`,
-      `${foler}/forwardSpeed.svg`,
-      `${foler}/fullscreen.svg`,
-      `${foler}/keySound0.svg`,
-      `${foler}/keySound1.svg`,
-      `${foler}/keySound2.svg`,
-      `${foler}/keySound3.svg`,
-      `${foler}/mute.svg`,
-      `${foler}/notfullscreen.svg`,
-      `${foler}/play.svg`,
-      `${foler}/sound.svg`,
-      `${foler}/speed.svg`,
-      `${foler}/stop.svg`,
-      `${foler}/subtitle.svg`,
-      `${foler}/quality.svg`,
-      `${foler}/series.svg`
-    ]
-    this.preloadImages(img).finally(() => {
-      return true;
-    })
+  // All the icons of the internal player (PLAYER_ICONS), loaded and decoded when the first video is launched,
+  // then kept for the session: the icons shown later (menus, mini player...) appear at once. Calling it again does nothing.
+  public preloadPlayerIcons(): Promise<void> {
+    if (this.playerIcons.length > 0) return Promise.resolve();
+    this.playerIcons = PLAYER_ICONS.map((src: string) => {
+      const img = new Image();
+      img.src = src;
+      return img;
+    });
+    return Promise.allSettled(this.playerIcons.map((img: HTMLImageElement) => img.decode())).then(() => {
+      PLAYER_ICONS.forEach((src: string) => this.preloadedImageUrls.add(src));
+    });
   }
 
   public getAllIconsFromLicense(licenses: LicenseModel[]): string[] {

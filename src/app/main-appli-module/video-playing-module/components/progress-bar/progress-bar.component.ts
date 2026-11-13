@@ -32,10 +32,15 @@ export class ProgressBarComponent {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['currentTimeTravelledInSecond']) {
       this.currentTimeTravelled = this.globalFormattingService.converSecondInFormatToStream(this.currentTimeTravelledInSecond);
-      this.progress = this.currentTimeTravelledInSecond / this.totalDurationMovieInSecond * 100;
     }
     if (changes['totalDurationMovieInSecond']) {
       this.totalDurationMovie = this.globalFormattingService.converSecondInFormatToStream(this.totalDurationMovieInSecond);
+    }
+    if (changes['currentTimeTravelledInSecond'] || changes['totalDurationMovieInSecond']) {
+      // Duration still unknown (loading): empty bar. 0 / 0 gave "NaN%", ignored by the browser: the bar was full.
+      this.progress = this.totalDurationMovieInSecond > 0
+        ? Math.min(100, (this.currentTimeTravelledInSecond / this.totalDurationMovieInSecond) * 100)
+        : 0;
     }
   }
 
