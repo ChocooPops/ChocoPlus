@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { MenuBarComponent } from './menu-module/components/menu-bar/menu-bar.component';
 import { FooterComponent } from './common-module/components/footer/footer.component';
 import { HiddenComponentService } from './menu-module/service/hidden-component/hidden-component.service';
-import { SavePathService } from './common-module/services/save-path/save-path.service';
 import { ScrollEventService } from './common-module/services/scroll-event/scroll-event.service';
 import { filter } from 'rxjs';
 import { MediaSelectedService } from './media-module/services/media-selected/media-selected.service';
@@ -31,7 +30,6 @@ export class MainAppliComponent {
 
   constructor(private readonly router: Router,
     private readonly hiddenComponentService: HiddenComponentService,
-    private readonly savePathService: SavePathService,
     private readonly scrollEventService: ScrollEventService,
     private readonly renderer: Renderer2,
     private readonly mediaSelectedService: MediaSelectedService,
@@ -39,16 +37,10 @@ export class MainAppliComponent {
   ) { }
 
   ngOnInit() {
-    this.savePathService.setActualPath("/main-app/home");
     this.subscription.add(
       this.router.events
         .pipe(filter(event => event instanceof NavigationEnd))
-        .subscribe((event: NavigationEnd) => {
-          const url = event.urlAfterRedirects;
-          const isReadVideo = url.includes('read-video');
-          if (!isReadVideo) {
-            this.savePathService.setActualPath(url);
-          }
+        .subscribe(() => {
           this.scrollEventService.scrollToTop();
         })
     );

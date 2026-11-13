@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ElectronService } from '../../services/electron/electron.service';
 import { Subscription, filter } from 'rxjs';
 import { NgClass } from '@angular/common';
@@ -21,6 +21,9 @@ export class TitleBarComponent {
   srcClose: string = 'icon/close.svg';
   isMaximize !: boolean;
   subscription: Subscription = new Subscription();
+
+  // Window in full screen: the window buttons and the drag region are gone, the video player switch stays
+  @Input() isFullScreen: boolean = false;
 
   // Video player switch: only in the app (online / offline), not over a video covering the window
   displayPlayerSwitch: boolean = false;

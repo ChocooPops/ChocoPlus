@@ -26,7 +26,8 @@
                             [srcSecondImage]="srcImageForward" [state]="isForward"></app-bt-classic>
                     </div>
                     <app-bt-volume (setDisplayControls)="setDisplayControlsWhenActivated($event)"
-                        (onChangeVolume)="onClickVolume($event)" [currentVolume]="currentVolume"></app-bt-volume>
+                        (onChangeVolume)="onClickVolume($event)" (toggleMute)="toggleMute()"
+                        [currentVolume]="currentVolume"></app-bt-volume>
                 </div>
                 <div class="container-text">
                     <p> {{ title }} </p>
@@ -116,8 +117,8 @@
     <!-- Background of the media while the video loads (the poster attribute disappears as soon as the
          video seeks to where it resumes, before any frame) -->
     @if(srcBackground) {
-    <img class="video-background" [ngClass]="{'video-background-hidden' : isVideoStarted}" [src]="srcBackground"
-        alt="" (error)="onBackgroundError()">
+    <img class="video-background" [ngClass]="{'video-background-hidden' : hasPlayed}" [src]="srcBackground"
+        alt="" (error)="onBackgroundError()" (transitionend)="onBackgroundFaded()">
     }
 
 </div>

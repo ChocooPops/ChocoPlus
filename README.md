@@ -214,7 +214,7 @@ Dans **Paramètres → Autres options → Lecteur vidéo** :
 | **Dans l'application** (par défaut) | La vidéo se lit dans ChocoPlus avec le lecteur intégré |
 | **ChocoPlayer** | La vidéo s'ouvre dans le lecteur externe C# |
 
-Le même choix se fait avec un **mini interrupteur placé sous les boutons de la fenêtre** (réduire, agrandir, fermer), dans la barre de titre (`VideoPlayerSwitchComponent`, dans `src/app/common-module/components`). Il a deux positions : **▶** à gauche (dans l'application) et **↗** à droite (ChocoPlayer). Un clic change de lecteur, et l'infobulle indique le lecteur en cours. Il n'apparaît que dans l'application (en ligne et hors ligne), pas sur les écrans de connexion. Il est aussi masqué quand le lecteur intégré couvre la fenêtre, pour ne pas se superposer à la vidéo ; il reste visible avec le mini-lecteur. L'interrupteur et la page Paramètres restent synchronisés, même quand la page est ouverte. Le changement vaut pour les prochaines lectures : une vidéo déjà en cours n'est pas touchée.
+Le même choix se fait avec un **mini interrupteur placé sous les boutons de la fenêtre** (réduire, agrandir, fermer), dans la barre de titre (`VideoPlayerSwitchComponent`, dans `src/app/common-module/components`). Il a deux positions : **▶** à gauche (dans l'application) et **↗** à droite (ChocoPlayer). Un clic change de lecteur, et l'infobulle indique le lecteur en cours. Il n'apparaît que dans l'application (en ligne et hors ligne), pas sur les écrans de connexion. Il est aussi masqué quand le lecteur intégré couvre la fenêtre, pour ne pas se superposer à la vidéo ; il reste visible avec le mini-lecteur. En plein écran (F11), il reste à la même place : seuls les boutons de la fenêtre disparaissent. L'interrupteur et la page Paramètres restent synchronisés, même quand la page est ouverte. Le changement vaut pour les prochaines lectures : une vidéo déjà en cours n'est pas touchée.
 
 Le choix est enregistré dans le `localStorage` (clé `VIDEO_PLAYER`, `VideoPlayerService`, qui le diffuse via `videoPlayer$`). Tous les boutons de lecture passent par `StreamService.launchPlayer`, qui lance le lecteur choisi. L'option **Forcer l'arrêt du lecteur vidéo** ne concerne que ChocoPlayer.
 
@@ -243,6 +243,7 @@ ffmpeg : remux à la volée en MP4 fragmenté ──► protocole chocostream://
 ### Lecture
 
 - **Sauts précis** : dans les données déjà reçues, le saut est immédiat ; plus loin, ffmpeg est relancé à la nouvelle position (quelques centaines de millisecondes).
+- **Raccourcis clavier** (lecteur en grand) : **Espace** lecture / pause, **← / →** recul / avance de 15 s, **↑ / ↓** volume, **M** couper / rétablir le son. Le son revient au niveau qu'il avait ; le bouton volume fait la même chose.
 - **Time code sur la barre de progression** : au survol, le temps sous la souris s'affiche au-dessus de la barre. Pendant un glisser, il suit la position visée, même hors de la barre, et reste bloqué aux extrémités. Lâcher la barre au-dessus de la vidéo ne la met pas en pause.
 - **Tampon limité** : le flux n'est lu que s'il reste moins de ~2 min d'avance (moins pour les vidéos à fort débit, pour rester sous le quota MSE de Chromium). En pause, ffmpeg et le serveur attendent.
 - **Coupure réseau** : un flux qui s'arrête en erreur reprend à la position courante ; après deux échecs sans progrès, une erreur s'affiche.
@@ -260,7 +261,7 @@ ffmpeg : remux à la volée en MP4 fragmenté ──► protocole chocostream://
   - un seul menu est ouvert à la fois : passer d'un bouton à l'autre bascule directement ;
   - un menu fermé ne réagit plus à la souris.
 - Changer de piste audio ou de piste PGS relance le flux à la position courante, sans interruption visible.
-- **Sous-titres texte** (SRT, ASS, SSA, WebVTT) : toutes les pistes sont extraites pendant la lecture et affichées par-dessus la vidéo. Les styles ASS sont simplifiés (italique, gras, souligné).
+- **Sous-titres texte** (SRT, ASS, SSA, WebVTT) : toutes les pistes sont extraites pendant la lecture et affichées par-dessus la vidéo, jusqu'à 40 pistes ; au-delà, les suivantes apparaissent comme non supportées. Les styles ASS sont simplifiés (italique, gras, souligné).
 - **Sous-titres PGS** (Blu-ray) : seule la piste affichée est extraite. Ses images sont décodées (`pgs-subtitles.ts`) et dessinées sur un canvas aligné sur l'image.
 - **VobSub (DVD) et DVB** : listés mais non supportés.
 - Le dernier choix (langue, titre de la piste, sous-titres désactivés) est mémorisé dans le `localStorage` (`chocoplus.player.tracks`) et réappliqué au média suivant.

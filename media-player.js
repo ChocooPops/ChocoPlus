@@ -161,6 +161,17 @@ function toMediaInfo(probe) {
       isForced: disposition(stream).forced === 1
     }));
 
+  // The renderer asks for every text track in each stream: past MAX_TEXT_SUBTITLES (the limit
+  // parseStreamOptions enforces), the extra ones are listed as not displayable instead of failing the stream
+  let textSubtitleCount = 0;
+  const getSubtitleFormat = (stream) => {
+    if (TEXT_SUBTITLE_CODECS.has(stream.codec_name)) {
+      textSubtitleCount++;
+      return textSubtitleCount <= MAX_TEXT_SUBTITLES ? 'text' : null;
+    }
+    return stream.codec_name === PGS_CODEC ? 'pgs' : null;
+  };
+
   const subtitles = streams
     .filter((stream) => stream.codec_type === 'subtitle')
     .map((stream) => ({
@@ -172,7 +183,7 @@ function toMediaInfo(probe) {
       isForced: disposition(stream).forced === 1,
       isHearingImpaired: disposition(stream).hearing_impaired === 1,
       // 'text' | 'pgs' | null (can't be displayed)
-      format: TEXT_SUBTITLE_CODECS.has(stream.codec_name) ? 'text' : stream.codec_name === PGS_CODEC ? 'pgs' : null
+      format: getSubtitleFormat(stream)
     }));
 
   return {
@@ -196,15 +207,25 @@ async function prepareSource(request) {
   if (!deps) throw new Error('Media player not initialized');
   // Only one video at a time: whatever else is playing (ChocoPlayer) is stopped first
   if (deps.beforePlay) await deps.beforePlay();
-  const source = deps.resolveSource(request);
-  const probe = await runProbe(source.input, source.isRemote);
-  const info = toMediaInfo(probe);
-  if (!info.video) throw new Error('No video stream in this media');
-  if (!info.duration) throw new Error('Unknown media duration');
+  const resolved = deps.resolveSource(request);
 
+  // Registered before the probe (which can take seconds): a ChocoPlayer launched meanwhile sees a media
+  // open here and stops it (stopAll), instead of both videos playing
   const sourceId = crypto.randomUUID();
-  sources.set(sourceId, { input: source.input, isRemote: source.isRemote, info, sessions: new Set() });
-  return { sourceId, isLocal: !source.isRemote, ...info };
+  const source = { input: resolved.input, isRemote: resolved.isRemote, info: null, sessions: new Set() };
+  sources.set(sourceId, source);
+  try {
+    const probe = await runProbe(source.input, source.isRemote);
+    const info = toMediaInfo(probe);
+    if (!info.video) throw new Error('No video stream in this media');
+    if (!info.duration) throw new Error('Unknown media duration');
+    if (sources.get(sourceId) !== source) throw new Error('Playback was stopped while the media was prepared');
+    source.info = info;
+    return { sourceId, isLocal: !source.isRemote, ...info };
+  } catch (error) {
+    if (sources.get(sourceId) === source) sources.delete(sourceId);
+    throw error;
+  }
 }
 
 //=========================================================================================//
@@ -315,7 +336,8 @@ function handleStreamRequest(request) {
   const url = new URL(request.url);
   const sourceId = url.pathname.replace(/^\/+/, '');
   const source = url.hostname === STREAM_HOST ? sources.get(sourceId) : null;
-  if (!source) {
+  // info is null while the source is still being probed
+  if (!source || !source.info) {
     return new Response('Not found', { status: 404 });
   }
   const options = parseStreamOptions(url.searchParams, source.info);

@@ -92,6 +92,10 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   title: string = "Chargement ...";
 
   currentVolume: number = 0.5;
+  // Level restored when the sound comes back on
+  private volumeBeforeMute: number = 0.5;
+  private readonly mutedVolume: number = 0.02;
+  private readonly defaultUnmuteVolume: number = 0.5;
   volumeIntensityChanged: number = 0.1;
 
   whatDimension!: boolean;
@@ -123,9 +127,8 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   currentAudioIndex: number = -1;
   currentSubtitleIndex: number = -1;
   subtitleLines: SubtitleLine[] = [];
-  // Background of the media, shown while the video is loading
+  // Background of the media, shown while the video is loading (fades out once it has played)
   srcBackground: string | undefined = undefined;
-  isVideoStarted: boolean = false;
 
   private request: PlayerLaunchRequest | null = null;
   private info: PlayerMediaInfo | null = null;
@@ -135,7 +138,8 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   private loadCounter: number = 0;
   // loadId of PlayerSessionService already loaded
   private loadedId: number = -1;
-  private hasPlayed: boolean = false;
+  // First frames played: also hides the loading background
+  hasPlayed: boolean = false;
   private isDestroyed: boolean = false;
   private lastProgressSave: number = 0;
   private readonly progressSaveInterval: number = 60000;
@@ -207,11 +211,12 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
       }
     });
     // ChocoPlayer was launched: only one video plays at a time. The main process already saved the progress
-    // and stopped the stream: the engine goes first (no error for the cut stream), then the player.
+    // and stopped the stream: playback stops at once (no error for the cut stream), then the player closes.
+    // stopPlayback saves before destroying the engine: emptying the <video> resets currentTime to 0, which
+    // ngOnDestroy would otherwise save as the progress.
     this.removeClosedListener = this.streamService.onPlayerClosedByChocoPlayer(() => {
       this.zone.run(() => {
-        this.engine?.destroy();
-        this.engine = null;
+        this.stopPlayback();
         this.playerSessionService.close();
       });
     });
@@ -427,7 +432,6 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     // The media's background is shown at once, until the video really plays. Same image as the media page
     // (already in the cache); offline, the downloaded file.
     this.srcBackground = request.media ? this.compressedPosterService.getBackgroundForMediaPresentation(request.media) : undefined;
-    this.isVideoStarted = false;
     this.displayError = false;
     this.isBuffering = true;
     this.currentTimeTravelled = 0;
@@ -666,6 +670,10 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
         ? this.translateService.instant('PLAYER.SEASON_EPISODE', { season: next.seasonNumber, episode: next.episode.episodeNumber })
         : this.translateService.instant('PLAYER.EPISODE_NUMBER', { episode: next.episode.episodeNumber });
       this.updateNextEpisodePrompt();
+      // Found after the video ended ('ended' already passed): the countdown starts now
+      if (this.displayNextEpisode && this.videoRef.nativeElement.ended && this.nextEpisodeCountdown === null) {
+        this.startNextEpisodeCountdown();
+      }
     });
   }
 
@@ -812,17 +820,23 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   }
 
   private onPlaying = () => {
+    // First frames on screen: the background fades out (hasPlayed)
     if (!this.hasPlayed) {
       this.hasPlayed = true;
       this.lastProgressSave = Date.now();
     }
-    // First frames on screen: the background fades out
-    this.isVideoStarted = true;
     this.updateBuffering();
   }
 
+  // Scaled version missing: the original image, as the former poster attribute showed
   onBackgroundError(): void {
-    this.srcBackground = undefined;
+    const original = this.media?.srcBackgroundImage;
+    this.srcBackground = original && this.srcBackground !== original ? original : undefined;
+  }
+
+  // Faded out: removed, so no full-window image stays over the video while it plays
+  onBackgroundFaded(): void {
+    if (this.hasPlayed) this.srcBackground = undefined;
   }
 
   private onEnded = () => {
@@ -924,6 +938,18 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Sound off, or back to the level it had (M key, volume button). Under 0.02 counts as off, like the
+  // volume icon: a level too low to be heard is not restored.
+  public toggleMute(): void {
+    const video = this.videoRef.nativeElement;
+    if (video.volume > this.mutedVolume) {
+      this.volumeBeforeMute = video.volume;
+      video.volume = 0;
+    } else {
+      video.volume = this.volumeBeforeMute > this.mutedVolume ? this.volumeBeforeMute : this.defaultUnmuteVolume;
+    }
+  }
+
   public changedVolumeIntensityByKey(state: boolean): void {
     const video = this.videoRef.nativeElement;
     if (state) {
@@ -1006,6 +1032,12 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     }
     if (event.key === "ArrowDown") {
       this.changedVolumeIntensityByKey(false);
+      this.setSoundImageAccordingToIntensity();
+      this.keyUpDownPressed = !this.keyUpDownPressed;
+    }
+    // M: sound off / back on (Ctrl / Cmd + M left to the system, a held key doesn't switch it again and again)
+    if (event.key.toLowerCase() === "m" && !event.repeat && !event.ctrlKey && !event.metaKey) {
+      this.toggleMute();
       this.setSoundImageAccordingToIntensity();
       this.keyUpDownPressed = !this.keyUpDownPressed;
     }

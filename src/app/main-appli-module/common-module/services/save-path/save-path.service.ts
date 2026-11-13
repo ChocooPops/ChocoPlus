@@ -18,9 +18,6 @@ export class SavePathService {
   private canGoBack$ = this.canGoBackSubject.asObservable();
   private canGoForward$ = this.canGoForwardSubject.asObservable();
 
-  private oldPath = '';
-  private id: number | undefined;
-
   private readonly SEARCH_PATH = '/main-app/search';
 
   constructor(private readonly router: Router) {
@@ -89,21 +86,6 @@ export class SavePathService {
 
   canGoForward(): boolean {
     return this.currentIndex < this.history.length - 1;
-  }
-
-  setActualPath(path: string): void {
-    this.oldPath = path;
-  }
-
-  setActualId(id: number | undefined): void {
-    this.id = id;
-  }
-
-  navigateToOldPath(): void {
-    if (!this.oldPath) return;
-    this.id === undefined
-      ? this.router.navigateByUrl(this.oldPath)
-      : this.router.navigate([this.oldPath, this.id]);
   }
 
   private updateStates(): void {

@@ -21,6 +21,7 @@ export class ImagePreloaderService {
   private controllers = new Map<string, AbortController>();
   // Player icons kept loaded and decoded for the whole session (a dropped Image could leave the memory cache)
   private playerIcons: HTMLImageElement[] = [];
+  private playerIconsLoading: Promise<void> | null = null;
 
   constructor(private readonly compressedPosterService: CompressedPosterService) { }
 
@@ -211,15 +212,19 @@ export class ImagePreloaderService {
   // All the icons of the internal player (PLAYER_ICONS), loaded and decoded when the first video is launched,
   // then kept for the session: the icons shown later (menus, mini player...) appear at once. Calling it again does nothing.
   public preloadPlayerIcons(): Promise<void> {
-    if (this.playerIcons.length > 0) return Promise.resolve();
+    if (this.playerIconsLoading) return this.playerIconsLoading;
     this.playerIcons = PLAYER_ICONS.map((src: string) => {
       const img = new Image();
       img.src = src;
       return img;
     });
-    return Promise.allSettled(this.playerIcons.map((img: HTMLImageElement) => img.decode())).then(() => {
-      PLAYER_ICONS.forEach((src: string) => this.preloadedImageUrls.add(src));
+    this.playerIconsLoading = Promise.allSettled(this.playerIcons.map((img: HTMLImageElement) => img.decode())).then((results) => {
+      // Only the icons really decoded count as preloaded
+      results.forEach((result, index) => {
+        if (result.status === 'fulfilled') this.preloadedImageUrls.add(PLAYER_ICONS[index]);
+      });
     });
+    return this.playerIconsLoading;
   }
 
   public getAllIconsFromLicense(licenses: LicenseModel[]): string[] {

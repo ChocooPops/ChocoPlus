@@ -17,6 +17,7 @@ import { SoundVideoService } from '../../../common-module/services/sound-video/s
 import { ForceStopPlayerService } from '../../../common-module/services/force-stop-player/force-stop-player.service';
 import { VideoPlayerService } from '../../../common-module/services/video-player/video-player.service';
 import { VideoPlayerModel } from '../../../common-module/models/video-player.enum';
+import { VerifUserAlreadyConnectedService } from '../../../../launch-module/services/verif-user-already-connected/verif-user-already-connected.service';
 import { take } from 'rxjs';
 
 @Injectable({
@@ -33,7 +34,8 @@ export class ParameterAppliService {
     private readonly mediaLogoDisplayService: MediaLogoDisplayService,
     private readonly soundVideoService: SoundVideoService,
     private readonly forceStopPlayerService: ForceStopPlayerService,
-    private readonly videoPlayerService: VideoPlayerService
+    private readonly videoPlayerService: VideoPlayerService,
+    private readonly verifUserAlreadyConnectedService: VerifUserAlreadyConnectedService
   ) {
     // The menu bar's switch changes the player too: the radio buttons follow it, even with the settings page open
     this.videoPlayerService.videoPlayer$.subscribe((player: VideoPlayerModel) => this.setVideoPlayerRadioButtons(player));
@@ -522,8 +524,9 @@ export class ParameterAppliService {
     this.radioButtonOtherOption[5].call = callBackVideoPlayer;
     this.setVideoPlayerRadioButtons(this.videoPlayerService.getVideoPlayer());
 
-    //INIT LICENSE LIST FOR SELECT;
+    //INIT LICENSE LIST FOR SELECT (from the server: not offline, where the settings page is shown too);
     this.availableLicenses = [];
+    if (!this.verifUserAlreadyConnectedService.IsConnectedValue()) return;
     this.licenseService.fetchAllLicenseResearch().pipe(take(1)).subscribe((licenses: LicenseModel[]) => {
       this.availableLicenses.push(...licenses.map((lic: LicenseModel) => ({ id: lic.id, name: lic.name })));
     });

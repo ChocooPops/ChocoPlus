@@ -1,6 +1,5 @@
-@if(!isFullScreen) {
-    <app-title-bar></app-title-bar>
-}
+<!-- In full screen, only the video player switch of the title bar stays (no window buttons) -->
+<app-title-bar [isFullScreen]="isFullScreen"></app-title-bar>
 <div class="container">
 <router-outlet></router-outlet>
 </div>

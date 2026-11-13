@@ -10,7 +10,7 @@
 }
 
 .container-drag-region {
-    height: 30px;
+    height: 33px;
     flex: 1;
     -webkit-app-region: drag;
 }
@@ -23,7 +23,7 @@
 }
 
 .container-option {
-    height: 35px;
+    height: 30px;
     display: flex;
     justify-content: right;
     align-items: center;
@@ -52,4 +52,22 @@
 
 .container-video-player-switch {
     margin-left: 12px;
+}
+
+/* Full screen: nothing to drag and no window buttons, but they keep their room so the video player switch
+   stays at the same place. The bar lets the clicks through to the page, except on the switch. */
+.title-bar-fullscreen {
+    pointer-events: none;
+
+    .container-drag-region {
+        -webkit-app-region: no-drag;
+    }
+
+    .container-option {
+        visibility: hidden;
+    }
+
+    .container-video-player-switch {
+        pointer-events: auto;
+    }
 }

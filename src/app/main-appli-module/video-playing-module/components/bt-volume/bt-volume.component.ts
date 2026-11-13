@@ -14,9 +14,10 @@ export class BtVolumeComponent {
   @ViewChild('volumeRef') volumeRef !: ElementRef;
   @Input() currentVolume !: number;
   @Output() onChangeVolume = new EventEmitter<number>();
+  // Sound off / back on: done by the player, which remembers the level (also used by the M key)
+  @Output() toggleMute = new EventEmitter<void>();
   @Output() setDisplayControls = new EventEmitter<boolean>();
 
-  volumeTmp !: number;
   isVolumeSounded!: boolean;
   srcImageSound: string = 'icon/controls/sound.svg';
   srcImageMute: string = 'icon/controls/mute.svg';
@@ -38,12 +39,7 @@ export class BtVolumeComponent {
   }
 
   onClickVolume(): void {
-    if (this.currentVolume > 0) {
-      this.volumeTmp = this.currentVolume;
-      this.onChangeVolume.emit(0);
-    } else {
-      this.onChangeVolume.emit(this.volumeTmp);
-    }
+    this.toggleMute.emit();
   }
 
   displayProgressVolume(): void {
