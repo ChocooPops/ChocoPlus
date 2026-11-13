@@ -58,13 +58,11 @@
     ]
   },
   "dependencies": {
-    "@angular/animations": "^18.2.0",
     "@angular/cdk": "^17.3.10",
     "@angular/common": "^18.2.0",
     "@angular/compiler": "^18.2.0",
     "@angular/core": "^18.2.0",
     "@angular/forms": "^18.2.0",
-    "@angular/material": "^17.3.10",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
@@ -72,8 +70,6 @@
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "d3": "^7.9.0",
-    "dotenv": "^17.2.4",
-    "electron-store": "^10.1.0",
     "keytar": "^7.9.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

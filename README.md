@@ -28,7 +28,7 @@
 ## 🎬 Vue d'ensemble
 
 ChocoPlus est une plateforme complète de gestion et de visionnage de contenu multimédia qui combine :
-- Une interface moderne développée avec **Angular 18** et **Material Design**
+- Une interface moderne développée avec **Angular 18**
 - Un système de backend sécurisé avec authentification par tokens JWT
 - Un lecteur vidéo intégré à l'interface : **ffmpeg** convertit les vidéos à la volée pour **Media Source Extensions** (Chromium)
 - Un lecteur vidéo natif haute performance développé en **C# .NET 9** utilisant **LibVLC** (ChocoPlayer)
@@ -344,7 +344,6 @@ ChocoPlus utilise une architecture hybride particulière :
 │  │   (Interface utilisateur principale)   │───────────────────┐
 │  │                                        │  │                │
 │  │  - Routing & Navigation                │  │                │
-│  │  - Material Design Components          │  │                │
 │  │  - Services & Module Management        │  │                │
 │  │  - API Communication (HTTP/JWT)        │  │                │
 │  │  - Lecteur intégré (Media Source Ext.) │  │                │
@@ -865,7 +864,6 @@ ChocoPlus/
 |------------|---------|-------|
 | Electron | 33.4.11 | Container desktop multiplateforme |
 | Angular | 18.2.0 | Framework frontend |
-| Angular Material | 17.0.0 | Composants UI Material Design |
 | Angular CDK | 17.0.0 | Component Dev Kit |
 | TypeScript | 5.5.2 | Langage de programmation |
 | RxJS | 7.8.0 | Programmation réactive |
@@ -878,7 +876,6 @@ ChocoPlus/
 |------------|---------|-------|
 | @auth0/angular-jwt | 5.2.0 | Gestion JWT tokens |
 | keytar | 7.9.0 | Stockage sécurisé des credentials |
-| electron-store | 10.1.0 | Stockage local persistant |
 
 ### Lecteur vidéo intégré
 
