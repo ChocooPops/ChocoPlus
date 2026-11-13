@@ -36,7 +36,8 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "allowToChangeInstallationDirectory": true,
-      "shortcutName": "ChocoPlus"
+      "shortcutName": "ChocoPlus",
+      "include": "assets/installer.nsh"
     },
     "extraResources": [
       {

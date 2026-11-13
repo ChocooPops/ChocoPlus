@@ -593,6 +593,7 @@ Ce dossier est embarqué tel quel dans ChocoPlus : `ChocoPlayer.csproj` ne publi
 - `libvlc/win-x64` uniquement (pas de `win-x86`), sans les bibliothèques d'import `.lib`, les scripts Lua ni les plugins VLC inutilisés (sortie de streaming/transcodage, visualisations, murs vidéo, découverte réseau, incrustations OSD)
 - les traductions de .NET en français seulement (l'anglais est intégré), et pas de `.pdb`
 - `libvlc/win-x64/plugins/plugins.dat` est généré à la fin de la publication : avec ce cache, VLC ne charge que les plugins nécessaires au lieu de toutes ses DLL à chaque lancement (premier démarrage beaucoup plus rapide). S'il manque, ChocoPlayer le recrée à son premier lancement.
+- VLC valide ce cache avec la date de modification de chaque plugin, que l'installateur ne conserve pas : l'installateur NSIS le régénère donc sur les fichiers installés (`assets/installer.nsh`, macro `customInstall`). Sans cela, la version installée chargerait toutes les DLL de VLC à chaque lancement.
 
 > Le dossier est vidé avant la publication pour ne pas garder d'anciens fichiers d'un build précédent.
 >
@@ -967,4 +968,4 @@ Projet Open source - Aucun droit réservé
 
 **Développé avec ❤️ et 🍫 par l'équipe ChocoPlus**
 
-*Version 3.1.0 - Novembre 2026*
+*Version 4.0.0 - Novembre 2026*

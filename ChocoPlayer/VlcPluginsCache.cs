@@ -9,7 +9,8 @@ namespace ChocoPlayer
     // With it, libvlc only loads the plugins the media actually needs.
     public static class VlcPluginsCache
     {
-        // Passed by the publish step (see ChocoPlayer.csproj) so the cache ships with the app
+        // Passed by the publish step (see ChocoPlayer.csproj) and by the ChocoPlus installer (see assets/installer.nsh),
+        // which rebuilds the cache against the installed files
         public const string GENERATE_ARG = "--generate-vlc-plugins-cache";
 
         // Same folder as the one Core.Initialize() picks: libvlc\win-x64 or libvlc\win-x86
