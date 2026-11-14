@@ -42,6 +42,7 @@
             <div class="episode-list" #episodeList>
                 @if (episodes) {
                 @for (item of episodes; track item.episode.id) {
+                @defer (on viewport) {
                 <div class="episode animationPosterAndLicense"
                     [ngClass]="{'episode-current' : item.episode.id === currentEpisodeId}" (click)="onSelectEpisode(item)">
 
@@ -74,6 +75,16 @@
                         <p class="episode-duration">{{ item.duration }}</p>
                     </div>
                 </div>
+                } @placeholder {
+                <div class="episode episode-loading" [ngClass]="{'episode-current' : item.episode.id === currentEpisodeId}">
+                    <p class="episode-number">{{ item.episode.episodeNumber }}</p>
+                    <div class="episode-thumbnail container-animation-gradient-normal"></div>
+                    <div class="episode-info">
+                        <div class="loading-line container-animation-gradient-normal"></div>
+                        <div class="loading-line loading-line-short container-animation-gradient-normal"></div>
+                    </div>
+                </div>
+                }
                 } @empty {
                 <p class="panel-empty">{{ 'PLAYER.NO_EPISODE' | translate }}</p>
                 }

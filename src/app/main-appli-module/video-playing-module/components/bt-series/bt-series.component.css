@@ -1,7 +1,3 @@
-/* Layout of the episodes panel (look shared with the other panels: styles/player-panel.css).
-   Episode rows follow the series page: number, 16:9 poster with the yellow progress bar, title, details. */
-
-/* As tall as possible up to its size, never taller than the window allows */
 .episodes-panel {
     width: 600px;
     height: min(720px, var(--panel-max-height));
@@ -69,10 +65,23 @@
     background-color: #232323;
     box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.5);
     z-index: 5;
-    animation: enterPoster 0.2s ease-out;
+    animation: season-options-appears 0.2s ease-out;
 
     .panel-option:hover {
         background-color: #303030;
+    }
+}
+
+/* Unfolds downwards from the selected season */
+@keyframes season-options-appears {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -254,6 +263,10 @@
     &:hover {
         background-color: transparent;
     }
+}
+
+.episode-loading .episode-thumbnail {
+    box-sizing: border-box;
 }
 
 .loading-line {
