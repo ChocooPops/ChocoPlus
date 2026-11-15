@@ -1,8 +1,3 @@
-@if (jobTitle === JobModel.ACTOR) {
-<h2> {{ 'MEDIA_PAGE.CASTING' | translate }} </h2>
-} @else if(jobTitle === JobModel.DIRECTOR) {
-<h2> {{ 'MEDIA_PAGE.PRODUCTION_DIRECTION' | translate }} </h2>
-}
 <div class="container-staffs" [style.gap.vw]="gap">
 @for (item of creditTab; track $index) {
     <div class="container-staff">

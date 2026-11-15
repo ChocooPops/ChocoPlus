@@ -4,20 +4,21 @@ import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { NgClass } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-credit-poster-loading',
   standalone: true,
-  imports: [NgClass, TranslatePipe],
+  imports: [NgClass],
   templateUrl: './credit-poster-loading.component.html',
   styleUrls: ['./credit-poster-loading.component.css', '../credit-poster/credit-poster.component.css', '../../../../common-module/styles/animation.css'],
 })
 export class CreditPosterLoadingComponent {
+
+  @Input({ required: true }) iteration: number = 0;
   @Input() jobTitle!: JobModel;
+  
   private subscription!: Subscription;
 
-  nbPoster: number = 5;
   creditTab: number[] = [];
 
   height!: number;
@@ -28,7 +29,7 @@ export class CreditPosterLoadingComponent {
   constructor(private paginationPosterService: PaginationPosterService) {}
 
   ngOnInit(): void {
-    for (let i = 0; i < this.nbPoster; i++) {
+    for (let i = 0; i < this.iteration; i++) {
       this.creditTab.push(i);
     }
 

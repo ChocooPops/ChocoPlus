@@ -1,20 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PaginationPosterService } from '../../../services/pagination-poster/pagination-poster.service';
 import { GeometricDimensionSelectionModel } from '../../../models/geometric-dimension-selection.interface';
 import { NgClass } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-similar-poster-vertical-loading',
   standalone: true,
-  imports: [NgClass, TranslatePipe],
+  imports: [NgClass],
   templateUrl: './similar-poster-vertical-loading.component.html',
   styleUrls: ['.././similar-poster-vertical/similar-poster-vertical.component.css', '../../../../common-module/styles/animation.css'],
 })
 export class SimilarPosterVerticalLoadingComponent {
   
-  nbPoster: number = 7;
+  @Input({ required: true }) iteration: number = 0;
   similarTab: number[] = [];
   private subscription!: Subscription;
 
@@ -22,12 +21,10 @@ export class SimilarPosterVerticalLoadingComponent {
   width!: number;
   gap!: number;
 
-  constructor(
-    private readonly paginationPosterService: PaginationPosterService,
-  ) {}
+  constructor(private readonly paginationPosterService: PaginationPosterService) {}
 
   ngOnInit(): void {
-    for (let i = 0; i < this.nbPoster; i++) {
+    for (let i = 0; i < this.iteration; i++) {
       this.similarTab.push(i);
     }
 

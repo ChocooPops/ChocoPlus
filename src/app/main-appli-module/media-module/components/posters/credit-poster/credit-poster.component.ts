@@ -6,13 +6,12 @@ import { GeometricDimensionSelectionModel } from '../../../models/geometric-dime
 import { MediaTypeModel } from '../../../models/media-type.enum';
 import { CompressedPosterService } from '../../../../common-module/services/compressed-poster/compressed-poster.service';
 import { MediaCreditModel } from '../../../models/media-credit.interface';
-import { TranslatePipe } from '@ngx-translate/core';
 import { JobPipe } from '../../../../../common-module/pipe/job.pipe';
 
 @Component({
   selector: 'app-credit-poster',
   standalone: true,
-  imports: [TranslatePipe, JobPipe],
+  imports: [JobPipe],
   templateUrl: './credit-poster.component.html',
   styleUrls: ['./credit-poster.component.css', '../../../../common-module/styles/animation.css'],
 })
@@ -20,7 +19,6 @@ export class CreditPosterComponent {
 
   @Input() jobTitle!: JobModel;
   @Input() credits: MediaCreditModel[] = [];
-  @Input() mediaType!: MediaTypeModel;
   @Output() onClickCreditEmit = new EventEmitter<MediaCreditModel>();
 
   private subscription!: Subscription;
