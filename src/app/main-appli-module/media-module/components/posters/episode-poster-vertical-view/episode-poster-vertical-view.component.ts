@@ -14,11 +14,12 @@ import { DownloadButtonComponent } from '../../button/download-button/download-b
 import { UserModel } from '../../../../user-module/dto/user.model';
 import { RoleModel } from '../../../../../common-module/models/role.enum';
 import { TranslatePipe } from '@ngx-translate/core';
+import { EpisodePosterVerticalViewLoadingComponent } from '../episode-poster-vertical-view-loading/episode-poster-vertical-view-loading.component';
 
 @Component({
   selector: 'app-episode-poster-vertical-view',
   standalone: true,
-  imports: [DatePipe, NewsAlertComponent, StartButtonComponent, DownloadButtonComponent, TranslatePipe],
+  imports: [DatePipe, NewsAlertComponent, StartButtonComponent, DownloadButtonComponent, TranslatePipe, EpisodePosterVerticalViewLoadingComponent],
   templateUrl: './episode-poster-vertical-view.component.html',
   styleUrls: ['./episode-poster-vertical-view.component.css', '../../../../common-module/styles/animation.css']
 })

@@ -17,11 +17,12 @@ import { MediaTypeModel } from '../../../models/media-type.enum';
 import { DownloadButtonComponent } from '../../button/download-button/download-button.component';
 import { UserModel } from '../../../../user-module/dto/user.model';
 import { RoleModel } from '../../../../../common-module/models/role.enum';
+import { EpisodePosterHorizontalViewLoadingComponent } from '../episode-poster-horizontal-view-loading/episode-poster-horizontal-view-loading.component';
 
 @Component({
   selector: 'app-episode-poster-horizontal-view',
   standalone: true,
-  imports: [StartButtonComponent, DatePipe, TranslatePipe, NewsAlertComponent, DownloadButtonComponent],
+  imports: [StartButtonComponent, DatePipe, TranslatePipe, NewsAlertComponent, DownloadButtonComponent, EpisodePosterHorizontalViewLoadingComponent],
   templateUrl: './episode-poster-horizontal-view.component.html',
   styleUrls: ['./episode-poster-horizontal-view.component.css', '../../../../common-module/styles/animation.css'],
 })

@@ -94,37 +94,42 @@
 
     @if(type) {
     <div class="container-series">
-        <div class="container-season animationPosterAndLicense">
+        <div class="container-season">
             @if(series.seasons.length > 0) {
-            @for(season of series.seasons; track season.id; let idx = $index) {
-            <div class="container-poster" (click)="onClickSeason(idx)">
-                @if(season.isClicked) {
-                <div class="container-icon-selected">
-                    <img [src]="srcSucces">
-                </div>
-                }
-                <div class="container-num-season">
-                    <p>{{ season.seasonNumber}}</p>
-                    @if (season.isRecent) {
-                        <div class="news-alert-season"></div>
+                @for(season of series.seasons; track season.id; let idx = $index) {
+                    @defer (on viewport) {
+                        <div class="container-poster animationPosterAndLicense" (click)="onClickSeason(idx)">
+                            @if(season.isClicked) {
+                            <div class="container-icon-selected">
+                                <img [src]="srcSucces">
+                            </div>
+                            }
+                            <div class="container-num-season">
+                                <p>{{ season.seasonNumber}}</p>
+                                @if (season.isRecent) {
+                                    <div class="news-alert-season"></div>
+                                }
+                                @if (season.hasNoEpisodes) {
+                                    <div class="hollow-season-alert"></div>
+                                }
+                            </div>
+                            <div class="container-tmp-poster"></div>
+                            @if(seasonPosters[idx]) {
+                            <img class="poster" [src]="seasonPosters[idx]" (error)="onErrorPosterSeason(idx)">
+                            } @else {
+                            <p> {{ season.name }} </p>
+                            }
+                        </div>
+                    }@placeholder {
+                        <div class="container-poster container-animation-gradient-normal"></div>
                     }
-                    @if (season.hasNoEpisodes) {
-                        <div class="hollow-season-alert"></div>
-                    }
-                </div>
-                <div class="container-tmp-poster"></div>
-                @if(season.srcPoster) {
-                <img class="poster" [src]="season.srcPoster" (error)="onErrorPosterSeason(idx)">
-                } @else {
-                <p> {{ season.name }} </p>
                 }
-            </div>
-            }
-            @for(seasonTmp of seasonsPosterTmp; track seasonTmp) {
-            <div class="container-poster">
-                <div class="container-tmp-poster"></div>
-            </div>
-            }
+
+                @for(seasonTmp of seasonsPosterTmp; track seasonTmp) {
+                    <div class="container-poster">
+                        <div class="container-tmp-poster"></div>
+                    </div>
+                }
             } @else {
             @for(season of seasonsLoading; track season) {
             <div class="container-poster" [ngClass]='"container-animation-gradient-poster"'>
@@ -152,7 +157,7 @@
         @if(episodes) {
         <app-episode-poster-vertical-view [series]="series" [episodes]="episodes" [user]="user"></app-episode-poster-vertical-view>
         }@else {
-        <app-episode-poster-vertical-view-loading></app-episode-poster-vertical-view-loading>
+        <app-episode-poster-vertical-view-loading [iteration]="5"></app-episode-poster-vertical-view-loading>
         }
     </div>
     } @else if (isOnLine) {

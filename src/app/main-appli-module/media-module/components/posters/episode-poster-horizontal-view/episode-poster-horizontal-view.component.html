@@ -1,4 +1,3 @@
-<h2> {{ 'MEDIA_PAGE.EPISODES' | translate }} </h2>
 <div class="container-episodes" [style.gap.vw]="gap">
 
     @if (episodes.length > 0) {
@@ -73,10 +72,7 @@
             </div>
         </div>
         } @placeholder {
-        <div class="container-episode" [style.max-width.vw]="width">
-            <div class="container-poster container-animation-gradient-normal" [style.height.vw]="height"
-                [style.width.vw]="width"></div>
-        </div>
+            <app-episode-poster-horizontal-view-loading [iteration]="1" [setDimension]="false" [width]="width" [height]="height"></app-episode-poster-horizontal-view-loading>
         }
         }
     } @else {

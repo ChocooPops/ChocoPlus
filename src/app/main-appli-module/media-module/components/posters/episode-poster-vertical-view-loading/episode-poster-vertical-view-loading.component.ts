@@ -11,10 +11,11 @@ import { NgClass } from '@angular/common';
 export class EpisodePosterVerticalViewLoadingComponent {
 
   episodes: number[] = [];
+  @Input( { required: true }) iteration: number = 0;
   @Input() notRunning: boolean = true;
 
   ngOnInit(): void {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < this.iteration; i++) {
       this.episodes.push(i);
     }
   }

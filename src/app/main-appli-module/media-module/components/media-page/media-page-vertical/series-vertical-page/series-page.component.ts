@@ -11,6 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TitleCasePipe } from '@angular/common';
 import { JobPipe } from '../../../../../../common-module/pipe/job.pipe';
 import { DownloadSeasonComponent } from '../../../button/download-season/download-season.component';
+import { SeasonModel } from '../../../../models/series/season.interface';
 
 @Component({
   selector: 'app-series-vertical-page',
@@ -23,8 +24,8 @@ export class SeriesVerticalPageComponent extends SeriesPageAbstraction {
 
   protected formatMediaPage: FormatMediaPageModel = FormatMediaPageModel.VERTICAL;
   
-  date!: Date | null;
-  
+  date!: Date | null;  
+
   onClickTypeSeasonsEpisodes(): void {
     this.type = true;
     this.onLoadEpisodeByIdOrIndex();
@@ -40,6 +41,9 @@ export class SeriesVerticalPageComponent extends SeriesPageAbstraction {
   }
   protected initSpe(): void {
     this.date = this.series.date || new Date();
+    this.series.seasons.forEach((season: SeasonModel) => {
+      this.seasonPosters.push(this.compressedPosterService.getSeasonPoster(season));
+    });
   }
   protected fetchDataSpe(): void {
     if (this.type) {

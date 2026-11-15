@@ -26,6 +26,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
   protected abortControllerEpisodes = new AbortController();
   protected subscriptionEpisodes!: Subscription;
   protected user!: UserModel | undefined;
+  protected seasonPosters: (string | undefined)[] = [];
 
   srcSucces: string = 'icon/success.svg';
   public readonly Role = RoleModel;
@@ -90,6 +91,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
   protected override resetInfoExtra(): void {
     this.episodes = [];
     this.seasonsPosterTmp = [];
+    this.seasonPosters = [];
   }
 
   protected override beforeFetchSimilarMedia(): void {
@@ -203,7 +205,7 @@ export abstract class SeriesPageAbstraction extends MovieSeriesPageAbstraction {
   }
 
   onErrorPosterSeason(index: number): void {
-    this.series.seasons[index].srcPoster = undefined;
+    this.seasonPosters[index] = undefined;
   }
 
   protected onLoadEpisodeByIdOrIndex(): void {
