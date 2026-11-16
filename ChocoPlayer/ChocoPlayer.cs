@@ -52,6 +52,11 @@ namespace ChocoPlayer
         private float _watchProgress = 0f;
         private bool _watchProgressApplied = false;
 
+        // ── Current media ──────────────────────────────────────────────────────
+        private string _currentPath = "";
+        private int  _openGeneration = 0;      // incremented on each media opened: drops the work of a replaced one
+        private bool _streamErrorShown = false; // one popup per media, libVLC can report several errors
+
         private TrackListener? _trackListener;
         private ProgressListener? _progressListener;
 
@@ -62,6 +67,8 @@ namespace ChocoPlayer
         private const int LOCAL_CACHE_MS = 300;   // disk: fast reads, quick start and seeks
         private const int HTTP_CACHE_MS  = 1000;  // plain http: usually LAN / self-hosted server
         private const int HTTPS_CACHE_MS = 2500;  // https: internet + TLS, absorbs latency spikes and costly range requests on seek
+        // Network read-ahead (KiB): ~2 min of a 1080p stream at 8 Mbit/s
+        private const int PREFETCH_BUFFER_KIB = 128 * 1024;
 
         // ── Local volume tracking (prevents outdated reads on high-speed presses) ──
         private int _localVolume = 50;
@@ -180,8 +187,7 @@ namespace ChocoPlayer
                 "--avcodec-skiploopfilter=0",
                 "--avcodec-skip-idct=0",
 
-                // Misc optimisations
-                "--no-stats",
+                // Misc optimisations (stats stay enabled: the loaded part of the progress bar is computed from them)
                 "--no-sub-autodetect-file",
                 "--drop-late-frames",           // only when the machine can't keep up: keeps A/V in sync
                 "--skip-frames",
@@ -198,9 +204,8 @@ namespace ChocoPlayer
 
             _mediaPlayer.EncounteredError += (_, _) =>
             {
-                this.BeginInvoke(new Action(() =>
-                    MessageBox.Show("Error reading the stream.", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error)));
+                if (IsDisposed) return;
+                this.BeginInvoke(new Action(() => _ = ReportStreamErrorAsync(_openGeneration)));
             };
 
             bool isBufferingStall = false;
@@ -376,6 +381,10 @@ namespace ChocoPlayer
                 var media = new Media(libVLC, path, FromType.FromLocation);
                 media.AddOption($":network-caching={(isHttps ? HTTPS_CACHE_MS : HTTP_CACHE_MS)}");
                 media.AddOption(":http-reconnect");   // resume the download after a network drop
+                // Downloads ahead of the playback (shown as the buffered range of the progress bar)
+                // instead of only the few seconds of network-caching: absorbs network slowdowns too
+                media.AddOption(":stream-filter=prefetch");
+                media.AddOption($":prefetch-buffer-size={PREFETCH_BUFFER_KIB}");
                 return media;
             }
 
@@ -387,21 +396,40 @@ namespace ChocoPlayer
             return local;
         }
 
-        private void OpenFile(string path)
+        private void OpenFile(string path) => _ = StartMediaAsync(path, restoreWatchProgress: true);
+
+        private const int STREAM_PROBE_TIMEOUT_MS = 5000;
+
+        // Stops the current media, asks the server whether the new one can be streamed, then plays it.
+        // A refusal (409: a video already playing...) shows the server's message instead of a black screen.
+        // Returns false when the media wasn't started (refused, replaced meanwhile, window closed).
+        private async Task<bool> StartMediaAsync(string path, bool restoreWatchProgress)
         {
-            if (_libVLC == null || _mediaPlayer == null) return;
+            if (_libVLC == null || _mediaPlayer == null) return false;
+
+            int generation    = ++_openGeneration;
+            _currentPath      = path;
+            _streamErrorShown = false;
+            _watchProgressApplied = false;
 
             try
             {
-                _watchProgressApplied = false;
-
                 var oldMedia = _mediaPlayer.Media;
                 _mediaPlayer.Stop();
                 oldMedia?.Dispose();
 
-                var media = CreateMedia(_libVLC, path);
+                // Before libVLC opens the stream, never alongside it (see StreamProbe)
+                var probe = await StreamProbe.RunAsync(path, TimeSpan.FromMilliseconds(STREAM_PROBE_TIMEOUT_MS));
+                if (generation != _openGeneration || IsDisposed || _mediaPlayer == null) return false;
 
-                _mediaPlayer.Media = media;
+                if (probe.ServerMessage != null)
+                {
+                    ShowStreamError(probe.ServerMessage);
+                    return false;
+                }
+
+                Player.BeginBufferTracking(probe.TotalBytes);
+                _mediaPlayer.Media = CreateMedia(_libVLC, path);
 
                 EventHandler<EventArgs>? playingHandler = null;
                 playingHandler = (_, _) =>
@@ -409,28 +437,61 @@ namespace ChocoPlayer
                     RestorePreferredTracks();
                     _mediaPlayer.Playing -= playingHandler;
                 };
+                _mediaPlayer.Playing += playingHandler;
 
-                EventHandler<MediaPlayerPositionChangedEventArgs>? positionHandler = null;
-                positionHandler = (_, _) =>
+                if (restoreWatchProgress)
                 {
-                    if (!_watchProgressApplied && _mediaPlayer.Length > 0)
+                    EventHandler<MediaPlayerPositionChangedEventArgs>? positionHandler = null;
+                    positionHandler = (_, _) =>
                     {
-                        _watchProgressApplied = true;
-                        _mediaPlayer.PositionChanged -= positionHandler;
-                        this.BeginInvoke(new Action(ApplyWatchProgress));
-                    }
-                };
+                        if (!_watchProgressApplied && _mediaPlayer.Length > 0)
+                        {
+                            _watchProgressApplied = true;
+                            _mediaPlayer.PositionChanged -= positionHandler;
+                            this.BeginInvoke(new Action(ApplyWatchProgress));
+                        }
+                    };
+                    _mediaPlayer.PositionChanged += positionHandler;
+                }
 
-                _mediaPlayer.Playing         += playingHandler;
-                _mediaPlayer.PositionChanged += positionHandler;
                 _mediaPlayer.Play();
                 _playerControls?.SetPlaying(true);
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Unable to play the media : {ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (generation == _openGeneration && !IsDisposed)
+                    ShowStreamError(null, ex.Message);
+                return false;
             }
+        }
+
+        // libVLC only says "an error occurred": the server is asked why (refusal message), if it's a network stream.
+        // The request is safe here: libVLC's stream is already broken, there is nothing left to cut.
+        private async Task ReportStreamErrorAsync(int generation)
+        {
+            if (_streamErrorShown || generation != _openGeneration) return;
+            _streamErrorShown = true;
+
+            var probe = await StreamProbe.RunAsync(_currentPath, TimeSpan.FromMilliseconds(STREAM_PROBE_TIMEOUT_MS));
+            if (generation != _openGeneration || IsDisposed) return;
+
+            ShowStreamError(probe.ServerMessage);
+        }
+
+        // serverMessage: shown as the server sent it. Otherwise the generic message, with the technical detail if any.
+        private void ShowStreamError(string? serverMessage, string? detail = null)
+        {
+            _streamErrorShown = true;
+            _playerControls?.SetPlaying(false);
+
+            string text = serverMessage != null
+                ? $"{Locale.Get("error.server")}\n\n{serverMessage}"
+                : detail != null
+                    ? $"{Locale.Get("error.stream")}\n\n{detail}"
+                    : Locale.Get("error.stream");
+
+            MessageBox.Show(this, text, Locale.Get("error.title"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void ApplyWatchProgress()
@@ -443,6 +504,7 @@ namespace ChocoPlayer
                 long targetTime   = (long)((_watchProgress / 100f) * totalTime);
                 if (totalTime - targetTime < 10_000) return;
                 //long adjustedTime = Math.Max(targetTime - 60_000, 0);
+                Player.NotifySeek(targetTime);
                 _mediaPlayer.Time = targetTime;
             }
         }
@@ -507,6 +569,7 @@ namespace ChocoPlayer
                 {
                     long seekTarget   = _pendingSeekTime;
                     _pendingSeekTime  = -1;
+                    Player.NotifySeek(seekTarget);
                     Task.Run(() => { if (_mediaPlayer != null) _mediaPlayer.Time = seekTarget; });
                 }
 
@@ -1275,6 +1338,9 @@ namespace ChocoPlayer
         // ══════════════════════════════════════════════════════════════════════
         private void ChocoPlayer_FormClosing(object? sender, FormClosingEventArgs e)
         {
+            // Drops a media still being prepared (StartMediaAsync) and any pending error popup:
+            // libVLC is disposed below
+            _openGeneration++;
 
             string progress = GetProgressPercent();
             
@@ -1431,46 +1497,23 @@ namespace ChocoPlayer
 
             public void OnEpisodeSelected(int seasonIndex, int episodeId, string episodePath, string episodeName)
             {
-                if (_p._libVLC == null || string.IsNullOrEmpty(episodePath)) return;
+                if (_p._libVLC == null || _p._mediaPlayer == null || string.IsNullOrEmpty(episodePath)) return;
 
-                try
-                {
-                    string progress = _p.GetProgressPercent();
-                    _p._watchProgressApplied = false;
+                // Progress of the episode being left, read before it is stopped
+                string progress = _p.GetProgressPercent();
 
-                    var oldMedia = _p._mediaPlayer?.Media;
-                    _p._mediaPlayer?.Stop();
-                    oldMedia?.Dispose();
+                Console.WriteLine("NEW_EPISODE_ID : " + episodeId);
+                Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + + _p._mediaId+ " : " + _p._currentSeasonId + " : " + _p._currentEpisodeId + " : " + progress);
 
-                    Console.WriteLine("NEW_EPISODE_ID : " + episodeId);
-                    Console.WriteLine("UPDATE_PROGRESS : EPISODE : " + + _p._mediaId+ " : " + _p._currentSeasonId + " : " + _p._currentEpisodeId + " : " + progress);
+                _p.SetTitlePart(2, episodeName);
+                _p._currentEpisodeId = episodeId;
+                if (seasonIndex >= 0 && seasonIndex < _p._seasons.Count)
+                    _p._currentSeasonId = _p._seasons[seasonIndex].Id;
+                _p._seasonsMenu?.SetCurrentPlayingEpisode(episodeId);
+                _p._seasonsMenu?.Hide();
 
-                    var newMedia = CreateMedia(_p._libVLC, episodePath);
-
-                    _p._mediaPlayer!.Media = newMedia;
-
-                    EventHandler<EventArgs>? playingHandler = null;
-                    playingHandler = (_, _) =>
-                    {
-                        _p.RestorePreferredTracks();
-                        _p._mediaPlayer.Playing -= playingHandler;
-                    };
-
-                    _p._mediaPlayer.Playing += playingHandler;
-                    _p._mediaPlayer.Play();
-                    _p._playerControls?.SetPlaying(true);
-                    _p.SetTitlePart(2, episodeName);
-                    _p._currentEpisodeId = episodeId;
-                    if (seasonIndex >= 0 && seasonIndex < _p._seasons.Count)
-                        _p._currentSeasonId = _p._seasons[seasonIndex].Id;
-                    _p._seasonsMenu?.SetCurrentPlayingEpisode(episodeId);
-                    _p._seasonsMenu?.Hide();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Unable to play the episode : {ex.Message}",
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                // Errors (server refusal included) are shown by StartMediaAsync
+                _ = _p.StartMediaAsync(episodePath, restoreWatchProgress: false);
             }
         }
 

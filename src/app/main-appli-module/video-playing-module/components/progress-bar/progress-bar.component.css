@@ -37,6 +37,17 @@ p {
     position: relative;
 }
 
+/* Data already loaded: grey, under the hover fill and the yellow part */
+.buffered-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: #6e6e6e;
+    pointer-events: none;
+    transition: width 0.2s;
+}
+
 /* Up to the mouse: lighter than the bar, under the yellow part */
 .hover-fill {
     position: absolute;

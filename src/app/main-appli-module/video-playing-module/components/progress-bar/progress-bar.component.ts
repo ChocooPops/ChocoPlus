@@ -14,6 +14,8 @@ export class ProgressBarComponent {
 
   @Input() currentTimeTravelledInSecond !: number;
   @Input() totalDurationMovieInSecond !: number;
+  // End of the data already loaded (seconds): drawn lighter, between the bar and the yellow part
+  @Input() bufferedEndInSecond: number = 0;
   @Output() changeCurrentTime = new EventEmitter<number>();
 
   progress: number = 0;
@@ -28,6 +30,11 @@ export class ProgressBarComponent {
   private isHovering: boolean = false;
 
   constructor(private globalFormattingService: GlobalFormattingService) { }
+
+  get bufferedPercent(): number {
+    if (!(this.totalDurationMovieInSecond > 0) || !(this.bufferedEndInSecond > 0)) return 0;
+    return Math.min(100, (this.bufferedEndInSecond / this.totalDurationMovieInSecond) * 100);
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['currentTimeTravelledInSecond']) {

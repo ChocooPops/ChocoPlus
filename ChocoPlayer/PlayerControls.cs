@@ -9,8 +9,9 @@ namespace ChocoPlayer
     public class PlayerControls : Panel
     {
         // ── State ──────────────────────────────────────────────────────────────
-        private float _progress       = 0.0f;
-        private float _volumeProgress = 0.5f;
+        private float _progress         = 0.0f;
+        private float _bufferedProgress = -1f;   // loaded part of the media, -1 = unknown (hidden)
+        private float _volumeProgress   = 0.5f;
         private bool  _isDragging       = false;
         private bool  _isDraggingVolume = false;
         private bool  _isSeekPending    = false;
@@ -62,6 +63,7 @@ namespace ChocoPlayer
         // ── Cached GDI objects (0 per-frame allocations at 20 Hz) ─────────────
         private SolidBrush?          _brushAccent;
         private SolidBrush?          _brushTrackBg;
+        private SolidBrush?          _brushBuffered;
         private SolidBrush?          _brushButtonHover;
         private SolidBrush?          _brushWhite;
         private SolidBrush?          _brushTimeText;
@@ -114,6 +116,7 @@ namespace ChocoPlayer
         {
             _brushAccent      = new SolidBrush(_colorAccent);
             _brushTrackBg     = new SolidBrush(Color.FromArgb(65, 255, 255, 255));
+            _brushBuffered    = new SolidBrush(Color.FromArgb(110, 255, 255, 255));
             _brushButtonHover = new SolidBrush(Color.FromArgb(65, 80, 80, 80));
             _brushWhite       = new SolidBrush(Color.White);
             _brushTimeText    = new SolidBrush(Color.FromArgb(190, 190, 190));
@@ -272,13 +275,17 @@ namespace ChocoPlayer
 
         private void UpdateProgressFromPlayer()
         {
-            long total   = Player.GetTotalTime();
-            long current = Player.GetElapsedTime();
+            long total    = Player.GetTotalTime();
+            long current  = Player.GetElapsedTime();
+            long buffered = Player.GetBufferedTime();
             if (total > 0)
             {
                 float np = (float)current / total;
-                if (Math.Abs(np - _progress) < 0.0001f) return;
-                _progress = np;
+                float nb = buffered >= 0 ? (float)buffered / total : -1f;
+                // The buffer keeps loading while paused: redraw on either change
+                if (Math.Abs(np - _progress) < 0.0001f && Math.Abs(nb - _bufferedProgress) < 0.0005f) return;
+                _progress         = np;
+                _bufferedProgress = nb;
             }
             UpdateTimeText();
             RefreshImmediate();
@@ -397,6 +404,14 @@ namespace ChocoPlayer
 
             // Gray track background
             g.FillRoundedRectangle(_brushTrackBg!, LEFT_MARGIN, trackY, lineWidth, trackH, trackH);
+
+            // Light gray loaded range, under the yellow fill
+            if (_bufferedProgress > 0)
+            {
+                int bufferedW = (int)(Math.Min(_bufferedProgress, 1f) * lineWidth);
+                if (bufferedW > 2)
+                    g.FillRoundedRectangle(_brushBuffered!, LEFT_MARGIN, trackY, bufferedW, trackH, trackH);
+            }
 
             // Yellow progress fill
             int fillW = progressX - LEFT_MARGIN;
@@ -525,6 +540,7 @@ namespace ChocoPlayer
                 _updateTimer?.Dispose();
 
                 _brushAccent?.Dispose();      _brushTrackBg?.Dispose();
+                _brushBuffered?.Dispose();
                 _brushButtonHover?.Dispose(); _brushWhite?.Dispose();
                 _brushTimeText?.Dispose();    _penPointRing?.Dispose();
                 _fontTime?.Dispose();         _fontFallback?.Dispose();

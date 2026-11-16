@@ -86,6 +86,9 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   isBuffering: boolean = true;
 
   currentTimeTravelled: number = 0;
+  // Where the data already received goes up to, from the current position (shown on the progress bar)
+  bufferedEnd: number = 0;
+  private bufferedTimer: ReturnType<typeof setInterval> | null = null;
   totalDurationMedia: number = 0;
   speed: number = 15;
 
@@ -203,6 +206,7 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     // keyboard feedback, error), so they appear at once. Only the first video of the session loads them.
     this.imagePreloaderService.preloadPlayerIcons();
     this.attachVideoListeners();
+    this.startBufferedTracking();
     this.removeCueListener = this.streamService.onPlayerSubtitleCues((event) => {
       if (this.info && event.sourceId === this.info.sourceId) {
         this.cueStore.add(event.streamIndex, event.cues);
@@ -262,6 +266,7 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     this.stopTimer();
     this.stopPlayback();
     this.detachVideoListeners();
+    if (this.bufferedTimer) clearInterval(this.bufferedTimer);
     this.removeCueListener?.();
     this.removePgsListener?.();
     this.removeClosedListener?.();
@@ -448,6 +453,7 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     this.serverError = null;
     this.isBuffering = true;
     this.currentTimeTravelled = 0;
+    this.bufferedEnd = 0;
     this.totalDurationMedia = 0;
     this.audios = [];
     this.subtitles = [];
@@ -807,6 +813,32 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     this.whatDimension = video.videoHeight > video.videoWidth;
     this.isVideoLoaded = true;
     this.pgsCanvasDirty = true;
+  }
+
+  // The data keeps coming while paused (no timeupdate then): read twice a second, outside Angular, and only
+  // shown again when it moved
+  private startBufferedTracking(): void {
+    this.zone.runOutsideAngular(() => {
+      this.bufferedTimer = setInterval(() => {
+        const end = this.getBufferedEnd();
+        if (Math.abs(end - this.bufferedEnd) >= 0.25) {
+          this.zone.run(() => this.bufferedEnd = end);
+        }
+      }, 500);
+    });
+  }
+
+  // End of the received range the playback is in (the engine keeps other ranges after a seek: not counted)
+  private getBufferedEnd(): number {
+    const video = this.videoRef?.nativeElement;
+    if (!video || !this.engine) return 0;
+    const time = video.currentTime;
+    for (let i = 0; i < video.buffered.length; i++) {
+      if (video.buffered.start(i) <= time + 0.5 && video.buffered.end(i) >= time) {
+        return video.buffered.end(i);
+      }
+    }
+    return time;
   }
 
   private timeUpdate = () => {

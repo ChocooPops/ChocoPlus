@@ -24,6 +24,10 @@ namespace ChocoPlayer
                 ["season.episode"]     = "ÉP.",
                 ["season.playing"]     = "En lecture",
                 ["season.empty"]       = "Aucun épisode",
+
+                ["error.title"]        = "Erreur de lecture",
+                ["error.stream"]       = "Impossible de lire la vidéo.",
+                ["error.server"]       = "Le serveur a refusé la lecture :",
             },
             ["en"] = new()
             {
@@ -41,6 +45,10 @@ namespace ChocoPlayer
                 ["season.episode"]     = "EP.",
                 ["season.playing"]     = "Now Playing",
                 ["season.empty"]       = "No episode",
+
+                ["error.title"]        = "Playback error",
+                ["error.stream"]       = "Unable to play the video.",
+                ["error.server"]       = "The server refused the playback:",
             },
             ["ja"] = new()
             {
@@ -58,6 +66,10 @@ namespace ChocoPlayer
                 ["season.episode"]     = "EP.",
                 ["season.playing"]     = "再生中",
                 ["season.empty"]       = "エピソードなし",
+
+                ["error.title"]        = "再生エラー",
+                ["error.stream"]       = "動画を再生できません。",
+                ["error.server"]       = "サーバーが再生を拒否しました：",
             },
         };
 

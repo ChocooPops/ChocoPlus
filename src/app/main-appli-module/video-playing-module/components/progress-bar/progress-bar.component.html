@@ -3,6 +3,7 @@
         (mousedown)="startDragProgressBar($event)" (mouseup)="endDragProgressBar($event)"
         (mousemove)="onHoverProgressBar($event)" (mouseleave)="onLeaveProgressBar()">
         <div class="container-progress-bar-info">
+            <div class="buffered-fill" [style.width.%]="bufferedPercent"></div>
             @if (previewPercent !== null) {
             <div class="hover-fill" [style.width.%]="previewPercent"></div>
             }

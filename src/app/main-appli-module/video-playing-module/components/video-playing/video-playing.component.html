@@ -13,7 +13,7 @@
         <app-bt-back (click)="onClickControllers($event)"></app-bt-back>
         <div class="container-controls" (click)="onClickControllers($event)">
             <app-progress-bar (changeCurrentTime)="changeCurrentTime($event)"
-                [currentTimeTravelledInSecond]="currentTimeTravelled"
+                [currentTimeTravelledInSecond]="currentTimeTravelled" [bufferedEndInSecond]="bufferedEnd"
                 [totalDurationMovieInSecond]="totalDurationMedia"></app-progress-bar>
             <div class="container-button">
                 <div class="container-group-button" [ngClass]="'position-left'">
