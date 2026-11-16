@@ -1,20 +1,35 @@
-<div class="containerMainError" [ngClass]="{'errorVisible' : displayError, 'errorHidden' : !displayError}">
-    <div class="conntainerIconWarning">
-        <img [src]="srcWarning">
-    </div>
-    <div class="containerMessageError">
-        <div class="containerTitleError">
-            <p>Erreur</p>
-            <div class="underscore"></div>
+<div class="error-overlay" (click)="onClickCard($event)">
+    <div class="error-card" role="alertdialog">
+
+        <div class="error-header">
+            <img class="error-icon" [src]="srcWarning" alt="">
+            <p class="error-title">{{ titleKey | translate }}</p>
         </div>
-        <div class="containerText">
-            <p>Lecture impossible. Le flux vidéo est introuvable ou sont éxécution rencontre des problèmes. Vérifiez
-                le chemin de votre vidéo ou votre requête Web HTTP. </p>
-            <br>
+
+        @if (playerError.serverMessage) {
+        <p class="error-message">{{ playerError.serverMessage }}</p>
+        } @else {
+        <p class="error-message">{{ messageKey | translate }}</p>
+        }
+
+        @if (playerError.detail) {
+        <button class="error-details-toggle" type="button" (click)="toggleDetails()">
+            <span class="error-details-arrow" [class.error-details-arrow-open]="displayDetails">›</span>
+            {{ 'PLAYER.ERROR.DETAILS' | translate }}
+        </button>
+        @if (displayDetails) {
+        <pre class="error-details">{{ playerError.detail }}</pre>
+        }
+        }
+
+        <div class="error-buttons">
+            <button class="error-button error-button-secondary" type="button" (click)="onClose()">
+                {{ 'PLAYER.ERROR.CLOSE' | translate }}
+            </button>
+            <button class="error-button error-button-primary" type="button" (click)="onRetry()">
+                {{ 'PLAYER.ERROR.RETRY' | translate }}
+            </button>
         </div>
-        <div class="containerButton">
-            <button class="white" (click)="onClickCancel()">Annuler</button>
-            <button class="yellow" (click)="onClickBack()">Retour</button>
-        </div>
+
     </div>
 </div>

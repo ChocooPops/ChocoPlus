@@ -4,7 +4,7 @@
     [ngClass]="{'hidden-cursor' : mode === 'full' && !displayControls}">
 
     @if(displayError) {
-    <app-error-video></app-error-video>
+    <app-error-video [error]="playerError" (retry)="onRetry()"></app-error-video>
     }
 
     @if(mode === 'full') {

@@ -757,6 +757,25 @@
         "DESCENDING_SORT": "降順に並べ替え"
     },
     "PLAYER": {
+        "ERROR": {
+            "SERVER_TITLE": "サーバーが再生を拒否しました",
+            "SERVER_MESSAGE": "サーバーがこの動画の再生を拒否しました。",
+            "NOT_AVAILABLE_TITLE": "動画が見つかりません",
+            "NOT_AVAILABLE_MESSAGE": "この動画は利用できません。サーバー上に存在しないか、ダウンロードしたファイルが移動または削除されています。",
+            "NETWORK_TITLE": "サーバーとの接続が切れました",
+            "NETWORK_MESSAGE": "サーバーが応答しないか、接続が切断されました。インターネット接続を確認してから、もう一度お試しください。",
+            "UNAUTHORIZED_TITLE": "アクセスが拒否されました",
+            "UNAUTHORIZED_MESSAGE": "サーバーが再生を拒否しました。セッションの有効期限が切れている可能性があります。再ログインしてから、もう一度お試しください。",
+            "UNSUPPORTED_TITLE": "対応していない形式です",
+            "UNSUPPORTED_MESSAGE": "このファイルは再生できません。破損しているか、内蔵プレーヤーが対応していない形式です。ChocoPlayer でお試しください。",
+            "FFMPEG_MISSING_TITLE": "再生コンポーネントがありません",
+            "FFMPEG_MISSING_MESSAGE": "ffmpeg が見つからないため、内蔵プレーヤーで再生できません。ChocoPlus を再インストールするか、それまでは ChocoPlayer をご利用ください。",
+            "UNKNOWN_TITLE": "再生できません",
+            "UNKNOWN_MESSAGE": "予期しないエラーで再生が中断されました。もう一度お試しください。問題が続く場合は ChocoPlayer でお試しください。",
+            "DETAILS": "技術的な詳細",
+            "RETRY": "再試行",
+            "CLOSE": "閉じる"
+        },
         "AUDIO": "音声",
         "SUBTITLES": "字幕",
         "DISABLE": "オフ",

@@ -757,6 +757,25 @@
         "DESCENDING_SORT": "Sort descending"
     },
     "PLAYER": {
+        "ERROR": {
+            "SERVER_TITLE": "Playback refused by the server",
+            "SERVER_MESSAGE": "The server refused to play this video.",
+            "NOT_AVAILABLE_TITLE": "Video not found",
+            "NOT_AVAILABLE_MESSAGE": "This video is not available: it is no longer on the server, or the downloaded file was moved or deleted.",
+            "NETWORK_TITLE": "Connection to the server lost",
+            "NETWORK_MESSAGE": "The server is not responding or the connection was cut. Check your internet connection, then try again.",
+            "UNAUTHORIZED_TITLE": "Access denied",
+            "UNAUTHORIZED_MESSAGE": "The server refused to play this video. Your session may have expired: log in again, then try again.",
+            "UNSUPPORTED_TITLE": "Unsupported format",
+            "UNSUPPORTED_MESSAGE": "This file can't be played: it may be damaged, or its format is not supported by the built-in player. Try with ChocoPlayer.",
+            "FFMPEG_MISSING_TITLE": "Playback component missing",
+            "FFMPEG_MISSING_MESSAGE": "ffmpeg was not found, so the built-in player can't play anything. Reinstall ChocoPlus or use ChocoPlayer in the meantime.",
+            "UNKNOWN_TITLE": "Unable to play",
+            "UNKNOWN_MESSAGE": "An unexpected error stopped playback. Try again; if the problem persists, try with ChocoPlayer.",
+            "DETAILS": "Technical details",
+            "RETRY": "Try again",
+            "CLOSE": "Close"
+        },
         "AUDIO": "Audio",
         "SUBTITLES": "Subtitles",
         "DISABLE": "Off",

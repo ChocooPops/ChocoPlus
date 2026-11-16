@@ -121,6 +121,7 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   displayControls: boolean = true;
   displayControlsWhenActivated: boolean = false;
   displayError: boolean = false;
+  playerError: unknown = null;
 
   audios: PlayerTrackOption[] = [];
   subtitles: PlayerTrackOption[] = [];
@@ -152,6 +153,8 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   private readonly pgsRenderer = new PgsCanvasRenderer();
   private removePgsListener: (() => void) | null = null;
   private removeClosedListener: (() => void) | null = null;
+  private removeServerErrorListener: (() => void) | null = null;
+  private serverError: string | null = null;
   private lastPgsFrame: PgsFrame | null = null;
   private pgsCanvasDirty: boolean = true;
 
@@ -214,6 +217,14 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     // and stopped the stream: playback stops at once (no error for the cut stream), then the player closes.
     // stopPlayback saves before destroying the engine: emptying the <video> resets currentTime to 0, which
     // ngOnDestroy would otherwise save as the progress.
+    // Read by the main process after a stream error: added to the error, also once it is shown
+    this.removeServerErrorListener = this.streamService.onPlayerServerError((event) => {
+      if (!this.info || event.sourceId !== this.info.sourceId) return;
+      this.zone.run(() => {
+        this.serverError = event.message;
+        if (this.displayError) this.playerError = this.withServerError(this.playerError);
+      });
+    });
     this.removeClosedListener = this.streamService.onPlayerClosedByChocoPlayer(() => {
       this.zone.run(() => {
         this.stopPlayback();
@@ -254,6 +265,7 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     this.removeCueListener?.();
     this.removePgsListener?.();
     this.removeClosedListener?.();
+    this.removeServerErrorListener?.();
     // Destroyed with its app shell (logout, offline...): nothing plays anymore
     this.playerSessionService.close();
   }
@@ -433,6 +445,7 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     // (already in the cache); offline, the downloaded file.
     this.srcBackground = request.media ? this.compressedPosterService.getBackgroundForMediaPresentation(request.media) : undefined;
     this.displayError = false;
+    this.serverError = null;
     this.isBuffering = true;
     this.currentTimeTravelled = 0;
     this.totalDurationMedia = 0;
@@ -782,7 +795,10 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
   private onVideoError = () => {
     // A <video> without source (between two media) is not an error
     if (this.engine) {
-      this.onError(this.videoRef.nativeElement.error?.message);
+      const error = this.videoRef.nativeElement.error;
+      // The message is often empty: the code tells what happened (network, decoding, format)
+      const codes: Record<number, string> = { 1: 'MEDIA_ERR_ABORTED', 2: 'MEDIA_ERR_NETWORK', 3: 'MEDIA_ERR_DECODE', 4: 'MEDIA_ERR_SRC_NOT_SUPPORTED' };
+      this.onError(error ? [codes[error.code], error.message].filter(Boolean).join(': ') : 'Unknown video error');
     }
   }
 
@@ -1049,12 +1065,28 @@ export class VideoPlayingComponent implements OnInit, OnDestroy {
     this.displayControls = true;
   }
 
-  onError(error: any): void {
+  onError(error: unknown): void {
     console.error('[player]', error);
     this.isBuffering = false;
+    this.playerError = this.withServerError(error);
     this.displayError = true;
     // The error message needs the whole window
     if (this.mode === 'mini') this.playerSessionService.expand();
+  }
+
+  // The server's message first (ErrorVideoComponent shows it), the error received after it (technical details)
+  private withServerError(error: unknown): unknown {
+    if (!this.serverError) return error;
+    const message = error instanceof Error ? error.message : error ? String(error) : '';
+    return message.startsWith(this.serverError) ? error : `${this.serverError}\n${message}`;
+  }
+
+  // "Try again" of the error: the same media again, from where it was
+  onRetry(): void {
+    const request = this.request;
+    if (!request) return;
+    const position = this.getCurrentProgress();
+    this.load(position !== null ? { ...request, watchProgress: position } : request);
   }
 
   setDisplayControlsWhenActivated(op: boolean): void {

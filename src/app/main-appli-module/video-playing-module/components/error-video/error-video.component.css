@@ -1,141 +1,156 @@
-.containerMainError {
-    width: 600px;
-    background-color: #141414;
-    border-radius: 10px;
-    display: grid;
-    grid-template: 100% / 35% 65%;
-    overflow: hidden;
-    padding: 20px;
+/* Over the whole player, video dimmed. Card with the look of the player's panels (#181818, yellow accent). */
+.error-overlay {
     position: absolute;
-    left: 50%;
-    right: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 99999;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.6);
+    animation: error-overlay-appears 0.25s ease-out;
 }
 
-.containerHidden {
-    animation: change-visibility 0.4s ease-out;
-    opacity: 0;
-    visibility: hidden;
+.error-card {
+    width: min(520px, 100%);
+    max-height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 28px 30px 24px;
+    border-radius: 8px;
+    background-color: #181818;
+    box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    cursor: default;
+    animation: error-card-appears 0.3s ease-out;
 }
 
-@keyframes change-visibility {
-    0% {
-        opacity: 1;
-        visibility: visible;
+.error-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.error-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+}
+
+.error-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+}
+
+.error-message {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+/* Raw message, for a bug report */
+.error-details-toggle {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--grey, #8c8c8c);
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+        color: white;
     }
+}
 
-    90% {
+.error-details-arrow {
+    display: inline-block;
+    font-size: 16px;
+    transition: transform 0.2s;
+}
+
+.error-details-arrow-open {
+    transform: rotate(90deg);
+}
+
+.error-details {
+    margin: 0;
+    max-height: 140px;
+    overflow: auto;
+    padding: 10px 12px;
+    border-radius: 5px;
+    background-color: #0e0e0e;
+    color: #aaa;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    user-select: text;
+}
+
+.error-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.error-button {
+    height: 38px;
+    padding-inline: 22px;
+    border-radius: 5px;
+    border: none;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.15s;
+
+    &:hover {
+        transform: scale(1.04);
+    }
+}
+
+.error-button-secondary {
+    background-color: #2d2d2d;
+    color: white;
+
+    &:hover {
+        background-color: #3a3a3a;
+    }
+}
+
+.error-button-primary {
+    background-color: #FFD301;
+    color: black;
+}
+
+@keyframes error-overlay-appears {
+    from {
         opacity: 0;
     }
 
-    100% {
-        visibility: hidden;
+    to {
+        opacity: 1;
     }
 }
 
-.errorVisible {
-    animation: grow-up 0.3s ease-out;
-}
-
-.errorHidden {
-    animation: decrease 0.4s ease-out;
-    height: 0px;
-    overflow: hidden;
-    padding: 0;
-}
-
-@keyframes grow-up {
+@keyframes error-card-appears {
     from {
-        height: -50px;
+        opacity: 0;
+        transform: translateY(15px);
     }
 
     to {
-        height: 200px;
+        opacity: 1;
+        transform: translateY(0);
     }
-}
-
-@keyframes decrease {
-    from {
-        height: 200px;
-    }
-
-    to {
-        height: 0px;
-    }
-}
-
-.conntainerIconWarning {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    img {
-        height: 90px;
-    }
-}
-
-.containerMessageError {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-}
-
-.containerTitleError {
-    font-size: 25px;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.underscore {
-    width: 80%;
-    height: 4px;
-    background-color: white;
-}
-
-.containerText {
-    justify-content: center;
-    align-items: center;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.containerButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 100px;
-    margin-block: 10px;
-}
-
-button {
-    height: 30px;
-    width: 100px;
-    font-size: 16px;
-    font-weight: bold;
-    color: black;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-}
-
-.white {
-    background-color: white;
-}
-
-.yellow {
-    background-color: #FFD301;
-}
-
-p {
-    margin: 0;
 }

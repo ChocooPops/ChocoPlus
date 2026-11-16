@@ -757,6 +757,25 @@
         "DESCENDING_SORT": "Trie par ordre décroissant"
     },
     "PLAYER": {
+        "ERROR": {
+            "SERVER_TITLE": "Lecture refusée par le serveur",
+            "SERVER_MESSAGE": "Le serveur a refusé la lecture de cette vidéo.",
+            "NOT_AVAILABLE_TITLE": "Vidéo introuvable",
+            "NOT_AVAILABLE_MESSAGE": "Cette vidéo n'est pas disponible : elle n'est plus sur le serveur, ou le fichier téléchargé a été déplacé ou supprimé.",
+            "NETWORK_TITLE": "Connexion au serveur perdue",
+            "NETWORK_MESSAGE": "Le serveur ne répond pas ou la connexion a été coupée. Vérifiez votre connexion internet, puis réessayez.",
+            "UNAUTHORIZED_TITLE": "Accès refusé",
+            "UNAUTHORIZED_MESSAGE": "Le serveur a refusé la lecture. Votre session a peut-être expiré : reconnectez-vous, puis réessayez.",
+            "UNSUPPORTED_TITLE": "Format non pris en charge",
+            "UNSUPPORTED_MESSAGE": "Ce fichier ne peut pas être lu : il est peut-être endommagé, ou son format n'est pas pris en charge par le lecteur intégré. Essayez avec ChocoPlayer.",
+            "FFMPEG_MISSING_TITLE": "Composant de lecture manquant",
+            "FFMPEG_MISSING_MESSAGE": "ffmpeg est introuvable, le lecteur intégré ne peut rien lire. Réinstallez ChocoPlus ou, en attendant, utilisez ChocoPlayer.",
+            "UNKNOWN_TITLE": "Lecture impossible",
+            "UNKNOWN_MESSAGE": "Une erreur inattendue a interrompu la lecture. Réessayez ; si le problème continue, essayez avec ChocoPlayer.",
+            "DETAILS": "Détails techniques",
+            "RETRY": "Réessayer",
+            "CLOSE": "Fermer"
+        },
         "AUDIO": "Audio",
         "SUBTITLES": "Sous-titres",
         "DISABLE": "Désactiver",

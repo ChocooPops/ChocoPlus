@@ -99,6 +99,12 @@ export interface PlayerStreamErrorEvent {
     message: string
 }
 
+// "Server error <status>: <message>" of the server that refused a stream of this source
+export interface PlayerServerErrorEvent {
+    sourceId: string,
+    message: string
+}
+
 // Entry of the audio / subtitle menu (index = streamIndex, -1 = subtitles disabled).
 // name: the language (or the title), detail: what tells tracks of the same language apart
 export interface PlayerTrackOption {

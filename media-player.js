@@ -46,6 +46,9 @@ const VIDEO_MODES = Object.freeze({ COPY: 'copy', H264: 'h264' });
 // ffmpeg log lines meaning the source stopped being readable before its end.
 // ("Stream ends prematurely" is not one: ffmpeg logs it at the end of each 10 MB response of ChocoServ, then reconnects)
 const INPUT_FAILURE_PATTERN = /Error during demuxing|I\/O error|Connection (refused|reset|timed out)|Server returned|Failed to resolve/i;
+// The server answered with an HTTP error: ffmpeg / ffprobe only log its status, not the message it sent
+const HTTP_ERROR_PATTERN = /Server returned|HTTP error/i;
+const SERVER_ERROR_TIMEOUT_MS = 5000;
 
 let deps = null;
 // sourceId -> { input, isRemote, info, sessions: Set<session> }
@@ -97,6 +100,9 @@ function describeSpawnError(name, error) {
 //======================================== PROBE ==========================================//
 //=========================================================================================//
 
+// A server that is off doesn't make ffprobe fail: it keeps reconnecting (HTTP_INPUT_OPTIONS) until PROBE_TIMEOUT_MS.
+// For a remote source the server is checked meanwhile (checkServerReachable): if it can't be reached, ffprobe is
+// stopped at once with that reason. Either way the error says why, never "exited with code null".
 function runProbe(input, isRemote) {
   return new Promise((resolve, reject) => {
     const args = ['-v', 'error', '-print_format', 'json', '-show_format', '-show_streams'];
@@ -106,16 +112,31 @@ function runProbe(input, isRemote) {
     const proc = spawn(getBinary('ffprobe'), args, { windowsHide: true });
     let stdout = '';
     let stderr = '';
-    const timer = setTimeout(() => proc.kill(), PROBE_TIMEOUT_MS);
+    let settled = false;
+    let timer = null;
+    const settle = (callback) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      callback();
+    };
+    // Rejected at once, without waiting for 'close' (it can come long after a kill on Windows)
+    const stop = (reason) => {
+      if (settled) return;
+      proc.kill();
+      settle(() => reject(reason));
+    };
+    timer = setTimeout(() => stop(new Error(`Server not answering: ffprobe got no answer after ${PROBE_TIMEOUT_MS / 1000} s`)), PROBE_TIMEOUT_MS);
+    if (isRemote) {
+      checkServerReachable(input).then((unreachable) => {
+        if (unreachable) stop(unreachable);
+      });
+    }
 
     proc.stdout.on('data', (data) => { stdout += data; });
     proc.stderr.on('data', (data) => { stderr = (stderr + data).slice(-STDERR_TAIL_LENGTH); });
-    proc.on('error', (error) => {
-      clearTimeout(timer);
-      reject(describeSpawnError('ffprobe', error));
-    });
-    proc.on('close', (code) => {
-      clearTimeout(timer);
+    proc.on('error', (error) => settle(() => reject(describeSpawnError('ffprobe', error))));
+    proc.on('close', (code) => settle(() => {
       if (code !== 0) {
         return reject(new Error(stderr.trim() || `ffprobe exited with code ${code}`));
       }
@@ -124,8 +145,30 @@ function runProbe(input, isRemote) {
       } catch (error) {
         reject(error);
       }
-    });
+    }));
   });
+}
+
+// Only the root of the server is asked, never the stream (the server could count it as a video being played).
+// Any HTTP answer means it is reachable. Only connection failures count, not a certificate error (ffmpeg doesn't
+// check certificates). Returns the error to show, or null.
+const UNREACHABLE_CODES = new Set(['ECONNREFUSED', 'ENOTFOUND', 'EAI_AGAIN', 'ENETUNREACH', 'EHOSTUNREACH', 'ETIMEDOUT', 'UND_ERR_CONNECT_TIMEOUT']);
+const REACHABILITY_TIMEOUT_MS = 10000;
+
+async function checkServerReachable(url) {
+  try {
+    const response = await fetch(new URL(url).origin + '/', { method: 'HEAD', signal: AbortSignal.timeout(REACHABILITY_TIMEOUT_MS) });
+    await response.body?.cancel();
+    return null;
+  } catch (error) {
+    if (error?.name === 'TimeoutError') {
+      return new Error(`Server unreachable: no answer after ${REACHABILITY_TIMEOUT_MS / 1000} s`);
+    }
+    // Node may group the attempts (IPv4 / IPv6) in an AggregateError: its code is on the inner errors
+    const cause = error?.cause;
+    const code = cause?.code ?? cause?.errors?.find((inner) => inner?.code)?.code;
+    return UNREACHABLE_CODES.has(code) ? new Error(`Server unreachable (${code})`) : null;
+  }
 }
 
 // Tag keys are usually lowercase (language, title) but some muxers write them uppercase.
@@ -203,6 +246,34 @@ function toMediaInfo(probe) {
   };
 }
 
+//=========================================================================================//
+//===================================== SERVER ERRORS =====================================//
+//=========================================================================================//
+
+// When the server refuses a stream it sends { statusCode, message } (ex: 409 "A video is already playing for
+// this user"), which ffmpeg doesn't show. The same URL is asked again, only once ffmpeg failed on an HTTP
+// error, to read that message. null: no message (no error any more, no JSON, server unreachable).
+async function readServerError(url) {
+  try {
+    const response = await fetch(url, { headers: { Range: 'bytes=0-0' }, signal: AbortSignal.timeout(SERVER_ERROR_TIMEOUT_MS) });
+    if (response.ok) {
+      await response.body?.cancel();
+      return null;
+    }
+    const body = JSON.parse(await response.text());
+    const message = Array.isArray(body?.message) ? body.message.join(', ') : body?.message;
+    if (typeof message !== 'string' || !message.trim()) return null;
+    return { status: Number(body.statusCode) || response.status, message: message.trim().slice(0, 300) };
+  } catch {
+    return null;
+  }
+}
+
+// Recognised by the renderer (player-error.ts): "Server error <status>: <message of the server>"
+function formatServerError(serverError) {
+  return `Server error ${serverError.status}: ${serverError.message}`;
+}
+
 async function prepareSource(request) {
   if (!deps) throw new Error('Media player not initialized');
   // Only one video at a time: whatever else is playing (ChocoPlayer) is stopped first
@@ -224,6 +295,11 @@ async function prepareSource(request) {
     return { sourceId, isLocal: !source.isRemote, ...info };
   } catch (error) {
     if (sources.get(sourceId) === source) sources.delete(sourceId);
+    // Refused by the server: its own message first, ffprobe's log after it (technical details)
+    if (source.isRemote && HTTP_ERROR_PATTERN.test(error?.message ?? '')) {
+      const serverError = await readServerError(source.input);
+      if (serverError) throw new Error(`${formatServerError(serverError)}\n${error.message}`);
+    }
     throw error;
   }
 }
@@ -421,6 +497,16 @@ function startSession(sourceId, source, options) {
       session: options.session,
       message: session.stderr.trim() || (code === null ? `ffmpeg was stopped (${signal})` : `ffmpeg exited with code ${code}`)
     });
+    // The player only waits a moment for this error: the server's message is read afterwards and sent apart
+    if (source.isRemote && HTTP_ERROR_PATTERN.test(session.stderr) && !source.readingServerError) {
+      source.readingServerError = true;
+      readServerError(source.input).then((serverError) => {
+        source.readingServerError = false;
+        if (serverError && sources.get(sourceId) === source) {
+          sendToRenderer('player:server-error', { sourceId, message: formatServerError(serverError) });
+        }
+      });
+    }
   });
 
   return session;

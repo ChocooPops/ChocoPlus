@@ -3,7 +3,7 @@ import { environment } from '../../../../../environments/environment';
 import { PlayerSessionService } from '../player-session/player-session.service';
 import { AuthService } from '../../../../launch-module/services/auth/auth.service';
 import { ChocoPlayerModel } from '../../models/choco-player.interface';
-import { PlayerLaunchRequest, PlayerMediaInfo, PlayerPgsDisplaySetsEvent, PlayerStreamErrorEvent, PlayerSubtitleCuesEvent } from '../../models/player.interface';
+import { PlayerLaunchRequest, PlayerMediaInfo, PlayerPgsDisplaySetsEvent, PlayerServerErrorEvent, PlayerStreamErrorEvent, PlayerSubtitleCuesEvent } from '../../models/player.interface';
 import { MediaModel } from '../../../media-module/models/media.interface';
 import { MediaTypeModel } from '../../../media-module/models/media-type.enum';
 import { ProgressStateMedia } from '../../../media-module/models/progress-state-media.enum';
@@ -182,6 +182,10 @@ export class StreamService {
 
   public onPlayerStreamError(callback: (event: PlayerStreamErrorEvent) => void): () => void {
     return window.electron.player.onStreamError(callback);
+  }
+
+  public onPlayerServerError(callback: (event: PlayerServerErrorEvent) => void): () => void {
+    return window.electron.player.onServerError(callback);
   }
 
   // The player declares what it plays and how to read where it is (null: nothing to save yet)

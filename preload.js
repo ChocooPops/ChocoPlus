@@ -74,6 +74,12 @@ contextBridge.exposeInMainWorld('electron', {
       const listener = (_event, data) => callback(data);
       ipcRenderer.on('player:stream-error', listener);
       return () => ipcRenderer.removeListener('player:stream-error', listener);
+    },
+    // Message of the server that refused a stream ({ sourceId, message }), read after the stream error
+    onServerError: (callback) => {
+      const listener = (_event, data) => callback(data);
+      ipcRenderer.on('player:server-error', listener);
+      return () => ipcRenderer.removeListener('player:server-error', listener);
     }
   },
 
